@@ -8,6 +8,8 @@ export const DRUG_DATA: DrugInfo[] = [
   { id: "ropivacaine", name: "Ropivacaïne", maxDoseMgPerKg: 3 },
   { id: "bupivacaine", name: "Bupivacaïne", maxDoseMgPerKg: 2 },
   { id: "levobupivacaine", name: "Levobupivacaïne", maxDoseMgPerKg: 2.5 },
+  { id: "lidocaine", name: "Lidocaïne", maxDoseMgPerKg: 4.5 },
+  { id: "lidocaine_epi", name: "Lidocaïne + Adrenaline", maxDoseMgPerKg: 7 },
 ];
 
 export interface SelectedDrug {
