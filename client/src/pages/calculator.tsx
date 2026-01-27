@@ -1,117 +1,261 @@
-import { useState } from "react";
-import { DRUGS } from "@/lib/drugs";
-import { DrugCard } from "@/components/drug-card";
+import { useState, useMemo } from "react";
+import { DRUG_DATA, SelectedDrug, calculateMaxDose, calculateIntralipid } from "@/lib/drugs";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, Scale } from "lucide-react";
-import { motion } from "framer-motion";
+import { Plus, Trash2, AlertCircle, AlertTriangle, ShieldAlert } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default function CalculatorPage() {
   const [weight, setWeight] = useState<number>(70);
-  const [weightInput, setWeightInput] = useState<string>("70");
+  const [isHypervascular, setIsHypervascular] = useState(false);
+  const [selectedDrugs, setSelectedDrugs] = useState<SelectedDrug[]>([]);
+  const [showProtocol, setShowProtocol] = useState(false);
 
-  const handleWeightChange = (val: string) => {
-    setWeightInput(val);
-    const num = parseFloat(val);
-    if (!isNaN(num) && num > 0) {
-      setWeight(num);
-    }
-  };
-
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
+  const addDrug = () => {
+    setSelectedDrugs([
+      ...selectedDrugs,
+      {
+        instanceId: Math.random().toString(36).substr(2, 9),
+        drugId: DRUG_DATA[0].id,
+        doseMg: 0,
+        volumeMl: 0,
+        concentration: 10,
+        usePercentage: true
       }
-    }
+    ]);
   };
 
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
+  const removeDrug = (id: string) => {
+    setSelectedDrugs(selectedDrugs.filter(d => d.instanceId !== id));
+  };
+
+  const updateDrug = (id: string, updates: Partial<SelectedDrug>) => {
+    setSelectedDrugs(selectedDrugs.map(d => {
+      if (d.instanceId !== id) return d;
+      const next = { ...d, ...updates };
+      
+      // Sync dose and volume
+      if ('volumeMl' in updates || 'concentration' in updates || 'usePercentage' in updates) {
+        next.doseMg = next.volumeMl * next.concentration;
+      } else if ('doseMg' in updates) {
+        next.volumeMl = next.concentration > 0 ? next.doseMg / next.concentration : 0;
+      }
+      
+      return next;
+    }));
+  };
+
+  const toxicityScore = useMemo(() => {
+    if (weight <= 0) return 0;
+    return selectedDrugs.reduce((acc, d) => {
+      const max = calculateMaxDose(weight, d.drugId, isHypervascular);
+      return acc + (max > 0 ? d.doseMg / max : 0);
+    }, 0);
+  }, [selectedDrugs, weight, isHypervascular]);
+
+  const intralipid = calculateIntralipid(weight);
+
+  const getGaugeColor = (score: number) => {
+    if (score < 0.5) return "bg-emerald-500";
+    if (score < 0.8) return "bg-amber-500";
+    return "bg-destructive";
   };
 
   return (
-    <div className="space-y-6">
-      
-      {/* Weight Input Section */}
-      <section className="bg-card rounded-2xl p-5 shadow-sm border border-border/50 space-y-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Scale className="h-5 w-5 text-primary" />
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Patient Data</h2>
-        </div>
-        
-        <div className="space-y-4">
-          <div className="flex items-end gap-4">
-            <div className="flex-1">
-              <Label htmlFor="weight" className="text-base font-medium">Weight (kg)</Label>
-              <div className="relative mt-2">
-                <Input
-                  id="weight"
-                  type="number"
-                  inputMode="decimal"
-                  value={weightInput}
-                  onChange={(e) => handleWeightChange(e.target.value)}
-                  className="text-3xl font-mono h-14 pl-4 pr-12 font-bold bg-secondary/20 border-secondary focus-visible:ring-primary"
-                />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">kg</span>
-              </div>
+    <div className="space-y-6 pb-20">
+      {/* Patient Input */}
+      <Card className="border-primary/20 shadow-lg">
+        <CardContent className="p-5 space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Gewicht (kg)</Label>
+              <Input 
+                type="number" 
+                value={weight} 
+                onChange={(e) => setWeight(parseFloat(e.target.value) || 0)}
+                className="text-2xl font-mono font-bold h-12"
+              />
             </div>
-            <div className="w-24 bg-muted rounded-lg p-2 flex flex-col items-center justify-center h-14 border border-border/50">
-               <span className="text-xs text-muted-foreground">Lbs</span>
-               <span className="font-mono font-medium text-foreground">{(weight * 2.20462).toFixed(0)}</span>
+            <div className="space-y-2">
+              <Label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Type Blok</Label>
+              <Select value={isHypervascular ? "hyper" : "std"} onValueChange={(v) => setIsHypervascular(v === "hyper")}>
+                <SelectTrigger className="h-12">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="std">Standaard</SelectItem>
+                  <SelectItem value="hyper">Hypervasculair</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
+        </CardContent>
+      </Card>
 
-          <Slider
-            defaultValue={[70]}
-            max={150}
-            min={1}
-            step={1}
-            value={[weight]}
-            onValueChange={(vals) => handleWeightChange(vals[0].toString())}
-            className="py-2"
+      {/* Toxicity Gauge */}
+      <Card className="relative overflow-hidden border-2 border-border">
+        <div className="absolute top-0 left-0 w-full h-1 bg-muted">
+          <motion.div 
+            className={`h-full ${getGaugeColor(toxicityScore)}`}
+            initial={{ width: 0 }}
+            animate={{ width: `${Math.min(toxicityScore * 100, 100)}%` }}
+            transition={{ type: "spring", stiffness: 50 }}
           />
         </div>
-      </section>
+        <CardContent className="p-6 text-center">
+          <div className="text-sm text-muted-foreground font-medium uppercase tracking-widest mb-1">Cumulative Toxicity Score</div>
+          <div className={`text-5xl font-mono font-black ${(toxicityScore >= 1) ? 'text-destructive animate-pulse' : ''}`}>
+            {(toxicityScore * 100).toFixed(1)}%
+          </div>
+          {toxicityScore >= 1 && (
+            <div className="mt-2 text-destructive font-bold flex items-center justify-center gap-2">
+              <AlertTriangle className="h-5 w-5" /> TOXIC LIMIT EXCEEDED
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Warning if weight is unusual */}
-      {weight < 30 && (
-         <Alert variant="destructive" className="bg-red-50 text-red-900 border-red-200 dark:bg-red-900/20 dark:text-red-200">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Pediatric/Low Weight Warning</AlertTitle>
-          <AlertDescription>
-            Verify weight carefully. Pediatric dosing requires extreme caution.
-          </AlertDescription>
-        </Alert>
-      )}
+      {/* Emergency Button */}
+      <Dialog open={showProtocol} onOpenChange={setShowProtocol}>
+        <DialogTrigger asChild>
+          <Button variant="destructive" className="w-full h-16 text-lg font-black uppercase tracking-tighter shadow-xl shadow-destructive/20 hover:scale-[1.02] transition-transform">
+            <ShieldAlert className="mr-2 h-6 w-6" /> OPEN INTRALIPID PROTOCOL
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black text-destructive flex items-center gap-2">
+              <ShieldAlert className="h-8 w-8" /> INTRALIPID 20%
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6 pt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-destructive/10 p-4 rounded-2xl border-2 border-destructive/20 text-center">
+                <div className="text-xs uppercase font-bold text-destructive mb-1">Bolus (1.5 mL/kg)</div>
+                <div className="text-3xl font-mono font-black text-destructive">{intralipid.bolus.toFixed(1)} <span className="text-sm">mL</span></div>
+              </div>
+              <div className="bg-destructive/5 p-4 rounded-2xl border-2 border-destructive/10 text-center">
+                <div className="text-xs uppercase font-bold text-muted-foreground mb-1">Infusion (0.25 mL/kg/min)</div>
+                <div className="text-3xl font-mono font-black text-foreground">{intralipid.infusion.toFixed(1)} <span className="text-sm">mL/min</span></div>
+              </div>
+            </div>
+            <div className="text-sm text-muted-foreground space-y-2">
+              <p>• <strong>Repeat bolus</strong> every 3-5 mins if stability not restored (max 3 doses total).</p>
+              <p>• <strong>Double infusion rate</strong> to 0.5 mL/kg/min if stability not restored.</p>
+              <p>• <strong>Continue infusion</strong> for 10 mins after stability.</p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Drug List */}
-      <motion.div 
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="space-y-4"
-      >
-        <div className="flex items-center justify-between px-1">
-          <h3 className="font-heading font-semibold text-lg text-foreground">Anesthetics</h3>
-          <span className="text-xs text-muted-foreground bg-secondary px-2 py-1 rounded-md">Max Doses</span>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold font-heading">Local Anesthetics</h3>
+          <Button onClick={addDrug} size="sm" className="gap-2">
+            <Plus className="h-4 w-4" /> Add Drug
+          </Button>
         </div>
 
-        {DRUGS.map((drug) => (
-          <motion.div key={drug.id} variants={item}>
-            <DrugCard drug={drug} weight={weight} />
-          </motion.div>
-        ))}
-      </motion.div>
+        <AnimatePresence mode="popLayout">
+          {selectedDrugs.map((drug) => (
+            <motion.div
+              key={drug.instanceId}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              layout
+            >
+              <Card className="border-l-4 border-l-primary overflow-visible">
+                <CardContent className="p-4 space-y-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <Select 
+                      value={drug.drugId} 
+                      onValueChange={(v) => updateDrug(drug.instanceId, { drugId: v })}
+                    >
+                      <SelectTrigger className="flex-1 font-bold">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {DRUG_DATA.map(d => (
+                          <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => removeDrug(drug.instanceId)}
+                      className="text-muted-foreground hover:text-destructive shrink-0"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
 
-      <div className="text-center text-xs text-muted-foreground pt-8 pb-4">
-        <p>Values based on common clinical guidelines.</p>
-        <p>Always verify with institutional protocols.</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Concentratie</Label>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[10px] font-bold">%</span>
+                          <Switch 
+                            checked={!drug.usePercentage} 
+                            onCheckedChange={(v) => {
+                              const newConc = v ? drug.concentration : drug.concentration;
+                              updateDrug(drug.instanceId, { usePercentage: !v });
+                            }}
+                            className="scale-75"
+                          />
+                          <span className="text-[10px] font-bold">mg/ml</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Input 
+                          type="number" 
+                          value={drug.usePercentage ? (drug.concentration / 10) : drug.concentration}
+                          onChange={(e) => {
+                            const val = parseFloat(e.target.value) || 0;
+                            updateDrug(drug.instanceId, { concentration: drug.usePercentage ? val * 10 : val });
+                          }}
+                          className="font-mono h-9"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] uppercase font-bold text-muted-foreground">Volume (mL)</Label>
+                      <Input 
+                        type="number" 
+                        value={drug.volumeMl}
+                        onChange={(e) => updateDrug(drug.instanceId, { volumeMl: parseFloat(e.target.value) || 0 })}
+                        className="font-mono h-9"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between bg-muted/30 p-2 rounded-lg border border-border/50">
+                    <div className="text-xs font-bold text-muted-foreground">Totaal: {drug.doseMg.toFixed(1)} mg</div>
+                    <div className="text-xs font-mono font-bold">
+                      {((drug.doseMg / calculateMaxDose(weight, drug.drugId, isHypervascular)) * 100).toFixed(1)}% van max
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+
+        {selectedDrugs.length === 0 && (
+          <div className="text-center py-12 border-2 border-dashed rounded-3xl text-muted-foreground">
+            <Plus className="h-8 w-8 mx-auto mb-2 opacity-20" />
+            <p className="text-sm font-medium">Click 'Add Drug' to begin calculation</p>
+          </div>
+        )}
       </div>
     </div>
   );
