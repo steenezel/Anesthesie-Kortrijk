@@ -1,13 +1,12 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { DRUG_DATA, SelectedDrug, calculateMaxDose, calculateIntralipid } from "@/lib/drugs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Plus, Trash2, AlertCircle, AlertTriangle, ShieldAlert } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, Trash2, AlertTriangle, ShieldAlert } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -16,6 +15,11 @@ export default function CalculatorPage() {
   const [isHypervascular, setIsHypervascular] = useState(false);
   const [selectedDrugs, setSelectedDrugs] = useState<SelectedDrug[]>([]);
   const [showProtocol, setShowProtocol] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const addDrug = () => {
     setSelectedDrugs([
@@ -40,7 +44,6 @@ export default function CalculatorPage() {
       if (d.instanceId !== id) return d;
       const next = { ...d, ...updates };
       
-      // Sync dose and volume
       if ('volumeMl' in updates || 'concentration' in updates || 'usePercentage' in updates) {
         next.doseMg = next.volumeMl * next.concentration;
       } else if ('doseMg' in updates) {
@@ -67,9 +70,10 @@ export default function CalculatorPage() {
     return "bg-destructive";
   };
 
+  if (!mounted) return null;
+
   return (
     <div className="space-y-6 pb-20">
-      {/* Patient Input */}
       <Card className="border-primary/20 shadow-lg">
         <CardContent className="p-5 space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -98,7 +102,6 @@ export default function CalculatorPage() {
         </CardContent>
       </Card>
 
-      {/* Toxicity Gauge */}
       <Card className="relative overflow-hidden border-2 border-border">
         <div className="absolute top-0 left-0 w-full h-1 bg-muted">
           <motion.div 
@@ -121,7 +124,6 @@ export default function CalculatorPage() {
         </CardContent>
       </Card>
 
-      {/* Emergency Button */}
       <Dialog open={showProtocol} onOpenChange={setShowProtocol}>
         <DialogTrigger asChild>
           <Button variant="destructive" className="w-full h-16 text-lg font-black uppercase tracking-tighter shadow-xl shadow-destructive/20 hover:scale-[1.02] transition-transform">
@@ -154,7 +156,6 @@ export default function CalculatorPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Drug List */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold font-heading">Local Anesthetics</h3>
@@ -207,7 +208,6 @@ export default function CalculatorPage() {
                           <Switch 
                             checked={!drug.usePercentage} 
                             onCheckedChange={(v) => {
-                              const newConc = v ? drug.concentration : drug.concentration;
                               updateDrug(drug.instanceId, { usePercentage: !v });
                             }}
                             className="scale-75"
