@@ -81,8 +81,9 @@ export default function CalculatorPage() {
               <Label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Gewicht (kg)</Label>
               <Input 
                 type="number" 
-                value={weight} 
-                onChange={(e) => setWeight(parseFloat(e.target.value) || 0)}
+                value={weight === 0 ? "" : weight}
+                placeholder="0"
+                onChange={(e) => setWeight(e.target.value === "" ? 0 : parseFloat(e.target.value))}
                 className="text-2xl font-mono font-bold h-12"
               />
             </div>
@@ -220,9 +221,10 @@ export default function CalculatorPage() {
                           type="number" 
                           step={drug.usePercentage ? "0.05" : "0.5"}
                           inputMode="decimal"
-                          value={drug.usePercentage ? (drug.concentration / 10) : drug.concentration}
+                          value={drug.usePercentage ? (drug.concentration / 10 === 0 ? "" : drug.concentration / 10) : (drug.concentration === 0 ? "" : drug.concentration)}
+                          placeholder="0"
                           onChange={(e) => {
-                            const val = parseFloat(e.target.value) || 0;
+                            const val = e.target.value === "" ? 0 : parseFloat(e.target.value);
                             updateDrug(drug.instanceId, { concentration: drug.usePercentage ? val * 10 : val });
                           }}
                           className="font-mono h-9"
@@ -233,8 +235,9 @@ export default function CalculatorPage() {
                       <Label className="text-[10px] uppercase font-bold text-muted-foreground">Volume (mL)</Label>
                       <Input 
                         type="number" 
-                        value={drug.volumeMl}
-                        onChange={(e) => updateDrug(drug.instanceId, { volumeMl: parseFloat(e.target.value) || 0 })}
+                        value={drug.volumeMl === 0 ? "" : drug.volumeMl}
+                        placeholder="0"
+                        onChange={(e) => updateDrug(drug.instanceId, { volumeMl: e.target.value === "" ? 0 : parseFloat(e.target.value) })}
                         className="font-mono h-9"
                       />
                     </div>
