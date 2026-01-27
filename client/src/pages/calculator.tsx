@@ -218,7 +218,7 @@ export default function CalculatorPage() {
                       <div className="flex items-center gap-2">
                         <Input 
                           type="number" 
-                          step="0.001"
+                          step={drug.usePercentage ? "0.05" : "0.5"}
                           inputMode="decimal"
                           value={drug.usePercentage ? (drug.concentration / 10) : drug.concentration}
                           onChange={(e) => {
