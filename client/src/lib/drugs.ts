@@ -18,17 +18,22 @@ export interface SelectedDrug {
   doseMg: number;
   volumeMl: number;
   concentration: number; // in mg/ml
-  usePercentage: boolean;
 }
 
-export function calculateMaxDose(weight: number, drugId: string, isHypervascular: boolean): number {
+export function calculateMaxDose(weight: number, drugId: string, isHypervascular: boolean, patientRiskFactor: number = 1.0): number {
   const drug = DRUG_DATA.find(d => d.id === drugId);
   if (!drug) return 0;
   
   let maxDose = weight * drug.maxDoseMgPerKg;
+  
+  // Site Modifier (Hypervascular/Paravertebral)
   if (isHypervascular) {
     maxDose *= 0.8;
   }
+  
+  // Patient Risk Modifier
+  maxDose *= patientRiskFactor;
+  
   return maxDose;
 }
 

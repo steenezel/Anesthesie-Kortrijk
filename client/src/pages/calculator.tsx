@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function CalculatorPage() {
   const [weight, setWeight] = useState<number>(70);
   const [isHypervascular, setIsHypervascular] = useState(false);
+  const [patientRisk, setPatientRisk] = useState<string>("1.0");
   const [selectedDrugs, setSelectedDrugs] = useState<any[]>([]);
   const [showProtocol, setShowProtocol] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -20,6 +21,8 @@ export default function CalculatorPage() {
   // Safe Dose Calculator State
   const [safeDrugId, setSafeDrugId] = useState(DRUG_DATA[0].id);
   const [safeConc, setSafeConc] = useState<number>(5);
+
+  const riskValue = parseFloat(patientRisk);
 
   useEffect(() => {
     setMounted(true);
@@ -58,16 +61,16 @@ export default function CalculatorPage() {
   const toxicityScore = useMemo(() => {
     if (weight <= 0) return 0;
     return selectedDrugs.reduce((acc, d) => {
-      const max = calculateMaxDose(weight, d.drugId, isHypervascular);
+      const max = calculateMaxDose(weight, d.drugId, isHypervascular, riskValue);
       return acc + (max > 0 ? d.doseMg / max : 0);
     }, 0);
-  }, [selectedDrugs, weight, isHypervascular]);
+  }, [selectedDrugs, weight, isHypervascular, riskValue]);
 
   const safeDoseResult = useMemo(() => {
-    const maxMg = calculateMaxDose(weight, safeDrugId, isHypervascular);
+    const maxMg = calculateMaxDose(weight, safeDrugId, isHypervascular, riskValue);
     const maxMl = safeConc > 0 ? maxMg / safeConc : 0;
     return { maxMg, maxMl };
-  }, [weight, safeDrugId, isHypervascular, safeConc]);
+  }, [weight, safeDrugId, isHypervascular, safeConc, riskValue]);
 
   const intralipid = calculateIntralipid(weight);
 
@@ -135,10 +138,24 @@ export default function CalculatorPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="std">Standaard</SelectItem>
-                  <SelectItem value="hyper">Hypervasculair</SelectItem>
+                  <SelectItem value="hyper">Hypervasculair (α=0.8)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
+          </div>
+          
+          <div className="space-y-2 pt-2">
+            <Label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Patiënt Risico Profiel</Label>
+            <Select value={patientRisk} onValueChange={setPatientRisk}>
+              <SelectTrigger className="h-12 font-medium">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1.0">Laag Risico (Standaard, α=1.0)</SelectItem>
+                <SelectItem value="0.8">Matig Risico (Ouderdom, mild hart/leverfalen, α=0.8)</SelectItem>
+                <SelectItem value="0.7">Hoog Risico (Zwangerschap, ernstig orgaanfalen, α=0.7)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
@@ -220,6 +237,14 @@ export default function CalculatorPage() {
               {toxicityScore >= 1 && (
                 <div className="mt-2 text-destructive font-bold flex items-center justify-center gap-2">
                   <AlertTriangle className="h-5 w-5" /> TOXIC LIMIT EXCEEDED
+                </div>
+              )}
+              {toxicityScore > 0.8 && toxicityScore < 1 && (
+                <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg flex items-start gap-2 text-left">
+                  <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                  <p className="text-[10px] text-amber-800 dark:text-amber-200 font-medium">
+                    Opgelet: drempelwaarde lager bij acidemie/hypercapnie.
+                  </p>
                 </div>
               )}
             </CardContent>
