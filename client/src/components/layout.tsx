@@ -14,7 +14,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border">
+    <div className="min-h-[100dvh] bg-background flex flex-col font-sans max-w-md mx-auto shadow-2xl overflow-hidden border-x border-border">
       
       {/* Header */}
       <header className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-50 border-b border-border p-4">
