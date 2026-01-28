@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const categories = [
   {
     title: "Protocollen",
-    description: ".",
+    description: "",
     icon: BookOpen,
     href: "/protocols",
     color: "bg-blue-500",
@@ -15,7 +15,7 @@ const categories = [
   },
   {
     title: "Blocks",
-    description: ".",
+    description: "",
     icon: Box,
     href: "/blocks",
     color: "bg-purple-500",
@@ -41,7 +41,7 @@ export default function Home() {
           Anesthesie <span className="text-teal-600">Kortrijk</span>
         </h1>
         <p className="text-slate-500 max-w-md mx-auto">
-          Centraal platform voor protocollen, technieken en patiëntveiligheid.
+          
         </p>
       </div>
 

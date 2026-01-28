@@ -1,8 +1,21 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Search } from "lucide-react";
+import { BookOpen, Search, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Link } from "wouter";
+import { useState } from "react";
+
+const depts = [
+  { id: "orthopedie", name: "Orthopedie", count: 12 },
+  { id: "gynaecologie", name: "Gynaecologie", count: 8 },
+  { id: "urologie", name: "Urologie", count: 5 },
+  { id: "nko", name: "NKO", count: 10 },
+  { id: "heelkunde", name: "Algemene Heelkunde", count: 15 },
+];
 
 export default function Protocols() {
+  const [search, setSearch] = useState("");
+  const filteredDepts = depts.filter(d => d.name.toLowerCase().includes(search.toLowerCase()));
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -16,20 +29,30 @@ export default function Protocols() {
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input placeholder="Zoek op ingreep of specialisme..." className="pl-10 h-12 bg-white border-2 border-slate-100 focus:border-blue-500 transition-colors" />
+        <Input 
+          placeholder="Zoek op specialisme..." 
+          className="pl-10 h-12 bg-white border-2 border-slate-100 focus:border-blue-500 transition-colors"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
 
       <div className="grid gap-3">
-        {["Heelkunde", "Orthopedie", "Gynaecologie", "Urologie", "NKO"].map((dept) => (
-          <Card key={dept} className="cursor-pointer hover:bg-slate-50 transition-colors border border-slate-200">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <BookOpen className="h-5 w-5 text-blue-500" />
-                <span className="font-bold text-slate-700 uppercase tracking-tight">{dept}</span>
-              </div>
-              <span className="text-xs text-slate-400 font-medium">12 documenten</span>
-            </CardContent>
-          </Card>
+        {filteredDepts.map((dept) => (
+          <Link key={dept.id} href={`/protocols/${dept.id}`}>
+            <Card className="cursor-pointer hover:bg-slate-50 transition-all border border-slate-200 active:scale-[0.98]">
+              <CardContent className="p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <BookOpen className="h-5 w-5 text-blue-500" />
+                  <span className="font-bold text-slate-700 uppercase tracking-tight">{dept.name}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] bg-slate-100 px-2 py-1 rounded-full text-slate-400 font-bold">{dept.count}</span>
+                  <ChevronRight className="h-4 w-4 text-slate-300" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>
