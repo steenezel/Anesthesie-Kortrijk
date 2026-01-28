@@ -203,29 +203,18 @@ export default function CalculatorPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Concentratie</Label>
-                        <div className="flex items-center gap-1">
-                          <span className="text-[10px] font-bold">%</span>
-                          <Switch 
-                            checked={!drug.usePercentage} 
-                            onCheckedChange={(v) => {
-                              updateDrug(drug.instanceId, { usePercentage: !v });
-                            }}
-                            className="scale-75"
-                          />
-                          <span className="text-[10px] font-bold">mg/ml</span>
-                        </div>
+                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Concentratie (mg/ml)</Label>
                       </div>
                       <div className="flex items-center gap-2">
                         <Input 
                           type="number" 
-                          step={drug.usePercentage ? "0.05" : "0.5"}
+                          step="0.5"
                           inputMode="decimal"
-                          value={drug.usePercentage ? (drug.concentration / 10 === 0 ? "" : drug.concentration / 10) : (drug.concentration === 0 ? "" : drug.concentration)}
+                          value={drug.concentration === 0 ? "" : drug.concentration}
                           placeholder="0"
                           onChange={(e) => {
                             const val = e.target.value === "" ? 0 : parseFloat(e.target.value);
-                            updateDrug(drug.instanceId, { concentration: drug.usePercentage ? val * 10 : val });
+                            updateDrug(drug.instanceId, { concentration: val });
                           }}
                           className="font-mono h-9"
                         />
