@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const categories = [
   {
     title: "Protocollen",
-    description: "Alle ziekenhuisbrede anesthesieprotocollen per ingreep.",
+    description: ".",
     icon: BookOpen,
     href: "/protocols",
     color: "bg-blue-500",
@@ -15,7 +15,7 @@ const categories = [
   },
   {
     title: "Blocks",
-    description: "Uitleg over locoregionale technieken, sono-anatomie en echobeelden.",
+    description: ".",
     icon: Box,
     href: "/blocks",
     color: "bg-purple-500",
@@ -24,7 +24,7 @@ const categories = [
   },
   {
     title: "BlockSafe",
-    description: "LAST calculator met maximale veilige dosis en toxiciteitsscore.",
+    description: "LAST calculator.",
     icon: ShieldCheck,
     href: "/calculator",
     color: "bg-teal-600",
@@ -84,7 +84,7 @@ export default function Home() {
 
       <div className="pt-8 text-center border-t border-slate-100">
         <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">
-          AZ Groeninge • Vakgroep Anesthesie
+          AZ Groeninge • Dienst Anesthesie
         </p>
       </div>
     </div>
