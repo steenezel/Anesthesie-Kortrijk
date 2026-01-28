@@ -43,8 +43,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
             const isActive = location === item.href;
             return (
               <Link key={item.href} href={item.href}>
-                <a className={cn(
-                  "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200",
+                <div className={cn(
+                  "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200 cursor-pointer",
                   isActive 
                     ? "text-primary" 
                     : "text-muted-foreground hover:text-foreground"
@@ -53,7 +53,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   <span className={cn("text-[10px] font-medium", isActive ? "font-bold" : "")}>
                     {item.label}
                   </span>
-                </a>
+                </div>
               </Link>
             );
           })}
