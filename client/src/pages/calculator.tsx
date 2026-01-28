@@ -1,21 +1,25 @@
 import { useState, useMemo, useEffect } from "react";
-import { DRUG_DATA, SelectedDrug, calculateMaxDose, calculateIntralipid } from "@/lib/drugs";
+import { DRUG_DATA, calculateMaxDose, calculateIntralipid } from "@/lib/drugs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Card, CardContent } from "@/components/ui/card";
-import { Plus, Trash2, AlertTriangle, ShieldAlert } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, Trash2, AlertTriangle, ShieldAlert, Calculator as CalcIcon, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function CalculatorPage() {
   const [weight, setWeight] = useState<number>(70);
   const [isHypervascular, setIsHypervascular] = useState(false);
-  const [selectedDrugs, setSelectedDrugs] = useState<SelectedDrug[]>([]);
+  const [selectedDrugs, setSelectedDrugs] = useState<any[]>([]);
   const [showProtocol, setShowProtocol] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  // Safe Dose Calculator State
+  const [safeDrugId, setSafeDrugId] = useState(DRUG_DATA[0].id);
+  const [safeConc, setSafeConc] = useState<number>(5);
 
   useEffect(() => {
     setMounted(true);
@@ -30,7 +34,6 @@ export default function CalculatorPage() {
         doseMg: 0,
         volumeMl: 0,
         concentration: 10,
-        usePercentage: true
       }
     ]);
   };
@@ -39,17 +42,15 @@ export default function CalculatorPage() {
     setSelectedDrugs(selectedDrugs.filter(d => d.instanceId !== id));
   };
 
-  const updateDrug = (id: string, updates: Partial<SelectedDrug>) => {
+  const updateDrug = (id: string, updates: Partial<any>) => {
     setSelectedDrugs(selectedDrugs.map(d => {
       if (d.instanceId !== id) return d;
       const next = { ...d, ...updates };
-      
-      if ('volumeMl' in updates || 'concentration' in updates || 'usePercentage' in updates) {
+      if ('volumeMl' in updates || 'concentration' in updates) {
         next.doseMg = next.volumeMl * next.concentration;
       } else if ('doseMg' in updates) {
         next.volumeMl = next.concentration > 0 ? next.doseMg / next.concentration : 0;
       }
-      
       return next;
     }));
   };
@@ -61,6 +62,12 @@ export default function CalculatorPage() {
       return acc + (max > 0 ? d.doseMg / max : 0);
     }, 0);
   }, [selectedDrugs, weight, isHypervascular]);
+
+  const safeDoseResult = useMemo(() => {
+    const maxMg = calculateMaxDose(weight, safeDrugId, isHypervascular);
+    const maxMl = safeConc > 0 ? maxMg / safeConc : 0;
+    return { maxMg, maxMl };
+  }, [weight, safeDrugId, isHypervascular, safeConc]);
 
   const intralipid = calculateIntralipid(weight);
 
@@ -74,7 +81,40 @@ export default function CalculatorPage() {
 
   return (
     <div className="space-y-6 pb-20">
-      <Card className="border-primary/20 shadow-lg">
+      {/* Weight & Type Header */}
+      <Card className="border-primary/20 shadow-lg overflow-hidden">
+        <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-primary" />
+            <h2 className="font-heading font-bold text-primary">Patient Config</h2>
+          </div>
+          <Dialog open={showProtocol} onOpenChange={setShowProtocol}>
+            <DialogTrigger asChild>
+              <Button variant="destructive" size="sm" className="font-bold uppercase tracking-tighter shadow-md">
+                <ShieldAlert className="mr-1 h-4 w-4" /> Lipid Protocol
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-black text-destructive flex items-center gap-2">
+                  <ShieldAlert className="h-8 w-8" /> INTRALIPID 20%
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-6 pt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-destructive/10 p-4 rounded-2xl border-2 border-destructive/20 text-center">
+                    <div className="text-xs uppercase font-bold text-destructive mb-1">Bolus (1.5 mL/kg)</div>
+                    <div className="text-3xl font-mono font-black text-destructive">{intralipid.bolus.toFixed(1)} <span className="text-sm">mL</span></div>
+                  </div>
+                  <div className="bg-destructive/5 p-4 rounded-2xl border-2 border-destructive/10 text-center">
+                    <div className="text-xs uppercase font-bold text-muted-foreground mb-1">Infusion (0.25 mL/kg/min)</div>
+                    <div className="text-3xl font-mono font-black text-foreground">{intralipid.infusion.toFixed(1)} <span className="text-sm">mL/min</span></div>
+                  </div>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
         <CardContent className="p-5 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -103,154 +143,143 @@ export default function CalculatorPage() {
         </CardContent>
       </Card>
 
-      <Card className="relative overflow-hidden border-2 border-border">
-        <div className="absolute top-0 left-0 w-full h-1 bg-muted">
-          <motion.div 
-            className={`h-full ${getGaugeColor(toxicityScore)}`}
-            initial={{ width: 0 }}
-            animate={{ width: `${Math.min(toxicityScore * 100, 100)}%` }}
-            transition={{ type: "spring", stiffness: 50 }}
-          />
-        </div>
-        <CardContent className="p-6 text-center">
-          <div className="text-sm text-muted-foreground font-medium uppercase tracking-widest mb-1">Cumulative Toxicity Score</div>
-          <div className={`text-5xl font-mono font-black ${(toxicityScore >= 1) ? 'text-destructive animate-pulse' : ''}`}>
-            {(toxicityScore * 100).toFixed(1)}%
-          </div>
-          {toxicityScore >= 1 && (
-            <div className="mt-2 text-destructive font-bold flex items-center justify-center gap-2">
-              <AlertTriangle className="h-5 w-5" /> TOXIC LIMIT EXCEEDED
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <Tabs defaultValue="safe-dose" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-4 bg-muted/50 p-1 rounded-xl h-12">
+          <TabsTrigger value="safe-dose" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm font-bold gap-2">
+            <ShieldCheck className="h-4 w-4" /> Max Safe Dose
+          </TabsTrigger>
+          <TabsTrigger value="toxicity" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm font-bold gap-2">
+            <CalcIcon className="h-4 w-4" /> Toxicity Score
+          </TabsTrigger>
+        </TabsList>
 
-      <Dialog open={showProtocol} onOpenChange={setShowProtocol}>
-        <DialogTrigger asChild>
-          <Button variant="destructive" className="w-full h-16 text-lg font-black uppercase tracking-tighter shadow-xl shadow-destructive/20 hover:scale-[1.02] transition-transform">
-            <ShieldAlert className="mr-2 h-6 w-6" /> OPEN INTRALIPID PROTOCOL
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-black text-destructive flex items-center gap-2">
-              <ShieldAlert className="h-8 w-8" /> INTRALIPID 20%
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-6 pt-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-destructive/10 p-4 rounded-2xl border-2 border-destructive/20 text-center">
-                <div className="text-xs uppercase font-bold text-destructive mb-1">Bolus (1.5 mL/kg)</div>
-                <div className="text-3xl font-mono font-black text-destructive">{intralipid.bolus.toFixed(1)} <span className="text-sm">mL</span></div>
+        <TabsContent value="safe-dose" className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
+          <Card className="border-2 border-primary/20 shadow-md">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm uppercase tracking-widest text-muted-foreground">Calculatie Resultaat</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 text-center space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-primary/10 p-4 rounded-2xl border border-primary/20">
+                  <div className="text-[10px] uppercase font-bold text-primary mb-1">Max Dose (mg)</div>
+                  <div className="text-3xl font-mono font-black text-primary">{safeDoseResult.maxMg.toFixed(1)}</div>
+                </div>
+                <div className="bg-emerald-500/10 p-4 rounded-2xl border border-emerald-500/20">
+                  <div className="text-[10px] uppercase font-bold text-emerald-600 mb-1">Max Volume (mL)</div>
+                  <div className="text-3xl font-mono font-black text-emerald-600">{safeDoseResult.maxMl.toFixed(1)}</div>
+                </div>
               </div>
-              <div className="bg-destructive/5 p-4 rounded-2xl border-2 border-destructive/10 text-center">
-                <div className="text-xs uppercase font-bold text-muted-foreground mb-1">Infusion (0.25 mL/kg/min)</div>
-                <div className="text-3xl font-mono font-black text-foreground">{intralipid.infusion.toFixed(1)} <span className="text-sm">mL/min</span></div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4 space-y-4">
+              <div className="space-y-2">
+                <Label className="text-[10px] uppercase font-bold text-muted-foreground">Selecteer Molecule</Label>
+                <Select value={safeDrugId} onValueChange={setSafeDrugId}>
+                  <SelectTrigger className="h-12 font-bold">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DRUG_DATA.map(d => (
+                      <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+              <div className="space-y-2">
+                <Label className="text-[10px] uppercase font-bold text-muted-foreground">Concentratie (mg/ml)</Label>
+                <Input 
+                  type="number" 
+                  step="0.5"
+                  value={safeConc === 0 ? "" : safeConc}
+                  placeholder="0"
+                  onChange={(e) => setSafeConc(e.target.value === "" ? 0 : parseFloat(e.target.value))}
+                  className="h-12 font-mono text-xl"
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="toxicity" className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
+          <Card className="relative overflow-hidden border-2 border-border">
+            <div className="absolute top-0 left-0 w-full h-1 bg-muted">
+              <motion.div 
+                className={`h-full ${getGaugeColor(toxicityScore)}`}
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.min(toxicityScore * 100, 100)}%` }}
+                transition={{ type: "spring", stiffness: 50 }}
+              />
             </div>
-            <div className="text-sm text-muted-foreground space-y-2">
-              <p>• <strong>Repeat bolus</strong> every 3-5 mins if stability not restored (max 3 doses total).</p>
-              <p>• <strong>Double infusion rate</strong> to 0.5 mL/kg/min if stability not restored.</p>
-              <p>• <strong>Continue infusion</strong> for 10 mins after stability.</p>
+            <CardContent className="p-6 text-center">
+              <div className="text-sm text-muted-foreground font-medium uppercase tracking-widest mb-1">Cumulative Toxicity Score</div>
+              <div className={`text-5xl font-mono font-black ${(toxicityScore >= 1) ? 'text-destructive animate-pulse' : ''}`}>
+                {(toxicityScore * 100).toFixed(1)}%
+              </div>
+              {toxicityScore >= 1 && (
+                <div className="mt-2 text-destructive font-bold flex items-center justify-center gap-2">
+                  <AlertTriangle className="h-5 w-5" /> TOXIC LIMIT EXCEEDED
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between px-1">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Toegediende middelen</h3>
+              <Button onClick={addDrug} size="sm" variant="outline" className="gap-2 rounded-full border-primary/20 text-primary hover:bg-primary/5">
+                <Plus className="h-4 w-4" /> Add Drug
+              </Button>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
 
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold font-heading">Local Anesthetics</h3>
-          <Button onClick={addDrug} size="sm" className="gap-2">
-            <Plus className="h-4 w-4" /> Add Drug
-          </Button>
-        </div>
-
-        <AnimatePresence mode="popLayout">
-          {selectedDrugs.map((drug) => (
-            <motion.div
-              key={drug.instanceId}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              layout
-            >
-              <Card className="border-l-4 border-l-primary overflow-visible">
-                <CardContent className="p-4 space-y-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <Select 
-                      value={drug.drugId} 
-                      onValueChange={(v) => updateDrug(drug.instanceId, { drugId: v })}
-                    >
-                      <SelectTrigger className="flex-1 font-bold">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {DRUG_DATA.map(d => (
-                          <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      onClick={() => removeDrug(drug.instanceId)}
-                      className="text-muted-foreground hover:text-destructive shrink-0"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-[10px] uppercase font-bold text-muted-foreground">Concentratie (mg/ml)</Label>
+            <AnimatePresence mode="popLayout">
+              {selectedDrugs.map((drug) => (
+                <motion.div key={drug.instanceId} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} layout>
+                  <Card className="border-l-4 border-l-primary overflow-visible shadow-sm">
+                    <CardContent className="p-4 space-y-4">
+                      <div className="flex items-center justify-between gap-4">
+                        <Select value={drug.drugId} onValueChange={(v) => updateDrug(drug.instanceId, { drugId: v })}>
+                          <SelectTrigger className="flex-1 font-bold h-10">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {DRUG_DATA.map(d => (
+                              <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button variant="ghost" size="icon" onClick={() => removeDrug(drug.instanceId)} className="text-muted-foreground hover:text-destructive shrink-0">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Input 
-                          type="number" 
-                          step="0.5"
-                          inputMode="decimal"
-                          value={drug.concentration === 0 ? "" : drug.concentration}
-                          placeholder="0"
-                          onChange={(e) => {
-                            const val = e.target.value === "" ? 0 : parseFloat(e.target.value);
-                            updateDrug(drug.instanceId, { concentration: val });
-                          }}
-                          className="font-mono h-9"
-                        />
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <Label className="text-[10px] uppercase font-bold text-muted-foreground">Conc (mg/ml)</Label>
+                          <Input type="number" step="0.5" value={drug.concentration === 0 ? "" : drug.concentration} placeholder="0" onChange={(e) => updateDrug(drug.instanceId, { concentration: e.target.value === "" ? 0 : parseFloat(e.target.value) })} className="font-mono h-9" />
+                        </div>
+                        <div className="space-y-1">
+                          <Label className="text-[10px] uppercase font-bold text-muted-foreground">Volume (mL)</Label>
+                          <Input type="number" value={drug.volumeMl === 0 ? "" : drug.volumeMl} placeholder="0" onChange={(e) => updateDrug(drug.instanceId, { volumeMl: e.target.value === "" ? 0 : parseFloat(e.target.value) })} className="font-mono h-9" />
+                        </div>
                       </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] uppercase font-bold text-muted-foreground">Volume (mL)</Label>
-                      <Input 
-                        type="number" 
-                        value={drug.volumeMl === 0 ? "" : drug.volumeMl}
-                        placeholder="0"
-                        onChange={(e) => updateDrug(drug.instanceId, { volumeMl: e.target.value === "" ? 0 : parseFloat(e.target.value) })}
-                        className="font-mono h-9"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between bg-muted/30 p-2 rounded-lg border border-border/50">
-                    <div className="text-xs font-bold text-muted-foreground">Totaal: {drug.doseMg.toFixed(1)} mg</div>
-                    <div className="text-xs font-mono font-bold">
-                      {((drug.doseMg / calculateMaxDose(weight, drug.drugId, isHypervascular)) * 100).toFixed(1)}% van max
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-
-        {selectedDrugs.length === 0 && (
-          <div className="text-center py-12 border-2 border-dashed rounded-3xl text-muted-foreground">
-            <Plus className="h-8 w-8 mx-auto mb-2 opacity-20" />
-            <p className="text-sm font-medium">Click 'Add Drug' to begin calculation</p>
+                      <div className="flex items-center justify-between bg-muted/30 p-2 rounded-lg border border-border/50">
+                        <div className="text-xs font-bold text-muted-foreground">{drug.doseMg.toFixed(1)} mg</div>
+                        <div className="text-xs font-mono font-bold">{((drug.doseMg / calculateMaxDose(weight, drug.drugId, isHypervascular)) * 100).toFixed(1)}% van max</div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            {selectedDrugs.length === 0 && (
+              <div className="text-center py-8 border-2 border-dashed rounded-3xl text-muted-foreground bg-muted/20">
+                <p className="text-xs font-medium">Geen middelen toegevoegd</p>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
