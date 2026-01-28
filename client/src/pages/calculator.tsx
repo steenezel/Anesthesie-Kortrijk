@@ -172,9 +172,6 @@ export default function CalculatorPage() {
 
         <TabsContent value="safe-dose" className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
           <Card className="border-2 border-primary/20 shadow-md">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm uppercase tracking-widest text-muted-foreground">Calculatie Resultaat</CardTitle>
-            </CardHeader>
             <CardContent className="p-6 text-center space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-primary/10 p-4 rounded-2xl border border-primary/20">
