@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Box, ShieldCheck, ChevronRight } from "lucide-react";
+import { BookOpen, ShieldCheck, ChevronRight, Syringe } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 
@@ -16,7 +16,7 @@ const categories = [
   {
     title: "Blocks",
     description: "",
-    icon: Box,
+    icon: Syringe,
     href: "/blocks",
     color: "bg-purple-500",
     lightColor: "bg-purple-50",
