@@ -161,16 +161,26 @@ export default function CalculatorPage() {
       </Card>
 
       <Tabs defaultValue="safe-dose" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-4 bg-muted/50 p-1 rounded-xl h-12">
-          <TabsTrigger value="safe-dose" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm font-bold gap-2">
-            <ShieldCheck className="h-4 w-4" /> Max Safe Dose
+        <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/80 p-1.5 rounded-2xl h-14 shadow-inner">
+          <TabsTrigger 
+            value="safe-dose" 
+            className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg transition-all duration-300 font-black uppercase tracking-tight gap-2 text-xs"
+          >
+            <ShieldCheck className="h-5 w-5" /> 1. Max Safe Dose
           </TabsTrigger>
-          <TabsTrigger value="toxicity" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm font-bold gap-2">
-            <CalcIcon className="h-4 w-4" /> Toxicity Score
+          <TabsTrigger 
+            value="toxicity" 
+            className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 font-black uppercase tracking-tight gap-2 text-xs"
+          >
+            <CalcIcon className="h-5 w-5" /> 2. Toxicity Score
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="safe-dose" className="space-y-4 animate-in fade-in slide-in-from-bottom-2">
+        <TabsContent value="safe-dose" className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
+          <div className="bg-primary/5 border border-primary/10 rounded-2xl p-4 mb-2">
+            <h3 className="text-primary font-black uppercase tracking-tighter text-sm mb-1">Stap 1: Bereken Limiet</h3>
+            <p className="text-xs text-muted-foreground">Selecteer molecule en concentratie om de maximale volumes te zien.</p>
+          </div>
           <Card className="border-2 border-primary/20 shadow-md">
             <CardContent className="p-6 text-center space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -216,7 +226,11 @@ export default function CalculatorPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="toxicity" className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
+        <TabsContent value="toxicity" className="space-y-6 animate-in fade-in zoom-in-95 duration-300">
+          <div className="bg-amber-500/5 border border-amber-500/10 rounded-2xl p-4 mb-2">
+            <h3 className="text-amber-600 font-black uppercase tracking-tighter text-sm mb-1">Stap 2: Cumulatieve Check</h3>
+            <p className="text-xs text-muted-foreground">Voeg toegediende middelen toe om de totale belasting te controleren.</p>
+          </div>
           <Card className="relative overflow-hidden border-2 border-border">
             <div className="absolute top-0 left-0 w-full h-1 bg-muted">
               <motion.div 
