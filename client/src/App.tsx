@@ -6,6 +6,7 @@ import { Layout } from "@/components/layout";
 import Home from "@/pages/home";
 import Protocols from "@/pages/protocols";
 import ProtocolDetail from "@/pages/protocol-detail";
+import ProtocolList from "./pages/ProtocolList";
 import Blocks from "@/pages/blocks";
 import BlockDetail from "@/pages/block-detail";
 import CalculatorPage from "@/pages/calculator";
@@ -18,8 +19,8 @@ function Router() {
     <Layout>
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/protocols" component={Protocols} />
-        <Route path="/protocols/:id" component={ProtocolDetail} />
+        <Route path="/protocols" component={ProtocolList} />
+        <Route path="/protocols/:discipline/:id" component={ProtocolDetail} />
         <Route path="/blocks" component={Blocks} />
         <Route path="/blocks/:id" component={BlockDetail} />
         <Route path="/calculator" component={CalculatorPage} />
