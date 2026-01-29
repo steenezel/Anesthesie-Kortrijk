@@ -56,7 +56,7 @@ export default function ProtocolList() {
             </div>
             <span className="font-black uppercase tracking-tighter text-sm leading-none">
               {disc}
-            </h2>
+            </span>
           </button>
         ))}
       </div>
