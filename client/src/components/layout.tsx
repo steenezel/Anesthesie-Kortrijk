@@ -22,7 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <img src={logo} alt="BlockSafe Kortrijk Logo" className="h-10 w-10 object-contain" />
             <h1 className="text-xl font-heading font-bold text-foreground tracking-tight">
-              BlockSafe Kortrijk
+              Anesthesie Kortrijk
             </h1>
           </div>
           <div className="text-[10px] bg-secondary px-2 py-1 rounded-full font-mono text-muted-foreground border border-border">
