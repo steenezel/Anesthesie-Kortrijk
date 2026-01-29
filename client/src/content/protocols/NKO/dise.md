@@ -1,6 +1,8 @@
+---
 title: "DISE"
 discipline: "NKO"
 lastUpdated: "Januari 2026"
+---
 
 # Preoperatieve aandachtspunten
 
