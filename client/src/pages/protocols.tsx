@@ -5,16 +5,49 @@ import { Link } from "wouter";
 import { useState } from "react";
 
 const depts = [
+  { id: "abdominale", name: "Abdominale Heelkunde", count: 1 },
   { id: "orthopedie", name: "Orthopedie", count: 12 },
   { id: "gynaecologie", name: "Gynaecologie", count: 8 },
   { id: "urologie", name: "Urologie", count: 5 },
   { id: "nko", name: "NKO", count: 10 },
-  { id: "heelkunde", name: "Algemene Heelkunde", count: 15 },
 ];
 
 export default function Protocols() {
   const [search, setSearch] = useState("");
+  const [selectedDept, setSelectedDept] = useState<string | null>(null);
+
+  const abdominaleProtocols = [
+    { id: "gastric-bypass", name: "Gastric Bypass" },
+  ];
+
   const filteredDepts = depts.filter(d => d.name.toLowerCase().includes(search.toLowerCase()));
+
+  if (selectedDept === "abdominale") {
+    return (
+      <div className="space-y-6">
+        <div onClick={() => setSelectedDept(null)} className="flex items-center text-slate-400 font-bold uppercase text-[10px] tracking-widest cursor-pointer hover:text-slate-600 transition-colors">
+          <ChevronLeft className="h-4 w-4" /> Terug naar specialismen
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900">
+            Abdominale
+          </h1>
+        </div>
+        <div className="grid gap-3">
+          {abdominaleProtocols.map((p) => (
+            <Link key={p.id} href={`/protocols/${p.id}`}>
+              <Card className="cursor-pointer hover:bg-slate-50 transition-all border border-slate-200 active:scale-[0.98]">
+                <CardContent className="p-4 flex items-center justify-between">
+                  <span className="font-bold text-slate-700 uppercase tracking-tight">{p.name}</span>
+                  <ChevronRight className="h-4 w-4 text-slate-300" />
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -39,7 +72,7 @@ export default function Protocols() {
 
       <div className="grid gap-3">
         {filteredDepts.map((dept) => (
-          <Link key={dept.id} href={`/protocols/${dept.id}`}>
+          <div key={dept.id} onClick={() => setSelectedDept(dept.id)}>
             <Card className="cursor-pointer hover:bg-slate-50 transition-all border border-slate-200 active:scale-[0.98]">
               <CardContent className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -52,7 +85,7 @@ export default function Protocols() {
                 </div>
               </CardContent>
             </Card>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

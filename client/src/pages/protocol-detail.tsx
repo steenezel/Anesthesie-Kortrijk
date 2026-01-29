@@ -1,5 +1,5 @@
 import { useRoute } from "wouter";
-import { ChevronLeft, FileText, Clock, AlertCircle } from "lucide-react";
+import { ChevronLeft, Clock, AlertCircle } from "lucide-react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -7,7 +7,16 @@ export default function ProtocolDetail() {
   const [, params] = useRoute("/protocols/:id");
   const id = params?.id;
 
-  const protocolData = {
+  const protocolData = id === "gastric-bypass" ? {
+    title: "Gastric Bypass",
+    lastUpdated: "Januari 2026",
+    sections: [
+      { title: "Pre-operatief", content: "Screening op obstructieve slaapapneu (OSA). Check nuchterbeleid. Toediening premedicatie indien afgesproken." },
+      { title: "Inductie", content: "RSI-inductie (bij vermoeden reflux). Propofol op basis van Lean Body Mass. Succinylcholine of Rocuronium voor relaxatie." },
+      { title: "Maintenance", content: "Luchtwegbeheer: ETT. Beademing: Pressure Controlled / Volume Guaranteed met PEEP. Sevofluraan of Desfluraan." },
+      { title: "Post-operatief", content: "Extubatie bij volledige recovery (TOF > 0.9). Pijnbestrijding: Multimodaal (Paracetamol iv, NSAID indien toegestaan). PONV profylaxe." }
+    ]
+  } : {
     title: id?.charAt(0).toUpperCase() + id?.slice(1) + " Anesthesie",
     lastUpdated: "Gereviseerd op: 12/01/2026",
     sections: [
