@@ -28,10 +28,13 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+      // Dit vertelt Vite dat @ moet verwijzen naar de client/src map
+      "@": path.resolve(__dirname, "./client/src"),
+      // Als je ook gedeelde types gebruikt uit de db map:
+      "@db": path.resolve(__dirname, "./db"),
     },
+    // Verwijder het tweede resolve blok verderop in je bestand!
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
   },
   css: {
     postcss: {
@@ -48,11 +51,7 @@ export default defineConfig({
       },
     },
   },
-  // Zorg dat deze resolve sectie erin staat:
-  resolve: {
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
-  },
-  server: {
+   server: {
     host: "0.0.0.0",
     allowedHosts: true,
     fs: {
