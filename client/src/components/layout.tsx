@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Home, ClipboardList, Info as InfoIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.jpg";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
@@ -20,7 +20,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-50 border-b border-border p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="BlockSafe Kortrijk Logo" className="h-10 w-10 object-contain" />
+            <img src={logo} alt="Anesthesie Kortrijk Logo" className="h-10 w-10 object-contain rounded-md" />
             <h1 className="text-xl font-heading font-bold text-foreground tracking-tight">
               Anesthesie Kortrijk
             </h1>
