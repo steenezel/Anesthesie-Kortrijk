@@ -38,12 +38,12 @@ export default defineConfig({
       plugins: [],
     },
   },
-  root: "./", 
+  root: "./", // Start in de hoofdmap
   build: {
     outDir: "dist/public",
+    emptyOutDir: false, // build.ts regelt het opschonen
     rollupOptions: {
       input: {
-        // We geven het startpunt een expliciete naam 'main'
         main: path.resolve(__dirname, "index.html"),
       },
     },
