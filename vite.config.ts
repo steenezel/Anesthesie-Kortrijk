@@ -37,8 +37,12 @@ export default defineConfig({
   },
   root: path.resolve(import.meta.dirname, "./"),
   build: {
-    outDir: path.resolve(import.meta.dirname, "dist"),
-    emptyOutDir: true,
+    outDir: path.resolve(import.meta.dirname, "dist/public"),
+    emptyOutDir: false,
+   rollupOptions: {
+      // Zorg dat Vite hier NIET meer naar client/index.html zoekt
+      input: path.resolve(import.meta.dirname, "index.html"),
+    }, 
   },
   server: {
     host: "0.0.0.0",
