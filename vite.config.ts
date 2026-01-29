@@ -38,13 +38,19 @@ export default defineConfig({
       plugins: [],
     },
   },
-  root: "./", // We starten in de hoofdmap
+  root: "./", 
   build: {
     outDir: "dist/public",
-    emptyOutDir: false,
     rollupOptions: {
-      input: path.resolve(__dirname, "index.html"),
-    }, 
+      input: {
+        // We geven het startpunt een expliciete naam 'main'
+        main: path.resolve(__dirname, "index.html"),
+      },
+    },
+  },
+  // Zorg dat deze resolve sectie erin staat:
+  resolve: {
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
   },
   server: {
     host: "0.0.0.0",
