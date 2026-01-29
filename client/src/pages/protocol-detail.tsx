@@ -14,8 +14,8 @@ export default function ProtocolDetail() {
           title: "Gastric Bypass",
           lastUpdated: "Januari 2026",
           sections: [
-            { title: "Pre-operatief", content: "Screening op obstructieve slaapapneu (OSA). Check nuchterbeleid. Toediening premedicatie indien afgesproken." },
-            { title: "Inductie", content: "RSI-inductie (bij vermoeden reflux). Propofol op basis van Lean Body Mass. Succinylcholine of Rocuronium voor relaxatie." },
+            { title: "Pre-operatief", content: "Opname op dag zelf. Patiënt stapt naar de zaal." },
+            { title: "Installatie", content: "• Eén perifere lijn. • Arteriële en/of centrale: zeer zelden, enkel op indicatie comorbiditeit. • Maagsonde: specifieke sonde voor bypass met mogelijkheid voor aspiratie, inspuiten, afklemmen en correcte afstandsbepaling. • SpotOn. • Zo beschikbaar: continue TOF" },
             { title: "Maintenance", content: "Luchtwegbeheer: ETT. Beademing: Pressure Controlled / Volume Guaranteed met PEEP. Sevofluraan of Desfluraan." },
             { title: "Post-operatief", content: "Extubatie bij volledige recovery (TOF > 0.9). Pijnbestrijding: Multimodaal (Paracetamol iv, NSAID indien toegestaan). PONV profylaxe." }
           ]
@@ -73,7 +73,18 @@ export default function ProtocolDetail() {
             </h3>
             <Card className="border-slate-200 bg-white shadow-sm">
               <CardContent className="p-4 text-sm text-slate-600 leading-relaxed italic">
-                {section.content}
+                {section.content.includes("•") ? (
+                  <ul className="list-none space-y-1">
+                    {section.content.split("•").filter(item => item.trim()).map((item, i) => (
+                      <li key={i} className="flex gap-2">
+                        <span className="text-blue-500 font-bold">•</span>
+                        <span>{item.trim()}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  section.content
+                )}
               </CardContent>
             </Card>
           </div>
