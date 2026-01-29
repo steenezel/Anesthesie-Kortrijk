@@ -7,25 +7,45 @@ export default function ProtocolDetail() {
   const [, params] = useRoute("/protocols/:id");
   const id = params?.id;
 
-  const protocolData = id === "gastric-bypass" ? {
-    title: "Gastric Bypass",
-    lastUpdated: "Januari 2026",
-    sections: [
-      { title: "Pre-operatief", content: "Screening op obstructieve slaapapneu (OSA). Check nuchterbeleid. Toediening premedicatie indien afgesproken." },
-      { title: "Inductie", content: "RSI-inductie (bij vermoeden reflux). Propofol op basis van Lean Body Mass. Succinylcholine of Rocuronium voor relaxatie." },
-      { title: "Maintenance", content: "Luchtwegbeheer: ETT. Beademing: Pressure Controlled / Volume Guaranteed met PEEP. Sevofluraan of Desfluraan." },
-      { title: "Post-operatief", content: "Extubatie bij volledige recovery (TOF > 0.9). Pijnbestrijding: Multimodaal (Paracetamol iv, NSAID indien toegestaan). PONV profylaxe." }
-    ]
-  } : {
-    title: id?.charAt(0).toUpperCase() + id?.slice(1) + " Anesthesie",
-    lastUpdated: "Gereviseerd op: 12/01/2026",
-    sections: [
-      { title: "Pre-operatief", content: "Nuchterbeleid volgens standaard. Screening op allergieën en eerdere anesthesieproblemen." },
-      { title: "Inductie", content: "Standaard monitoring. Propofol 2-3 mg/kg, Sufentanil 0.1-0.2 µg/kg." },
-      { title: "Maintenance", content: "Sevofluraan 1.0 MAC of TIVA (Propofol/Remifentanil)." },
-      { title: "Post-operatief", content: "Pijnbestrijding: Paracetamol 1g iv, NSAID indien geen contra-indicaties." }
-    ]
+  const getProtocolData = (id: string | undefined) => {
+    switch(id) {
+      case "gastric-bypass":
+        return {
+          title: "Gastric Bypass",
+          lastUpdated: "Januari 2026",
+          sections: [
+            { title: "Pre-operatief", content: "Screening op obstructieve slaapapneu (OSA). Check nuchterbeleid. Toediening premedicatie indien afgesproken." },
+            { title: "Inductie", content: "RSI-inductie (bij vermoeden reflux). Propofol op basis van Lean Body Mass. Succinylcholine of Rocuronium voor relaxatie." },
+            { title: "Maintenance", content: "Luchtwegbeheer: ETT. Beademing: Pressure Controlled / Volume Guaranteed met PEEP. Sevofluraan of Desfluraan." },
+            { title: "Post-operatief", content: "Extubatie bij volledige recovery (TOF > 0.9). Pijnbestrijding: Multimodaal (Paracetamol iv, NSAID indien toegestaan). PONV profylaxe." }
+          ]
+        };
+      case "lever-chirurgie":
+        return {
+          title: "Leverchirurgie",
+          lastUpdated: "Januari 2026",
+          sections: [
+            { title: "Pre-operatief", content: "Evaluatie leverfunctie (Child-Pugh, MELD). Stollingsstatus controleren. Bloedgroepbepaling en kruisproef (2-4 units)." },
+            { title: "Monitoring", content: "Invasieve bloeddrukmeting. Centraal veneuze katheter (CVP streefwaarde laag houden tijdens resectie: < 5 mmHg). Temperatuurmonitoring." },
+            { title: "Inductie & Maintenance", content: "TIVA of inhalatieanesthesie. Voorzichtig met hepatotoxische medicatie. Handhaaf normovolemie buiten de resectiefase." },
+            { title: "Bijzonderheden", content: "Pringle manoeuvre (ischemietijd bewaken). Correctie van stollingsstoornissen en electrolyten. Glucosemonitoring." }
+          ]
+        };
+      default:
+        return {
+          title: id?.replace("-", " ").toUpperCase() + " Anesthesie",
+          lastUpdated: "Gereviseerd op: 12/01/2026",
+          sections: [
+            { title: "Pre-operatief", content: "Nuchterbeleid volgens standaard. Screening op allergieën en eerdere anesthesieproblemen." },
+            { title: "Inductie", content: "Standaard monitoring. Propofol 2-3 mg/kg, Sufentanil 0.1-0.2 µg/kg." },
+            { title: "Maintenance", content: "Sevofluraan 1.0 MAC of TIVA (Propofol/Remifentanil)." },
+            { title: "Post-operatief", content: "Pijnbestrijding: Paracetamol 1g iv, NSAID indien geen contra-indicaties." }
+          ]
+        };
+    }
   };
+
+  const protocolData = getProtocolData(id);
 
   return (
     <div className="space-y-6 pb-20">

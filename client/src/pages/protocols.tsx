@@ -18,6 +18,7 @@ export default function Protocols() {
 
   const abdominaleProtocols = [
     { id: "gastric-bypass", name: "Gastric Bypass" },
+    { id: "lever-chirurgie", name: "Leverchirurgie" },
   ];
 
   const filteredDepts = depts.filter(d => d.name.toLowerCase().includes(search.toLowerCase()));
