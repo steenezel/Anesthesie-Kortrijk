@@ -1,54 +1,56 @@
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, Clock, AlertCircle } from "lucide-react";
+import { ChevronLeft, Clock, AlertCircle, FileWarning } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Haal alle markdown bestanden op uit alle submappen
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
 
 export default function ProtocolDetail() {
-  // We verwachten nu zowel de discipline als de id in de URL
   const [, params] = useRoute("/protocols/:discipline/:id");
   const { discipline, id } = params || {};
   
-  // Zoek het bestand op basis van het geneste pad
-  const path = `../content/protocols/${discipline}/${id}.md`;
-  const rawContent = allProtocols[path] as string;
+  // We zoeken de sleutel in de lijst die (ongeacht hoofdletters) overeenkomt
+  const fileKey = Object.keys(allProtocols).find(key => 
+    key.toLowerCase().endsWith(`${discipline?.toLowerCase()}/${id?.toLowerCase()}.md`)
+  );
+
+  const fileData = fileKey ? (allProtocols[fileKey] as any) : null;
+  const rawContent = fileData?.default || fileData;
 
   if (!rawContent) {
     return (
-      <div className="p-10 text-center text-slate-500 font-bold uppercase tracking-tighter">
-        Protocol niet gevonden. Controleer het pad: {path}
+      <div className="p-10 text-center space-y-4">
+        <FileWarning className="h-12 w-12 mx-auto text-slate-300" />
+        <p className="text-slate-500 font-bold uppercase tracking-tighter">Content niet gevonden</p>
+        <Link href="/protocols" className="text-blue-500 text-xs font-bold uppercase">Terug naar lijst</Link>
       </div>
     );
   }
 
-  // Eenvoudige extractie van Frontmatter en Body
-  const parts = rawContent.split('---');
-  const metadataRaw = parts[1];
-  const markdownBody = parts[2];
+  // Verbeterde Frontmatter parsing
+  const parts = rawContent.split('---').filter(Boolean);
+  const hasFrontmatter = rawContent.startsWith('---');
+  
+  const metadataRaw = hasFrontmatter ? parts[0] : "";
+  const markdownBody = hasFrontmatter ? parts[1] : rawContent;
 
-  const title = metadataRaw.match(/title: "(.*)"/)?.[1];
-  const disciplineName = metadataRaw.match(/discipline: "(.*)"/)?.[1];
-  const lastUpdated = metadataRaw.match(/lastUpdated: "(.*)"/)?.[1];
+  const title = metadataRaw.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
+  const lastUpdated = metadataRaw.match(/lastUpdated: "(.*)"/)?.[1] || "Onbekend";
 
   return (
     <div className="space-y-6 pb-20">
       <Link href="/protocols">
         <div className="flex items-center text-slate-400 font-bold uppercase text-[10px] tracking-widest cursor-pointer hover:text-slate-600 transition-colors">
-          <ChevronLeft className="h-4 w-4" /> Terug naar {disciplineName || "overzicht"}
+          <ChevronLeft className="h-4 w-4" /> Terug naar overzicht
         </div>
       </Link>
 
       <div className="space-y-1">
-        <div className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full inline-block font-black uppercase tracking-tighter">
-          {disciplineName}
-        </div>
         <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900 leading-tight">
           {title}
         </h1>
         <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-          <Clock className="h-3 w-3" /> Laatste revisie: {lastUpdated}
+          <Clock className="h-3 w-3" /> Revisie: {lastUpdated}
         </div>
       </div>
 
@@ -60,12 +62,13 @@ export default function ProtocolDetail() {
           <ReactMarkdown>{markdownBody}</ReactMarkdown>
         </CardContent>
       </Card>
-
+      
+      {/* Waarschuwing onderaan blijft belangrijk voor medische context */}
       <Card className="bg-amber-50 border-amber-200 border-2 mt-10">
         <CardContent className="p-4 flex items-start gap-3">
           <AlertCircle className="h-5 w-5 text-amber-500 mt-0.5" />
           <div className="text-[11px] text-amber-800 leading-tight">
-            <strong>Klinische besluitvorming:</strong> Dit protocol dient als leidraad. Wijk af indien de patiëntstatus of chirurgische context dit vereist.
+            <strong>Klinische besluitvorming:</strong> Dit protocol dient als leidraad. Wijk af indien de patiëntstatus dit vereist.
           </div>
         </CardContent>
       </Card>
