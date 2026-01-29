@@ -41,7 +41,7 @@ export default defineConfig({
     emptyOutDir: false,
    rollupOptions: {
       // Zorg dat Vite hier NIET meer naar client/index.html zoekt
-      input: path.resolve(import.meta.dirname, "index.html"),
+      input: path.resolve(__dirname, "index.html"),
     }, 
   },
   server: {
