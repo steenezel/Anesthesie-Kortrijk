@@ -87,22 +87,6 @@ export default function CalculatorPage() {
 
   const intralipid = calculateIntralipid(weight);
 
-  const copyToClipboard = () => {
-    const text = `LAST CHECK (${new Date().toLocaleDateString()}):
-Patiëntgewicht: ${weight} kg
-Type blok: ${isHypervascular ? 'Hypervasculair' : 'Standaard'}
-Patiënt Risico: ${patientRisk}
-Toxicity Score: ${(toxicityScore * 100).toFixed(1)}%
-Intralipid Bolus: ${intralipid.bolus.toFixed(1)} mL
-Intralipid Infuussnelheid: ${intralipid.infusion.toFixed(1)} mL/min`;
-    
-    navigator.clipboard.writeText(text);
-    toast({
-      title: "Gekopieerd",
-      description: "Data staat op klembord voor patiëntendossier.",
-    });
-  };
-
   const getGaugeColor = (score: number) => {
     if (score < 0.5) return "bg-emerald-500";
     if (score < 0.8) return "bg-amber-500";
@@ -356,45 +340,9 @@ Intralipid Infuussnelheid: ${intralipid.infusion.toFixed(1)} mL/min`;
               ))}
             </AnimatePresence>
 
-            <Button 
-              variant="outline" 
-              className="w-full border-slate-200 text-slate-500 font-black uppercase tracking-widest text-[10px] h-12 rounded-xl hover:bg-slate-50"
-              onClick={copyToClipboard}
-            >
-              <Share2 className="mr-2 h-3.5 w-3.5" /> Kopieer voor EPD
-            </Button>
-          </div>
+            </div>
         </TabsContent>
       </Tabs>
-
-      {/* RICHTLIJNEN ONDERAAN */}
-      <div className="mt-12 pt-10 border-t border-slate-200">
-        <div className="flex items-center gap-2 mb-6">
-          <BookOpen className="h-4 w-4 text-blue-600" />
-          <h2 className="text-xs font-black uppercase tracking-tighter text-slate-900">
-            ASRA/ESRA Richtlijnen 2026
-          </h2>
-        </div>
-        
-        <Card className="border-none shadow-none bg-slate-50/50">
-          <CardContent className="p-6 prose prose-slate prose-sm max-w-none 
-            prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black
-            prose-strong:text-blue-600 prose-li:marker:text-blue-500">
-            <ReactMarkdown>
-{`### Management LAST
-
-* **Vroege herkenning:** Monitor tot minstens 30 min na injectie. Acidose verlaagt de drempel voor insulten drastisch.
-* **Luchtweg:** 100% oxygenatie; hyperventilatie kan nuttig zijn om pH te stijgen.
-* **Lipid Therapy:** Start direct bij ernstige CZS of CVS symptomen.
-
-#### ACLS Modificaties
-1. **Adrenaline:** Gebruik kleine doses ({"< "} 1 µg/kg ofwel {"< "} ${(weight * 1).toFixed(0)} µg).
-2. **Vermijd:** Vasopressine, calciumblokkers en bètablokkers.
-3. **Lidocaïne:** Strikt gecontra-indiceerd bij ritmestoornissen.`}
-            </ReactMarkdown>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   );
 }
