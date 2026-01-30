@@ -127,7 +127,7 @@ export default function CalculatorPage() {
         <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl text-[11px] leading-snug">
           <p className="font-bold text-blue-900 uppercase tracking-tighter mb-1">Adrenaline</p>
           <p className="text-blue-800">
-            Reduceer doses tot **< {(weight * 1).toFixed(0)} µg** (ofwel **< 1 µg/kg**). 
+            Reduceer doses tot **{"< "} {(weight * 1).toFixed(0)} µg** (ofwel **{"< "} 1 µg/kg**). 
             Vermijd standaard 1 mg bolussen om aritmieën en longoedeem te voorkomen.
           </p>
         </div>
@@ -161,7 +161,7 @@ export default function CalculatorPage() {
             </div>
             <div className="space-y-2">
               <Label className="text-xs uppercase tracking-wider font-bold text-muted-foreground">Type Blok</Label>
-              <Select value={isHypervascular ? "hyper" : "std"} onValueChange={(v) => setIsHypervascular(v === "hyper")}>
+              <Select value={isHypervascular ? "hyper" : "std"} onValueChange={(v: string) => setIsHypervascular(v === "hyper")}>
                 <SelectTrigger className="h-12">
                   <SelectValue />
                 </SelectTrigger>
@@ -324,7 +324,7 @@ export default function CalculatorPage() {
                   <Card className="border-l-4 border-l-primary overflow-visible shadow-sm">
                     <CardContent className="p-4 space-y-4">
                       <div className="flex items-center justify-between gap-4">
-                        <Select value={drug.drugId} onValueChange={(v) => updateDrug(drug.instanceId, { drugId: v })}>
+                        <Select value={drug.drugId} onValueChange={(v: string) => updateDrug(drug.instanceId, { drugId: v })}>
                           <SelectTrigger className="flex-1 font-bold h-10">
                             <SelectValue />
                           </SelectTrigger>
