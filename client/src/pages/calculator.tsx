@@ -1,11 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 import { DRUG_DATA, calculateMaxDose, calculateIntralipid } from "@/lib/drugs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Trash2, AlertTriangle, ShieldAlert, Calculator as CalcIcon, ShieldCheck } from "lucide-react";
+import { Plus, Trash2, AlertTriangle, ShieldAlert, Activity, Mail, Share2, Calculator as CalcIcon, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -98,24 +99,52 @@ export default function CalculatorPage() {
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-black text-destructive flex items-center gap-2">
-                  <ShieldAlert className="h-8 w-8" /> INTRALIPID 20%
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-6 pt-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-destructive/10 p-4 rounded-2xl border-2 border-destructive/20 text-center">
-                    <div className="text-xs uppercase font-bold text-destructive mb-1">Bolus (1.5 mL/kg)</div>
-                    <div className="text-3xl font-mono font-black text-destructive">{intralipid.bolus.toFixed(1)} <span className="text-sm">mL</span></div>
-                  </div>
-                  <div className="bg-destructive/5 p-4 rounded-2xl border-2 border-destructive/10 text-center">
-                    <div className="text-xs uppercase font-bold text-muted-foreground mb-1">Infusion (0.25 mL/kg/min)</div>
-                    <div className="text-3xl font-mono font-black text-foreground">{intralipid.infusion.toFixed(1)} <span className="text-sm">mL/min</span></div>
-                  </div>
-                </div>
-              </div>
-            </DialogContent>
+  <DialogHeader>
+    <DialogTitle className="text-2xl font-black text-destructive flex items-center gap-2">
+      <ShieldAlert className="h-8 w-8" /> INTRALIPID 20%
+    </DialogTitle>
+  </DialogHeader>
+
+  <div className="space-y-6 pt-4">
+    {/* DOSERINGSKAARTEN */}
+    <div className="grid grid-cols-2 gap-4">
+      <div className="bg-destructive/10 p-4 rounded-2xl border-2 border-destructive/20 text-center">
+        <div className="text-xs uppercase font-bold text-destructive mb-1">Bolus (1.5 mL/kg)</div>
+        <div className="text-3xl font-mono font-black text-destructive">{intralipid.bolus.toFixed(1)} <span className="text-sm">mL</span></div>
+      </div>
+      <div className="bg-destructive/5 p-4 rounded-2xl border-2 border-destructive/10 text-center">
+        <div className="text-xs uppercase font-bold text-muted-foreground mb-1">Infusion (0.25 mL/kg/min)</div>
+        <div className="text-3xl font-mono font-black text-foreground">{intralipid.infusion.toFixed(1)} <span className="text-sm">mL/min</span></div>
+      </div>
+    </div>
+
+    {/* ACLS MODIFICATIES - HIER INVOEGEN */}
+    <div className="mt-6 border-t border-slate-100 pt-6 space-y-4">
+      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+        <AlertTriangle className="h-4 w-4 text-amber-500" /> ACLS Modificaties
+      </h3>
+      <div className="grid grid-cols-1 gap-3">
+        <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl text-[11px] leading-snug">
+          <p className="font-bold text-blue-900 uppercase tracking-tighter mb-1">Adrenaline</p>
+          <p className="text-blue-800">
+            Reduceer doses tot **< {(weight * 1).toFixed(0)} µg** (ofwel **< 1 µg/kg**). 
+            Vermijd standaard 1 mg bolussen om aritmieën en longoedeem te voorkomen.
+          </p>
+        </div>
+        <div className="p-4 bg-amber-50/50 border border-amber-100 rounded-2xl text-[11px] leading-snug">
+          <p className="font-bold text-amber-900 uppercase tracking-tighter mb-1">Aritmie Management</p>
+          <p className="text-amber-800">
+            Vermijd vasopressine, calciumkanaalblokkers en bètablokkers. 
+            **Lidocaïne is gecontra-indiceerd.** Focus op lipidtherapie en oxygenatie.
+          </p>
+        </div>
+      </div>
+      <p className="text-[9px] text-slate-400 italic text-center pt-2">
+        Bron: ASRA/ESRA LAST Guidelines 2026
+      </p>
+    </div>
+  </div>
+</DialogContent>
           </Dialog>
         </div>
         <CardContent className="p-5 space-y-4">
@@ -260,7 +289,27 @@ export default function CalculatorPage() {
               )}
             </CardContent>
           </Card>
-
+              {/* TOXICITY CHECKLIST */}
+              <Card className="border-amber-200 bg-amber-50/30 shadow-none mb-6">
+              <CardHeader className="p-4 pb-0">
+              <CardTitle className="text-xs font-black uppercase tracking-widest text-amber-700 flex items-center gap-2">
+              <Activity className="h-4 w-4" /> Vroege Herkenning (Checklist)
+              </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 grid grid-cols-1 gap-2">
+              {[
+                { id: 'taste', label: 'Metaalsmaak / Tinnitus' },
+                { id: 'numb', label: 'Tintelingen (perioraal)' },
+                { id: 'visual', label: 'Visusstoornissen / Agitatie' },
+                { id: 'twitch', label: 'Spiertrekkingen / Tremor' }
+              ].map((item) => (
+            <label key={item.id} className="flex items-center gap-3 p-2 bg-white/50 rounded-lg border border-amber-100 cursor-pointer hover:bg-white transition-colors">
+                <input type="checkbox" className="h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500" />
+                <span className="text-[11px] font-bold text-slate-700 uppercase tracking-tight">{item.label}</span>
+              </label>
+    ))}
+  </CardContent>
+</Card>
           <div className="space-y-4">
             <div className="flex items-center justify-between px-1">
               <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Toegediende middelen</h3>
@@ -316,6 +365,27 @@ export default function CalculatorPage() {
           </div>
         </TabsContent>
       </Tabs>
+    {/* RICHTLIJNEN SECTIE ONDERAAN DE PAGINA */}
+<div className="mt-12 pt-10 border-t border-slate-200">
+  <div className="flex items-center gap-2 mb-6">
+    <div className="h-1 w-6 bg-blue-600 rounded-full"></div>
+    <h2 className="text-sm font-black uppercase tracking-tighter text-slate-900">
+      Klinische Richtlijnen & Referenties
+    </h2>
+  </div>
+  
+  <Card className="border-none shadow-none bg-slate-50/50">
+    <CardContent className="p-6 prose prose-slate prose-sm max-w-none 
+      prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black
+      prose-strong:text-blue-600 prose-li:marker:text-blue-500">
+      {/* Hier laden we de markdown (zorg voor de juiste import bovenaan) */}
+      <ReactMarkdown>{`### ASRA/ESRA LAST Guidelines 2026
+* **Vroege herkenning:** Monitor patiënt tot 30 min na injectie.
+* **Luchtweg:** Focus op oxygenatie; acidose verergert toxiciteit.
+* **Lipid Therapy:** Start vlot bij neurologische of cardiale symptomen.`}</ReactMarkdown>
+    </CardContent>
+  </Card>
+</div>
     </div>
   );
 }
