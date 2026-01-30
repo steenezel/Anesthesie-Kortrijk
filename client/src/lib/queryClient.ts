@@ -1,4 +1,10 @@
-import { QueryClient, QueryFunction } from "@tanstack/react-query";
+// We importeren de types en de klasse op de meest expliciete manier
+import { QueryClient } from "@tanstack/react-query";
+import type { QueryFunction, QueryKey } from "@tanstack/react-query";
+
+// De rest van de code blijft hetzelfde...
+// We importeren alles als 'TanStack' om pad-conflicten te vermijden
+import * as TanStack from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -24,24 +30,27 @@ export async function apiRequest(
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
+
+// We gebruiken hier de types direct van de 'TanStack' import
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
-}) => QueryFunction<T> =
+}) => TanStack.QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
-  async ({ queryKey }) => {
+  async ({ queryKey }: { queryKey: TanStack.QueryKey }) => {
     const res = await fetch(queryKey.join("/") as string, {
       credentials: "include",
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
+      return null as any;
     }
 
     await throwIfResNotOk(res);
     return await res.json();
   };
 
-export const queryClient = new QueryClient({
+// Hier maken we de client aan met de klasse van TanStack
+export const queryClient = new TanStack.QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
