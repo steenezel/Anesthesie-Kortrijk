@@ -16,7 +16,8 @@ import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
-    <Layout>
+    /* We hebben <Layout> verwijderd en vervangen door een eenvoudige container */
+    <main className="min-h-screen bg-background px-4 py-6 sm:px-6 lg:px-8 max-w-2xl mx-auto">
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/protocols" component={ProtocolList} />
@@ -28,7 +29,7 @@ function Router() {
         <Route path="/info" component={InfoPage} />
         <Route component={NotFound} />
       </Switch>
-    </Layout>
+    </main>
   );
 }
 
