@@ -13,23 +13,28 @@ import CalculatorPage from "@/pages/calculator";
 import ChecklistPage from "@/pages/checklist";
 import InfoPage from "@/pages/info";
 import NotFound from "@/pages/not-found";
+import ContactsPage from "@/pages/contacts";
+import { BottomNav } from "@/components/bottom-nav";
 
 function Router() {
   return (
-    /* We hebben <Layout> verwijderd en vervangen door een eenvoudige container */
-    <main className="min-h-screen bg-background px-4 py-6 sm:px-6 lg:px-8 max-w-2xl mx-auto">
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/protocols" component={ProtocolList} />
-        <Route path="/protocols/:discipline/:id" component={ProtocolDetail} />
-        <Route path="/blocks" component={Blocks} />
-        <Route path="/blocks/:id" component={BlockDetail} />
-        <Route path="/calculator" component={CalculatorPage} />
-        <Route path="/checklist" component={ChecklistPage} />
-        <Route path="/info" component={InfoPage} />
-        <Route component={NotFound} />
-      </Switch>
-    </main>
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 max-w-2xl mx-auto w-full">
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/protocols" component={ProtocolList} />
+          <Route path="/protocols/:discipline/:id" component={ProtocolDetail} />
+          <Route path="/blocks" component={Blocks} />
+          <Route path="/blocks/:id" component={BlockDetail} />
+          <Route path="/calculator" component={CalculatorPage} />
+          <Route path="/contacts" component={ContactsPage} /> {/* NIEUW */}
+          <Route path="/checklist" component={ChecklistPage} />
+          <Route path="/info" component={InfoPage} />
+          <Route component={NotFound} />
+        </Switch>
+      </main>
+      <BottomNav /> {/* DIT MAAKT HET GLOBALE NAVIGATIE */}
+    </div>
   );
 }
 
