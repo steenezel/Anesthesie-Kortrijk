@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Phone, Search, User, GraduationCap } from "lucide-react";
 
 const contacts = [
-  { name: "Dr. Janssen", role: "Staf", phone: "1234", category: "staf" },
-  { name: "Dr. Peeters", role: "Staf", phone: "1235", category: "staf" },
-  { name: "Dr. De Smet", role: "ASO", phone: "5678", category: "aso" },
-  { name: "Dr. Willems", role: "ASO", phone: "5679", category: "aso" },
-  { name: "OK Secretariaat", role: "Support", phone: "9000", category: "extra" },
+  { name: "Pieter Jan Steelant", role: "Staf", phone: "3056", category: "staf" },
+  { name: "Theo Sykora", role: "Staf", phone: "3057", category: "staf" },
+  { name: "Stefaan Carlier", role: "Staf", phone: "3044", category: "staf" },
+  { name: "Matthias Desmet", role: "Staf", phone: "3050", category: "staf" },
+  { name: "OK Secretariaat", role: "Support", phone: "3030", category: "extra" },
 ];
 
 export default function ContactsPage() {
