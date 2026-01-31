@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anesthesie-v1';
+const CACHE_NAME = 'anesthesie-v1.1';
 const ASSETS = [
   '/',
   '/index.html',
