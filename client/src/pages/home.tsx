@@ -1,7 +1,22 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, ShieldCheck, ChevronRight, Syringe, ExternalLink } from "lucide-react";
+import { 
+  BookOpen, 
+  ShieldCheck, 
+  ChevronRight, 
+  Syringe, 
+  ExternalLink, 
+  Phone 
+} from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle 
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const categories = [
   {
@@ -35,6 +50,16 @@ const categories = [
     isExternal: false
   },
   {
+    title: "Telefoonlijst",
+    description: "Interne nummers Staf & ASO's.",
+    icon: Phone,
+    href: "/contacts",
+    color: "bg-red-500",
+    lightColor: "bg-red-50",
+    borderColor: "border-red-200",
+    isExternal: false
+  },
+  {
     title: "E17 Bridginglink",
     description: "Beleid bloedverdunners.",
     icon: ExternalLink,
@@ -47,9 +72,25 @@ const categories = [
 ];
 
 export default function Home() {
+  const [tapCount, setTapCount] = useState(0);
+  const [showEgg, setShowEgg] = useState(false);
+
+  const handleLogoTap = () => {
+    setTapCount((prev) => prev + 1);
+    if (tapCount + 1 >= 3) {
+      setShowEgg(true);
+      setTapCount(0);
+    }
+    setTimeout(() => setTapCount(0), 2000);
+  };
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      <div className="text-center space-y-2">
+    <div className="space-y-8 animate-in fade-in duration-700 pb-12">
+      {/* HEADER */}
+      <div 
+        className="text-center space-y-2 cursor-pointer select-none" 
+        onClick={handleLogoTap}
+      >
         <h1 className="text-4xl font-black tracking-tighter text-slate-900 uppercase">
           Anesthesie <span className="text-teal-600">Kortrijk</span>
         </h1>
@@ -58,53 +99,95 @@ export default function Home() {
         </p>
       </div>
 
+      {/* EASTER EGG */}
+      <Dialog open={showEgg} onOpenChange={setShowEgg}>
+        <DialogContent className="sm:max-w-md bg-orange-50 border-orange-200">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-black text-orange-800 uppercase italic">
+              ☕ De Koffiekamer
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-4">
+            <div className="p-4 bg-white rounded-2xl border border-orange-100 shadow-sm">
+              <p className="text-xs italic text-slate-600">
+                "Anesthesie: 99% verveling, 1% pure paniek, en 100% koffie-afhankelijkheid."
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <a href="https://www.hln.be" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center p-4 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-colors">
+                HLN.be
+              </a>
+              <a href="https://www.websudoku.com" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center p-4 bg-slate-800 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-900 transition-colors">
+                Sudoku
+              </a>
+            </div>
+            <Button 
+              variant="outline" 
+              className="w-full border-orange-200 text-orange-700 hover:bg-orange-100 font-bold uppercase text-[10px] tracking-widest"
+              onClick={() => setShowEgg(false)}
+            >
+              Terug naar de realiteit
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* NAVIGATIE GRID */}
       <div className="grid gap-4 max-w-2xl mx-auto">
-        {categories.map((category, index) => {
-          const Content = (
-            <Card className={`group cursor-pointer hover:shadow-xl transition-all duration-300 border-2 ${category.borderColor} overflow-hidden`}>
-              <CardContent className="p-0">
-                <div className="flex items-stretch">
-                  <div className={`${category.color} w-2`}></div>
-                  <div className="flex-1 p-6 flex items-center justify-between">
-                    <div className="flex items-center gap-5">
-                      <div className={`p-3 rounded-2xl ${category.lightColor} text-primary transition-transform group-hover:scale-110 duration-300`}>
-                        <category.icon className={`h-8 w-8 ${category.color.replace('bg-', 'text-')}`} />
-                      </div>
-                      <div>
-                        <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">
-                          {category.title}
-                        </h2>
-                        <p className="text-sm text-slate-500 line-clamp-1 italic">
-                          {category.description}
-                        </p>
+        {categories.map((category, index) => (
+          <motion.div
+            key={category.title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+          >
+            {category.isExternal ? (
+              <a href={category.href} target="_blank" rel="noopener noreferrer" className="block">
+                <Card className={`group cursor-pointer hover:shadow-xl transition-all duration-300 border-2 ${category.borderColor} overflow-hidden`}>
+                  <CardContent className="p-0">
+                    <div className="flex items-stretch">
+                      <div className={`${category.color} w-2`}></div>
+                      <div className="flex-1 p-6 flex items-center justify-between">
+                        <div className="flex items-center gap-5">
+                          <div className={`p-3 rounded-2xl ${category.lightColor} text-primary transition-transform group-hover:scale-110 duration-300`}>
+                            <category.icon className={`h-8 w-8 ${category.color.replace('bg-', 'text-')}`} />
+                          </div>
+                          <div>
+                            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{category.title}</h2>
+                            <p className="text-sm text-slate-500 line-clamp-1 italic">{category.description}</p>
+                          </div>
+                        </div>
+                        <ChevronRight className="h-6 w-6 text-slate-300 group-hover:text-slate-500 transition-all" />
                       </div>
                     </div>
-                    <ChevronRight className="h-6 w-6 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-1 transition-all" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-
-          return (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              {category.isExternal ? (
-                <a href={category.href} target="_blank" rel="noopener noreferrer">
-                  {Content}
-                </a>
-              ) : (
-                <Link href={category.href}>
-                  {Content}
-                </Link>
-              )}
-            </motion.div>
-          );
-        })}
+                  </CardContent>
+                </Card>
+              </a>
+            ) : (
+              <Link href={category.href}>
+                <Card className={`group cursor-pointer hover:shadow-xl transition-all duration-300 border-2 ${category.borderColor} overflow-hidden`}>
+                  <CardContent className="p-0">
+                    <div className="flex items-stretch">
+                      <div className={`${category.color} w-2`}></div>
+                      <div className="flex-1 p-6 flex items-center justify-between">
+                        <div className="flex items-center gap-5">
+                          <div className={`p-3 rounded-2xl ${category.lightColor} text-primary transition-transform group-hover:scale-110 duration-300`}>
+                            <category.icon className={`h-8 w-8 ${category.color.replace('bg-', 'text-')}`} />
+                          </div>
+                          <div>
+                            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{category.title}</h2>
+                            <p className="text-sm text-slate-500 line-clamp-1 italic">{category.description}</p>
+                          </div>
+                        </div>
+                        <ChevronRight className="h-6 w-6 text-slate-300 group-hover:text-slate-500 transition-all" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            )}
+          </motion.div>
+        ))}
       </div>
 
       <div className="pt-8 text-center border-t border-slate-100">
