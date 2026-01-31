@@ -1,0 +1,21 @@
+{
+  "short_name": "Anesthesie",
+  "name": "Anesthesie Kortrijk",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "theme_color": "#0d9488",
+  "description": "Klinische protocollen en calculators voor de dienst Anesthesie."
+}
