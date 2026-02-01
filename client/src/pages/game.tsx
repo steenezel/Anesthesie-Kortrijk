@@ -4,7 +4,7 @@ import { Syringe, Play, RotateCcw, Trophy } from "lucide-react";
 import { Link } from "wouter";
 
 const GRAVITY = 0.6;
-const JUMP_STRENGTH = -10;
+const JUMP_STRENGTH = -8;
 const GAME_SPEED = 3.5;
 const PIPE_WIDTH = 60;
 const PIPE_GAP = 170; 
