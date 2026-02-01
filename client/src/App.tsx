@@ -14,6 +14,7 @@ import ChecklistPage from "@/pages/checklist";
 import InfoPage from "@/pages/info";
 import NotFound from "@/pages/not-found";
 import ContactsPage from "@/pages/contacts";
+import GamePage from "@/pages/game";
 import { BottomNav } from "@/components/bottom-nav";
 
 function Router() {
@@ -27,7 +28,8 @@ function Router() {
           <Route path="/blocks" component={Blocks} />
           <Route path="/blocks/:id" component={BlockDetail} />
           <Route path="/calculator" component={CalculatorPage} />
-          <Route path="/contacts" component={ContactsPage} /> {/* NIEUW */}
+          <Route path="/contacts" component={ContactsPage} />
+          <Route path="/game" component={GamePage} />
           <Route path="/checklist" component={ChecklistPage} />
           <Route path="/info" component={InfoPage} />
           <Route component={NotFound} />

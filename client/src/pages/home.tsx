@@ -102,34 +102,45 @@ export default function Home() {
       {/* EASTER EGG */}
       <Dialog open={showEgg} onOpenChange={setShowEgg}>
         <DialogContent className="sm:max-w-md bg-orange-50 border-orange-200">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-black text-orange-800 uppercase italic">
-              ☕ De Koffiekamer
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 pt-4">
-            <div className="p-4 bg-white rounded-2xl border border-orange-100 shadow-sm">
-              <p className="text-xs italic text-slate-600">
-                "Anesthesie: 99% verveling, 1% pure paniek, en 100% koffie-afhankelijkheid."
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <a href="https://www.hln.be" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center p-4 bg-blue-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-colors">
-                HLN.be
-              </a>
-              <a href="https://www.websudoku.com" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center p-4 bg-slate-800 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-900 transition-colors">
-                Sudoku
-              </a>
-            </div>
-            <Button 
-              variant="outline" 
-              className="w-full border-orange-200 text-orange-700 hover:bg-orange-100 font-bold uppercase text-[10px] tracking-widest"
-              onClick={() => setShowEgg(false)}
-            >
-              Terug naar de realiteit
-            </Button>
-          </div>
-        </DialogContent>
+  <DialogHeader>
+    <DialogTitle className="text-2xl font-black text-orange-800 uppercase italic flex items-center gap-2">
+      ☕ De Koffiekamer
+    </DialogTitle>
+  </DialogHeader>
+  <div className="space-y-4 pt-4">
+    <div className="p-4 bg-white rounded-2xl border border-orange-100 shadow-sm">
+      <p className="text-xs italic text-slate-600">
+        "Anesthesie: 99% verveling, 1% pure paniek, en 100% koffie-afhankelijkheid."
+      </p>
+    </div>
+    
+    {/* DE NIEUWE GAME KNOP */}
+    <Link href="/game">
+      <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-teal-500 to-blue-600 p-6 text-white cursor-pointer shadow-lg shadow-teal-500/30 hover:shadow-xl hover:scale-[1.02] transition-all">
+        <div className="absolute top-0right-0 -mt-4 -mr-4 bg-white/20 w-24 h-24 rounded-full blur-2xl"></div>
+        <Syringe className="h-12 w-12 mb-4 text-white/80 -rotate-90 group-hover:rotate-0 transition-transform duration-500" />
+        <h3 className="text-2xl font-black uppercase tracking-tighter italic">Flappy Anesthetist</h3>
+        <p className="text-sm font-bold opacity-90">Red de luchtweg! (Bèta)</p>
+      </div>
+    </Link>
+
+    <div className="grid grid-cols-2 gap-3">
+      <a href="https://www.hln.be" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center p-4 bg-white border-2 border-blue-100 text-blue-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-50 transition-colors">
+        HLN Nieuws
+      </a>
+      <a href="https://www.websudoku.com" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center p-4 bg-white border-2 border-slate-200 text-slate-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-colors">
+        Sudoku
+      </a>
+    </div>
+    <Button 
+      variant="outline" 
+      className="w-full border-orange-200 text-orange-700 hover:bg-orange-100 font-bold uppercase text-[10px] tracking-widest"
+      onClick={() => setShowEgg(false)}
+    >
+      Sluiten
+    </Button>
+  </div>
+</DialogContent>
       </Dialog>
 
       {/* NAVIGATIE GRID */}
