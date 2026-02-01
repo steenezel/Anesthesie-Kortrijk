@@ -17,6 +17,7 @@ import {
   DialogTitle 
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 
 const categories = [
   {
@@ -98,6 +99,8 @@ export default function Home() {
           AZ Groeninge • Clinical Decision Support
         </p>
       </div>
+
+         <PWAInstallPrompt />
 
       {/* EASTER EGG */}
       <Dialog open={showEgg} onOpenChange={setShowEgg}>
