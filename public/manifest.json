@@ -1,21 +1,22 @@
 {
-  "short_name": "Anesthesie",
-  "name": "Anesthesie Kortrijk",
+  "short_name": "Ane Kortrijk",
+  "name": "Anesthesie AZ Groeninge",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/favicon.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "sizes": "192x192"
+      "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
   "start_url": "/",
-  "background_color": "#ffffff",
   "display": "standalone",
-  "theme_color": "#0d9488",
-  "description": "Klinische protocollen en calculators voor de dienst Anesthesie."
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "orientation": "portrait"
 }

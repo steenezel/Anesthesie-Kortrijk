@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   BookOpen, 
@@ -17,6 +17,7 @@ import {
   DialogTitle 
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { quotes } from "@/data/quotes";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 
 const categories = [
@@ -75,7 +76,13 @@ const categories = [
 export default function Home() {
   const [tapCount, setTapCount] = useState(0);
   const [showEgg, setShowEgg] = useState(false);
+  const [currentQuote, setCurrentQuote] = useState({ text: "", author: "" });
 
+  useEffect(() => {
+    // Kies een willekeurige index uit de array
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    setCurrentQuote(quotes[randomIndex]);
+  }, []);
   const handleLogoTap = () => {
     setTapCount((prev) => prev + 1);
     if (tapCount + 1 >= 3) {
@@ -112,10 +119,13 @@ export default function Home() {
   </DialogHeader>
   <div className="space-y-4 pt-4">
     <div className="p-4 bg-white rounded-2xl border border-orange-100 shadow-sm">
-      <p className="text-xs italic text-slate-600">
-        "Anesthesie: 99% verveling, 1% pure paniek, en 100% koffie-afhankelijkheid."
-      </p>
-    </div>
+  <p className="text-xs italic text-slate-600 leading-relaxed">
+    "{currentQuote.text}"
+  </p>
+  <p className="text-[10px] text-right mt-3 font-black text-orange-400 uppercase tracking-widest">
+    — {currentQuote.author}
+  </p>
+</div>
     
     {/* DE NIEUWE GAME KNOP */}
     <Link href="/game">
