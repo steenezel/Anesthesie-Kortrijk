@@ -2,42 +2,34 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { Layout } from "@/components/layout";
-import { Analytics } from "@vercel/analytics/react";
-import Home from "@/pages/home";
-import ProtocolDetail from "@/pages/protocol-detail";
-import ProtocolList from "./pages/protocol-list";
-import Blocks from "@/pages/blocks";
-import BlockDetail from "@/pages/block-detail";
-import CalculatorPage from "@/pages/calculator";
-import ChecklistPage from "@/pages/checklist";
-import InfoPage from "@/pages/info";
+import { BottomNav } from "@/components/nav-bar"; // Je navigatiebalk
 import NotFound from "@/pages/not-found";
+import Home from "@/pages/home";
+import ProtocolsPage from "@/pages/protocols";
+import BlocksPage from "@/pages/blocks";
+import CalculatorPage from "@/pages/calculator";
 import ContactsPage from "@/pages/contacts";
-import GamePage from "@/pages/game";
 import OnboardingPage from "@/pages/onboarding";
-import { BottomNav } from "@/components/bottom-nav";
+import GamePage from "@/pages/game";
 
 function Router() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 max-w-2xl mx-auto w-full">
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/protocols" component={ProtocolList} />
-          <Route path="/protocols/:discipline/:id" component={ProtocolDetail} />
-          <Route path="/blocks" component={Blocks} />
-          <Route path="/blocks/:id" component={BlockDetail} />
-          <Route path="/calculator" component={CalculatorPage} />
-          <Route path="/contacts" component={ContactsPage} />
-          <Route path="/game" component={GamePage} />
-          <Route path="/checklist" component={ChecklistPage} />
-          <Route path="/info" component={InfoPage} />
-          <Route path="/onboarding" component={OnboardingPage} />
-          <Route component={NotFound} />
-        </Switch>
-      </main>
-      <BottomNav /> {/* DIT MAAKT HET GLOBALE NAVIGATIE */}
+    <div className="min-h-screen bg-slate-50 pb-20"> {/* pb-20 maakt ruimte voor de BottomNav */}
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/protocols" component={ProtocolsPage} />
+        <Route path="/blocks" component={BlocksPage} />
+        <Route path="/calculator" component={CalculatorPage} />
+        <Route path="/contacts" component={ContactsPage} />
+        <Route path="/onboarding" component={OnboardingPage} />
+        <Route path="/game" component={GamePage} />
+        
+        {/* Fallback naar 404 */}
+        <Route component={NotFound} />
+      </Switch>
+      
+      {/* Navigatiebalk staat hier: altijd bereikbaar */}
+      <BottomNav />
     </div>
   );
 }
@@ -45,9 +37,8 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster />
-      <Analytics />
       <Router />
+      <Toaster /> {/* Voor meldingen zoals "Gekopieerd naar klembord" */}
     </QueryClientProvider>
   );
 }
