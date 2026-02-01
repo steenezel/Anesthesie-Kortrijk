@@ -15,6 +15,7 @@ import InfoPage from "@/pages/info";
 import NotFound from "@/pages/not-found";
 import ContactsPage from "@/pages/contacts";
 import GamePage from "@/pages/game";
+import OnboardingPage from "@/pages/onboarding";
 import { BottomNav } from "@/components/bottom-nav";
 
 function Router() {
@@ -32,6 +33,7 @@ function Router() {
           <Route path="/game" component={GamePage} />
           <Route path="/checklist" component={ChecklistPage} />
           <Route path="/info" component={InfoPage} />
+          <Route path="/onboarding" component={OnboardingPage} />
           <Route component={NotFound} />
         </Switch>
       </main>
