@@ -5,7 +5,8 @@ import path from "path";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 import { metaImagesPlugin } from "./vite-plugin-meta-images";
 import { fileURLToPath } from "url";
-import { VitePWA } from "vite-plugin-pwa"; // 1. Importeer de PWA plugin
+import { VitePWA } from "vite-plugin-pwa";
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'; 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,9 +16,19 @@ export default defineConfig({
     runtimeErrorOverlay(),
     tailwindcss(),
     metaImagesPlugin(),
-    // 2. Configureer de PWA Master Switch
+    // UITGEBREIDE IMAGE OPTIMIZER
+    ViteImageOptimizer({
+      test: /\.(jpe?g|png|gif|tiff|webp|svg|avif)$/i,
+      includePublic: true,
+      logStats: true,
+      png: { quality: 80 },
+      jpeg: { quality: 80 },
+      webp: { quality: 75 }, // Balans tussen scherpte en snelheid
+      avif: { quality: 70 },
+    }),
+    // PWA CONFIGURATIE
     VitePWA({
-      registerType: 'autoUpdate', // Cruciaal voor je kritische gebruikers
+      registerType: 'autoUpdate',
       workbox: {
         cleanupOutdatedCaches: true,
         skipWaiting: true,
@@ -27,7 +38,7 @@ export default defineConfig({
         name: 'Anesthesie Kortrijk',
         short_name: 'Anesthesie',
         description: 'Clinical Decision Support voor AZ Groeninge',
-        theme_color: '#0d9488', // De teal kleur van je app
+        theme_color: '#0d9488',
         icons: [
           {
             src: 'icon-192.png',
@@ -60,11 +71,6 @@ export default defineConfig({
       "@db": path.resolve(__dirname, "./db"),
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
-  },
-  css: {
-    postcss: {
-      plugins: [],
-    },
   },
   root: "./", 
   build: {

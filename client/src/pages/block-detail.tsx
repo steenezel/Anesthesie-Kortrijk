@@ -3,14 +3,13 @@ import { ChevronLeft, Eye, Image as ImageIcon, Info, Layers, Crosshair } from "l
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
-// NIEUW: Importeer de zoom bibliotheek en styles
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
 // Scan alle markdown bestanden
 const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
 
-// HULPCOMPONENT: ImageGrid nu met ZOOM
+// HULPCOMPONENT: ImageGrid met ZOOM
 function ImageGrid({ images, title }: { images: string[], title: string }) {
   if (!images || images.length === 0) return null;
   return (
@@ -18,8 +17,6 @@ function ImageGrid({ images, title }: { images: string[], title: string }) {
       <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">{title}</h3>
       <div className="grid gap-3">
         {images.map((img, index) => (
-          // We wikkelen elke afbeelding in de Zoom component
-          // Let op: de 'key' moet nu op de buitenste Zoom wrapper staan
           <Zoom key={index}>
             <img 
               src={img} 
@@ -36,6 +33,12 @@ function ImageGrid({ images, title }: { images: string[], title: string }) {
 export default function BlockDetail() {
   const [, params] = useRoute("/blocks/:id");
   const id = params?.id;
+
+  // NIEUW: Logica voor dynamische terug-link (bv. vanuit een protocol)
+  const queryParams = new URLSearchParams(window.location.search);
+  const backUrl = queryParams.get('from') || '/blocks';
+  const isFromProtocol = queryParams.has('from');
+
   const path = `../content/blocks/${id}.md`;
   const file = allBlocks[path] as any;
 
@@ -43,7 +46,6 @@ export default function BlockDetail() {
 
   const rawContent = file.default as string;
   
-  // Parsers
   const getField = (field: string) => {
     const match = rawContent.match(new RegExp(`${field}: "(.*)"`));
     return match ? match[1] : "";
@@ -73,15 +75,15 @@ export default function BlockDetail() {
   };
 
   const heroImage = blockData.sonoImages.length > 0 ? blockData.sonoImages[0] : null;
-
   const extraSonoImages = blockData.sonoImages.slice(1);
   
   return (
     <div className="space-y-6 pb-24 max-w-2xl mx-auto">
-      {/* Navigation */}
-      <Link href="/blocks">
+      {/* DYNAMISCHE NAVIGATIE */}
+      <Link href={backUrl}>
         <a className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-[0.2em] hover:opacity-70 transition-opacity">
-          <ChevronLeft className="h-4 w-4 mr-1" /> Terug naar overzicht
+          <ChevronLeft className="h-4 w-4 mr-1" /> 
+          {isFromProtocol ? "Terug naar protocol" : "Terug naar overzicht"}
         </a>
       </Link>
 
@@ -93,15 +95,13 @@ export default function BlockDetail() {
       <div className="aspect-video bg-slate-100 rounded-3xl border-2 border-slate-200 relative overflow-hidden shadow-md group">
         {heroImage ? (
           <>
-            {/* Wikkel de hero image in Zoom */}
             <Zoom>
-                <img 
-                  src={heroImage} 
-                  alt="Hoofd-sono-anatomie" 
-                  className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700 cursor-zoom-in" 
-                />
+              <img 
+                src={heroImage} 
+                alt="Hoofd-sono-anatomie" 
+                className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700 cursor-zoom-in" 
+              />
             </Zoom>
-            {/* De overlay met het oogje blijft erbuiten, zodat die niet mee zoomt */}
             <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] text-white font-black uppercase tracking-widest flex items-center pointer-events-none">
               <Eye className="h-3 w-3 mr-2 text-teal-400" /> Sono-View
             </div>

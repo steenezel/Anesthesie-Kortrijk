@@ -4,4 +4,4 @@ discipline: "orthopedie"
 lastUpdated: "Januari 2026"
 ---
 
-Inhoud volgt.
+[Bekijk PENG block](/blocks/peng?from=/protocols/nieuwe-heup)
