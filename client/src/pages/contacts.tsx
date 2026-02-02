@@ -8,6 +8,12 @@ const contacts = [
   { name: "Theo Sykora", role: "Staf", phone: "3057", category: "staf" },
   { name: "Stefaan Carlier", role: "Staf", phone: "3044", category: "staf" },
   { name: "Matthias Desmet", role: "Staf", phone: "3050", category: "staf" },
+  { name: "Carmen Alegret", role: "Staf", phone: "3040", category: "staf" },
+  { name: "Nathalie Becaus", role: "Staf", phone: "3041", category: "staf" },
+  { name: "Simon Bogaert", role: "Staf", phone: "3078", category: "staf" },
+  { name: "Emma Collin", role: "ASO", phone: "4805", category: "extra" },
+  { name: "Margaux Vervenne", role: "ASO", phone: "4808", category: "extra" },
+  { name: "Sanne Decorte", role: "ASO", phone: "4809", category: "extra" },
   { name: "OK Secretariaat", role: "Support", phone: "3030", category: "extra" },
 ];
 
