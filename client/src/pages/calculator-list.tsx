@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShieldAlert, UserCheck, ChevronRight } from "lucide-react";
+import { ShieldAlert, apple, ChevronRight } from "lucide-react";
 
 const calculators = [
   {
@@ -16,7 +16,7 @@ const calculators = [
     title: "Apfel-Score",
     description: "Risico op PONV",
     path: "/calculator/apfel",
-    icon: <UserCheck className="h-6 w-6 text-blue-600" />,
+    icon: <apple className="h-6 w-6 text-blue-600" />,
     color: "border-blue-100 bg-blue-50"
   }
 ];

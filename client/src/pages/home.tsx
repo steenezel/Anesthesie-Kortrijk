@@ -4,7 +4,7 @@ import {
   BookOpen, 
   ChevronRight, 
   Syringe, 
-  ExternalLink, 
+  tablets, 
   Phone, 
   Calculator
 } from "lucide-react";
@@ -64,7 +64,7 @@ const categories = [
   {
     title: "E17 Bridginglink",
     description: "Beleid bloedverdunners.",
-    icon: ExternalLink,
+    icon: tablets,
     href: "https://e17bridginglinkbloedverdunners.be/",
     color: "bg-red-500",
     lightColor: "bg-red-50",
