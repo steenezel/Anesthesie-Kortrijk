@@ -66,6 +66,7 @@
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.66.0",
     "react-markdown": "^9.0.0",
+    "react-medium-image-zoom": "^5.2.14",
     "@tailwindcss/typography": "^0.5.10",
     "react-resizable-panels": "^2.1.9",
     "recharts": "^2.15.4",
