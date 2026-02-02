@@ -18,6 +18,7 @@ import NotFound from "@/pages/not-found";
 import ContactsPage from "@/pages/contacts";
 import GamePage from "@/pages/game";
 import OnboardingPage from "@/pages/onboarding";
+import TailwindTest from "@/pages/test-v4";
 import { BottomNav } from "@/components/bottom-nav";
 
 function Router() {
@@ -38,6 +39,7 @@ function Router() {
           <Route path="/checklist" component={ChecklistPage} />
           <Route path="/info" component={InfoPage} />
           <Route path="/onboarding" component={OnboardingPage} />
+          <Route path="/test" component={TailwindTest} />
           <Route component={NotFound} />
         </Switch>
       </main>

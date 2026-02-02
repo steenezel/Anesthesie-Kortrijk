@@ -38,6 +38,13 @@
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
 
+  /* We definiëren een specifieke kleur voor AZ Groeninge */
+  --color-az-teal: #0d9488;
+  --color-az-dark: #0f172a;
+  
+  /* We testen de nieuwe 'spacing scale' */
+  --spacing-xl-safe: 4rem;
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
