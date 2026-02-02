@@ -2,12 +2,14 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { BottomNav } from "@/components/nav-bar"; // Je navigatiebalk
+import { BottomNav } from "@/components/bottom-nav"; // Je navigatiebalk
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import ProtocolsPage from "@/pages/protocols";
 import BlocksPage from "@/pages/blocks";
-import CalculatorPage from "@/pages/calculator";
+import CalculatorsHub from "@/pages/calculators"; 
+import LastCalculator from "@/pages/calculators/last";
+import ApfelScore from "@/pages/calculators/apfel";
 import ContactsPage from "@/pages/contacts";
 import OnboardingPage from "@/pages/onboarding";
 import GamePage from "@/pages/game";
@@ -19,7 +21,9 @@ function Router() {
         <Route path="/" component={Home} />
         <Route path="/protocols" component={ProtocolsPage} />
         <Route path="/blocks" component={BlocksPage} />
-        <Route path="/calculator" component={CalculatorPage} />
+        <Route path="/calculators" component={CalculatorsHub} />
+        <Route path="/calculators/last" component={LastCalculator} />
+        <Route path="/calculators/apfel" component={ApfelScore} />
         <Route path="/contacts" component={ContactsPage} />
         <Route path="/onboarding" component={OnboardingPage} />
         <Route path="/game" component={GamePage} />

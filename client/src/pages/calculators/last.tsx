@@ -22,7 +22,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 
-export default function CalculatorPage() {
+export default function LastCalculator() {
   const { toast } = useToast();
   const [weight, setWeight] = useState<number>(70);
   const [isHypervascular, setIsHypervascular] = useState(false);
