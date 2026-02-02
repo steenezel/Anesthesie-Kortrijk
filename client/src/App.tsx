@@ -27,7 +27,7 @@ function Router() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/protocols" component={ProtocolList} />
-          <Route path="/protocols/:path*" component={ProtocolDetail} />
+          <Route path="/protocols/:id" component={ProtocolDetail} />
           <Route path="/blocks" component={Blocks} />
           <Route path="/blocks/:id" component={BlockDetail} />
           <Route path="/calculator" component={CalculatorList} /> {/* De Hub */}

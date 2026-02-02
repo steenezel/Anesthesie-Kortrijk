@@ -83,7 +83,7 @@ export default function ProtocolList() {
 
           <div className="grid gap-2">
             {filteredProtocols.map((protocol) => (
-              <Link key={protocol.id} href={`/protocols/${protocol.discipline}/${protocol.id}`}>
+              <Link key={protocol.id} href={`/protocols/${protocol.id}`}>
                 <Card className="hover:border-blue-400 transition-all cursor-pointer group border-slate-200 shadow-none hover:shadow-md active:scale-[0.98]">
                   <CardContent className="p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
