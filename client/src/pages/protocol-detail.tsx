@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
 
 export default function ProtocolDetail() {
-  const [, params] = useRoute("/protocols/:discipline/:id");
+  const [, params] = useRoute("/protocols/:discipline/:id*");
   const { discipline, id } = params || {};
   
   // We zoeken de sleutel in de lijst die (ongeacht hoofdletters) overeenkomt
