@@ -11,11 +11,19 @@ export default function ProtocolList() {
   // 1. Data voorbereiden uit de bestanden
   const protocols = Object.keys(allProtocols).map((path) => {
     const pathParts = path.split('/');
-    const discipline = pathParts[pathParts.length - 2];
+    let discipline = pathParts[pathParts.length - 2];
+    
+    // Als de discipline 'protocols' is, betekent het dat het bestand in de hoofdmap staat
+    if (discipline.toLowerCase() === 'protocols') {
+      discipline = 'Algemeen';
+    }
+
     const fileName = pathParts[pathParts.length - 1].replace('.md', '');
-    const rawContent = (allProtocols[path] as any).default;
-    const titleMatch = rawContent.match(/title: "(.*)"/);
-    const title = titleMatch ? titleMatch[1] : fileName;
+    const fileData = allProtocols[path] as any;
+    const rawContent = fileData.default || fileData;
+    
+    const titleMatch = typeof rawContent === 'string' ? rawContent.match(/title: "(.*)"/) : null;
+    const title = titleMatch ? titleMatch[1] : fileName.replace(/-/g, ' ');
 
     return { discipline, id: fileName, title };
   });
