@@ -30,12 +30,25 @@
     <link rel="apple-touch-icon" href="/favicon.png">
     <link rel="apple-touch-startup-image" href="/favicon.png">
 
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js');
-        });
-      }
+   <script>
+  // 1. HET VEILIGHEIDSNET: Voorkom wit scherm bij cache-fouten
+  window.addEventListener('error', function(e) {
+    // Als de browser een bestand (.js of .css) niet kan vinden/laden
+    if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') {
+      console.warn('Bestand niet gevonden (waarschijnlijk oude cache). Herladen...');
+      window.location.reload();
+    }
+  }, true);
+
+  // 2. AUTOMATISCHE REGISTRATIE: Alleen nodig als de plugin het niet injecteert
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      // De PWA plugin genereert zelf de sw.js tijdens de build
+      navigator.serviceWorker.register('/sw.js').catch(err => {
+        console.error('ServiceWorker registratie mislukt:', err);
+      });
+    });
+  }
     </script>
   </head>
   <body>
