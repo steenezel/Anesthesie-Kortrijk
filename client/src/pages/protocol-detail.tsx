@@ -4,7 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { Card, CardContent } from "@/components/ui/card";
 
 // We scannen alle markdown bestanden
-const allProtocols = import.meta.glob('../src/content/protocols/**/*.md', { query: 'raw', eager: true });
+const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
 
 export default function ProtocolDetail() {
   const [, params] = useRoute("/protocols/:path*");
