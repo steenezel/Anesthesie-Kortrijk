@@ -10,7 +10,6 @@ position_images: "/images/blocks/peng-positioning.jpg"
 diagram_images: "/images/blocks/peng-anatomy-diagram.png"
 ---
 
-### Tips voor AZ Groeninge
 * **Volume:** Gebruik 20ml lokaal anestheticum (bv. Chirocaïne 0,25%) voor een goede spreiding onder de psoas-pees richting de rami van de n. femoralis en n. obturatorius.
 * **Plaatsing:** De probe wordt initieel in een hoek van 45 graden geplaatst op de lijn tussen de AIIS en de eminentia iliopubica.
 * **Naald:** Gebruik bij voorkeur een 80mm of 100mm stimuplex-naald vanwege de diepte bij oudere patiënten.
