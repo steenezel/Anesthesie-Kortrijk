@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   BookOpen, 
-  ShieldCheck, 
   ChevronRight, 
   Syringe, 
   ExternalLink, 
-  Phone 
+  Phone, 
+  Calculator
 } from "lucide-react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
@@ -23,7 +23,7 @@ import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
 const categories = [
   {
     title: "Protocollen",
-    description: "Klinische richtlijnen per discipline.",
+    description: "Richtlijnen per discipline.",
     icon: BookOpen,
     href: "/protocols",
     color: "bg-blue-500",
@@ -33,7 +33,7 @@ const categories = [
   },
   {
     title: "Blocks",
-    description: "Regionale technieken & doseringen.",
+    description: "LRA tips",
     icon: Syringe,
     href: "/blocks",
     color: "bg-purple-500",
@@ -42,9 +42,9 @@ const categories = [
     isExternal: false
   },
   {
-    title: "BlockSafe",
-    description: "LAST calculator & Lipid protocol.",
-    icon: ShieldCheck,
+    title: "Calculators",
+    description: "LAST, Apfel, ...",
+    icon: Calculator,
     href: "/calculator",
     color: "bg-teal-600",
     lightColor: "bg-teal-50",
@@ -53,12 +53,12 @@ const categories = [
   },
   {
     title: "Telefoonlijst",
-    description: "Interne nummers Staf & ASO's.",
+    description: "Interne nummers.",
     icon: Phone,
     href: "/contacts",
-    color: "bg-red-500",
-    lightColor: "bg-red-50",
-    borderColor: "border-red-200",
+    color: "bg-orange-500",
+    lightColor: "bg-orange-50",
+    borderColor: "border-orange-200",
     isExternal: false
   },
   {
@@ -66,9 +66,9 @@ const categories = [
     description: "Beleid bloedverdunners.",
     icon: ExternalLink,
     href: "https://e17bridginglinkbloedverdunners.be/",
-    color: "bg-orange-500",
-    lightColor: "bg-orange-50",
-    borderColor: "border-orange-200",
+    color: "bg-red-500",
+    lightColor: "bg-red-50",
+    borderColor: "border-red-200",
     isExternal: true
   }
 ];

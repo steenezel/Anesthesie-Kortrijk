@@ -7,7 +7,7 @@ export function BottomNav() {
   const navItems = [
     { href: "/", icon: Home, label: "Home" },
     { href: "/protocols", icon: BookOpen, label: "Protocollen" },
-    { href: "/calculator", icon: Calculator, label: "SafeDose" },
+    { href: "/calculator", icon: Calculator, label: "Calculator" },
     { href: "/contacts", icon: Phone, label: "Lijst" },
     { href: "/onboarding", icon: GraduationCap, label: "Onboard" },
   ];

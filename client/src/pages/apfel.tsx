@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const factors = [
-  { id: "gender", label: "Vrouwelijk geslacht" },
+  { id: "gender", label: "Vrouw" },
   { id: "smoking", label: "Niet-roker" },
-  { id: "history", label: "Anamnese PONV / reisziekte" },
+  { id: "history", label: "Voorgeschiedenis PONV / reisziekte" },
   { id: "opioids", label: "Postoperatieve opioïden gepland" }
 ];
 
@@ -60,7 +60,7 @@ export default function ApfelCalculator() {
           {score >= 3 && (
             <div className="flex gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs">
               <AlertCircle className="h-5 w-5 shrink-0 text-amber-600" />
-              <p><strong>Hoog risico:</strong> Overweeg TIVA en/of triple profylaxe (bv. Dexamethason + Alizapride + Ondansetron).</p>
+              <p><strong>Hoog risico:</strong> Overweeg TIVA en/of triple profylaxe (bv. Dexamethason + Litican + Ondansetron).</p>
             </div>
           )}
         </CardContent>
