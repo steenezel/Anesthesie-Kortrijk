@@ -21,7 +21,7 @@ export default function ProtocolDetail() {
       <div className="p-10 text-center">
         <FileWarning className="h-10 w-10 mx-auto text-slate-300 mb-4" />
         <p className="text-slate-500 font-bold uppercase tracking-tighter">Protocol niet gevonden</p>
-        <Link href="/protocols" className="text-teal-600 text-xs font-black uppercase underline">Terug</Link>
+        <Link href="/protocols" className="text-teal-600 text-xs font-black uppercase underline">Terug naar lijst</Link>
       </div>
     );
   }

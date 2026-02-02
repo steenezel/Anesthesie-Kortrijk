@@ -83,19 +83,19 @@ export default function ProtocolList() {
 
           <div className="grid gap-2">
             {filteredProtocols.map((protocol) => (
-              <Link key={protocol.id} href={`/protocols/${protocol.id}`}>
-                <Card className="hover:border-blue-400 transition-all cursor-pointer group border-slate-200 shadow-none hover:shadow-md active:scale-[0.98]">
-                  <CardContent className="p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <BookOpen className="h-4 w-4 text-slate-300 group-hover:text-blue-500" />
-                      <span className="font-bold text-slate-700 uppercase tracking-tight text-sm">
-                        {protocol.title}
-                      </span>
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-blue-500" />
-                  </CardContent>
-                </Card>
-              </Link>
+             <Link key={protocol.id} href={`/protocols/${protocol.id}`}>
+  <Card className="hover:border-teal-400 transition-all cursor-pointer border-slate-200 shadow-none">
+    <CardContent className="p-4 flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <BookOpen className="h-4 w-4 text-slate-300" />
+        <span className="font-bold text-slate-700 uppercase tracking-tight text-sm">
+          {protocol.title}
+        </span>
+      </div>
+      <ChevronRight className="h-4 w-4 text-slate-300" />
+    </CardContent>
+  </Card>
+</Link>
             ))}
           </div>
         </div>
