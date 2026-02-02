@@ -17,6 +17,10 @@
       "destination": "server/index.ts"
     },
     {
+      "source": "/protocols/(.*)",
+      "destination": "/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
