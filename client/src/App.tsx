@@ -2,51 +2,52 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { BottomNav } from "@/components/bottom-nav"; 
-import NotFound from "@/pages/not-found";
+import { Layout } from "@/components/layout";
+import { Analytics } from "@vercel/analytics/react";
 import Home from "@/pages/home";
-import ProtocolsPage from "@/pages/protocols"; // Dit zoekt naar /protocols/index.tsx
-import DisciplineDetail from "@/pages/protocols/DisciplineDetail"; // NIEUW: De ontbrekende import
-import BlocksPage from "@/pages/blocks";
-import CalculatorsHub from "@/pages/calculators"; 
-import LastCalculator from "@/pages/calculators/last";
-import ApfelScore from "@/pages/calculators/apfel";
+import ProtocolDetail from "@/pages/protocol-detail";
+import ProtocolList from "./pages/protocol-list";
+import Blocks from "@/pages/blocks";
+import BlockDetail from "@/pages/block-detail";
+import CalculatorPage from "@/pages/calculator";
+import ChecklistPage from "@/pages/checklist";
+import InfoPage from "@/pages/info";
+import NotFound from "@/pages/not-found";
 import ContactsPage from "@/pages/contacts";
-import OnboardingPage from "@/pages/onboarding";
 import GamePage from "@/pages/game";
+import OnboardingPage from "@/pages/onboarding";
+import { BottomNav } from "@/components/bottom-nav";
 
 function Router() {
   return (
-    <div className="min-h-screen bg-slate-50 pb-20">
-      <Switch>
-        <Route path="/" component={Home} />
-        
-        {/* Protocol Routes */}
-        <Route path="/protocols" component={ProtocolsPage} />
-        <Route path="/protocols/:discipline" component={DisciplineDetail} />
-        
-        <Route path="/blocks" component={BlocksPage} />
-        <Route path="/calculators" component={CalculatorsHub} />
-        <Route path="/calculators/last" component={LastCalculator} />
-        <Route path="/calculators/apfel" component={ApfelScore} />
-        <Route path="/contacts" component={ContactsPage} />
-        <Route path="/onboarding" component={OnboardingPage} />
-        <Route path="/game" component={GamePage} />
-        
-        <Route component={NotFound} />
-      </Switch>
-      
-      <BottomNav />
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 max-w-2xl mx-auto w-full">
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/protocols" component={ProtocolList} />
+          <Route path="/protocols/:discipline/:id" component={ProtocolDetail} />
+          <Route path="/blocks" component={Blocks} />
+          <Route path="/blocks/:id" component={BlockDetail} />
+          <Route path="/calculator" component={CalculatorPage} />
+          <Route path="/contacts" component={ContactsPage} />
+          <Route path="/game" component={GamePage} />
+          <Route path="/checklist" component={ChecklistPage} />
+          <Route path="/info" component={InfoPage} />
+          <Route path="/onboarding" component={OnboardingPage} />
+          <Route component={NotFound} />
+        </Switch>
+      </main>
+      <BottomNav /> {/* DIT MAAKT HET GLOBALE NAVIGATIE */}
     </div>
   );
 }
 
 function App() {
   return (
-    // Verander 'client={client}' naar 'client={queryClient}'
     <QueryClientProvider client={queryClient}>
-      <Router />
       <Toaster />
+      <Analytics />
+      <Router />
     </QueryClientProvider>
   );
 }
