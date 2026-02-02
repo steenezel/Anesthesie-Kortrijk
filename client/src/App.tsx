@@ -9,7 +9,9 @@ import ProtocolDetail from "@/pages/protocol-detail";
 import ProtocolList from "./pages/protocol-list";
 import Blocks from "@/pages/blocks";
 import BlockDetail from "@/pages/block-detail";
-import CalculatorPage from "@/pages/calculator";
+import CalculatorPage from "@/pages/last";
+import CalculatorList from "@/pages/calculator-list";
+import ApfelCalculator from "@/pages/apfel";
 import ChecklistPage from "@/pages/checklist";
 import InfoPage from "@/pages/info";
 import NotFound from "@/pages/not-found";
@@ -28,7 +30,9 @@ function Router() {
           <Route path="/protocols/:discipline/:id" component={ProtocolDetail} />
           <Route path="/blocks" component={Blocks} />
           <Route path="/blocks/:id" component={BlockDetail} />
-          <Route path="/calculator" component={CalculatorPage} />
+          <Route path="/calculator" component={CalculatorList} /> {/* De Hub */}
+          <Route path="/calculator/last" component={CalculatorPage} /> {/* Je bestaande LAST */}
+          <Route path="/calculator/apfel" component={ApfelCalculator} />
           <Route path="/contacts" component={ContactsPage} />
           <Route path="/game" component={GamePage} />
           <Route path="/checklist" component={ChecklistPage} />
