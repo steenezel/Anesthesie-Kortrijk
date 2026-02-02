@@ -31,25 +31,33 @@
     <link rel="apple-touch-startup-image" href="/favicon.png">
 
    <script>
-  // 1. HET VEILIGHEIDSNET: Voorkom wit scherm bij cache-fouten
+  // 1. VOORKOM RELOAD LOOPS: 
+  // We checken of we al herladen zijn in de laatste 5 seconden.
+  const lastReload = sessionStorage.getItem('last-pwa-reload');
+  const now = Date.now();
+
   window.addEventListener('error', function(e) {
-    // Als de browser een bestand (.js of .css) niet kan vinden/laden
+    // Alleen ingrijpen bij kritieke script/link fouten
     if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') {
-      console.warn('Bestand niet gevonden (waarschijnlijk oude cache). Herladen...');
+      // Als we minder dan 5 sec geleden al herladen hebben, stop dan (voorkom loop)
+      if (lastReload && (now - parseInt(lastReload) < 5000)) {
+        console.error('Kritieke fout, maar reload loop gedetecteerd. Stop herladen.');
+        return;
+      }
+      
+      sessionStorage.setItem('last-pwa-reload', now.toString());
       window.location.reload();
     }
   }, true);
 
-  // 2. AUTOMATISCHE REGISTRATIE: Alleen nodig als de plugin het niet injecteert
+  // 2. SERVICE WORKER REGISTRATIE
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      // De PWA plugin genereert zelf de sw.js tijdens de build
-      navigator.serviceWorker.register('/sw.js').catch(err => {
-        console.error('ServiceWorker registratie mislukt:', err);
-      });
+      // Laat de Vite PWA plugin zijn werk doen via de standaard sw.js
+      navigator.serviceWorker.register('/sw.js', { scope: '/' });
     });
   }
-    </script>
+</script>
   </head>
   <body>
     <div id="root"></div>
