@@ -117,7 +117,7 @@ export default function Home() {
       ☕ De Koffiekamer
     </DialogTitle>
   </DialogHeader>
-  <div className="space-y-4 pt-4">
+  <div className="space-y-6 pt-4">
     <div className="p-4 bg-white rounded-2xl border border-orange-100 shadow-sm">
   <p className="text-xs italic text-slate-600 leading-relaxed">
     "{currentQuote.text}"
@@ -129,13 +129,13 @@ export default function Home() {
     
     {/* DE NIEUWE GAME KNOP */}
     <Link href="/game">
-      <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-teal-500 to-blue-600 p-6 text-white cursor-pointer shadow-lg shadow-teal-500/30 hover:shadow-xl hover:scale-[1.02] transition-all">
-        <div className="absolute top-0right-0 -mt-4 -mr-4 bg-white/20 w-24 h-24 rounded-full blur-2xl"></div>
-        <Syringe className="h-12 w-12 mb-4 text-white/80 -rotate-90 group-hover:rotate-0 transition-transform duration-500" />
-        <h3 className="text-2xl font-black uppercase tracking-tighter italic">Flappy Anesthetist</h3>
-        <p className="text-sm font-bold opacity-90">Red de luchtweg! (Bèta)</p>
-      </div>
-    </Link>
+              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 p-6 text-white cursor-pointer shadow-lg shadow-teal-500/20 hover:shadow-xl hover:scale-[1.02] transition-all">
+                <div className="absolute top-0 right-0 -mt-4 -mr-4 bg-white/20 w-24 h-24 rounded-full blur-2xl"></div>
+                <Syringe className="h-10 w-10 mb-3 text-white/80 -rotate-90 group-hover:rotate-0 transition-transform duration-500" />
+                <h3 className="text-2xl font-black uppercase tracking-tighter italic leading-none">Flappy Anesthetist</h3>
+                <p className="text-[10px] font-bold opacity-90 uppercase tracking-widest mt-1">Red de luchtweg!</p>
+              </div>
+            </Link>
 
     <div className="grid grid-cols-2 gap-3">
       <a href="https://www.hln.be" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center p-4 bg-white border-2 border-blue-100 text-blue-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-50 transition-colors">
