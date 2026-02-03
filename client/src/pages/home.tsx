@@ -146,6 +146,7 @@ export default function Home() {
       <a href="https://www.websudoku.com" target="_blank" rel="noopener noreferrer" 
       className="flex items-center justify-center p-4 bg-white border-2 border-slate-200 text-slate-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-colors"
       >
+        Sudoku
       </a>
     </div>
     <Button 
