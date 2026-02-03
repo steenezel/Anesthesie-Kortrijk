@@ -137,12 +137,15 @@ export default function Home() {
               </div>
             </Link>
 
-    <div className="grid grid-cols-2 gap-3">
-      <a href="https://www.hln.be" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center p-4 bg-white border-2 border-blue-100 text-blue-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-50 transition-colors">
+    <div className="grid grid-cols-2 gap-3 mt-10">
+      <a href="https://www.hln.be" target="_blank" rel="noopener noreferrer" 
+      className="flex items-center justify-center p-4 bg-red-50 border-2 border-red-200 text-red-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-red-100 transition-colors"
+      >
         HLN Nieuws
       </a>
-      <a href="https://www.websudoku.com" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center p-4 bg-white border-2 border-slate-200 text-slate-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-colors">
-        Sudoku
+      <a href="https://www.websudoku.com" target="_blank" rel="noopener noreferrer" 
+      className="flex items-center justify-center p-4 bg-white border-2 border-slate-200 text-slate-700 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-colors"
+      >
       </a>
     </div>
     <Button 
