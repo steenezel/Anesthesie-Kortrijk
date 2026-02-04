@@ -6,20 +6,15 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs', '**/ui/*.tsx'], // We negeren de UI-componenten (Shadcn)
+  ignorePatterns: ['dist', '.eslintrc.cjs', '**/ui/*.tsx'], 
   parser: '@typescript-eslint/parser',
-  plugins: ['react-refresh'],
+  plugins: [], // We laten dit volledig LEEG om fouten te vermijden
   rules: {
-    // We zetten de crashende regel uit
-    'react-refresh/only-export-components': 'off',
-    
-    // We laten 'any' toe (gebeurt vaak bij medische calculators/data)
+    // We laten 'any' toe voor de medische data
     '@typescript-eslint/no-explicit-any': 'off',
     
-    // Ongebruikte variabelen zijn een waarschuwing, geen blokkade
+    // Ongebruikte variabelen en andere kleine zaken zijn enkel waarschuwingen
     '@typescript-eslint/no-unused-vars': 'warn',
-    
-    // Andere kleine irritaties omzetten naar waarschuwingen
     'prefer-const': 'warn',
     'react-hooks/exhaustive-deps': 'warn'
   },
