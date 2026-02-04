@@ -21,9 +21,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          npm install --no-package-lock
-          npm install eslint-plugin-react-refresh@latest --no-save
+        run: npm install
 
       - name: Type Check (TypeScript)
         run: npm run check
