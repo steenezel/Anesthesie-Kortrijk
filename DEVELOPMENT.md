@@ -1,34 +1,81 @@
-Project: Anesthesie Kortrijk (CDS Tool)
-Doel: Clinical Decision Support voor anesthesisten in AZ Groeninge.
+Anesthesie Kortrijk - Development Dossier v2.0
+1. Project-identiteit
+Naam: Anesthesie Kortrijk (AZ Groeninge)
 
-🛠️ Technische Architectuur
-Frontend: React 19 met Vite 7.
+Type: Clinical Decision Support (CDS) PWA
 
-Styling: Tailwind CSS v4 (Modernste engine, geconfigureerd via @import in index.css).
+Doel: Snelle raadpleging van protocollen, loco-regionale technieken (Blocks) en klinische calculators.
 
-Database & Server: Express server met Drizzle ORM en PostgreSQL (beheerd via drizzle-kit).
+2. Tech Stack
+Framework: React 19 + Vite 7 (TypeScript Strict Mode)
 
-PWA: Geconfigureerd voor offline gebruik via vite-plugin-pwa. Iconen bevinden zich in /public/icon-192.png en /public/icon-512.png.
+Routing: wouter (lichtgewicht routing)
 
-📂 Content Management & Routing
-Locatie: Alle protocollen staan in client/src/content/protocols/.
+Styling: Tailwind CSS v4
 
-Routing: Gebruikt een platte URL-structuur via wouter.
+UI Componenten: Radix UI, Shadcn UI, Lucide-React icons
 
-Pad: /protocols/:id (waarbij :id de exacte bestandsnaam is).
+Content: Markdown-gestuurd (react-markdown)
 
-Matching: ProtocolDetail.tsx scant de volledige content-map en matcht bestanden op basis van de bestandsnaam, ongeacht de submap (orthopedie, urologie, etc.).
+Interactie: Framer Motion (animaties), react-medium-image-zoom (voor klinische diagrammen)
 
-⚙️ Build & Optimalisatie
-Vercel: Gebruikt vercel.json met een "catch-all rewrite" naar index.html om 404-fouten bij diepe links (SPA-routing) te voorkomen.
+Build/PWA: vite-plugin-pwa (Workbox)
 
-Images: ViteImageOptimizer zorgt voor automatische .webp conversie (kwaliteit 75%) van alle klinische afbeeldingen.
+3. Architectuur & Navigatie
+De app gebruikt een dynamische scan-architectuur voor content via import.meta.glob. Bestanden in specifieke mappen verschijnen automatisch in de menu's.
 
-Plugins: Bevat metaImagesPlugin (voor automatische generatie van metadata/social images).
+Belangrijke Pagina's:
+Home.tsx: De centrale hub.
 
-⚠️ Belangrijk bij aanpassingen
-Nieuwe Protocollen: Voeg een .md bestand toe aan een submap in content/protocols/. Gebruik unieke bestandsnamen.
+ProtocolsPage.tsx: Lijst van disciplines, gescand uit client/src/content/protocols/.
 
-Links: Gebruik altijd /protocols/bestandsnaam (zonder de mapnaam in de URL).
+DisciplineDetail.tsx: Lijst van ingrepen binnen een geselecteerde discipline.
 
-Cross-links: Gebruik de ?from= parameter voor terugkeer-logica (bijv. /blocks/tap?from=/protocols/cystectomie).
+Blocks.tsx: Verticale lijst van LRA-technieken uit client/src/content/blocks/.
+
+ProtocolDetail.tsx & BlockDetail.tsx: De viewers voor de Markdown-content.
+
+4. Content Management (The Flat System)
+Er wordt gewerkt met een "platte" mappenstructuur om navigatie-fouten te voorkomen.
+
+Mappenstructuur:
+Protocollen: client/src/content/protocols/{discipline}/{ingreep}.md
+
+Blocks: client/src/content/blocks/{block-naam}.md
+
+Media:
+
+Afbeeldingen: public/images/protocols/
+
+Video's (MP4): public/videos/blocks/
+
+Markdown Features:
+Images: ![Beschrijving](/images/protocols/beeld.png) (automatisch zoombaar via de img component override).
+
+Video: video:/videos/blocks/demo.mp4 (wordt geparsed naar een inline videospeler via de p tag override).
+
+5. PWA & Deployment (Vercel)
+De app is geoptimaliseerd voor offline gebruik in het operatiekwartier.
+
+Build Config (vite.config.ts):
+Workbox Limiet: De cache-limiet is verhoogd naar 15-50MB om de gecombineerde JavaScript-chunks te ondersteunen.
+
+Exclusion: Video's worden uitgesloten van de PWA-precache (globIgnores) om build-crashes te vermijden.
+
+Build Target: De plugin scant enkel de dist/public map na de build.
+
+6. Design System (Kortrijkse Stijl)
+De UI volgt een strakke, klinische esthetiek:
+
+Typografie: font-black, uppercase, tracking-tighter voor koppen. tracking-widest voor secundaire info.
+
+Kleuren: Slate/Teal basis met kleur-gecodeerde iconen per categorie op de homepagina.
+
+Interactie: active:scale-[0.98] op alle knoppen voor directe haptische feedback.
+
+7. Bekende issues & Technical Debt
+PWA Cache: Bij een sterke toename van afbeeldingen moet de maximumFileSizeToCacheInBytes mogelijk verder verhoogd worden.
+
+Video Compressie: Video's moeten gecomprimeerd worden (<15MB) voor optimale laadtijden op ziekenhuis-Wi-Fi.
+
+Laatste Update: 4 februari 2026
