@@ -36,7 +36,7 @@ export default function Blocks() {
       {/* HEADER: Consistent met Protocols */}
       <header className="space-y-2">
         <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">
-          Blocks <span className="text-teal-600 italic">LRA</span>
+          Blocks <span className="text-teal-600">LRA</span>
         </h1>
         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
           AZ Groeninge • Locoregionale Anesthesie
