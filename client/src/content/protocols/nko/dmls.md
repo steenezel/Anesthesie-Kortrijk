@@ -7,32 +7,32 @@ lastUpdated: "Januari 2026"
 
 
 
-## Peroperatief – anesthesie
+**Peroperatief – anesthesie**
 
-# Inductie:
+***Inductie:***
 
-* Ultiva 1 µg/kg
-* Diprivan 2 mg/kg
-* Celocurine 2mg/kg
+- Ultiva 1 µg/kg
+- Diprivan 2 mg/kg
+- Celocurine 2mg/kg
 
-# Intubatie
+***Intubatie***
 
 Afhankelijk van chirurg maar *steeds oraal*.
 
-* Laser tube 5 of 5,5 of 6
-* DMLS tube (met methyleenblauw en fysiologisch) 4,5 of 5 of 5,5
-* Kleine gewapende tube 5 of 6
+- Laser tube 5 of 5,5 of 6
+- DMLS tube (met methyleenblauw en fysiologisch) 4,5 of 5 of 5,5
+- Kleine gewapende tube 5 of 6
 
-# Onderhoud
+***Onderhoud***
 
-* Ultiva 0,1 gamma
-* Sevoflurane
+- Ultiva 0,1 gamma
+- Sevoflurane
 
-# Analgetica
+***Analgetica***
 
-* Paracetamol IV
-* Ibuprofen IV zo geen contra-indicaties
+- Paracetamol IV
+- Ibuprofen IV zo geen contra-indicaties
 
-Anti-emetica
+***Anti-emetica***
 
-* Aacidexam 10mg
+- Aacidexam 10mg

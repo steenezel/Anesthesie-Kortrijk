@@ -4,7 +4,7 @@ indication: "Anesthesie voor knie-chirurgie"
 ...
 ---
 
-### Tips voor Naaldvoering
+**Tips voor Naaldvoering**
 Let op de relatie tussen de a. femoralis en de m. sartorius.
 
 video:/videos/blocks/voorbeeldmp4.mp4
