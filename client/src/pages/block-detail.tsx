@@ -131,14 +131,53 @@ export default function BlockDetail() {
           </Card>
 
           {blockData.body && (
-            <Card className="border-teal-100 bg-teal-50/40 rounded-2xl shadow-sm border-dashed">
-              <CardContent className="p-6">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-700 mb-3">Expert Tips AZ Groeninge</h3>
-                <div className="prose prose-sm prose-slate max-w-none prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-p:text-slate-700 prose-p:leading-relaxed prose-li:text-slate-700 prose-li:font-medium">
-                  <ReactMarkdown>{blockData.body}</ReactMarkdown>
+                      
+        <Card className="border-teal-100 bg-teal-50/40 rounded-2xl shadow-sm border-dashed">
+          <CardContent className="p-6">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-700 mb-3">Expert Tips AZ Groeninge</h3>
+              <div className="prose prose-sm prose-slate max-w-none prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-p:text-slate-700 prose-p:leading-relaxed prose-li:text-slate-700 prose-li:font-medium">
+                <ReactMarkdown
+                  components={{
+                  // De 'p' tag wordt onderschept om te kijken of er 'video:' in staat
+                    p: ({ children }) => {
+                    const content = children?.toString() || "";
+                    if (content.startsWith("video:")) {
+                    const videoSrc = content.replace("video:", "").trim();
+                    return (
+                  <div className="my-6 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-200 bg-black aspect-video">
+                    <video 
+                      controls 
+                      playsInline 
+                      className="w-full h-full"
+                      preload="metadata"
+                      >
+                    <source src={videoSrc} type="video/mp4" />
+                    Browser ondersteunt geen video.
+                    </video>
                 </div>
-              </CardContent>
-            </Card>
+                  );
+                }
+                return <p className="mb-4">{children}</p>;
+                },
+          // We voegen ook direct de Zoom-functionaliteit toe voor beelden IN de markdown tekst
+                img: ({ src, alt }) => (
+                  <div className="my-6">
+                    <Zoom>
+                      <img 
+                        src={src} 
+                        alt={alt} 
+                        className="rounded-xl border border-slate-200 shadow-sm w-full" 
+                      />
+                    </Zoom>
+                  </div>
+                )
+                }}
+                >
+              {blockData.body}
+              </ReactMarkdown>
+            </div>
+           </CardContent>
+          </Card>
           )}
         </TabsContent>
 
