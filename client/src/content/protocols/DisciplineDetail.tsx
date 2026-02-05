@@ -1,5 +1,5 @@
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, FileText, BookOpen } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText, BookOpen } from "lucide-react";
 
 export default function DisciplineDetail() {
   const [, params] = useRoute("/protocols/:discipline");
