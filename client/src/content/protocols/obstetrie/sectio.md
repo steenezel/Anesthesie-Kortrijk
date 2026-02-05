@@ -1,5 +1,7 @@
 ---
 title: "Sectio Caesarea"
+discipline: "obstetrie"
+lastUpdated: "Januari 2026"
 ---
 
 ### Anesthesie Schema
