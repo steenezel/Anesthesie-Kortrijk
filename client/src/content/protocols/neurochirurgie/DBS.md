@@ -3,7 +3,34 @@ title: "Deep Brain Stimulation"
 discipline: "neurochirurgie"
 lastUpdated: "Augustus 2023"
 ---
+### Indicatie:
 
+- Parkinson (STN)
+- Tremor (ViM)
+- Dystonie (PGI)
+- OCD, chronische pijn,…
+
+### Preoperatieve aandachtspunten:
+
+- Klassieke aanpassing thuismedicatie (cfr preop boekje)
+- Geen preoperatieve benzodiazepines (anxiolytica)
+- Aanpassing parkinson-medicatie door collega’s neurologie (zij passen EMV aan)
+- Inschatten nood aan blaassonde
+- Uitleg over duurtijd operatie (+- 6u lang) met het hoofd gefixeerd
+- Verschillende fases van de procedure uitleggen met betrekking tot sedatie en reveil
+
+### Peroperatief – anesthesie:
+
+- _Fase 1 plaatsing kader Operatiezaal (19)_
+  - niet-positionele IV-lijn + octopus / linkszijdige CVC (tunneling gebeurt via rechts)
+  - IV bolus diprivan (1mg/kg)
+  - scheren
+  - LA door chirurg op 4 plaatsen op de schedel > plaatsen pinnen en positioneren kader
+- _Fase 2 CT Radiologie gelijkvloers_
+  - Transport naar CT met kader op schedel gefixeerd, altijd zelf begeleiden!
+  - Geen sedatie!
+  - schroevendraaier mee om kader los te maken bij urgentie (checken bij de vpk)
+  
 ### Indicatie:
 - Parkinson (STN)
 - Tremor (ViM)
