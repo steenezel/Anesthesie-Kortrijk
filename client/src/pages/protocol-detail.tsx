@@ -1,3 +1,4 @@
+import React from "react";
 import { useRoute, Link } from "wouter";
 import { ChevronLeft, FileWarning, Clock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
