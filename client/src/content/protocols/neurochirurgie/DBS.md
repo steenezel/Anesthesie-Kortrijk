@@ -45,32 +45,32 @@ lastUpdated: "Augustus 2023"
 - Verschillende fases van de procedure uitleggen met betrekking tot sedatie en reveil
 ### Peroperatief – anesthesie:
 - _Fase 1 plaatsing kader Operatiezaal (19)_
-o niet-positionele IV-lijn + octopus / linkszijdige CVC (tunneling gebeurt via rechts)
+  - niet-positionele IV-lijn + octopus / linkszijdige CVC (tunneling gebeurt via rechts)
 IV bolus diprivan (1mg/kg)
-o scheren
-o LA door chirurg op 4 plaatsen op de schedel > plaatsen pinnen en positioneren kader
+  - scheren
+  - LA door chirurg op 4 plaatsen op de schedel > plaatsen pinnen en positioneren kader
 - _Fase 2 CT Radiologie gelijkvloers_
-o Transport naar CT met kader op schedel gefixeerd, altijd zelf begeleiden!
+  - Transport naar CT met kader op schedel gefixeerd, altijd zelf begeleiden!
 Geen sedatie!
-o schroevendraaier mee om kader los te maken bij urgentie (checken bij de vpk)
-o Verbedden op CT: cave CWZ
+  - schroevendraaier mee om kader los te maken bij urgentie (checken bij de vpk)
+  - Verbedden op CT: cave CWZ
 - _Fase 3 installatie Operatiezaal (19)_
-o ANE: cfr infra
-o Koppelen CT – NMR, instellen richting en diepte op stereotaxie
-o Steriel afdekken
+  - ANE: cfr infra
+  - Koppelen CT – NMR, instellen richting en diepte op stereotaxie
+  - Steriel afdekken
 - _Fase 4 plaatsen lead (X2 indien bilateraal)_
 Start IV sedatie en vermijden hypertensie
-o Incisie en boren boorgat
-o quadripolaire lead tot in target (cfr infra)
-o controle correcte positie lead mbv neuronavigatie en electrofysiologisch testing
+  - Incisie en boren boorgat
+  - quadripolaire lead tot in target (cfr infra)
+  - controle correcte positie lead mbv neuronavigatie en electrofysiologisch testing
 - _Fase 5 testen lead (X2 indien bilateraal)_
 Awake fase, stop sedatie zodra dura mater geopend is
-o Klinisch testing van het effect door neuroloog
-o O-arm
+  - Klinisch testing van het effect door neuroloog
+  - O-arm
 - _Fase 6 batterij_
-o Verwijderen kader
-o AA en ETT
-o Ankeren en tunnelen leads tot pocket buikwand + plaatsen batterij
+  - Verwijderen kader
+  - AA en ETT
+  - Ankeren en tunnelen leads tot pocket buikwand + plaatsen batterij
 ### Locoregionale:
 - Niet van toepassing
 ### Installatie patiënt:
@@ -81,14 +81,15 @@ ze niet kunnen plassen in urinaal)
 - Checken IV toegang en inloopsnelheid
 Inductie-onderhoudsmedicatie:
 - Sedatie in fase 4:
-o Diprivan 1.0 à 3.0 TCI (PJG)
-o Midazolam 1 mg + Ultiva 0,05 mcg/kg/u + Diprivan 0,5-1,5 TCI (LC, CC)
-o Dexdor 0,4 – 1,2 mcg/kg/u
+  - Diprivan 1.0 à 3.0 TCI (PJG)
+  - Midazolam 1 mg + Ultiva 0,05 mcg/kg/u + Diprivan 0,5-1,5 TCI (LC, CC)
+  - Dexdor 0,4 – 1,2 mcg/kg/u
 - AA in fase 6:
-o vrije keuze anesthetica, geen neuromonitoring in deze fase
-Pijnbeleid:
+  - vrije keuze anesthetica, geen neuromonitoring in deze fase
+### Pijnbeleid:
 - Klassiek postoperatief pijnbeleid
-Specifieke aandachtspunten:
+
+### Specifieke aandachtspunten:
 - Lange duur heelkunde (+/- 6u): aandacht voor temperatuur, drukpunten en comfort wakkere
 patiënt
 - 24u antibiotica: cefazoline 2g/8u

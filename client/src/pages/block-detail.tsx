@@ -1,3 +1,5 @@
+
+import React from "react";
 import { useRoute, Link } from "wouter";
 import { ChevronLeft, Eye, Image as ImageIcon, Info, Layers, Crosshair } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -137,44 +139,85 @@ export default function BlockDetail() {
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-700 mb-3">Expert Tips AZ Groeninge</h3>
               <div className="prose prose-sm prose-slate max-w-none prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-p:text-slate-700 prose-p:leading-relaxed prose-li:text-slate-700 prose-li:font-medium">
                 <ReactMarkdown
-                  components={{
-                  // De 'p' tag wordt onderschept om te kijken of er 'video:' in staat
-                    p: ({ children }) => {
-                    const content = children?.toString() || "";
-                    if (content.startsWith("video:")) {
-                    const videoSrc = content.replace("video:", "").trim();
-                    return (
-                  <div className="my-6 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-200 bg-black aspect-video">
-                    <video 
-                      controls 
-                      playsInline 
-                      className="w-full h-full"
-                      preload="metadata"
-                      >
-                    <source src={videoSrc} type="video/mp4" />
-                    Browser ondersteunt geen video.
-                    </video>
-                </div>
-                  );
-                }
-                return <p className="mb-4">{children}</p>;
-                },
-          // We voegen ook direct de Zoom-functionaliteit toe voor beelden IN de markdown tekst
-                img: ({ src, alt }) => (
-                  <div className="my-6">
-                    <Zoom>
-                      <img 
-                        src={src} 
-                        alt={alt} 
-                        className="rounded-xl border border-slate-200 shadow-sm w-full" 
-                      />
-                    </Zoom>
-                  </div>
-                )
-                }}
-                >
-              {blockData.body}
-              </ReactMarkdown>
+  components={{
+    // 1. VIDEO HANDLING (Behouden)
+    p: ({ children, ...props }: any) => {
+      const content = React.Children.toArray(children).join("");
+      if (content.startsWith("video:")) {
+        const videoSrc = content.replace("video:", "").trim();
+        return (
+          <div className="my-8 rounded-[2rem] overflow-hidden shadow-2xl bg-black aspect-video border-4 border-slate-900">
+            <video controls playsInline className="w-full h-full" preload="metadata">
+              <source src={videoSrc} type="video/mp4" />
+            </video>
+          </div>
+        );
+      }
+      return <p className="mb-6">{children}</p>;
+    },
+
+    // 2. IMAGE ZOOM (Behouden)
+    img: ({ src, alt }: { src?: string; alt?: string }) => (
+      <div className="my-10">
+        <Zoom>
+          <img src={src} alt={alt} className="rounded-3xl border border-slate-100 shadow-md w-full" />
+        </Zoom>
+      </div>
+    ),
+
+    // 3. DE DEEP CLEANER BOXES (Hetzelfde als in protocol-detail)
+    blockquote: ({ children, ...props }: any) => {
+      const flattenText = (node: any): string => {
+        if (typeof node === 'string') return node;
+        if (Array.isArray(node)) return node.map(flattenText).join('');
+        if (node?.props?.children) return flattenText(node.props.children);
+        return '';
+      };
+
+      const fullText = flattenText(children);
+      const isWarning = fullText.includes("[!WARNING]");
+      const isInfo = fullText.includes("[!INFO]");
+      const isTip = fullText.includes("[!TIP]");
+
+      if (!isWarning && !isInfo && !isTip) {
+        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{...props}</blockquote>;
+      }
+
+      const cleanRecursive = (node: any): any => {
+        if (typeof node === 'string') {
+          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").replace(/^[\s"]+/, "");
+        }
+        if (Array.isArray(node)) return node.map(cleanRecursive);
+        if (node?.props?.children) {
+          return React.cloneElement(node, {
+            ...node.props,
+            children: cleanRecursive(node.props.children)
+          });
+        }
+        return node;
+      };
+
+      const config = isWarning 
+        ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+        : isInfo 
+        ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+        : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+
+      return (
+        <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
+          <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
+            {config.title}
+          </div>
+          <div className="text-slate-900 leading-relaxed prose-p:my-0 font-medium">
+            {cleanRecursive(children)}
+          </div>
+        </div>
+      );
+    }
+  }}
+>
+  {blockData.body}
+</ReactMarkdown>
             </div>
            </CardContent>
           </Card>
