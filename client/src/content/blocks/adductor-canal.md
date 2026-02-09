@@ -3,9 +3,9 @@ title: "Adductor Canal Block (ACB)"
 indication: "Postoperatieve analgesie bij totale knieprothese (TKP) en mediale enkelchirurgie. Behoudt de kracht van de M. Quadriceps."
 anatomy: "Gelegen in het midden van de dij, diep onder de M. Sartorius. Begrensd door de M. Vastus Medialis (anterolateraal) en de Mm. Adductor Longus/Magnus (posterieur)."
 settings: "Linear probe (10-15 MHz), Diepte 3-5 cm. Benadering 'In-plane' van lateraal naar mediaal."
-sono_images: "/images/blocks/acb_sono_main.jpg, /images/blocks/acb_sono_variant.jpg"
+sono_images: "/images/blocks/acb_sono_main.jpg, /images/blocks/acb_sono_variant.png"
 position_images: "/images/blocks/acb_position.jpg"
-diagram_images: "/images/blocks/acb_anatomy_diagram.jpg"
+diagram_images: "/images/blocks/acb_anatomy_diagram.webp"
 ---
 
 ### Procedurele Highlights
@@ -28,14 +28,14 @@ Hieronder vind je de belangrijkste stappen en aandachtspunten voor het succesvol
 
 Hieronder een korte demonstratie van de naaldvoering en de spreiding van het lokaal anestheticum:
 
-video:/videos/blocks/acb_techniek_demo.mp4
+video:/videos/blocks/acb_techniek_demo_.mp4
 
 ### Klinische Parels AZ Groeninge
 
 > [!INFO]
 > Voor TKP-patiënten op onze dienst geniet dit block de voorkeur boven een Femoralis-block om vroege mobilisatie (VMS) mogelijk te maken zonder valrisico.
 
-![Echobeeld van de spreiding na injectie](/images/blocks/acb_spread_check.jpg)
+![Echobeeld van de spreiding na injectie](/images/blocks/acb_spread_check.png)
 
 ### Nazorg en opvolging
 - Controleer op gevoelsverlies in het dermatoom van de N. Saphenus (mediale zijde onderbeen).
