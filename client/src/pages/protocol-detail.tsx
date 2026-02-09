@@ -56,30 +56,34 @@ export default function ProtocolDetail() {
 
       <hr className="border-slate-100" />
 
-      {/* MARKDOWN CONTENT MET ZOOM */}
-      <div className="prose prose-slate prose-sm max-w-none 
+      {/* MARKDOWN CONTENT MET UPGRADED LAYOUT */}
+        <div className="prose prose-slate prose-base max-w-none 
+        /* Zorg dat lijsten altijd bolletjes tonen en een kleur hebben */
+        prose-ul:list-disc prose-li:marker:text-teal-600
+        /* Je bestaande styling voor koppen en vetgedrukte tekst */
         prose-strong:text-teal-700 prose-strong:font-black
-        prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800">
-        
+        prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
+
         <ReactMarkdown
           components={{
             // Deze functie vervangt elke ![](url) in je markdown
-            img: ({ src, alt }) => (
-              <div className="my-8">
-                <Zoom>
-                  <img 
-                    src={src} 
-                    alt={alt} 
-                    className="w-full h-auto rounded-2xl shadow-lg border border-slate-100 transition-all hover:shadow-xl" 
-                  />
-                </Zoom>
-                {alt && (
-                  <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-4 px-4 leading-relaxed">
-                    {alt}
-                  </p>
-                )}
-              </div>
-            )
+            // We vertellen TypeScript dat 'src' en 'alt' van het type 'any' of specifiek 'string' zijn
+          img: ({ src, alt }: { src?: string; alt?: string }) => (
+        <div className="my-8">
+          <Zoom>
+            <img 
+             src={src} 
+             alt={alt} 
+             className="w-full h-auto rounded-2xl shadow-lg border border-slate-100 transition-all hover:shadow-xl" 
+            />
+         </Zoom>
+        {alt && (
+          <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-4 px-4 leading-relaxed">
+        {alt}
+        </p>
+        )}
+        </div>
+)
           }}
         >
           {markdownBody}
