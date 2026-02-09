@@ -4,7 +4,7 @@ discipline: "abdominale"
 lastUpdated: "Januari 2026"
 ---
 
-*Preoperatieve aandachtspunten*
+**Preoperatieve aandachtspunten**
 
 - Opname op dag zelf. Patiënt stapt naar de zaal.
 

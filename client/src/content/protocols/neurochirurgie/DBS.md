@@ -86,9 +86,10 @@ Inductie-onderhoudsmedicatie:
   - Dexdor 0,4 – 1,2 mcg/kg/u
 - AA in fase 6:
   - vrije keuze anesthetica, geen neuromonitoring in deze fase
-Pijnbeleid:
+### Pijnbeleid:
 - Klassiek postoperatief pijnbeleid
-Specifieke aandachtspunten:
+
+### Specifieke aandachtspunten:
 - Lange duur heelkunde (+/- 6u): aandacht voor temperatuur, drukpunten en comfort wakkere
 patiënt
 - 24u antibiotica: cefazoline 2g/8u
