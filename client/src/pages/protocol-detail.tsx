@@ -87,56 +87,59 @@ export default function ProtocolDetail() {
 
     // 2. NIEUW: De slimme Warning, Info en Tip boxes
     blockquote: ({ children }: { children: any }) => {
-      // We zetten de inhoud om naar tekst om te zoeken naar de [!TAGS]
-      const childrenArray = React.Children.toArray(children);
-      const content = childrenArray.map((child: any) => 
-        child.props?.children ? String(child.props.children) : ""
-      ).join("");
+  // 1. HULPFUNCTIE: Haalt alle tekst op, hoe diep deze ook verstopt zit
+  const flattenText = (node: any): string => {
+    if (typeof node === 'string') return node;
+    if (Array.isArray(node)) return node.map(flattenText).join('');
+    if (node?.props?.children) return flattenText(node.props.children);
+    return '';
+  };
 
-      const isWarning = content.includes("[!WARNING]");
-      const isInfo = content.includes("[!INFO]");
-      const isTip = content.includes("[!TIP]");
+  const fullText = flattenText(children);
+  const isWarning = fullText.includes("[!WARNING]");
+  const isInfo = fullText.includes("[!INFO]");
+  const isTip = fullText.includes("[!TIP]");
 
-      // Standaardstijl voor de kaders
-      let boxStyles = "my-6 border-l-8 p-6 rounded-r-2xl shadow-sm ";
-      let title = "";
-      let titleColor = "";
+  // Fallback voor normale citaten
+  if (!isWarning && !isInfo && !isTip) {
+    return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
+  }
 
-      if (isWarning) {
-        boxStyles += "border-red-500 bg-red-50";
-        title = "⚠️ WAARSCHUWING";
-        titleColor = "text-red-600";
-      } else if (isInfo) {
-        boxStyles += "border-blue-500 bg-blue-50";
-        title = "ℹ️ INFORMATIE";
-        titleColor = "text-blue-600";
-      } else if (isTip) {
-        boxStyles += "border-emerald-500 bg-emerald-50";
-        title = "💡 TIP";
-        titleColor = "text-emerald-600";
-      } else {
-        // Geen tag gevonden? Dan tonen we een gewoon standaard citaat
-        return <blockquote className="border-l-4 border-slate-200 pl-4 italic my-4 text-slate-600">{children}</blockquote>;
-      }
-
-      return (
-        <div className={boxStyles}>
-          <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${titleColor}`}>
-            {title}
-          </div>
-          <div className="text-slate-900 leading-relaxed m-0 prose-p:my-0 font-medium">
-            {/* We tonen de tekst, maar filteren de [!TAG] eruit voor het oog */}
-            {React.Children.map(children, (child: any) => {
-              if (child.props && typeof child.props.children === 'string') {
-                const newText = child.props.children.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "");
-                return React.cloneElement(child, {}, newText);
-              }
-              return child;
-            })}
-          </div>
-        </div>
-      );
+  // 2. RECURSIEVE CLEANER: Verwijdert de tags uit elk tekst-onderdeeltje
+  const cleanRecursive = (node: any): any => {
+    if (typeof node === 'string') {
+      // Verwijdert de tags én eventuele aanhalingstekens of extra spaties aan het begin
+      return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").replace(/^[\s"]+/, "");
     }
+    if (Array.isArray(node)) {
+      return node.map(cleanRecursive);
+    }
+    if (node?.props?.children) {
+      return React.cloneElement(node, {
+        ...node.props,
+        children: cleanRecursive(node.props.children)
+      });
+    }
+    return node;
+  };
+
+  const config = isWarning 
+    ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+    : isInfo 
+    ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+    : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+
+  return (
+    <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
+      <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
+        {config.title}
+      </div>
+      <div className="text-slate-900 leading-relaxed prose-p:my-0 font-medium">
+        {cleanRecursive(children)}
+      </div>
+    </div>
+  );
+}
   }}
 >
   {markdownBody}
