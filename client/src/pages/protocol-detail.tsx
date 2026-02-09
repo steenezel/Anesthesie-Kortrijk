@@ -86,7 +86,7 @@ export default function ProtocolDetail() {
     ),
 
     // 2. NIEUW: De slimme Warning, Info en Tip boxes
-    blockquote: ({ children }: { children: any }) => {
+    blockquote: ({ children, ...props }: any) => {
   // 1. HULPFUNCTIE: Haalt alle tekst op, hoe diep deze ook verstopt zit
   const flattenText = (node: any): string => {
     if (typeof node === 'string') return node;
@@ -102,7 +102,7 @@ export default function ProtocolDetail() {
 
   // Fallback voor normale citaten
   if (!isWarning && !isInfo && !isTip) {
-    return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
+    return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{...props}</blockquote>;
   }
 
   // 2. RECURSIEVE CLEANER: Verwijdert de tags uit elk tekst-onderdeeltje

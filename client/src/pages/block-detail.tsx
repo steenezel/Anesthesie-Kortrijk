@@ -141,7 +141,7 @@ export default function BlockDetail() {
                 <ReactMarkdown
   components={{
     // 1. VIDEO HANDLING (Behouden)
-    p: ({ children }: { children: any }) => {
+    p: ({ children, ...props }: any) => {
       const content = React.Children.toArray(children).join("");
       if (content.startsWith("video:")) {
         const videoSrc = content.replace("video:", "").trim();
@@ -166,7 +166,7 @@ export default function BlockDetail() {
     ),
 
     // 3. DE DEEP CLEANER BOXES (Hetzelfde als in protocol-detail)
-    blockquote: ({ children }: { children: any }) => {
+    blockquote: ({ children, ...props }: any) => {
       const flattenText = (node: any): string => {
         if (typeof node === 'string') return node;
         if (Array.isArray(node)) return node.map(flattenText).join('');
@@ -180,7 +180,7 @@ export default function BlockDetail() {
       const isTip = fullText.includes("[!TIP]");
 
       if (!isWarning && !isInfo && !isTip) {
-        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
+        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{...props}</blockquote>;
       }
 
       const cleanRecursive = (node: any): any => {
