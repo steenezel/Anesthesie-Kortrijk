@@ -4,34 +4,37 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Baby, Activity, Syringe, Wind, Ruler, AlertCircle } from "lucide-react";
+import { Baby, Activity, Syringe, Wind, Ruler, AlertCircle, ShieldAlert } from "lucide-react";
 
 export default function PedsCalculator() {
   const [ageValue, setAgeValue] = useState<number>(2);
   const [ageUnit, setAgeUnit] = useState<"weeks" | "months" | "years">("years");
   const [manualWeight, setManualWeight] = useState<number | null>(null);
 
-  // 1. Bereken decimaal jaar voor de formules
+  // 1. Bereken decimaal jaar
   const decimalYear = useMemo(() => {
-    if (ageUnit === "weeks") return ageValue / 52;
+    if (ageUnit === "weeks") return ageValue / 52.14;
     if (ageUnit === "months") return ageValue / 12;
     return ageValue;
   }, [ageValue, ageUnit]);
 
-  // 2. Gewichtsschatting op basis van leeftijd (jouw formule)
+  // 2. Veiligheidscheck: gewicht verplicht onder 1 jaar
+  const isWeightRequired = decimalYear < 1 && manualWeight === null;
+
+  // 3. Gewichtsberekening
   const estimatedWeight = useMemo(() => {
-    // Formule: (leeftijd + 5) * 2
-    return (decimalYear + 5) * 2;
+    return decimalYear >= 1 ? (decimalYear + 5) * 2 : 0;
   }, [decimalYear]);
 
   const weight = manualWeight !== null ? manualWeight : estimatedWeight;
 
-  // 3. Berekeningen voor Airway
+  // 4. Airway berekeningen (alleen als gewicht beschikbaar is)
   const airway = useMemo(() => {
+    if (isWeightRequired || weight <= 0) return null;
+    
     const ettUncuffed = decimalYear / 4 + 4;
     const ettCuffed = decimalYear / 4 + 3.5;
     
-    // Larynxmasker op basis van gewicht
     let lma = "1";
     if (weight >= 5) lma = "1.5";
     if (weight >= 10) lma = "2";
@@ -45,41 +48,41 @@ export default function PedsCalculator() {
       lma,
       depth: (weight / 2 + 12).toFixed(1)
     };
-  }, [decimalYear, weight]);
+  }, [decimalYear, weight, isWeightRequired]);
 
-  // 4. Medicatie Logica (Kortrijk Protocol)
+  // 5. Medicatie (Kortrijk Protocol)
   const drugs = useMemo(() => {
+    if (isWeightRequired || weight <= 0) return null;
+
     return {
       sufentanil: { mcg: (weight * 0.15).toFixed(2), ml: (weight * 0.15 / 5).toFixed(2) }, // 5mcg/ml
       alfentanil: { mcg: (weight * 15).toFixed(0), ml: (weight * 15 / 500).toFixed(2) }, // 500mcg/ml
-      propofol: { mg: (weight * 3).toFixed(0), ml: (weight * 3 / 10).toFixed(1) }, // 1% = 10mg/ml
+      propofol: { mg: (weight * 3).toFixed(0), ml: (weight * 3 / 10).toFixed(1) }, // 10mg/ml
       rocuronium: { mg: (weight * 0.9).toFixed(1), ml: (weight * 0.9 / 10).toFixed(2) },
-      adrenaline: { mcg: (weight * 10).toFixed(0), ml: (weight * 10 / 100).toFixed(1) } // 1:10.000
+      adrenaline: { mcg: (weight * 10).toFixed(0), ml: (weight * 10 / 100).toFixed(1) }, // 1:10.000
+      cefazoline: { mg: (weight * 30).toFixed(0) }, // 30mg/kg
+      amoxiclav: { mg: (weight * 30).toFixed(0) }  // 30mg/kg
     };
-  }, [weight]);
+  }, [weight, isWeightRequired]);
 
   return (
     <div className="space-y-6 pb-20">
       {/* INPUT SECTIE */}
-      <Card className="border-teal-100 shadow-md">
-        <CardHeader className="bg-teal-50/50 p-4 border-b border-teal-100">
-          <div className="flex items-center gap-2">
-            <Baby className="h-5 w-5 text-teal-600" />
-            <CardTitle className="text-sm font-black uppercase tracking-tighter text-teal-900">Patient Data</CardTitle>
-          </div>
+      <Card className={`border-2 transition-colors ${isWeightRequired ? 'border-amber-400 bg-amber-50/20' : 'border-teal-100'}`}>
+        <CardHeader className="p-4 border-b flex flex-row items-center gap-2">
+          <Baby className={`h-5 w-5 ${isWeightRequired ? 'text-amber-500' : 'text-teal-600'}`} />
+          <CardTitle className="text-sm font-black uppercase tracking-tighter">Patiënt Gegevens</CardTitle>
         </CardHeader>
         <CardContent className="p-5 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-bold text-slate-400">Leeftijd</Label>
-              <div className="flex gap-1">
-                <Input 
-                  type="number" 
-                  value={ageValue} 
-                  onChange={(e) => setAgeValue(parseFloat(e.target.value) || 0)}
-                  className="text-xl font-mono font-bold h-12"
-                />
-              </div>
+              <Input 
+                type="number" 
+                value={ageValue} 
+                onChange={(e) => setAgeValue(Math.max(0, parseFloat(e.target.value) || 0))}
+                className="text-xl font-mono font-bold h-12"
+              />
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-bold text-slate-400">Eenheid</Label>
@@ -100,96 +103,118 @@ export default function PedsCalculator() {
             <Label className="text-[10px] uppercase font-bold text-slate-400">Gewicht (kg)</Label>
             <Input 
               type="number" 
-              placeholder={`Schatting: ${estimatedWeight} kg`}
+              placeholder={decimalYear >= 1 ? `Schatting: ${estimatedWeight} kg` : "Invoer verplicht..."}
               value={manualWeight ?? ""}
               onChange={(e) => setManualWeight(e.target.value ? parseFloat(e.target.value) : null)}
-              className="text-2xl font-mono font-bold h-12 border-teal-200 focus:ring-teal-500"
+              className={`text-2xl font-mono font-bold h-12 ${isWeightRequired ? 'border-amber-500 ring-2 ring-amber-200' : 'border-teal-200'}`}
             />
-            <p className="text-[9px] text-slate-400 italic">Formule: (leeftijd + 5) * 2</p>
+            {decimalYear >= 1 && <p className="text-[9px] text-slate-400 italic font-medium">Formule: (leeftijd + 5) * 2</p>}
           </div>
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="airway">
-        <TabsList className="grid w-full grid-cols-3 mb-6 bg-slate-100 p-1 rounded-xl h-12">
-          <TabsTrigger value="airway" className="rounded-lg text-[10px] font-black uppercase"><Wind className="h-3 w-3 mr-1" /> Airway</TabsTrigger>
-          <TabsTrigger value="drugs" className="rounded-lg text-[10px] font-black uppercase"><Syringe className="h-3 w-3 mr-1" /> Drugs</TabsTrigger>
-          <TabsTrigger value="regional" className="rounded-lg text-[10px] font-black uppercase"><Ruler className="h-3 w-3 mr-1" /> Caudaal</TabsTrigger>
-        </TabsList>
+      {/* RESULTATEN OF WAARSCHUWING */}
+      {isWeightRequired ? (
+        <Card className="border-2 border-dashed border-amber-300 bg-amber-50/50">
+          <CardContent className="p-8 text-center space-y-3">
+            <ShieldAlert className="h-12 w-12 text-amber-500 mx-auto" />
+            <h3 className="text-lg font-black uppercase text-amber-800 tracking-tight">Gewicht Verplicht</h3>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              Voor kinderen jonger dan 1 jaar is een schatting op basis van leeftijd niet toegestaan. Voer een exact gewicht in om de dosissen te zien.
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <Tabs defaultValue="airway">
+          <TabsList className="grid w-full grid-cols-3 mb-6 bg-slate-100 p-1 rounded-xl h-12">
+            <TabsTrigger value="airway" className="rounded-lg text-[10px] font-black uppercase tracking-tighter italic">Airway</TabsTrigger>
+            <TabsTrigger value="drugs" className="rounded-lg text-[10px] font-black uppercase tracking-tighter italic">Drugs</TabsTrigger>
+            <TabsTrigger value="regional" className="rounded-lg text-[10px] font-black uppercase tracking-tighter italic">Regio</TabsTrigger>
+          </TabsList>
 
-        {/* AIRWAY TAB */}
-        <TabsContent value="airway" className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <ResultCard label="ETT Uncuffed" value={airway.uncuffed} unit="mm" color="bg-blue-50 text-blue-700" />
-            <ResultCard label="ETT Cuffed" value={airway.cuffed} unit="mm" color="bg-indigo-50 text-indigo-700" />
-            <ResultCard label="LMA Maat" value={airway.lma} unit="#" color="bg-violet-50 text-violet-700" />
-            <ResultCard label="Diepte (oraal)" value={airway.depth} unit="cm" color="bg-slate-50 text-slate-700" />
-          </div>
-        </TabsContent>
-
-        {/* DRUGS TAB */}
-        <TabsContent value="drugs" className="space-y-4">
-          <div className="bg-red-50 p-3 rounded-xl border border-red-100 flex items-center gap-3 mb-4">
-            <AlertCircle className="h-5 w-5 text-red-500" />
-            <div>
-              <p className="text-[10px] font-black text-red-700 uppercase">Emergency: Adrenaline (10µg/kg)</p>
-              <p className="text-lg font-mono font-black text-red-900">{drugs.adrenaline.ml} <span className="text-xs">ml (1:10.000)</span></p>
+          <TabsContent value="airway" className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <ResultCard label="ETT Uncuffed" value={airway?.uncuffed} unit="mm" color="bg-blue-50 text-blue-700 border-blue-100" />
+              <ResultCard label="ETT Cuffed" value={airway?.cuffed} unit="mm" color="bg-indigo-50 text-indigo-700 border-indigo-100" />
+              <ResultCard label="LMA Maat" value={airway?.lma} unit="#" color="bg-violet-50 text-violet-700 border-violet-100" />
+              <ResultCard label="Diepte (oraal)" value={airway?.depth} unit="cm" color="bg-slate-50 text-slate-700 border-slate-200" />
             </div>
-          </div>
-          
-          <div className="space-y-2">
-            <DrugRow label="Propofol 1%" dose={`${drugs.propofol.mg} mg`} volume={`${drugs.propofol.ml} ml`} />
-            <DrugRow label="Sufentanil (5µg/ml)" dose={`${drugs.sufentanil.mcg} µg`} volume={`${drugs.sufentanil.ml} ml`} />
-            <DrugRow label="Alfentanil (500µg/ml)" dose={`${drugs.alfentanil.mcg} µg`} volume={`${drugs.alfentanil.ml} ml`} />
-            <DrugRow label="Rocuronium" dose={`${drugs.rocuronium.mg} mg`} volume={`${drugs.rocuronium.ml} ml`} />
-          </div>
-        </TabsContent>
+          </TabsContent>
 
-        {/* REGIONAL TAB */}
-        <TabsContent value="regional">
-          <Card className="border-orange-100 shadow-sm overflow-hidden">
-            <div className="bg-orange-50 p-4 border-b border-orange-100">
-              <h3 className="text-xs font-black uppercase text-orange-800">Ropivacaïne 0.2% (Caudaal)</h3>
-            </div>
-            <CardContent className="p-4 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-white border border-orange-100 rounded-xl">
-                  <p className="text-[9px] font-bold text-orange-400 uppercase">Sacraal (0.5ml/kg)</p>
-                  <p className="text-2xl font-mono font-black">{(weight * 0.5).toFixed(1)} <span className="text-xs">ml</span></p>
-                </div>
-                <div className="p-3 bg-white border border-orange-100 rounded-xl">
-                  <p className="text-[9px] font-bold text-orange-400 uppercase">Thoraco-Lum (1ml/kg)</p>
-                  <p className="text-2xl font-mono font-black">{(weight * 1.0).toFixed(1)} <span className="text-xs">ml</span></p>
+          <TabsContent value="drugs" className="space-y-4">
+            <div className="bg-red-600 p-4 rounded-2xl shadow-lg flex items-center justify-between border-b-4 border-red-800">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="h-6 w-6 text-white animate-pulse" />
+                <div>
+                  <p className="text-[10px] font-black text-red-100 uppercase tracking-widest">Adrenaline (10µg/kg)</p>
+                  <p className="text-2xl font-mono font-black text-white">{drugs?.adrenaline.ml} <span className="text-xs">ml (1:10k)</span></p>
                 </div>
               </div>
-              <p className="text-[10px] text-slate-400 italic font-medium">Max dosis: 2mg/kg (= 1ml/kg van 0.2%)</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            </div>
+            
+            <div className="space-y-2">
+              <DrugRow label="Propofol 1%" dose={`${drugs?.propofol.mg} mg`} volume={`${drugs?.propofol.ml} ml`} />
+              <DrugRow label="Sufentanil (5µg/ml)" dose={`${drugs?.sufentanil.mcg} µg`} volume={`${drugs?.sufentanil.ml} ml`} />
+              <DrugRow label="Alfentanil (500µg/ml)" dose={`${drugs?.alfentanil.mcg} µg`} volume={`${drugs?.alfentanil.ml} ml`} />
+              <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-100">
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <p className="text-[9px] font-black text-slate-400 uppercase">Cefazoline</p>
+                  <p className="text-sm font-bold">{drugs?.cefazoline.mg} mg</p>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <p className="text-[9px] font-black text-slate-400 uppercase">Amoxiclav</p>
+                  <p className="text-sm font-bold">{drugs?.amoxiclav.mg} mg</p>
+                </div>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="regional">
+            <Card className="border-orange-100 shadow-sm">
+              <CardHeader className="bg-orange-50/50 p-4 border-b">
+                <CardTitle className="text-xs font-black uppercase text-orange-800 italic">Caudaal: Ropivacaïne 0.2%</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-white border-2 border-orange-50 rounded-2xl shadow-inner">
+                    <p className="text-[9px] font-black text-orange-400 uppercase">Sacraal (0.5ml/kg)</p>
+                    <p className="text-2xl font-mono font-black text-orange-700">{(weight * 0.5).toFixed(1)} <span className="text-xs font-bold text-orange-400 uppercase tracking-tighter whitespace-nowrap">ml</span></p>
+                  </div>
+                  <div className="p-4 bg-white border-2 border-orange-50 rounded-2xl shadow-inner">
+                    <p className="text-[9px] font-black text-orange-400 uppercase">Thoraco-Lum (1ml/kg)</p>
+                    <p className="text-2xl font-mono font-black text-orange-900">{(weight * 1.0).toFixed(1)} <span className="text-xs font-bold text-orange-400 uppercase tracking-tighter whitespace-nowrap">ml</span></p>
+                  </div>
+                </div>
+                <div className="p-3 bg-orange-50 rounded-xl border border-orange-100">
+                  <p className="text-[10px] text-orange-800 italic font-bold">Max: 2mg/kg. Reken steeds na op basis van patiënt conditie.</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      )}
     </div>
   );
 }
 
-// Sub-componenten voor een schone code
 function ResultCard({ label, value, unit, color }: any) {
   return (
-    <div className={`p-4 rounded-2xl border border-transparent shadow-sm ${color}`}>
-      <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-1">{label}</p>
-      <p className="text-3xl font-mono font-black">{value} <span className="text-sm">{unit}</span></p>
+    <div className={`p-4 rounded-2xl border shadow-sm flex flex-col items-center justify-center text-center ${color}`}>
+      <p className="text-[9px] font-black uppercase tracking-widest opacity-60 mb-1">{label}</p>
+      <p className="text-3xl font-mono font-black">{value}<span className="text-sm ml-1">{unit}</span></p>
     </div>
   );
 }
 
 function DrugRow({ label, dose, volume }: any) {
   return (
-    <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl shadow-sm">
+    <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-teal-100 transition-colors">
       <div className="space-y-0.5">
-        <p className="text-[10px] font-black uppercase text-slate-400">{label}</p>
-        <p className="text-sm font-bold text-slate-900">{dose}</p>
+        <p className="text-[9px] font-black uppercase text-slate-400 tracking-tighter leading-none">{label}</p>
+        <p className="text-sm font-black text-slate-800 italic">{dose}</p>
       </div>
-      <div className="text-right px-4 py-2 bg-teal-50 rounded-xl border border-teal-100">
-        <p className="text-lg font-mono font-black text-teal-700">{volume} <span className="text-[10px]">ml</span></p>
+      <div className="text-right px-4 py-2 bg-teal-50 rounded-xl border border-teal-100 min-w-[80px]">
+        <p className="text-lg font-mono font-black text-teal-700">{volume}</p>
       </div>
     </div>
   );

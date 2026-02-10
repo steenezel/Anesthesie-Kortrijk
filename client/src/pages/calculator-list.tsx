@@ -24,8 +24,8 @@ const calculators = [
     title: "Pediatrische doses",
     description: "Tubes, noodmedicatie,...",
     path: "/calculator/peds-calculator",
-    icon: <Baby className="h-6 w-6 text-blue-600" />,
-    color: "border-blue-100 bg-blue-50"
+    icon: <Baby className="h-6 w-6 text-pink-600" />,
+    color: "border-pink-100 bg-pink-50"
   }
 ];
 
