@@ -205,6 +205,19 @@ export default function PedsCalculator() {
           </TabsContent>
         </Tabs>
       )}
+
+      <div className="mt-8 pt-6 border-t border-slate-100">
+  <a 
+    href="https://reafiche.uzgent.be/reafiche.html" 
+    target="_blank" 
+    rel="noopener noreferrer"
+    className="flex items-center justify-center gap-2 p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-600 hover:bg-slate-100 transition-colors shadow-sm"
+  >
+    <ShieldAlert className="h-4 w-4 text-slate-400" />
+    <span className="text-xs font-black uppercase tracking-tighter">Externe bron: Reafiche UZ Gent</span>
+  </a>
+</div>
+
     </div>
   );
 }
@@ -228,19 +241,6 @@ function DrugRow({ label, dose, volume }: any) {
       <div className="text-right px-4 py-2 bg-teal-50 rounded-xl border border-teal-100 min-w-[85px]">
         <p className="text-lg font-mono font-black text-teal-700">{volume}</p>
       </div>
-
-<div className="mt-8 pt-6 border-t border-slate-100">
-  <a 
-    href="https://reafiche.uzgent.be/reafiche.html" 
-    target="_blank" 
-    rel="noopener noreferrer"
-    className="flex items-center justify-center gap-2 p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-600 hover:bg-slate-100 transition-colors shadow-sm"
-  >
-    <ShieldAlert className="h-4 w-4 text-slate-400" />
-    <span className="text-xs font-black uppercase tracking-tighter">Externe bron: Reafiche UZ Gent</span>
-  </a>
-</div>
-
     </div>
   );
 }
