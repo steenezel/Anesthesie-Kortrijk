@@ -103,7 +103,7 @@ export default function Home() {
           Anesthesie <span className="text-teal-600">Kortrijk</span>
         </h1>
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-          AZ Groeninge • Clinical Decision Support
+          AZ Groeninge • Metiri est Scire
         </p>
       </div>
 
