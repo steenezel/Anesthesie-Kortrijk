@@ -18,6 +18,14 @@ const calculators = [
     path: "/calculator/apfel",
     icon: <Apple className="h-6 w-6 text-blue-600" />,
     color: "border-blue-100 bg-blue-50"
+  },
+  {
+    id: "peds",
+    title: "Pediatrische doses",
+    description: "Tubes, noodmedicatie,...",
+    path: "/calculator/peds-calculator",
+    icon: <Apple className="h-6 w-6 text-blue-600" />,
+    color: "border-blue-100 bg-blue-50"
   }
 ];
 
