@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShieldAlert, Apple, ChevronRight } from "lucide-react";
+import { ShieldAlert, Apple, ChevronRight, Baby } from "lucide-react";
 
 const calculators = [
   {
@@ -18,6 +18,14 @@ const calculators = [
     path: "/calculator/apfel",
     icon: <Apple className="h-6 w-6 text-blue-600" />,
     color: "border-blue-100 bg-blue-50"
+  },
+  {
+    id: "peds",
+    title: "Pediatrische doses",
+    description: "Tubes, noodmedicatie,...",
+    path: "/calculator/peds-calculator",
+    icon: <Baby className="h-6 w-6 text-pink-600" />,
+    color: "border-pink-100 bg-pink-50"
   }
 ];
 

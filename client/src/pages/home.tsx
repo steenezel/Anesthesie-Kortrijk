@@ -43,7 +43,7 @@ const categories = [
   },
   {
     title: "Calculators",
-    description: "LAST, Apfel, ...",
+    description: "LAST | Apfel | Pediatrie",
     icon: Calculator,
     href: "/calculator",
     color: "bg-teal-600",
@@ -220,7 +220,7 @@ export default function Home() {
 
       <div className="pt-8 text-center border-t border-slate-100">
         <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">
-          Update: Januari 2026
+          Update: 10 Februari 2026
         </p>
       </div>
     </div>
