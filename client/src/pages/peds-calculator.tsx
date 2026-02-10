@@ -32,6 +32,8 @@ export default function PedsCalculator() {
     // 2. Cole Formule (Uncuffed & Cuffed)
     const coleUncuffed = (decimalYear / 4) + 4;
     const coleCuffed = (decimalYear / 4) + 3;
+    const coleUncuffedRounded = Math.round(coleUncuffed * 2) / 2;
+    const coleCuffedRounded = Math.round(coleCuffed * 2) / 2;
 
     // 3. Diepte Formule: (age / 2) + 12
     const depth = (decimalYear / 2) + 12;
@@ -45,8 +47,8 @@ export default function PedsCalculator() {
 
     return {
       eck: eckRounded.toFixed(1),
-      coleUncuffed: coleUncuffed.toFixed(1),
-      coleCuffed: coleCuffed.toFixed(1),
+      coleUncuffedRounded: coleUncuffedRounded.toFixed(1),
+      coleCuffedRounded: coleCuffedRounded.toFixed(1),
       lma,
       depth: depth.toFixed(1)
     };
@@ -140,11 +142,11 @@ export default function PedsCalculator() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Cole Uncuffed</Label>
-                <ResultCard label="ID" value={airway?.coleUncuffed} unit="mm" color="bg-slate-50 text-slate-700 border-slate-200" />
+                <ResultCard label="ID" value={airway?.coleUncuffedRounded} unit="mm" color="bg-slate-50 text-slate-700 border-slate-200" />
               </div>
               <div className="space-y-2">
                 <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Cole Cuffed</Label>
-                <ResultCard label="ID" value={airway?.coleCuffed} unit="mm" color="bg-slate-50 text-slate-700 border-slate-200" />
+                <ResultCard label="ID" value={airway?.coleCuffedRounded} unit="mm" color="bg-slate-50 text-slate-700 border-slate-200" />
               </div>
             </div>
 
