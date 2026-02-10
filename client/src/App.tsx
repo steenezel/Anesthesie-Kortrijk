@@ -12,6 +12,7 @@ import BlockDetail from "@/pages/block-detail";
 import CalculatorPage from "@/pages/last";
 import CalculatorList from "@/pages/calculator-list";
 import ApfelCalculator from "@/pages/apfel";
+import PedsCalculator from "@/pages/peds-calculator";
 import ChecklistPage from "@/pages/checklist";
 import InfoPage from "@/pages/info";
 import NotFound from "@/pages/not-found";
@@ -33,6 +34,7 @@ function Router() {
           <Route path="/calculator" component={CalculatorList} /> {/* De Hub */}
           <Route path="/calculator/last" component={CalculatorPage} /> {/* Je bestaande LAST */}
           <Route path="/calculator/apfel" component={ApfelCalculator} />
+          <Route path="/calculator/peds-calculator" component={PedsCalculator} />
           <Route path="/contacts" component={ContactsPage} />
           <Route path="/game" component={GamePage} />
           <Route path="/checklist" component={ChecklistPage} />
