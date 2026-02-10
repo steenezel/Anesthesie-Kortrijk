@@ -19,7 +19,12 @@ export default function PedsCalculator() {
   }, [ageValue, ageUnit]);
 
   const isWeightRequired = decimalYear < 1 && manualWeight === null;
-  const estimatedWeight = useMemo(() => decimalYear >= 1 ? (decimalYear + 5) * 2 : 0, [decimalYear]);
+  const estimatedWeight = useMemo(() => {
+  if (decimalYear < 1) return 0;
+  const rawWeight = (decimalYear + 5) * 2;
+  // Rond af naar de dichtstbijzijnde 0.5
+  return Math.round(rawWeight * 2) / 2;
+}, [decimalYear]);
   const weight = manualWeight !== null ? manualWeight : estimatedWeight;
 
   const airway = useMemo(() => {
@@ -28,6 +33,7 @@ export default function PedsCalculator() {
     // 1. Eck Formule (Afgerond op 0.5)
     const eckRaw = 2.44 + (decimalYear * 0.1) + (height * 0.02) + (weight * 0.016);
     const eckRounded = Math.round(eckRaw * 2) / 2;
+    const eck = Math.min(7.0, eckRounded);
 
     // 2. Cole Formule (Uncuffed & Cuffed)
     const coleUncuffedRaw= (decimalYear / 4) + 4;
@@ -48,7 +54,7 @@ export default function PedsCalculator() {
     if (weight >= 50) lma = "4";
 
     return {
-      eck: eckRounded.toFixed(1),
+      eck: eck.toFixed(1),
       coleUncuffed: coleUncuffed.toFixed(1),
       coleCuffed: coleCuffed.toFixed(1),
       lma,
