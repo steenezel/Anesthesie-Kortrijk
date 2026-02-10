@@ -10,13 +10,21 @@ export default function PedsCalculator() {
   const [ageValue, setAgeValue] = useState<number>(2);
   const [ageUnit, setAgeUnit] = useState<"weeks" | "months" | "years">("years");
   const [manualWeight, setManualWeight] = useState<number | null>(null);
-  const [height, setHeight] = useState<number>(90);
+  const [manualHeight, setManualHeight] = useState<number | null>(null);
 
   const decimalYear = useMemo(() => {
     if (ageUnit === "weeks") return ageValue / 52.14;
     if (ageUnit === "months") return ageValue / 12;
     return ageValue;
   }, [ageValue, ageUnit]);
+  // Schatting lengte: 75cm bij 1j, daarna +6cm per jaar (gemiddelde groeicurve)
+const estimatedHeight = useMemo(() => {
+  if (decimalYear < 1) return 50 + (decimalYear * 25); // Van 50cm naar 75cm in 1 jaar
+  return (decimalYear * 6) + 70; // Versimpelde veilige curve
+}, [decimalYear]);
+
+// Gebruik het ingevulde getal, of anders de schatting
+const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
 
   const isWeightRequired = decimalYear < 1 && manualWeight === null;
   const estimatedWeight = useMemo(() => {
@@ -31,7 +39,7 @@ export default function PedsCalculator() {
     if (isWeightRequired || weight <= 0) return null;
     
     // 1. Eck Formule (Afgerond op 0.5)
-    const eckRaw = 2.44 + (decimalYear * 0.1) + (height * 0.02) + (weight * 0.016);
+    const eckRaw = 2.44 + (decimalYear * 0.1) + (currentHeight * 0.02) + (weight * 0.016);
     const eckRounded = Math.round(eckRaw * 2) / 2;
     const eck = Math.min(7.0, eckRounded);
 
@@ -60,7 +68,7 @@ export default function PedsCalculator() {
       lma,
       depth: depth.toFixed(1)
     };
-  }, [decimalYear, weight, height, isWeightRequired]);
+  }, [decimalYear, weight, currentHeight, isWeightRequired]);
 
   const drugs = useMemo(() => {
     if (isWeightRequired || weight <= 0) return null;
@@ -108,9 +116,15 @@ export default function PedsCalculator() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-[10px] uppercase font-bold text-slate-400">Lengte (cm)</Label>
-              <Input type="number" value={height} onChange={(e) => setHeight(parseFloat(e.target.value) || 0)} className="text-xl font-mono font-bold h-12 border-slate-200" />
-            </div>
+  <Label className="text-[10px] uppercase font-bold text-slate-400">Lengte (cm)</Label>
+  <Input 
+    type="number" 
+    placeholder={`Schatting: ${Math.round(estimatedHeight)}`}
+    value={manualHeight ?? ""} 
+    onChange={(e) => setManualHeight(e.target.value ? parseFloat(e.target.value) : null)} 
+    className="text-xl font-mono font-bold h-12" 
+  />
+</div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-bold text-slate-400">Gewicht (kg)</Label>
               <Input 
@@ -138,7 +152,7 @@ export default function PedsCalculator() {
           <TabsList className="grid w-full grid-cols-3 mb-6 bg-slate-100 p-1 rounded-xl h-12 shadow-inner">
             <TabsTrigger value="airway" className="text-[10px] font-black uppercase tracking-tighter">Airway</TabsTrigger>
             <TabsTrigger value="drugs" className="text-[10px] font-black uppercase tracking-tighter">Drugs</TabsTrigger>
-            <TabsTrigger value="regional" className="text-[10px] font-black uppercase tracking-tighter">Regio</TabsTrigger>
+            <TabsTrigger value="regional" className="text-[10px] font-black uppercase tracking-tighter">Caudaal</TabsTrigger>
           </TabsList>
 
           <TabsContent value="airway" className="space-y-4">
