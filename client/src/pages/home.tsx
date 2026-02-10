@@ -43,7 +43,7 @@ const categories = [
   },
   {
     title: "Calculators",
-    description: "LAST, Apfel, ...",
+    description: "LAST | Apfel | Pediatrie",
     icon: Calculator,
     href: "/calculator",
     color: "bg-teal-600",

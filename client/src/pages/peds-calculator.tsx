@@ -70,8 +70,10 @@ export default function PedsCalculator() {
       propofol: { mg: (weight * 3).toFixed(0), ml: (weight * 3 / 10).toFixed(1) },
       rocuronium: { mg: (weight * 0.9).toFixed(1), ml: (weight * 0.9 / 10).toFixed(2) },
       adrenaline: { mcg: (weight * 10).toFixed(0), ml: (weight * 10 / 100).toFixed(1) },
-      cefazoline: { mg: (weight * 30).toFixed(0) },
-      amoxiclav: { mg: (weight * 30).toFixed(0) }
+      // Cefazoline: 30mg/kg met een maximum van 2000mg (2g)
+      cefazoline: { mg: Math.min(2000, Math.round(weight * 30)).toFixed(0) },
+       // Amoxiclav: 30mg/kg met een maximum van 1000mg (1g)
+      amoxiclav: { mg: Math.min(1000, Math.round(weight * 30)).toFixed(0) }
     };
   }, [weight, isWeightRequired]);
 
