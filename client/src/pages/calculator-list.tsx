@@ -28,8 +28,8 @@ export default function CalculatorList() {
         <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900">
           Calculators
         </h1>
-        <p className="text-slate-500 text-sm italic">
-          Klinische beslissingssteun
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+          AZ Groeninge • Klinische Beslissingssteun
         </p>
       </div>
 

@@ -16,7 +16,9 @@ export default function OnboardingPage() {
         <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900">
           On<span className="text-teal-600">boarding</span>
         </h1>
-        <p className="text-slate-500 text-sm italic">Welkom in het team van AZ Groeninge.</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+          AZ Groeninge • Welkom in de Dienst Anesthesie
+        </p>
       </header>
 
       {/* 1. LOGISTIEK & TOEGANG */}

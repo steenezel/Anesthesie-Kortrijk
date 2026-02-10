@@ -42,10 +42,10 @@ export default function ProtocolList() {
         <h1 className="text-4xl font-black tracking-tighter uppercase text-slate-900">
           Protocollen <span className="text-blue-600">Anesthesie</span>
         </h1>
-        <p className="text-slate-500 font-medium italic text-sm underline decoration-blue-200">
-          Maak een keuze uit de disciplines
-        </p>
-      </div>
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                  AZ Groeninge • Protocollen Kritieke Diensten
+                </p>
+              </div>
 
       {/* STAP 1: HET KEUZEMENU (DISCIPLINES) */}
       <div className="grid grid-cols-2 gap-3">
