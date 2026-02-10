@@ -67,6 +67,8 @@ const contacts = [
 export default function ContactsPage() {
   const [search, setSearch] = useState("");
 
+  const hospitalPrefix = "+325663";
+
   const filtered = contacts.filter(c => 
     c.name.toLowerCase().includes(search.toLowerCase()) || 
     c.role.toLowerCase().includes(search.toLowerCase())
@@ -91,9 +93,10 @@ export default function ContactsPage() {
 
       <div className="grid gap-2">
         {filtered.map((contact, i) => (
-          <Card key={i} className="border-slate-100 shadow-sm active:scale-[0.98] transition-transform">
+          <Card key={i} className="border-slate-100 shadow-sm active:scale-[0.95] transition-transform">
             <CardContent className="p-0">
-              <a href={`tel:${contact.phone}`} className="flex items-center justify-between p-4">
+              {/* Hier gebeurt de magie: de 'tel:' link krijgt automatisch de prefix mee */}
+              <a href={`tel:${hospitalPrefix}${contact.phone}`} className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-4">
                   <div className={`p-2 rounded-lg ${contact.category === 'staf' ? 'bg-teal-50 text-teal-600' : 'bg-blue-50 text-blue-600'}`}>
                     {contact.category === 'staf' ? <Stethoscope className="h-5 w-5" /> : <GraduationCap className="h-5 w-5" />}
@@ -104,6 +107,7 @@ export default function ContactsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
+                  {/* We tonen nog steeds het vertrouwde 4-cijferige nummer op het scherm */}
                   <span className="font-mono font-black text-lg text-slate-600">{contact.phone}</span>
                   <div className="bg-emerald-500 p-2 rounded-full text-white shadow-sm">
                     <Phone className="h-4 w-4" />
@@ -114,6 +118,12 @@ export default function ContactsPage() {
           </Card>
         ))}
       </div>
+          {filtered.length === 0 && (
+        <div className="text-center py-12 text-slate-400 font-medium">
+          Geen resultaten gevonden voor "{search}"
+        </div>
+      )}
+
     </div>
   );
 }
