@@ -29,7 +29,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState(false);
 
   // STEL HIER DE PINCODE IN
-  const CORRECT_PIN = "3044"; 
+  const CORRECT_PIN = import.meta.env.VITE_APP_PIN; // Code is ingesteld in Vercel/Settings/Environment Variables VITE_APP_PIN 
 
   useEffect(() => {
     // Kijken of we al ingelogd zijn in deze browser
