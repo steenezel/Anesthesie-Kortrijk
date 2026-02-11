@@ -69,22 +69,54 @@ const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
       depth: depth.toFixed(1)
     };
   }, [decimalYear, weight, currentHeight, isWeightRequired]);
+const drugs = useMemo(() => {
+  if (isWeightRequired || weight <= 0) return null;
 
-  const drugs = useMemo(() => {
-    if (isWeightRequired || weight <= 0) return null;
-    return {
-      sufentanil: { mcg: (weight * 0.15).toFixed(2), ml: (weight * 0.15 / 5).toFixed(2) },
-      alfentanil: { mcg: (weight * 15).toFixed(0), ml: (weight * 15 / 500).toFixed(2) },
-      propofol: { mg: (weight * 3).toFixed(0), ml: (weight * 3 / 10).toFixed(1) },
-      rocuronium: { mg: (weight * 0.9).toFixed(1), ml: (weight * 0.9 / 10).toFixed(2) },
-      adrenaline: { mcg: (weight * 10).toFixed(0), ml: (weight * 10 / 100).toFixed(1) },
-      // Cefazoline: 30mg/kg met een maximum van 2000mg (2g)
-      cefazoline: { mg: Math.min(2000, Math.round(weight * 30)).toFixed(0) },
-       // Amoxiclav: 30mg/kg met een maximum van 1000mg (1g)
-      amoxiclav: { mg: Math.min(1000, Math.round(weight * 30)).toFixed(0) }
-    };
-  }, [weight, isWeightRequired]);
+  // We berekenen eerst de ruwe waarden op basis van gewicht, 
+  // en passen daarna Math.min() toe voor de veiligheidslimieten.
 
+  return {
+    // Sufentanil: 0.15 mcg/kg (max 10 mcg)
+    sufentanil: { 
+      mcg: Math.min(10, weight * 0.15).toFixed(2), 
+      ml: (Math.min(10, weight * 0.15) / 5).toFixed(2) 
+    },
+    
+    // Alfentanil: 15 mcg/kg (max 500 mcg oftewel 0.5 mg)
+    alfentanil: { 
+      mcg: Math.min(500, weight * 15).toFixed(0), 
+      ml: (Math.min(500, weight * 15) / 500).toFixed(2) 
+    },
+    
+    // Propofol: 3 mg/kg (max 150 mg)
+    propofol: { 
+      mg: Math.min(150, weight * 3).toFixed(0), 
+      ml: (Math.min(150, weight * 3) / 10).toFixed(1) 
+    },
+    
+    // Rocuronium: 0.9 mg/kg (max dosis bij 50kg = 45mg)
+    rocuronium: { 
+      mg: Math.min(50, weight * 0.9).toFixed(1), 
+      ml: (Math.min(50, weight * 0.9) / 10).toFixed(2) 
+    },
+    
+    // Adrenaline: 10 mcg/kg (max 1000 mcg oftewel 1 mg)
+    adrenaline: { 
+      mcg: Math.min(1000, weight * 10).toFixed(0), 
+      ml: (Math.min(1000, weight * 10) / 100).toFixed(1) 
+    },
+    
+    // Cefazoline: 30 mg/kg (max 2000 mg)
+    cefazoline: { 
+      mg: Math.min(2000, Math.round(weight * 30)).toFixed(0) 
+    },
+    
+    // Amoxiclav: 30 mg/kg (max 1000 mg)
+    amoxiclav: { 
+      mg: Math.min(1000, Math.round(weight * 30)).toFixed(0) 
+    }
+  };
+}, [weight, isWeightRequired]);
   return (
     <div className="space-y-6 pb-20 pt-[env(safe-area-inset-top)] px-4">
       {/* INPUT SECTIE */}
@@ -119,20 +151,20 @@ const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
   <Label className="text-[10px] uppercase font-bold text-slate-400">Lengte (cm)</Label>
   <Input 
     type="number" 
-    placeholder={`Schatting: ${Math.round(estimatedHeight)}`}
+    placeholder={`Geschat: ${Math.round(estimatedHeight)}`}
     value={manualHeight ?? ""} 
     onChange={(e) => setManualHeight(e.target.value ? parseFloat(e.target.value) : null)} 
-    className="text-xl font-mono font-bold h-12" 
+    className="text-base font-mono font-bold h-12" 
   />
 </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-bold text-slate-400">Gewicht (kg)</Label>
               <Input 
                 type="number" 
-                placeholder={decimalYear >= 1 ? `Schat: ${estimatedWeight}` : "Verplicht"}
+                placeholder={decimalYear >= 1 ? `Geschat: ${estimatedWeight}` : "Verplicht"}
                 value={manualWeight ?? ""}
                 onChange={(e) => setManualWeight(e.target.value ? parseFloat(e.target.value) : null)}
-                className={`text-xl font-mono font-bold h-12 ${isWeightRequired ? 'border-amber-500 ring-2 ring-amber-100' : 'border-slate-200'}`}
+                className={`text-base font-mono font-bold h-12 ${isWeightRequired ? 'border-amber-500 ring-2 ring-amber-100' : 'border-slate-200'}`}
               />
             </div>
           </div>
