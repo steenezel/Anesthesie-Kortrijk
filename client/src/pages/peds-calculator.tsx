@@ -231,7 +231,7 @@ const drugs = useMemo(() => {
           </TabsContent>
 
           <TabsContent value="drugs" className="space-y-4">
-             <div className="bg-red-300 p-4 rounded-2xl shadow-lg flex items-center justify-between border-b-4 border-red-800">
+             <div className="bg-red-400 p-2 rounded-2xl shadow-lg flex items-center justify-between border-b-4 border-red-800">
                 <div className="flex items-center gap-3">
                   <AlertCircle className="h-6 w-6 text-white animate-pulse" />
                   <div>
@@ -310,10 +310,10 @@ function ResultCard({ label, value, unit, color }: any) {
 
 function DrugRow({ label, dose, volume }: any) {
   return (
-    <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-teal-200 transition-colors">
+    <div className="flex items-center justify-between p-2 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-teal-200 transition-colors">
       <div className="space-y-0.5">
         <p className="text-[10px] font-black uppercase text-slate-400 leading-none tracking-tighter">{label}</p>
-        <p className="text-sm font-black text-slate-800 italic">{dose}</p>
+        <p className="text-sm font-black text-slate-800">{dose}</p>
       </div>
       <div className="text-right px-4 py-2 bg-teal-50 rounded-xl border border-teal-100 min-w-[85px]">
         <p className="text-lg font-mono font-black text-teal-700">{volume}</p>
