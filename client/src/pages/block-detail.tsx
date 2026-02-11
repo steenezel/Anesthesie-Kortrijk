@@ -140,23 +140,33 @@ export default function BlockDetail() {
               <div className="prose prose-sm prose-slate max-w-none prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-p:text-slate-700 prose-p:leading-relaxed prose-li:text-slate-700 prose-li:font-medium">
                 <ReactMarkdown
   components={{
-    // 1. VIDEO HANDLING (Behouden)
+    // 1. VIDEO HANDLING
     p: ({ children, ...props }: any) => {
-      const content = React.Children.toArray(children).join("");
-      if (content.startsWith("video:")) {
-        const videoSrc = content.replace("video:", "").trim();
-        return (
-          <div className="my-8 rounded-[2rem] overflow-hidden shadow-2xl bg-black aspect-video border-4 border-slate-900">
-            <video controls playsInline className="w-full h-full" preload="metadata">
-              <source src={videoSrc} type="video/mp4" />
-            </video>
-          </div>
-        );
-      }
-      return <p className="mb-6">{children}</p>;
-    },
+  const content = React.Children.toArray(children).join("");
+  
+  if (content.startsWith("video:")) {
+    const videoSrc = content.replace("video:", "").trim();
+    return (
+      <div className="my-8 rounded-[2rem] overflow-hidden shadow-2xl bg-black aspect-video border-4 border-slate-900 group relative">
+        <video 
+          controls 
+          playsInline 
+          muted     
+          loop     
+          className="w-full h-full object-cover" 
+          preload="metadata"
+        >
+          <source src={videoSrc} type="video/mp4" />
+          Je browser ondersteunt geen video.
+        </video>
+       </div>
+    );
+  }
+  
+  return <p className="mb-6 leading-relaxed text-slate-700">{children}</p>;
+},
 
-    // 2. IMAGE ZOOM (Behouden)
+    // 2. IMAGE ZOOM 
     img: ({ src, alt }: { src?: string; alt?: string }) => (
       <div className="my-10">
         <Zoom>
@@ -165,7 +175,7 @@ export default function BlockDetail() {
       </div>
     ),
 
-    // 3. DE DEEP CLEANER BOXES (Hetzelfde als in protocol-detail)
+    // 3. DE DEEP CLEANER BOXES
     blockquote: ({ children, ...props }: any) => {
       const flattenText = (node: any): string => {
         if (typeof node === 'string') return node;
