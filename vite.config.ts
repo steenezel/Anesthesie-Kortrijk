@@ -72,6 +72,15 @@ export default defineConfig({
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
   },
+
+  define: {
+    __BUILD_DATE__: JSON.stringify(new Date().toLocaleDateString('nl-BE', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })),
+  },
+  
   root: "./", 
   build: {
     outDir: "dist/public",

@@ -19,6 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { quotes } from "@/data/quotes";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
+// @ts-ignore
+const buildDate = __BUILD_DATE__;
 
 const categories = [
   {
@@ -220,7 +222,7 @@ export default function Home() {
 
       <div className="pt-8 text-center border-t border-slate-100">
         <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">
-          Update: 10 Februari 2026
+          Laatste update: {buildDate}
         </p>
       </div>
     </div>

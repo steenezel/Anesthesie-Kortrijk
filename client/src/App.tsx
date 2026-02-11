@@ -53,8 +53,8 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (!isAuthenticated) {
     return (
-        <div className="fixed inset-0 bg-slate-950 flex flex-col justify-center z-[9999] px-6 pt-[env(safe-area-inset-top)]">
-        <div className="w-full max-w-sm space-y-10">
+        <div className="fixed inset-0 bg-slate-950 flex flex-col justify-center items-center z-[9999] px-6 pt-[env(safe-area-inset-top)]">
+        <div className="w-full max-w-sm space-y-10 mx-auto">
           <div className="text-center space-y-4">
             <div className="mx-auto w-16 h-16 bg-teal-500/10 rounded-3xl flex items-center justify-center mb-6 border border-teal-500/20">
               <Lock className="h-8 w-8 text-teal-500" />
