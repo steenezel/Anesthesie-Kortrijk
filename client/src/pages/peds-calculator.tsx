@@ -52,8 +52,9 @@ const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
     const coleUncuffed = Math.min(7.0, coleUncuffedRoundedRaw);
 
     // 3. Diepte Formule: (age / 2) + 12
-    const depth = Math.min(21.0, (decimalYear / 2) + 12);
-
+    const oralDepth = Math.min(21.0, (decimalYear / 2) + 12);
+    const nasalDepth = Math.min(24.0, (decimalYear / 2) + 15);
+    
     let lma = "1";
     if (weight >= 5) lma = "1.5";
     if (weight >= 10) lma = "2";
@@ -66,25 +67,71 @@ const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
       coleUncuffed: coleUncuffed.toFixed(1),
       coleCuffed: coleCuffed.toFixed(1),
       lma,
-      depth: depth.toFixed(1)
+      oralDepth: oralDepth.toFixed(1),
+      nasalDepth: nasalDepth.toFixed(1)
     };
   }, [decimalYear, weight, currentHeight, isWeightRequired]);
+const drugs = useMemo(() => {
+  if (isWeightRequired || weight <= 0) return null;
 
-  const drugs = useMemo(() => {
-    if (isWeightRequired || weight <= 0) return null;
-    return {
-      sufentanil: { mcg: (weight * 0.15).toFixed(2), ml: (weight * 0.15 / 5).toFixed(2) },
-      alfentanil: { mcg: (weight * 15).toFixed(0), ml: (weight * 15 / 500).toFixed(2) },
-      propofol: { mg: (weight * 3).toFixed(0), ml: (weight * 3 / 10).toFixed(1) },
-      rocuronium: { mg: (weight * 0.9).toFixed(1), ml: (weight * 0.9 / 10).toFixed(2) },
-      adrenaline: { mcg: (weight * 10).toFixed(0), ml: (weight * 10 / 100).toFixed(1) },
-      // Cefazoline: 30mg/kg met een maximum van 2000mg (2g)
-      cefazoline: { mg: Math.min(2000, Math.round(weight * 30)).toFixed(0) },
-       // Amoxiclav: 30mg/kg met een maximum van 1000mg (1g)
-      amoxiclav: { mg: Math.min(1000, Math.round(weight * 30)).toFixed(0) }
-    };
-  }, [weight, isWeightRequired]);
+  // We berekenen eerst de ruwe waarden op basis van gewicht, 
+  // en passen daarna Math.min() toe voor de veiligheidslimieten.
 
+  return {
+    // Sufentanil: 0.15 mcg/kg (max 10 mcg)
+    sufentanil: { 
+      mcg: Math.min(10, weight * 0.15).toFixed(1), 
+      ml: (Math.min(10, weight * 0.15) / 5).toFixed(1) 
+    },
+    
+    // Alfentanil: 15 mcg/kg (max 500 mcg oftewel 0.5 mg)
+    alfentanil: { 
+      mcg: Math.min(500, weight * 15).toFixed(0), 
+      ml: (Math.min(500, weight * 15) / 500).toFixed(1) 
+    },
+    
+    // Propofol: 3 mg/kg (max 150 mg)
+    propofol: { 
+      mg: Math.min(150, weight * 3).toFixed(0), 
+      ml: (Math.min(150, weight * 3) / 10).toFixed(0) 
+    },
+    
+    // Rocuronium: 0.9 mg/kg (max dosis bij 50kg = 45mg)
+    rocuronium: { 
+      mg: Math.min(50, weight * 0.9).toFixed(1), 
+      ml: (Math.min(50, weight * 0.9) / 10).toFixed(1) 
+    },
+    
+    // Adrenaline: 10 mcg/kg (max 1000 mcg oftewel 1 mg)
+    adrenaline: { 
+      mcg: Math.min(1000, weight * 10).toFixed(0), 
+      ml: (Math.min(1000, weight * 10) / 100).toFixed(1) 
+    },
+
+    atropine: { 
+        mcg: Math.min(500, weight * 20).toFixed(0), 
+        ml: (Math.min(500, weight * 20) / 250).toFixed(2) }, // 0.2mg/ml ampul
+    succinyl: { 
+      mg: Math.min(100, weight * 2).toFixed(0), 
+      ml: (Math.min(100, weight * 2) / 50).toFixed(1) }, // 50mg/ml ampul
+    ondansetron: { 
+      mg: Math.min(4, weight * 0.1).toFixed(1), 
+      ml: (Math.min(4, weight * 0.1) / 2).toFixed(2) }, // 2mg/ml ampul
+    paracetamol: { 
+      mg: Math.min(1000, weight * 15).toFixed(0), 
+      ml: (Math.min(1000, weight * 15) / 10).toFixed(1) }, // 10mg/ml zakje
+    
+    // Cefazoline: 30 mg/kg (max 2000 mg)
+    cefazoline: { 
+      mg: Math.min(2000, Math.round(weight * 30)).toFixed(0) 
+    },
+    
+    // Amoxiclav: 30 mg/kg (max 1000 mg)
+    amoxiclav: { 
+      mg: Math.min(1000, Math.round(weight * 30)).toFixed(0) 
+    }
+  };
+}, [weight, isWeightRequired]);
   return (
     <div className="space-y-6 pb-20 pt-[env(safe-area-inset-top)] px-4">
       {/* INPUT SECTIE */}
@@ -119,20 +166,20 @@ const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
   <Label className="text-[10px] uppercase font-bold text-slate-400">Lengte (cm)</Label>
   <Input 
     type="number" 
-    placeholder={`Schatting: ${Math.round(estimatedHeight)}`}
+    placeholder={`Geschat: ${Math.round(estimatedHeight)}`}
     value={manualHeight ?? ""} 
     onChange={(e) => setManualHeight(e.target.value ? parseFloat(e.target.value) : null)} 
-    className="text-xl font-mono font-bold h-12" 
+    className="text-base font-mono font-bold h-12" 
   />
 </div>
             <div className="space-y-2">
               <Label className="text-[10px] uppercase font-bold text-slate-400">Gewicht (kg)</Label>
               <Input 
                 type="number" 
-                placeholder={decimalYear >= 1 ? `Schat: ${estimatedWeight}` : "Verplicht"}
+                placeholder={decimalYear >= 1 ? `Geschat: ${estimatedWeight}` : "Verplicht"}
                 value={manualWeight ?? ""}
                 onChange={(e) => setManualWeight(e.target.value ? parseFloat(e.target.value) : null)}
-                className={`text-xl font-mono font-bold h-12 ${isWeightRequired ? 'border-amber-500 ring-2 ring-amber-100' : 'border-slate-200'}`}
+                className={`text-base font-mono font-bold h-12 ${isWeightRequired ? 'border-amber-500 ring-2 ring-amber-100' : 'border-slate-200'}`}
               />
             </div>
           </div>
@@ -159,7 +206,7 @@ const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
             {/* ECK FORMULE (PRIMAIR) */}
             <div className="space-y-2">
                <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Formule van Eck (Bouw-gebaseerd)</Label>
-               <ResultCard label="ETT Maat (ID)" value={airway?.eck} unit="mm" color="bg-blue-600 text-white shadow-blue-200" />
+               <ResultCard label="ETT Maat (ID) - Cuffed" value={airway?.eck} unit="mm" color="bg-blue-600 text-white shadow-blue-200" />
             </div>
 
             {/* COLE FORMULE (SECUNDAIR) */}
@@ -175,19 +222,21 @@ const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
             </div>
 
             {/* MATEN & DIEPTE */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <ResultCard label="ETT Diepte" value={airway?.depth} unit="cm" color="bg-indigo-50 text-indigo-700 border-indigo-100" />
+            <div className="grid grid-cols-3 gap-3 pt-2">
+              <ResultCard label="Diepte (Oraal)" value={airway?.oralDepth} unit="cm" color="bg-indigo-50 text-indigo-700 border-indigo-100" />
+              <ResultCard label="Diepte (Nasaal)" value={airway?.nasalDepth} unit="cm" color="bg-sky-50 text-sky-700 border-sky-100" />
               <ResultCard label="LMA Maat" value={airway?.lma} unit="#" color="bg-violet-50 text-violet-700 border-violet-100" />
             </div>
+            
           </TabsContent>
 
           <TabsContent value="drugs" className="space-y-4">
-             <div className="bg-red-600 p-4 rounded-2xl shadow-lg flex items-center justify-between border-b-4 border-red-800">
+             <div className="bg-red-300 p-4 rounded-2xl shadow-lg flex items-center justify-between border-b-4 border-red-800">
                 <div className="flex items-center gap-3">
                   <AlertCircle className="h-6 w-6 text-white animate-pulse" />
                   <div>
                     <p className="text-[10px] font-black text-red-100 uppercase tracking-widest">Adrenaline (10µg/kg)</p>
-                    <p className="text-2xl font-mono font-black text-white">{drugs?.adrenaline.ml} <span className="text-xs">ml (1:10k)</span></p>
+                    <p className="text-2xl font-mono font-black text-white">{drugs?.adrenaline.ml} <span className="text-xs">ml (1mg tot 10ml NaCl)</span></p>
                   </div>
                 </div>
               </div>
@@ -248,9 +297,9 @@ const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
 
 function ResultCard({ label, value, unit, color }: any) {
   return (
-    <div className={`p-4 rounded-2xl border shadow-sm flex flex-col items-center justify-center text-center transition-all ${color}`}>
-      <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-1">{label}</p>
-      <p className="text-3xl font-mono font-black">{value}<span className="text-sm ml-1 font-bold">{unit}</span></p>
+    <div className={`p-2 rounded-2xl border shadow-sm flex flex-col items-center justify-center text-center transition-all ${color}`}>
+      <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">{label}</p>
+      <p className="text-2xl font-mono font-black">{value}<span className="text-sm ml-1 font-bold">{unit}</span></p>
     </div>
   );
 }
@@ -259,7 +308,7 @@ function DrugRow({ label, dose, volume }: any) {
   return (
     <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-teal-200 transition-colors">
       <div className="space-y-0.5">
-        <p className="text-[9px] font-black uppercase text-slate-400 leading-none tracking-tighter">{label}</p>
+        <p className="text-[10px] font-black uppercase text-slate-400 leading-none tracking-tighter">{label}</p>
         <p className="text-sm font-black text-slate-800 italic">{dose}</p>
       </div>
       <div className="text-right px-4 py-2 bg-teal-50 rounded-xl border border-teal-100 min-w-[85px]">
