@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { quotes } from "@/data/quotes";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
-// @ts-ignore
+// @ts-expect-error: __BUILD_DATE__ is defined globally by Vite during the build process
 const buildDate = __BUILD_DATE__;
 
 const categories = [

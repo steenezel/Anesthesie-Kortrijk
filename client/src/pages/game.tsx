@@ -51,7 +51,7 @@ export default function GamePage() {
         setBirdVelocity((vel) => vel + GRAVITY);
 
         setPipes((currentPipes) => {
-          let newPipes = currentPipes
+          const newPipes = currentPipes
             .map((pipe) => ({ ...pipe, x: pipe.x - GAME_SPEED }))
             .filter((pipe) => pipe.x > -PIPE_WIDTH);
 

@@ -231,7 +231,7 @@ const drugs = useMemo(() => {
           </TabsContent>
 
           <TabsContent value="drugs" className="space-y-4">
-             <div className="bg-red-300 p-4 rounded-2xl shadow-lg flex items-center justify-between border-b-4 border-red-800">
+             <div className="bg-red-400 p-2 rounded-2xl shadow-lg flex items-center justify-between border-b-4 border-red-800">
                 <div className="flex items-center gap-3">
                   <AlertCircle className="h-6 w-6 text-white animate-pulse" />
                   <div>
@@ -244,6 +244,10 @@ const drugs = useMemo(() => {
               <DrugRow label="Propofol 1%" dose={`${drugs?.propofol.mg} mg`} volume={`${drugs?.propofol.ml} ml`} />
               <DrugRow label="Sufentanil (5µg/ml)" dose={`${drugs?.sufentanil.mcg} µg`} volume={`${drugs?.sufentanil.ml} ml`} />
               <DrugRow label="Alfentanil (500µg/ml)" dose={`${drugs?.alfentanil.mcg} µg`} volume={`${drugs?.alfentanil.ml} ml`} />
+              <DrugRow label="Atropine (200µg/ml)" dose={`${drugs?.atropine.mcg} µg`} volume={`${drugs?.atropine.ml} ml`} />
+              <DrugRow label="Succinyl (50mg/ml)" dose={`${drugs?.succinyl.mg} µg`} volume={`${drugs?.succinyl.ml} ml`} />
+              <DrugRow label="Ondansetron (2mg/ml)" dose={`${drugs?.ondansetron.mg} µg`} volume={`${drugs?.ondansetron.ml} ml`} />
+              <DrugRow label="Paracetamol (10mg/ml)" dose={`${drugs?.paracetamol.mg} µg`} volume={`${drugs?.paracetamol.ml} ml`} />
               <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-100">
                 <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                   <p className="text-[9px] font-black text-slate-400 uppercase">Cefazoline (30mg/kg)</p>
@@ -306,10 +310,10 @@ function ResultCard({ label, value, unit, color }: any) {
 
 function DrugRow({ label, dose, volume }: any) {
   return (
-    <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-teal-200 transition-colors">
+    <div className="flex items-center justify-between p-2 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-teal-200 transition-colors">
       <div className="space-y-0.5">
         <p className="text-[10px] font-black uppercase text-slate-400 leading-none tracking-tighter">{label}</p>
-        <p className="text-sm font-black text-slate-800 italic">{dose}</p>
+        <p className="text-sm font-black text-slate-800">{dose}</p>
       </div>
       <div className="text-right px-4 py-2 bg-teal-50 rounded-xl border border-teal-100 min-w-[85px]">
         <p className="text-lg font-mono font-black text-teal-700">{volume}</p>
