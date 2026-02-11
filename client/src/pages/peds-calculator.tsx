@@ -52,8 +52,9 @@ const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
     const coleUncuffed = Math.min(7.0, coleUncuffedRoundedRaw);
 
     // 3. Diepte Formule: (age / 2) + 12
-    const depth = Math.min(21.0, (decimalYear / 2) + 12);
-
+    const oralDepth = Math.min(21.0, (decimalYear / 2) + 12);
+    const nasalDepth = Math.min(24.0, (decimalYear / 2) + 15);
+    
     let lma = "1";
     if (weight >= 5) lma = "1.5";
     if (weight >= 10) lma = "2";
@@ -66,7 +67,8 @@ const currentHeight = manualHeight !== null ? manualHeight : estimatedHeight;
       coleUncuffed: coleUncuffed.toFixed(1),
       coleCuffed: coleCuffed.toFixed(1),
       lma,
-      depth: depth.toFixed(1)
+      oralDepth: oralDepth.toFixed(1),
+      nasalDepth: nasalDepth.toFixed(1)
     };
   }, [decimalYear, weight, currentHeight, isWeightRequired]);
 const drugs = useMemo(() => {
@@ -207,10 +209,12 @@ const drugs = useMemo(() => {
             </div>
 
             {/* MATEN & DIEPTE */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <ResultCard label="ETT Diepte" value={airway?.depth} unit="cm" color="bg-indigo-50 text-indigo-700 border-indigo-100" />
+            <div className="grid grid-cols-3 gap-3 pt-2">
+              <ResultCard label="Diepte (Oraal)" value={airway?.oralDepth} unit="cm" color="bg-indigo-50 text-indigo-700 border-indigo-100" />
+              <ResultCard label="Diepte (Nasaal)" value={airway?.nasalDepth} unit="cm" color="bg-sky-50 text-sky-700 border-sky-100" />
               <ResultCard label="LMA Maat" value={airway?.lma} unit="#" color="bg-violet-50 text-violet-700 border-violet-100" />
             </div>
+            
           </TabsContent>
 
           <TabsContent value="drugs" className="space-y-4">
