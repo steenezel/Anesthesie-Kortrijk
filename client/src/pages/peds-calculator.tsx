@@ -80,26 +80,26 @@ const drugs = useMemo(() => {
   return {
     // Sufentanil: 0.15 mcg/kg (max 10 mcg)
     sufentanil: { 
-      mcg: Math.min(10, weight * 0.15).toFixed(2), 
-      ml: (Math.min(10, weight * 0.15) / 5).toFixed(2) 
+      mcg: Math.min(10, weight * 0.15).toFixed(1), 
+      ml: (Math.min(10, weight * 0.15) / 5).toFixed(1) 
     },
     
     // Alfentanil: 15 mcg/kg (max 500 mcg oftewel 0.5 mg)
     alfentanil: { 
       mcg: Math.min(500, weight * 15).toFixed(0), 
-      ml: (Math.min(500, weight * 15) / 500).toFixed(2) 
+      ml: (Math.min(500, weight * 15) / 500).toFixed(1) 
     },
     
     // Propofol: 3 mg/kg (max 150 mg)
     propofol: { 
       mg: Math.min(150, weight * 3).toFixed(0), 
-      ml: (Math.min(150, weight * 3) / 10).toFixed(1) 
+      ml: (Math.min(150, weight * 3) / 10).toFixed(0) 
     },
     
     // Rocuronium: 0.9 mg/kg (max dosis bij 50kg = 45mg)
     rocuronium: { 
       mg: Math.min(50, weight * 0.9).toFixed(1), 
-      ml: (Math.min(50, weight * 0.9) / 10).toFixed(2) 
+      ml: (Math.min(50, weight * 0.9) / 10).toFixed(1) 
     },
     
     // Adrenaline: 10 mcg/kg (max 1000 mcg oftewel 1 mg)
@@ -107,6 +107,19 @@ const drugs = useMemo(() => {
       mcg: Math.min(1000, weight * 10).toFixed(0), 
       ml: (Math.min(1000, weight * 10) / 100).toFixed(1) 
     },
+
+    atropine: { 
+        mcg: Math.min(500, weight * 20).toFixed(0), 
+        ml: (Math.min(500, weight * 20) / 250).toFixed(2) }, // 0.2mg/ml ampul
+    succinyl: { 
+      mg: Math.min(100, weight * 2).toFixed(0), 
+      ml: (Math.min(100, weight * 2) / 50).toFixed(1) }, // 50mg/ml ampul
+    ondansetron: { 
+      mg: Math.min(4, weight * 0.1).toFixed(1), 
+      ml: (Math.min(4, weight * 0.1) / 2).toFixed(2) }, // 2mg/ml ampul
+    paracetamol: { 
+      mg: Math.min(1000, weight * 15).toFixed(0), 
+      ml: (Math.min(1000, weight * 15) / 10).toFixed(1) }, // 10mg/ml zakje
     
     // Cefazoline: 30 mg/kg (max 2000 mg)
     cefazoline: { 
@@ -193,7 +206,7 @@ const drugs = useMemo(() => {
             {/* ECK FORMULE (PRIMAIR) */}
             <div className="space-y-2">
                <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Formule van Eck (Bouw-gebaseerd)</Label>
-               <ResultCard label="ETT Maat (ID)" value={airway?.eck} unit="mm" color="bg-blue-600 text-white shadow-blue-200" />
+               <ResultCard label="ETT Maat (ID) - Cuffed" value={airway?.eck} unit="mm" color="bg-blue-600 text-white shadow-blue-200" />
             </div>
 
             {/* COLE FORMULE (SECUNDAIR) */}
@@ -218,7 +231,7 @@ const drugs = useMemo(() => {
           </TabsContent>
 
           <TabsContent value="drugs" className="space-y-4">
-             <div className="bg-red-600 p-4 rounded-2xl shadow-lg flex items-center justify-between border-b-4 border-red-800">
+             <div className="bg-red-300 p-4 rounded-2xl shadow-lg flex items-center justify-between border-b-4 border-red-800">
                 <div className="flex items-center gap-3">
                   <AlertCircle className="h-6 w-6 text-white animate-pulse" />
                   <div>
@@ -284,9 +297,9 @@ const drugs = useMemo(() => {
 
 function ResultCard({ label, value, unit, color }: any) {
   return (
-    <div className={`p-4 rounded-2xl border shadow-sm flex flex-col items-center justify-center text-center transition-all ${color}`}>
-      <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-1">{label}</p>
-      <p className="text-3xl font-mono font-black">{value}<span className="text-sm ml-1 font-bold">{unit}</span></p>
+    <div className={`p-2 rounded-2xl border shadow-sm flex flex-col items-center justify-center text-center transition-all ${color}`}>
+      <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">{label}</p>
+      <p className="text-2xl font-mono font-black">{value}<span className="text-sm ml-1 font-bold">{unit}</span></p>
     </div>
   );
 }
@@ -295,7 +308,7 @@ function DrugRow({ label, dose, volume }: any) {
   return (
     <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl shadow-sm hover:border-teal-200 transition-colors">
       <div className="space-y-0.5">
-        <p className="text-[9px] font-black uppercase text-slate-400 leading-none tracking-tighter">{label}</p>
+        <p className="text-[10px] font-black uppercase text-slate-400 leading-none tracking-tighter">{label}</p>
         <p className="text-sm font-black text-slate-800 italic">{dose}</p>
       </div>
       <div className="text-right px-4 py-2 bg-teal-50 rounded-xl border border-teal-100 min-w-[85px]">
