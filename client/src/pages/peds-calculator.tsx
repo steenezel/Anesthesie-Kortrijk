@@ -244,6 +244,10 @@ const drugs = useMemo(() => {
               <DrugRow label="Propofol 1%" dose={`${drugs?.propofol.mg} mg`} volume={`${drugs?.propofol.ml} ml`} />
               <DrugRow label="Sufentanil (5µg/ml)" dose={`${drugs?.sufentanil.mcg} µg`} volume={`${drugs?.sufentanil.ml} ml`} />
               <DrugRow label="Alfentanil (500µg/ml)" dose={`${drugs?.alfentanil.mcg} µg`} volume={`${drugs?.alfentanil.ml} ml`} />
+              <DrugRow label="Atropine (200µg/ml)" dose={`${drugs?.atropine.mcg} µg`} volume={`${drugs?.atropine.ml} ml`} />
+              <DrugRow label="Succinyl (50mg/ml)" dose={`${drugs?.succinyl.mg} µg`} volume={`${drugs?.succinyl.ml} ml`} />
+              <DrugRow label="Ondansetron (2mg/ml)" dose={`${drugs?.ondansetron.mg} µg`} volume={`${drugs?.ondansetron.ml} ml`} />
+              <DrugRow label="Paracetamol (10mg/ml)" dose={`${drugs?.paracetamol.mg} µg`} volume={`${drugs?.paracetamol.ml} ml`} />
               <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-100">
                 <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                   <p className="text-[9px] font-black text-slate-400 uppercase">Cefazoline (30mg/kg)</p>
