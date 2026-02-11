@@ -219,7 +219,7 @@ const drugs = useMemo(() => {
                   <AlertCircle className="h-6 w-6 text-white animate-pulse" />
                   <div>
                     <p className="text-[10px] font-black text-red-100 uppercase tracking-widest">Adrenaline (10µg/kg)</p>
-                    <p className="text-2xl font-mono font-black text-white">{drugs?.adrenaline.ml} <span className="text-xs">ml (1:10k)</span></p>
+                    <p className="text-2xl font-mono font-black text-white">{drugs?.adrenaline.ml} <span className="text-xs">ml (1mg tot 10ml NaCl)</span></p>
                   </div>
                 </div>
               </div>
