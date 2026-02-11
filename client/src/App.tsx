@@ -53,7 +53,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (!isAuthenticated) {
     return (
-      <div className="fixed inset-0 bg-slate-950 flex items-center justify-center z-[9999] px-6">
+        <div className="fixed inset-0 bg-slate-950 flex flex-col justify-center z-[9999] px-6 pt-[env(safe-area-inset-top)]">
         <div className="w-full max-w-sm space-y-10">
           <div className="text-center space-y-4">
             <div className="mx-auto w-16 h-16 bg-teal-500/10 rounded-3xl flex items-center justify-center mb-6 border border-teal-500/20">
@@ -110,7 +110,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
 function Router() {
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 max-w-2xl mx-auto w-full">
+      <main className="flex-1 px-4 pb-6 sm:px-6 lg:px-8 max-w-2xl mx-auto w-full pt-[max(20px,env(safe-area-inset-top))]">
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/protocols" component={ProtocolList} />
