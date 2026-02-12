@@ -69,8 +69,8 @@ const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
         prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
 
         <ReactMarkdown
-        // @ts-ignore - Conflict tussen VFile types van react-markdown en remark-gfm
-  remarkPlugins={[remarkGfm]}
+        // @ts-expect-error: remark-gfm types might mismatch with react-markdown v9 in some environments
+remarkPlugins={[remarkGfm]}
   components={{
     // 1. Behoud je bestaande afbeelding-logica (onveranderd)
     img: ({ src, alt }: { src?: string; alt?: string }) => (
