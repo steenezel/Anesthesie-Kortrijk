@@ -2,6 +2,7 @@ import React from "react";
 import { useRoute, Link } from "wouter";
 import { ChevronLeft, FileWarning, Clock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
@@ -66,6 +67,7 @@ export default function ProtocolDetail() {
         prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
 
         <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
   components={{
     // 1. Behoud je bestaande afbeelding-logica (onveranderd)
     img: ({ src, alt }: { src?: string; alt?: string }) => (
@@ -139,8 +141,15 @@ export default function ProtocolDetail() {
       </div>
     </div>
   );
-}
-  }}
+},
+  table: ({ children }: any) => (
+    <div className="my-6 overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+      <table className="min-w-full divide-y divide-slate-200 bg-white">{children}</table>
+    </div>
+  ),
+  thead: ({ children }: any) => <thead className="bg-slate-50">{children}</thead>,
+  th: ({ children }: any) => <th className="px-4 py-2 text-left text-xs font-bold uppercase text-slate-500 tracking-wider">{children}</th>,
+  td: ({ children }: any) => <td className="px-4 py-2 text-sm text-slate-700 border-t border-slate-100">{children}</td>,}}
 >
   {markdownBody}
 </ReactMarkdown>

@@ -5,6 +5,7 @@ import { ChevronLeft, Eye, Image as ImageIcon, Info, Layers, Crosshair } from "l
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
