@@ -141,8 +141,7 @@ export default function BlockDetail() {
               <div className="prose prose-sm prose-slate max-w-none prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-p:text-slate-700 prose-p:leading-relaxed prose-li:text-slate-700 prose-li:font-medium">
                 
         <ReactMarkdown
-         // @ts-expect-error: remark-gfm types might mismatch with react-markdown v9 in some environments
-remarkPlugins={[remarkGfm]}
+         remarkPlugins={[remarkGfm]}
           components={{
             // 1. VIDEO & PARAGRAAF HANDLING
             p: ({ children }: any) => {
