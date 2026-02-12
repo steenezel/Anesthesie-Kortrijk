@@ -144,13 +144,14 @@ export default function ProtocolDetail() {
   );
 },
   table: ({ children }: any) => (
-    <div className="my-6 overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
-      <table className="min-w-full divide-y divide-slate-200 bg-white">{children}</table>
+    <div className="my-6 overflow-x-auto rounded-2xl border border-slate-200 shadow-sm bg-white">
+      <table className="min-w-full divide-y divide-slate-200">{children}</table>
     </div>
   ),
   thead: ({ children }: any) => <thead className="bg-slate-50">{children}</thead>,
-  th: ({ children }: any) => <th className="px-4 py-2 text-left text-xs font-bold uppercase text-slate-500 tracking-wider">{children}</th>,
-  td: ({ children }: any) => <td className="px-4 py-2 text-sm text-slate-700 border-t border-slate-100">{children}</td>,}}
+  tr: ({ children }: any) => <tr className="divide-x divide-slate-50">{children}</tr>,
+  th: ({ children }: any) => <th className="px-4 py-3 text-left text-[10px] font-black uppercase text-slate-500 tracking-widest">{children}</th>,
+  td: ({ children }: any) => <td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 font-medium">{children}</td>,}}
 >
   {markdownBody}
 </ReactMarkdown>

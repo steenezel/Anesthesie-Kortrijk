@@ -62,10 +62,7 @@ Tijdens het late eerste stadium en het tweede stadium kan stimulatie van pijngev
 
 ### Klinische Implicaties voor Regionale Analgesie
 
-
 Regionale analgesie streeft naar een (partieel) verlies van pijnperceptie onder het **T8 - T10** niveau.
-
-Hierboven moet een lege regel staan.
 
 | Techniek | Doel | Stadium |
 | :--- | :--- | :--- |
