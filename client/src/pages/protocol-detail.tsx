@@ -19,8 +19,8 @@ export default function ProtocolDetail() {
   );
 
   const fileData = fileKey ? (allProtocols[fileKey] as any) : null;
-  const rawContent = fileData?.default || fileData;
-
+// Forceer conversie naar string en verwijder eventuele verborgen whitespace aan het begin/eind
+let rawContent = String(fileData?.default || fileData || "").trim();
   if (!rawContent) {
     return (
       <div className="p-10 text-center">
@@ -33,8 +33,10 @@ export default function ProtocolDetail() {
 
   // Parsing van de markdown body en titel
   const parts = rawContent.split('---').filter(Boolean);
-  const markdownBody = rawContent.startsWith('---') ? parts[1] : rawContent;
-  const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
+  // Verbeterde Frontmatter-stripper
+// Dit zorgt ervoor dat de tekst die naar ReactMarkdown gaat echt op regel 1 begint
+const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
+const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
 
   return (
     <div className="space-y-6 pb-20 px-4 animate-in fade-in duration-500">
@@ -143,15 +145,24 @@ export default function ProtocolDetail() {
     </div>
   );
 },
-  table: ({ children }: any) => (
-    <div className="my-6 overflow-x-auto rounded-2xl border border-slate-200 shadow-sm bg-white">
-      <table className="min-w-full divide-y divide-slate-200">{children}</table>
-    </div>
-  ),
-  thead: ({ children }: any) => <thead className="bg-slate-50">{children}</thead>,
-  tr: ({ children }: any) => <tr className="divide-x divide-slate-50">{children}</tr>,
-  th: ({ children }: any) => <th className="px-4 py-3 text-left text-[10px] font-black uppercase text-slate-500 tracking-widest">{children}</th>,
-  td: ({ children }: any) => <td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 font-medium">{children}</td>,}}
+ table: ({ children }: any) => (
+      <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
+        <table className="min-w-full border-collapse">{children}</table>
+      </div>
+    ),
+    thead: ({ children }: any) => <thead className="bg-slate-50/80 backdrop-blur-sm">{children}</thead>,
+    // Voeg expliciet TR toe om de '||' uit je screenshot te voorkomen
+    tr: ({ children }: any) => <tr className="border-b border-slate-100 last:border-0">{children}</tr>,
+    th: ({ children }: any) => (
+      <th className="px-4 py-3 text-left text-[10px] font-black uppercase text-slate-500 tracking-widest border-r border-slate-100 last:border-0">
+        {children}
+      </th>
+    ),
+    td: ({ children }: any) => (
+      <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0">
+        {children}
+      </td>
+    ), }}
 >
   {markdownBody}
 </ReactMarkdown>
