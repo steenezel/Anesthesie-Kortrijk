@@ -66,19 +66,17 @@ Tijdens het late eerste stadium en het tweede stadium kan stimulatie van pijngev
 Regionale analgesie streeft naar een (partieel) verlies van pijnperceptie onder het **T8 - T10** niveau.
 
 | Techniek | Doel | Stadium |
-| :--- | :--- | :--- |
 | **Paracervicaal blok** | Viscerale vezels van uterus/cervix | Eerste stadium |
 | **Lumbale sympathicus blok** | Viscerale pijn (T10-L1) | Eerste stadium |
 | **Pudendusblok** | Somatische perineale pijn (S2-S4) | Tweede stadium |
 | **Neuraxiale blokkade** | Complete analgesie (T10-S4) | Eerste & Tweede stadium |
 
-| Techniek | Doel |	Stadium |
+| Techniek | Doel | Stadium |
 | :--- | :--- | :--- |
-| Paracervicaal blok | Viscerale vezels van uterus/cervix |	Eerste stadium |
-| Lumbale sympathicus blok |	Viscerale pijn (T10-L1)	| Eerste stadium |
-| Pudendusblok |	Somatische perineale pijn (S2-S4) |	Tweede stadium |
-| Neuraxiale blokkade | Complete analgesie (T10-S4) |	Eerste & Tweede stadium |
-
+| **Paracervicaal blok** | Viscerale vezels van uterus/cervix | Eerste stadium |
+| **Lumbale sympathicus blok** | Viscerale pijn (T10-L1) | Eerste stadium |
+| **Pudendusblok** | Somatische perineale pijn (S2-S4) | Tweede stadium |
+| **Neuraxiale blokkade** | Complete analgesie (T10-S4) | Eerste & Tweede stadium |
 
 > [!TIP]
 > **Epidurale en intrathecale technieken** zijn de gouden standaard omdat zij zowel de viscerale input (T10-L1) als de somatische input (S2-S4) coveren.
