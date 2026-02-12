@@ -2,6 +2,7 @@ import React from "react";
 import { useRoute, Link } from "wouter";
 import { ChevronLeft, FileWarning, Clock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
@@ -18,8 +19,8 @@ export default function ProtocolDetail() {
   );
 
   const fileData = fileKey ? (allProtocols[fileKey] as any) : null;
-  const rawContent = fileData?.default || fileData;
-
+// Forceer conversie naar string en verwijder eventuele verborgen whitespace aan het begin/eind
+let rawContent = String(fileData?.default || fileData || "").trim();
   if (!rawContent) {
     return (
       <div className="p-10 text-center">
@@ -32,8 +33,10 @@ export default function ProtocolDetail() {
 
   // Parsing van de markdown body en titel
   const parts = rawContent.split('---').filter(Boolean);
-  const markdownBody = rawContent.startsWith('---') ? parts[1] : rawContent;
-  const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
+  // Verbeterde Frontmatter-stripper
+// Dit zorgt ervoor dat de tekst die naar ReactMarkdown gaat echt op regel 1 begint
+const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
+const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
 
   return (
     <div className="space-y-6 pb-20 px-4 animate-in fade-in duration-500">
@@ -66,6 +69,7 @@ export default function ProtocolDetail() {
         prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
 
         <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
   components={{
     // 1. Behoud je bestaande afbeelding-logica (onveranderd)
     img: ({ src, alt }: { src?: string; alt?: string }) => (
@@ -139,8 +143,25 @@ export default function ProtocolDetail() {
       </div>
     </div>
   );
-}
-  }}
+},
+ table: ({ children }: any) => (
+      <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
+        <table className="min-w-full border-collapse">{children}</table>
+      </div>
+    ),
+    thead: ({ children }: any) => <thead className="bg-slate-50/80 backdrop-blur-sm">{children}</thead>,
+    // Voeg expliciet TR toe om de '||' uit je screenshot te voorkomen
+    tr: ({ children }: any) => <tr className="border-b border-slate-100 last:border-0">{children}</tr>,
+    th: ({ children }: any) => (
+      <th className="px-4 py-3 text-left text-[10px] font-black uppercase text-slate-500 tracking-widest border-r border-slate-100 last:border-0">
+        {children}
+      </th>
+    ),
+    td: ({ children }: any) => (
+      <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0">
+        {children}
+      </td>
+    ), }}
 >
   {markdownBody}
 </ReactMarkdown>

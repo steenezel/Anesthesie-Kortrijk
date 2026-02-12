@@ -5,6 +5,7 @@ import { ChevronLeft, Eye, Image as ImageIcon, Info, Layers, Crosshair } from "l
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
@@ -60,9 +61,9 @@ export default function BlockDetail() {
   };
 
   const getBodyContent = () => {
-    const parts = rawContent.split('---');
-    if (parts.length < 3) return "";
-    return parts.slice(2).join('---').trim();
+    // We strippen alles tussen de eerste en tweede set '---' inclusief de streepjes zelf
+    const bodyWithMetadata = rawContent.replace(/^---[\s\S]*?---/, '').trim();
+    return bodyWithMetadata;
   };
 
   const blockData = {
@@ -138,96 +139,113 @@ export default function BlockDetail() {
           <CardContent className="p-6">
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-700 mb-3">Expert Tips AZ Groeninge</h3>
               <div className="prose prose-sm prose-slate max-w-none prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-p:text-slate-700 prose-p:leading-relaxed prose-li:text-slate-700 prose-li:font-medium">
-                <ReactMarkdown
-  components={{
-    // 1. VIDEO HANDLING
-    p: ({ children, ...props }: any) => {
-  const content = React.Children.toArray(children).join("");
-  
-  if (content.startsWith("video:")) {
-    const videoSrc = content.replace("video:", "").trim();
-    return (
-      <div className="my-8 rounded-[2rem] overflow-hidden shadow-2xl bg-black aspect-video border-4 border-slate-900 group relative">
-        <video 
-          controls 
-          playsInline 
-          muted     
-          loop     
-          className="w-full h-full object-cover" 
-          preload="metadata"
+                
+        <ReactMarkdown
+         remarkPlugins={[remarkGfm]}
+          components={{
+            // 1. VIDEO & PARAGRAAF HANDLING
+            p: ({ children }: any) => {
+              const content = React.Children.toArray(children).join("");
+              
+              if (content.startsWith("video:")) {
+                const videoSrc = content.replace("video:", "").trim();
+                return (
+                  <div className="my-8 rounded-[2rem] overflow-hidden shadow-2xl bg-black aspect-video border-4 border-slate-900 group relative">
+                    <video 
+                      controls playsInline muted loop 
+                      className="w-full h-full object-cover" 
+                      preload="metadata"
+                    >
+                      <source src={videoSrc} type="video/mp4" />
+                      Je browser ondersteunt geen video.
+                    </video>
+                  </div>
+                );
+              }
+              return <p className="mb-6 leading-relaxed text-slate-700 font-medium">{children}</p>;
+            },
+
+            // 2. IMAGE ZOOM 
+            img: ({ src, alt }: { src?: string; alt?: string }) => (
+              <div className="my-10">
+                <Zoom>
+                  <img src={src} alt={alt} className="rounded-3xl border border-slate-100 shadow-md w-full" />
+                </Zoom>
+              </div>
+            ),
+
+            // 3. DE DEEP CLEANER BOXES (BLOCKQUOTE)
+            blockquote: ({ children, ...props }: any) => {
+              const flattenText = (node: any): string => {
+                if (typeof node === 'string') return node;
+                if (Array.isArray(node)) return node.map(flattenText).join('');
+                if (node?.props?.children) return flattenText(node.props.children);
+                return '';
+              };
+
+              const fullText = flattenText(children);
+              const isWarning = fullText.includes("[!WARNING]");
+              const isInfo = fullText.includes("[!INFO]");
+              const isTip = fullText.includes("[!TIP]");
+
+              if (!isWarning && !isInfo && !isTip) {
+                return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{...props}</blockquote>;
+              }
+
+              const cleanRecursive = (node: any): any => {
+                if (typeof node === 'string') {
+                  return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").replace(/^[\s"]+/, "");
+                }
+                if (Array.isArray(node)) return node.map(cleanRecursive);
+                if (node?.props?.children) {
+                  return React.cloneElement(node, {
+                    ...node.props,
+                    children: cleanRecursive(node.props.children)
+                  });
+                }
+                return node;
+              };
+
+              const config = isWarning 
+                ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+                : isInfo 
+                ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+                : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+
+              return (
+                <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
+                  <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
+                    {config.title}
+                  </div>
+                  <div className="text-slate-900 leading-relaxed prose-p:my-0 font-medium italic">
+                    {cleanRecursive(children)}
+                  </div>
+                </div>
+              );
+            },
+
+            // 4. TABEL HANDLING
+            table: ({ children }: any) => (
+              <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
+                <table className="min-w-full border-collapse">{children}</table>
+              </div>
+            ),
+            thead: ({ children }: any) => <thead className="bg-slate-50/80 backdrop-blur-sm">{children}</thead>,
+            tr: ({ children }: any) => <tr className="border-b border-slate-100 last:border-0">{children}</tr>,
+            th: ({ children }: any) => (
+              <th className="px-4 py-3 text-left text-[10px] font-black uppercase text-slate-500 tracking-widest border-r border-slate-100 last:border-0">
+                {children}
+              </th>
+            ),
+            td: ({ children }: any) => (
+              <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0">
+                {children}
+              </td>
+            ),
+          }}
         >
-          <source src={videoSrc} type="video/mp4" />
-          Je browser ondersteunt geen video.
-        </video>
-       </div>
-    );
-  }
-  
-  return <p className="mb-6 leading-relaxed text-slate-700">{children}</p>;
-},
-
-    // 2. IMAGE ZOOM 
-    img: ({ src, alt }: { src?: string; alt?: string }) => (
-      <div className="my-10">
-        <Zoom>
-          <img src={src} alt={alt} className="rounded-3xl border border-slate-100 shadow-md w-full" />
-        </Zoom>
-      </div>
-    ),
-
-    // 3. DE DEEP CLEANER BOXES
-    blockquote: ({ children, ...props }: any) => {
-      const flattenText = (node: any): string => {
-        if (typeof node === 'string') return node;
-        if (Array.isArray(node)) return node.map(flattenText).join('');
-        if (node?.props?.children) return flattenText(node.props.children);
-        return '';
-      };
-
-      const fullText = flattenText(children);
-      const isWarning = fullText.includes("[!WARNING]");
-      const isInfo = fullText.includes("[!INFO]");
-      const isTip = fullText.includes("[!TIP]");
-
-      if (!isWarning && !isInfo && !isTip) {
-        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{...props}</blockquote>;
-      }
-
-      const cleanRecursive = (node: any): any => {
-        if (typeof node === 'string') {
-          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").replace(/^[\s"]+/, "");
-        }
-        if (Array.isArray(node)) return node.map(cleanRecursive);
-        if (node?.props?.children) {
-          return React.cloneElement(node, {
-            ...node.props,
-            children: cleanRecursive(node.props.children)
-          });
-        }
-        return node;
-      };
-
-      const config = isWarning 
-        ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
-        : isInfo 
-        ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
-        : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
-
-      return (
-        <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
-          <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
-            {config.title}
-          </div>
-          <div className="text-slate-900 leading-relaxed prose-p:my-0 font-medium">
-            {cleanRecursive(children)}
-          </div>
-        </div>
-      );
-    }
-  }}
->
-  {blockData.body}
-</ReactMarkdown>
+          {blockData.body}
+        </ReactMarkdown>
             </div>
            </CardContent>
           </Card>
