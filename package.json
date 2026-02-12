@@ -70,7 +70,7 @@
     "react-medium-image-zoom": "^5.2.14",
     "@tailwindcss/typography": "^0.5.10",
     "react-resizable-panels": "^2.1.9",
-    "remark-gfm": "^4.0.0",
+    "remark-gfm": "^3.0.1",
     "recharts": "^2.15.4",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
