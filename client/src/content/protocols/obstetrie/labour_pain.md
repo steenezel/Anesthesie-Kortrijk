@@ -4,13 +4,11 @@ discipline: "obstetrie"
 lastUpdated: "Februari 2026"
 ---
 
-Anatomie van pijn tijdens arbeid
-================================
+## Anatomie van pijn tijdens arbeid
 
 Kennis van de anatomische banen is essentieel voor het effectief toepassen van regionale analgesie bij de parturiënte. Pijn tijdens de bevalling heeft zowel een **viscerale** als een **somatische** component.
 
-Eerste Stadium (Ontsluiting)
-----------------------------
+### Eerste Stadium (Ontsluiting)
 
 _Van het begin van de arbeid tot volledige ontsluiting._
 
@@ -31,8 +29,7 @@ _Van het begin van de arbeid tot volledige ontsluiting._
 *   **Referred pain**: De pijn wordt vaak geprojecteerd op de dermatomen die door dezelfde segmenten worden verzorgd (T10-L1), zijnde de rug en de buikwand.
     
 
-Tweede Stadium (Uitdrijving)
-----------------------------
+### Tweede Stadium (Uitdrijving)
 
 _Van volledige ontsluiting tot de geboorte._
 
@@ -53,8 +50,8 @@ _Van volledige ontsluiting tot de geboorte._
 *   **Opmerking**: Deze somatische vezels zijn relatief moeilijker te blokkeren dan de viscerale vezels van het eerste stadium.
     
 
-Bijkomende Pijnfactoren
------------------------
+### Bijkomende Pijnfactoren
+
 
 Tijdens het late eerste stadium en het tweede stadium kan stimulatie van pijngevoelige structuren in de bekkenholte en druk op de wortels van de **plexus lumbosacralis** leiden tot:
 
@@ -63,8 +60,8 @@ Tijdens het late eerste stadium en het tweede stadium kan stimulatie van pijngev
 *   Toename van pijn bij afwijkende liggingen (bijv. occiput posterior).
     
 
-Klinische Implicaties voor Regionale Analgesie
-----------------------------------------------
+### Klinische Implicaties voor Regionale Analgesie
+
 
 Regionale analgesie streeft naar een (partieel) verlies van pijnperceptie onder het **T8 - T10** niveau.
 
