@@ -65,45 +65,7 @@ Tijdens het late eerste stadium en het tweede stadium kan stimulatie van pijngev
 
 Regionale analgesie streeft naar een (partieel) verlies van pijnperceptie onder het **T8 - T10** niveau.
 
-<div className="my-6 overflow-hidden rounded-xl border border-slate-200">
-  <table className="min-w-full divide-y divide-slate-200 bg-white">
-    <thead className="bg-slate-50">
-      <tr>
-        <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Techniek</th>
-        <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Doel</th>
-        <th className="px-4 py-3 text-left text-xs font-bold uppercase text-slate-500">Stadium</th>
-      </tr>
-    </thead>
-    <tbody className="divide-y divide-slate-200 text-sm text-slate-700">
-      <tr>
-        <td className="px-4 py-3 font-medium">Paracervicaal blok</td>
-        <td className="px-4 py-3">Viscerale vezels van uterus/cervix</td>
-        <td className="px-4 py-3">Eerste stadium</td>
-      </tr>
-      <tr>
-        <td className="px-4 py-3 font-medium">Lumbale sympathicus blok</td>
-        <td className="px-4 py-3">Viscerale pijn (T10-L1)</td>
-        <td className="px-4 py-3">Eerste stadium</td>
-      </tr>
-      <tr>
-        <td className="px-4 py-3 font-medium">Pudendusblok</td>
-        <td className="px-4 py-3">Somatische perineale pijn (S2-S4)</td>
-        <td className="px-4 py-3">Tweede stadium</td>
-      </tr>
-      <tr>
-        <td className="px-4 py-3 font-medium">Neuraxiale blokkade</td>
-        <td className="px-4 py-3">Complete analgesie (T10-S4)</td>
-        <td className="px-4 py-3">Eerste & Tweede stadium</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-| Techniek | Doel | Stadium |
-| **Paracervicaal blok** | Viscerale vezels van uterus/cervix | Eerste stadium |
-| **Lumbale sympathicus blok** | Viscerale pijn (T10-L1) | Eerste stadium |
-| **Pudendusblok** | Somatische perineale pijn (S2-S4) | Tweede stadium |
-| **Neuraxiale blokkade** | Complete analgesie (T10-S4) | Eerste & Tweede stadium |
+Hierboven moet een lege regel staan.
 
 | Techniek | Doel | Stadium |
 | :--- | :--- | :--- |

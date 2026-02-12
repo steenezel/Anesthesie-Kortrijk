@@ -67,7 +67,8 @@ export default function ProtocolDetail() {
         prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
 
         <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        // @ts-ignore - Conflict tussen VFile types van react-markdown en remark-gfm
+  remarkPlugins={[remarkGfm]}
   components={{
     // 1. Behoud je bestaande afbeelding-logica (onveranderd)
     img: ({ src, alt }: { src?: string; alt?: string }) => (

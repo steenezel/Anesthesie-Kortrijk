@@ -140,6 +140,8 @@ export default function BlockDetail() {
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-700 mb-3">Expert Tips AZ Groeninge</h3>
               <div className="prose prose-sm prose-slate max-w-none prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-p:text-slate-700 prose-p:leading-relaxed prose-li:text-slate-700 prose-li:font-medium">
                 <ReactMarkdown
+                // @ts-ignore - Conflict tussen VFile types van react-markdown en remark-gfm
+                  remarkPlugins={[remarkGfm]}
   components={{
     // 1. VIDEO HANDLING
     p: ({ children, ...props }: any) => {
