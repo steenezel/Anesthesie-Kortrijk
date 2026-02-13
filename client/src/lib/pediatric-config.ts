@@ -23,6 +23,16 @@ export const pediatricMeds: PediatricMed[] = [
     precisionDose: 0, 
     precisionVolume: 0 
   },
+    { 
+    name: "Midazolam", 
+    dosePerKg: 0.1, 
+    unit: "mg", 
+    maxDose: 5, 
+    concentration: 1, 
+    category: "inductie", 
+    precisionDose: 1, 
+    precisionVolume: 1 
+  },
   { 
     name: "Sufentanil", 
     dosePerKg: 0.15, 
@@ -44,6 +54,15 @@ export const pediatricMeds: PediatricMed[] = [
     precisionVolume: 1 
   },
   { 
+    name: "Fentanyl", 
+    dosePerKg: 4, 
+    unit: "mcg", 
+    maxDose: 100, 
+    concentration: 50, 
+    category: "inductie", 
+    precisionDose: 0, 
+    precisionVolume: 1 
+  },{ 
     name: "Succinylcholine", 
     dosePerKg: 2, 
     unit: "mg", 
@@ -126,15 +145,16 @@ export const pediatricMeds: PediatricMed[] = [
     dosePerKg: 20, 
     unit: "mcg", 
     maxDose: 500, 
-    concentration: 250, 
+    concentration: 200, 
     category: "resus", 
     precisionDose: 0, 
     precisionVolume: 2 
   },
   { 
-    name: "Defibrillatie", 
+    name: "Defibrillatie (bifasisch)", 
     dosePerKg: 4, 
     unit: "J", 
+    maxDose: 200,
     category: "resus", 
     precisionDose: 0 
   }

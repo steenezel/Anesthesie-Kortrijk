@@ -68,7 +68,11 @@ export default function PedsCalculator() {
     let rawDose = med.dosePerKg * weight;
     if (med.maxDose && rawDose > med.maxDose) rawDose = med.maxDose;
     
-    const doseStr = rawDose.toFixed(med.precisionDose ?? 1);
+    let finalDose = rawDose;
+    if (med.unit === "J") {
+      finalDose = Math.round(rawDose / 10) * 10;
+    }
+    const doseStr = finalDose.toFixed(med.precisionDose ?? 0); 
     
     let volumeStr = null;
     if (med.concentration && med.concentration > 0) {
@@ -160,8 +164,8 @@ export default function PedsCalculator() {
                 <div className="h-3 w-1 bg-blue-500 rounded-full" />
                 <h3 className="text-[10px] font-black uppercase tracking-widest text-blue-600">Inductie & Emergency</h3>
               </div>
-              <Card className="border-blue-100 bg-blue-50/30 rounded-2xl overflow-hidden shadow-sm">
-                <div className="divide-y divide-blue-100">
+              <Card className="border-blue-300 bg-blue-100/30 rounded-2xl overflow-hidden shadow-sm">
+                <div className="divide-y divide-blue-200">
                   {pediatricMeds
                     .filter(m => m.category === "inductie" || m.name === "Adrenaline" || m.name === "Atropine")
                     .map(med => (
@@ -176,8 +180,8 @@ export default function PedsCalculator() {
                 <div className="h-3 w-1 bg-emerald-500 rounded-full" />
                 <h3 className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Supportive</h3>
               </div>
-              <Card className="border-emerald-100 bg-emerald-50/30 rounded-2xl overflow-hidden shadow-sm">
-                <div className="divide-y divide-emerald-100">
+              <Card className="border-emerald-300 bg-emerald-100/30 rounded-2xl overflow-hidden shadow-sm">
+                <div className="divide-y divide-emerald-200">
                   {pediatricMeds
                     .filter(m => m.category === "supportive")
                     .map(med => (
@@ -195,7 +199,7 @@ export default function PedsCalculator() {
                   <div>
                     <p className="text-[10px] font-black text-red-100 uppercase tracking-widest">Adrenaline (10µg/kg)</p>
                     <p className="text-3xl font-mono font-black text-white">{getMedData(pediatricMeds.find(m => m.name === "Adrenaline")!).volume} <span className="text-sm">ml</span></p>
-                    <p className="text-[9px] text-red-100 font-bold italic">Verdun 1mg naar 10ml NaCl</p>
+                    <p className="text-[9px] text-red-100 font-bold italic">Verdunning 1mg tot 10ml NaCl</p>
                   </div>
                 </div>
              </div>
@@ -247,8 +251,8 @@ function DrugListItem({ med, data }: { med: PediatricMed, data: any }) {
         </p>
       </div>
       {data.volume && (
-        <div className="text-right px-3 py-1.5 bg-white/50 rounded-xl border border-white shadow-inner">
-          <p className="text-lg font-mono font-black text-teal-700 leading-none">
+        <div className="text-right px-3 py-1.5 bg-white/50 rounded-xl border border-sky-100 shadow-inner">
+          <p className="text-lg font-mono font-black text-slate-800 leading-none">
             {data.volume} <span className="text-[10px] ml-0.5">ml</span>
           </p>
         </div>
