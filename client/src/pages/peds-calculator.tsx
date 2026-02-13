@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Baby, Wind, Droplets, Zap, ShieldAlert, AlertCircle, Ruler } from "lucide-react";
+import { Baby, Zap, ShieldAlert, AlertCircle, Ruler } from "lucide-react";
 import { pediatricMeds, PediatricMed } from "@/lib/pediatric-config";
 
 export default function PedsCalculator() {
@@ -73,7 +73,7 @@ export default function PedsCalculator() {
       finalDose = Math.round(rawDose / 10) * 10;
     }
     const doseStr = finalDose.toFixed(med.precisionDose ?? 0); 
-    
+
     let volumeStr = null;
     if (med.concentration && med.concentration > 0) {
       const vol = rawDose / med.concentration;
@@ -131,8 +131,8 @@ export default function PedsCalculator() {
       ) : (
         <Tabs defaultValue="airway">
           <TabsList className="grid w-full grid-cols-3 mb-6 bg-slate-100 p-1 rounded-xl h-12 shadow-inner">
-            <TabsTrigger value="airway" className="text-[10px] font-black uppercase tracking-widest"><Wind className="h-3 w-3 mr-1"/> Airway</TabsTrigger>
-            <TabsTrigger value="drugs" className="text-[10px] font-black uppercase tracking-widest"><Droplets className="h-3 w-3 mr-1"/> Drugs</TabsTrigger>
+            <TabsTrigger value="airway" className="text-[10px] font-black uppercase tracking-widest"> Airway</TabsTrigger>
+            <TabsTrigger value="drugs" className="text-[10px] font-black uppercase tracking-widest"> Drugs</TabsTrigger>
             <TabsTrigger value="resus" className="text-[10px] font-black uppercase tracking-widest text-red-600 font-bold"><Zap className="h-3 w-3 mr-1"/> Resus</TabsTrigger>
           </TabsList>
 
