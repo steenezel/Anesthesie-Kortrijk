@@ -1,7 +1,6 @@
-
 import React from "react";
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, Eye, Image as ImageIcon, Info, Layers, Crosshair } from "lucide-react";
+import { ChevronLeft, Eye, Image as ImageIcon, Ruler } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
@@ -9,74 +8,52 @@ import remarkGfm from "remark-gfm";
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
-// Scan alle markdown bestanden
-const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
+// Importeer de calculators
+import CaudalCalculator from "@/components/CaudalCalculator";
 
-// HULPCOMPONENT: ImageGrid met ZOOM
-function ImageGrid({ images, title }: { images: string[], title: string }) {
-  if (!images || images.length === 0) return null;
-  return (
-    <div className="space-y-2 my-4 animate-in fade-in slide-in-from-bottom-3">
-      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">{title}</h3>
-      <div className="grid gap-3">
-        {images.map((img, index) => (
-          <Zoom key={index}>
-            <img 
-              src={img} 
-              alt={`${title} ${index + 1}`} 
-              className="rounded-2xl border-2 border-slate-100 shadow-sm w-full object-cover cursor-zoom-in" 
-            />
-          </Zoom>
-        ))}
-      </div>
-    </div>
-  );
-}
+// Scan alle markdown bestanden in de content/blocks map
+const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
 
 export default function BlockDetail() {
   const [, params] = useRoute("/blocks/:id");
   const id = params?.id;
 
-  // NIEUW: Logica voor dynamische terug-link (bv. vanuit een protocol)
   const queryParams = new URLSearchParams(window.location.search);
   const backUrl = queryParams.get('from') || '/blocks';
   const isFromProtocol = queryParams.has('from');
 
-  const path = `../content/blocks/${id}.md`;
-  const file = allBlocks[path] as any;
+  // 1. ROBUUSTE ZOEKMETHODE (Ongevoelig voor hoofdletters/extensies)
+  const fileKey = Object.keys(allBlocks).find(key => 
+    key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`)
+  );
+  const fileData = fileKey ? (allBlocks[fileKey] as any) : null;
+  const rawContent = fileData?.default || fileData;
 
-  if (!file) return <div className="p-12 text-center text-slate-500 font-medium">Block niet gevonden.</div>;
-
-  const rawContent = file.default as string;
-  
-  const getField = (field: string) => {
-  // We zoeken de regel die begint met het veld
-  const lines = rawContent.split('\n');
-  const line = lines.find(l => l.trim().startsWith(`${field}:`));
-  if (!line) return "";
-
-  // We halen de tekst tussen de eerste en de laatste dubbele aanhalingsteken
-  const start = line.indexOf('"');
-  const end = line.lastIndexOf('"');
-  
-  if (start !== -1 && end !== -1 && start !== end) {
-    return line.substring(start + 1, end).trim();
+  if (!rawContent) {
+    return (
+      <div className="p-12 text-center space-y-4">
+        <div className="text-slate-500 font-black uppercase tracking-tighter">Block niet gevonden</div>
+        <Link href="/blocks" className="text-teal-600 text-xs font-black uppercase underline block">Terug naar overzicht</Link>
+      </div>
+    );
   }
-  
-  // Fallback als er geen aanhalingstekens zijn
-  return line.split(':')[1]?.trim() || "";
-};
+
+  // 2. PARSER HELPERS (Zonder Regex-crashes)
+  const getField = (field: string) => {
+    const lines = rawContent.split('\n');
+    const line = lines.find((l: string) => l.trim().startsWith(`${field}:`));
+    if (!line) return "";
+    const start = line.indexOf('"');
+    const end = line.lastIndexOf('"');
+    return (start !== -1 && end !== -1 && start !== end) 
+      ? line.substring(start + 1, end).trim() 
+      : line.split(':')[1]?.trim() || "";
+  };
 
   const getListField = (field: string): string[] => {
     const raw = getField(field);
     if (!raw) return [];
-    return raw.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
-  };
-
-  const getBodyContent = () => {
-    // We strippen alles tussen de eerste en tweede set '---' inclusief de streepjes zelf
-    const bodyWithMetadata = rawContent.replace(/^---[\s\S]*?---/, '').trim();
-    return bodyWithMetadata;
+    return raw.split(',').map((s: string) => s.replace(/"/g, '').trim()).filter((s: string) => s.length > 0);
   };
 
   const blockData = {
@@ -87,17 +64,92 @@ export default function BlockDetail() {
     sonoImages: getListField("sono_images"),
     posImages: getListField("position_images"),
     diagramImages: getListField("diagram_images"),
-    body: getBodyContent()
+    body: rawContent.replace(/^---[\s\S]*?---/, '').trim()
+  };
+
+  // 3. MARKDOWN COMPONENTEN (Video, Zoom, Gekleurde Boxen)
+  const markdownComponents = {
+    p: ({ children }: any) => {
+      const content = React.Children.toArray(children).join("");
+      if (content.startsWith("video:")) {
+        const videoSrc = content.replace("video:", "").trim();
+        return (
+          <div className="my-8 rounded-[2rem] overflow-hidden shadow-2xl bg-black aspect-video border-4 border-slate-900 group relative">
+            <video controls playsInline muted loop className="w-full h-full object-cover">
+              <source src={videoSrc} type="video/mp4" />
+            </video>
+          </div>
+        );
+      }
+      return <p className="mb-6 leading-relaxed text-slate-700 font-medium">{children}</p>;
+    },
+    img: ({ src, alt }: any) => (
+      <div className="my-10">
+        <Zoom><img src={src} alt={alt} className="rounded-3xl border border-slate-100 shadow-md w-full" /></Zoom>
+      </div>
+    ),
+    blockquote: ({ children }: any) => {
+      const flattenText = (node: any): string => {
+        if (typeof node === 'string') return node;
+        if (Array.isArray(node)) return node.map(flattenText).join('');
+        if (node?.props?.children) return flattenText(node.props.children);
+        return '';
+      };
+      const fullText = flattenText(children);
+      const isWarning = fullText.includes("[!WARNING]");
+      const isInfo = fullText.includes("[!INFO]");
+      const isTip = fullText.includes("[!TIP]");
+
+      if (!isWarning && !isInfo && !isTip) {
+        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
+      }
+
+      const cleanText = (node: any): any => {
+        if (typeof node === 'string') return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trim();
+        if (Array.isArray(node)) return node.map(cleanText);
+        if (node?.props?.children) return React.cloneElement(node, { children: cleanText(node.props.children) });
+        return node;
+      };
+
+      const config = isWarning 
+        ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+        : isInfo 
+        ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+        : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+
+      return (
+        <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
+          <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>{config.title}</div>
+          <div className="text-slate-900 leading-relaxed font-medium italic">{cleanText(children)}</div>
+        </div>
+      );
+    }
+  };
+
+  // 4. CONTENT RENDERER (Voor de Calculator tag)
+  const renderBodyWithComponents = (content: string) => {
+    const parts = content.split('<CaudalCalc />');
+    return (
+      <>
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents as any}>
+          {parts[0]}
+        </ReactMarkdown>
+        {parts.length > 1 && <CaudalCalculator />}
+        {parts.length > 1 && (
+          <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents as any}>
+            {parts[1]}
+          </ReactMarkdown>
+        )}
+      </>
+    );
   };
 
   const heroImage = blockData.sonoImages.length > 0 ? blockData.sonoImages[0] : null;
-  const extraSonoImages = blockData.sonoImages.slice(1);
-  
+
   return (
-    <div className="space-y-6 pb-24 max-w-2xl mx-auto">
-      {/* DYNAMISCHE NAVIGATIE */}
+    <div className="space-y-6 pb-24 max-w-2xl mx-auto px-4 pt-4">
       <Link href={backUrl}>
-        <a className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-[0.2em] hover:opacity-70 transition-opacity">
+        <a className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-[0.2em] hover:opacity-70">
           <ChevronLeft className="h-4 w-4 mr-1" /> 
           {isFromProtocol ? "Terug naar protocol" : "Terug naar overzicht"}
         </a>
@@ -107,181 +159,64 @@ export default function BlockDetail() {
         {blockData.title}
       </h1>
 
-      {/* HERO IMAGE SECTION MET ZOOM */}
-      <div className="aspect-video bg-slate-100 rounded-3xl border-2 border-slate-200 relative overflow-hidden shadow-md group">
+      <div className="aspect-video bg-slate-100 rounded-3xl border-2 border-slate-200 relative overflow-hidden shadow-md">
         {heroImage ? (
-          <>
-            <Zoom>
-              <img 
-                src={heroImage} 
-                alt="Hoofd-sono-anatomie" 
-                className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700 cursor-zoom-in" 
-              />
-            </Zoom>
-            <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] text-white font-black uppercase tracking-widest flex items-center pointer-events-none">
-              <Eye className="h-3 w-3 mr-2 text-teal-400" /> Sono-View
-            </div>
-          </>
+          <Zoom><img src={heroImage} alt="Main view" className="w-full h-full object-cover cursor-zoom-in" /></Zoom>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-slate-300">
-            <ImageIcon className="h-12 w-12 mb-2 opacity-20" />
-            <span className="text-[10px] font-black uppercase tracking-widest opacity-40">Geen beeld beschikbaar</span>
-          </div>
+          <div className="flex flex-col items-center justify-center h-full text-slate-200"><ImageIcon className="h-12 w-12" /></div>
         )}
       </div>
 
-      {/* TABS */}
       <Tabs defaultValue="info" className="w-full">
         <TabsList className="grid w-full grid-cols-3 bg-slate-100 p-1.5 rounded-2xl h-14 mb-8">
-          <TabsTrigger value="info" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">Info</TabsTrigger>
-          <TabsTrigger value="anatomy" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">Anatomie</TabsTrigger>
-          <TabsTrigger value="technique" className="rounded-xl text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-teal-700 data-[state=active]:shadow-sm">Techniek</TabsTrigger>
+          <TabsTrigger value="info" className="rounded-xl text-[10px] font-black uppercase">Info</TabsTrigger>
+          <TabsTrigger value="anatomy" className="rounded-xl text-[10px] font-black uppercase">Anatomie</TabsTrigger>
+          <TabsTrigger value="technique" className="rounded-xl text-[10px] font-black uppercase">Techniek</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="info" className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <Card className="border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <TabsContent value="info" className="space-y-6">
+          <Card className="border-slate-200 rounded-2xl shadow-sm">
             <CardContent className="p-6">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-600 mb-3">Indicatie & Kliniek</h3>
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-teal-600 mb-3">Indicatie</h3>
               <p className="text-sm text-slate-700 font-medium leading-relaxed">{blockData.indication}</p>
             </CardContent>
           </Card>
-
-          {blockData.body && (
-                      
-        <Card className="border-teal-100 bg-teal-50/40 rounded-2xl shadow-sm border-dashed">
-          <CardContent className="p-6">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-700 mb-3">Expert Tips AZ Groeninge</h3>
-              <div className="prose prose-sm prose-slate max-w-none prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black prose-p:text-slate-700 prose-p:leading-relaxed prose-li:text-slate-700 prose-li:font-medium">
-                
-        <ReactMarkdown
-         remarkPlugins={[remarkGfm]}
-          components={{
-            // 1. VIDEO & PARAGRAAF HANDLING
-            p: ({ children }: any) => {
-              const content = React.Children.toArray(children).join("");
-              
-              if (content.startsWith("video:")) {
-                const videoSrc = content.replace("video:", "").trim();
-                return (
-                  <div className="my-8 rounded-[2rem] overflow-hidden shadow-2xl bg-black aspect-video border-4 border-slate-900 group relative">
-                    <video 
-                      controls playsInline muted loop 
-                      className="w-full h-full object-cover" 
-                      preload="metadata"
-                    >
-                      <source src={videoSrc} type="video/mp4" />
-                      Je browser ondersteunt geen video.
-                    </video>
-                  </div>
-                );
-              }
-              return <p className="mb-6 leading-relaxed text-slate-700 font-medium">{children}</p>;
-            },
-
-            // 2. IMAGE ZOOM 
-            img: ({ src, alt }: { src?: string; alt?: string }) => (
-              <div className="my-10">
-                <Zoom>
-                  <img src={src} alt={alt} className="rounded-3xl border border-slate-100 shadow-md w-full" />
-                </Zoom>
-              </div>
-            ),
-
-            // 3. DE DEEP CLEANER BOXES (BLOCKQUOTE)
-            blockquote: ({ children, ...props }: any) => {
-              const flattenText = (node: any): string => {
-                if (typeof node === 'string') return node;
-                if (Array.isArray(node)) return node.map(flattenText).join('');
-                if (node?.props?.children) return flattenText(node.props.children);
-                return '';
-              };
-
-              const fullText = flattenText(children);
-              const isWarning = fullText.includes("[!WARNING]");
-              const isInfo = fullText.includes("[!INFO]");
-              const isTip = fullText.includes("[!TIP]");
-
-              if (!isWarning && !isInfo && !isTip) {
-                return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{...props}</blockquote>;
-              }
-
-              const cleanRecursive = (node: any): any => {
-                if (typeof node === 'string') {
-                  return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").replace(/^[\s"]+/, "");
-                }
-                if (Array.isArray(node)) return node.map(cleanRecursive);
-                if (node?.props?.children) {
-                  return React.cloneElement(node, {
-                    ...node.props,
-                    children: cleanRecursive(node.props.children)
-                  });
-                }
-                return node;
-              };
-
-              const config = isWarning 
-                ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
-                : isInfo 
-                ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
-                : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
-
-              return (
-                <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
-                  <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
-                    {config.title}
-                  </div>
-                  <div className="text-slate-900 leading-relaxed prose-p:my-0 font-medium italic">
-                    {cleanRecursive(children)}
-                  </div>
-                </div>
-              );
-            },
-
-            // 4. TABEL HANDLING
-            table: ({ children }: any) => (
-              <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
-                <table className="min-w-full border-collapse">{children}</table>
-              </div>
-            ),
-            thead: ({ children }: any) => <thead className="bg-slate-50/80 backdrop-blur-sm">{children}</thead>,
-            tr: ({ children }: any) => <tr className="border-b border-slate-100 last:border-0">{children}</tr>,
-            th: ({ children }: any) => (
-              <th className="px-4 py-3 text-left text-[10px] font-black uppercase text-slate-500 tracking-widest border-r border-slate-100 last:border-0">
-                {children}
-              </th>
-            ),
-            td: ({ children }: any) => (
-              <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0">
-                {children}
-              </td>
-            ),
-          }}
-        >
-          {blockData.body}
-        </ReactMarkdown>
-            </div>
-           </CardContent>
-          </Card>
-          )}
+          <div className="prose prose-sm prose-slate max-w-none">
+            {renderBodyWithComponents(blockData.body)}
+          </div>
         </TabsContent>
 
-        <TabsContent value="anatomy" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <Card className="border-slate-200 rounded-2xl shadow-sm p-6">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-600 mb-3">Structurele anatomie</h3>
+        <TabsContent value="anatomy" className="space-y-6">
+          <Card className="border-slate-200 rounded-2xl p-6">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-teal-600 mb-3">Functionele Anatomie</h3>
             <p className="text-sm text-slate-700 font-medium leading-relaxed">{blockData.anatomy}</p>
           </Card>
-          <ImageGrid images={blockData.diagramImages} title="Anatomische diagrammen" />
-          <ImageGrid images={extraSonoImages} title="Aanvullende Sono-Views" />
+          <ImageGrid images={blockData.diagramImages} title="Anatomische Diagrammen" />
         </TabsContent>
 
-        <TabsContent value="technique" className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <Card className="border-slate-200 rounded-2xl shadow-sm p-6">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-600 mb-3">Instellingen & Benadering</h3>
+        <TabsContent value="technique" className="space-y-6">
+          <Card className="border-slate-200 rounded-2xl p-6">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-teal-600 mb-3">Scan & Benadering</h3>
             <p className="text-sm text-slate-700 font-medium leading-relaxed">{blockData.settings}</p>
           </Card>
-          <ImageGrid images={blockData.posImages} title="Patiëntpositie & Naaldvoering" />
+          <ImageGrid images={blockData.posImages} title="Positionering" />
+          <ImageGrid images={blockData.sonoImages.slice(1)} title="Aanvullende Sono-beelden" />
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
+
+function ImageGrid({ images, title }: { images: string[], title: string }) {
+  if (!images || images.length === 0) return null;
+  return (
+    <div className="space-y-2 my-4">
+      <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">{title}</h3>
+      <div className="grid gap-3">
+        {images.map((img, index) => (
+          <Zoom key={index}><img src={img} alt={title} className="rounded-2xl border-2 border-slate-100 w-full object-cover" /></Zoom>
+        ))}
+      </div>
     </div>
   );
 }
