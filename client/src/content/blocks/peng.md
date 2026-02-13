@@ -1,12 +1,16 @@
 ---
-title: "PENG Test"
-indication: "Test indicatie"
-anatomy: "Test anatomie"
-settings: "Test settings"
+title: "PENG Block"
+indication: "Analgesie bij heupfracturen (collum/trochanter) en heupheelkunde. Motor-sparing techniek (behoud van quadriceps-functie)."
+anatomy: "Identificatie van de AIIS (Anterior Inferior Iliac Spine), de psoas-pees en de eminentia iliopubica. Het doelgebied is de bot-vlakte onder de psoas-pees."
+settings: "Curvilineaire probe (of lineaire bij magere patiënten). Diepte 4-6 cm. In-plane benadering van lateraal naar mediaal."
 sono_images: ""
 position_images: ""
 diagram_images: ""
 ---
 
-### Werkt dit?
-Als je dit ziet, dan zit de fout in de tekst van de beelden of de lange zinnen in de frontmatter.
+* **Volume:** Gebruik 20ml lokaal anestheticum (bv. Chirocaïne 0,25%) voor een goede spreiding onder de psoas-pees richting de rami van de n. femoralis en n. obturatorius.
+* **Plaatsing:** De probe wordt initieel in een hoek van 45 graden geplaatst op de lijn tussen de AIIS en de eminentia iliopubica.
+* **Naald:** Gebruik bij voorkeur een 80mm of 100mm stimuplex-naald vanwege de diepte bij oudere patiënten.
+
+> [!WARNING]
+> **Toxische Dosis:** Let op bij dit block. Overschrijdt nooit de maximale dosis van 2mg/kg.
