@@ -50,9 +50,22 @@ export default function BlockDetail() {
   const rawContent = file.default as string;
   
   const getField = (field: string) => {
-    const match = rawContent.match(new RegExp(`${field}: "(.*)"`));
-    return match ? match[1] : "";
-  };
+  // We zoeken de regel die begint met het veld
+  const lines = rawContent.split('\n');
+  const line = lines.find(l => l.trim().startsWith(`${field}:`));
+  if (!line) return "";
+
+  // We halen de tekst tussen de eerste en de laatste dubbele aanhalingsteken
+  const start = line.indexOf('"');
+  const end = line.lastIndexOf('"');
+  
+  if (start !== -1 && end !== -1 && start !== end) {
+    return line.substring(start + 1, end).trim();
+  }
+  
+  // Fallback als er geen aanhalingstekens zijn
+  return line.split(':')[1]?.trim() || "";
+};
 
   const getListField = (field: string): string[] => {
     const raw = getField(field);
