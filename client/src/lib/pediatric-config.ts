@@ -110,6 +110,16 @@ export const pediatricMeds: PediatricMed[] = [
     category: "supportive", 
     precisionDose: 0 
   },
+    { 
+    name: "Metronidazole", 
+    dosePerKg: 10, 
+    unit: "mg", 
+    maxDose: 500,
+    concentration: 5, 
+    category: "supportive", 
+    precisionDose: 0,
+    precisionVolume: 0  
+  },
   { 
     name: "Paracetamol", 
     dosePerKg: 15, 
@@ -127,6 +137,16 @@ export const pediatricMeds: PediatricMed[] = [
     maxDose: 400, 
     category: "supportive", 
     precisionDose: 0 
+  },
+    { 
+    name: "Morfine", 
+    dosePerKg: 1, 
+    unit: "mg", 
+    maxDose: 10,
+    concentration: 1,
+    category: "supportive", 
+    precisionDose: 1,
+    precisionVolume: 1 
   },
 
   // --- RESUS / EMERGENCY (Zowel in Drugs als Resus tab) ---
