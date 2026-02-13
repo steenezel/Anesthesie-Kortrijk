@@ -1,33 +1,42 @@
 ---
-title: "PENG Block"
-indication: "Analgesie bij heupfracturen (collum/trochanter) en heupheelkunde. Motor-sparing techniek (behoud van quadriceps-functie)."
-anatomy: "Identificatie van de AIIS (Anterior Inferior Iliac Spine), de psoas-pees en de eminentia iliopubica. Het doelgebied is de bot-vlakte onder de psoas-pees."
-settings: "Curvilineaire probe (of lineaire bij magere patiënten). Diepte 4-6 cm. In-plane benadering van lateraal naar mediaal."
-sono_images: "/images/blocks/peng-sono-landmarks.jpg, /images/blocks/peng-sono-needle.jpg"
-position_images: "/images/blocks/peng-positioning.jpg"
-diagram_images: "/images/blocks/peng-anatomy-diagram.png"
+title: "PENG"
+indication: "Postoperatieve analgesie bij totale knieprothese (TKP) en mediale enkelchirurgie. Behoudt de kracht van de M. Quadriceps."
+anatomy: "Gelegen in het midden van de dij, diep onder de M. Sartorius. Begrensd door de M. Vastus Medialis (anterolateraal) en de Mm. Adductor Longus/Magnus (posterieur)."
+settings: "Linear probe (10-15 MHz), Diepte 3-5 cm. Benadering 'In-plane' van lateraal naar mediaal."
+sono_images: "/images/blocks/acb_sono_main.jpg, /images/blocks/acb_sono_variant.png"
+position_images: "/images/blocks/acb_position.jpg"
+diagram_images: "/images/blocks/acb_anatomy_diagram.webp"
 ---
 
-* **Volume:** Gebruik 20ml lokaal anestheticum (bv. Chirocaïne 0,25%) voor een goede spreiding onder de psoas-pees richting de rami van de n. femoralis en n. obturatorius.
-* **Plaatsing:** De probe wordt initieel in een hoek van 45 graden geplaatst op de lijn tussen de AIIS en de eminentia iliopubica.
-* **Naald:** Gebruik bij voorkeur een 80mm of 100mm stimuplex-naald vanwege de diepte bij oudere patiënten.
+### Procedurele Highlights
 
-### Visualisatie Test
-
-Hier is een normale zin om te kijken of de afstand (spacing) nog klopt.
+Hieronder vind je de belangrijkste stappen en aandachtspunten voor het succesvol plaatsen van een ACB.
 
 > [!WARNING]
-> **Toxische Dosis:** Let op bij dit block. Overschrijdt nooit de maximale dosis van 2mg/kg. Dit is een test van de rode box.
+> **Toxische Dosis:** Wees alert op de cumulatieve dosis lokale anesthetica bij bilaterale procedures of combinatie met een iPACK block. Maximale veiligheid primeert.
 
-> [!INFO]
-> **AZ Groeninge Richtlijn:** Dit protocol volgt de herziene richtlijnen van 2026 voor postoperatieve pijnstilling. Dit is de blauwe box.
+### Stap-voor-stap techniek
+
+1. Identificeer de **A. Femoralis** op het niveau van de mid-thigh.
+2. Scan distaal tot de arterie onder de **M. Sartorius** duikt.
+3. De 'saphenous nerve' bevindt zich meestal anterolateraal van de arterie.
 
 > [!TIP]
-> **Beter Beeld:** Kantel de probe 10 graden naar caudaal voor een betere weergave van de zenuwstructuren. Dit is de groene box.
+> **Adductoren-trek:** Een lichte 'jiggle' van de spuit bij het inspuiten van de eerste 2ml helpt om te verifiëren of je in de juiste fascie-plane zit (tussen sartorius en vastus medialis).
 
-> Dit is een ouderwets citaat zonder speciale kleur. Dit zou er gewoon grijs en schuingedrukt uit moeten zien, zoals voorheen.
+### Visuele ondersteuning
 
-En hier gaan we weer verder met de normale procedure-tekst.
+Hieronder een korte demonstratie van de naaldvoering en de spreiding van het lokaal anestheticum:
 
+video:/videos/blocks/acb_techniek_demo_.mp4
 
+### Klinische Parels AZ Groeninge
 
+> [!INFO]
+> Voor TKP-patiënten op onze dienst geniet dit block de voorkeur boven een Femoralis-block om vroege mobilisatie (VMS) mogelijk te maken zonder valrisico.
+
+![Echobeeld van de spreiding na injectie](/images/blocks/acb_spread_check.png)
+
+### Nazorg en opvolging
+- Controleer op gevoelsverlies in het dermatoom van de N. Saphenus (mediale zijde onderbeen).
+- Documenteer de procedure in het EPD.
