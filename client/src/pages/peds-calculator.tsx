@@ -13,6 +13,7 @@ export default function PedsCalculator() {
   const [manualWeight, setManualWeight] = useState<number | null>(null);
   const [manualHeight, setManualHeight] = useState<number | null>(null);
 
+  // LOGICA VOOR LENGTE & GEWICHT (BEHOUDEN)
   const decimalYear = useMemo(() => {
     if (ageUnit === "weeks") return ageValue / 52.14;
     if (ageUnit === "months") return ageValue / 12;
@@ -62,24 +63,25 @@ export default function PedsCalculator() {
     };
   }, [decimalYear, weight, currentHeight, isWeightRequired]);
 
-  // HELPER VOOR DOSERING
+  // DYNAMISCHE DOSERING OP BASIS VAN CONFIG PRECISIE
   const getMedData = (med: PediatricMed) => {
     let rawDose = med.dosePerKg * weight;
     if (med.maxDose && rawDose > med.maxDose) rawDose = med.maxDose;
     
-    const doseStr = med.unit === "J" ? Math.round(rawDose).toString() : rawDose.toFixed(med.unit === "mg" ? 1 : 0);
-  // De fix: controleer expliciet of concentration bestaat en > 0 is
+    const doseStr = rawDose.toFixed(med.precisionDose ?? 1);
+    
     let volumeStr = null;
     if (med.concentration && med.concentration > 0) {
       const vol = rawDose / med.concentration;
-      volumeStr = vol.toFixed(med.name.includes("Atropine") ? 2 : 1);
-    }  
+      volumeStr = vol.toFixed(med.precisionVolume ?? 1);
+    }
+    
     return { dose: doseStr, volume: volumeStr };
   };
 
   return (
-    <div className="space-y-6 pb-20 pt-[env(safe-area-inset-top)] px-4">
-      {/* INPUT SECTIE (BEHOUDEN) */}
+    <div className="space-y-6 pb-20 pt-[env(safe-area-inset-top)] px-4 max-w-2xl mx-auto">
+      {/* PATIENT GEGEVENS KAART */}
       <Card className={`border-2 transition-colors ${isWeightRequired ? 'border-amber-400 bg-amber-50/20' : 'border-teal-100 shadow-sm'}`}>
         <CardHeader className="p-4 border-b flex flex-row items-center gap-2">
           <Baby className={`h-5 w-5 ${isWeightRequired ? 'text-amber-500' : 'text-teal-600'}`} />
@@ -132,7 +134,7 @@ export default function PedsCalculator() {
 
           <TabsContent value="airway" className="space-y-4">
             <div className="space-y-2">
-               <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Formule van Eck (Bouw-gebaseerd)</Label>
+               <Label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-1"><Ruler className="h-3 w-3" /> Formule van Eck</Label>
                <ResultCard label="ETT Maat (ID) - Cuffed" value={airway?.eck} unit="mm" color="bg-blue-600 text-white shadow-blue-200" />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -153,17 +155,36 @@ export default function PedsCalculator() {
           </TabsContent>
 
           <TabsContent value="drugs" className="space-y-6">
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-teal-600 ml-1">Inductie & Emergency</h3>
-              {pediatricMeds.filter(m => m.category === "inductie" || m.name === "Adrenaline" || m.name === "Atropine").map(med => (
-                <DrugRow key={med.name} label={med.name} dose={`${getMedData(med).dose} ${med.unit}`} volume={getMedData(med).volume} />
-              ))}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 ml-2">
+                <div className="h-3 w-1 bg-blue-500 rounded-full" />
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-blue-600">Inductie & Emergency</h3>
+              </div>
+              <Card className="border-blue-100 bg-blue-50/30 rounded-2xl overflow-hidden shadow-sm">
+                <div className="divide-y divide-blue-100">
+                  {pediatricMeds
+                    .filter(m => m.category === "inductie" || m.name === "Adrenaline" || m.name === "Atropine")
+                    .map(med => (
+                      <DrugListItem key={med.name} med={med} data={getMedData(med)} />
+                    ))}
+                </div>
+              </Card>
             </div>
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Supportive</h3>
-              {pediatricMeds.filter(m => m.category === "supportive").map(med => (
-                <DrugRow key={med.name} label={med.name} dose={`${getMedData(med).dose} ${med.unit}`} volume={getMedData(med).volume} />
-              ))}
+
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 ml-2">
+                <div className="h-3 w-1 bg-emerald-500 rounded-full" />
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Supportive</h3>
+              </div>
+              <Card className="border-emerald-100 bg-emerald-50/30 rounded-2xl overflow-hidden shadow-sm">
+                <div className="divide-y divide-emerald-100">
+                  {pediatricMeds
+                    .filter(m => m.category === "supportive")
+                    .map(med => (
+                      <DrugListItem key={med.name} med={med} data={getMedData(med)} />
+                    ))}
+                </div>
+              </Card>
             </div>
           </TabsContent>
 
@@ -183,9 +204,9 @@ export default function PedsCalculator() {
                   <ResultCard key={med.name} label={med.name} value={getMedData(med).dose} unit={med.unit} color="bg-white border-red-100 text-red-700 shadow-sm" />
                 ))}
              </div>
-             <div className="p-4 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center">
-                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">APLS Quick-Check</p>
-                <div className="flex justify-center gap-4 text-xs font-bold text-slate-600 italic">
+             <div className="p-4 bg-slate-100 rounded-2xl border-2 border-dashed border-slate-200 text-center">
+                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2 italic">Quick Check</p>
+                <div className="flex justify-center gap-4 text-xs font-bold text-slate-600">
                   <span>Vocht: {weight * 20}ml bolus</span>
                   <span>|</span>
                   <span>Buis ID: {airway?.coleCuffed}</span>
@@ -205,7 +226,6 @@ export default function PedsCalculator() {
   );
 }
 
-// INTERNE HULP-COMPONENTEN
 function ResultCard({ label, value, unit, color }: any) {
   return (
     <div className={`p-3 rounded-2xl border shadow-sm flex flex-col items-center justify-center text-center transition-all ${color}`}>
@@ -215,21 +235,24 @@ function ResultCard({ label, value, unit, color }: any) {
   );
 }
 
-function DrugRow({ label, dose, volume }: any) {
+function DrugListItem({ med, data }: { med: PediatricMed, data: any }) {
   return (
-    <div className="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-2xl shadow-sm">
+    <div className="flex items-center justify-between p-4 hover:bg-white/50 transition-colors">
       <div className="space-y-0.5">
-        <p className="text-[9px] font-black uppercase text-slate-400 leading-none tracking-tighter">{label}</p>
-        <p className="text-sm font-black text-slate-800">{dose}</p>
+        <p className="text-[9px] font-black uppercase text-slate-400 leading-none tracking-tighter">
+          {med.name} {med.concentration && med.concentration > 1 ? `(${med.concentration}${med.unit}/ml)` : ""}
+        </p>
+        <p className="text-sm font-black text-slate-800">
+          {data.dose} <span className="text-[10px] text-slate-500 font-bold">{med.unit}</span>
+        </p>
       </div>
-      {volume && (
-        <div className="text-right px-4 py-2 bg-teal-50 rounded-xl border border-teal-100 min-w-[85px]">
-          <p className="text-lg font-mono font-black text-teal-700 leading-none">{volume} <span className="text-[10px] ml-0.5">ml</span></p>
+      {data.volume && (
+        <div className="text-right px-3 py-1.5 bg-white/50 rounded-xl border border-white shadow-inner">
+          <p className="text-lg font-mono font-black text-teal-700 leading-none">
+            {data.volume} <span className="text-[10px] ml-0.5">ml</span>
+          </p>
         </div>
       )}
     </div>
   );
 }
-
-
-
