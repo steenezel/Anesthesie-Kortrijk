@@ -35,20 +35,20 @@ A. cerebri anterior infarct
 *   gevoelsverlies in het contralaterale been
 *   urinaire incontinentie
 
-arteria ophthalmica
+Arteria ophthalmica
 
 *   oculaire ischemie : partieel of volledig visusverlies in één oog.
 
-amaurosis fugax, ‘oculaire TIA’: tijdelijke mono-oculaire blindheid.
+Amaurosis fugax, ‘oculaire TIA’: tijdelijke mono-oculaire blindheid.
 
 ***Asymptomatische a carotis interna stenose*** . CEA is enkel geïndiceerd zo argumenten voor een hoog risico op iCVA (klinische bevindingen en/of beeldvorming).
 
 > [!INFO]
 > **Aandachtspunten**
 > Patiëntenpopulatie met frequent belangrijke comorbiditeit : diabetes mellitus, arteriële hypertensie, perifeer arterieel vaatlijden, coronair lijden, hartfalen, COPD, chronische nierinsufficiëntie,…
->
+>  
 > Preoperatief documenteren van voorafbestaande neurologische uitval.
->
+>   
 > Duale antiplaatjestherapie. Asaflow steeds verderzetten. In geval van een symptomatische carotisstenose worden de antiaggregantia (asaflow en clopidogrel) perioperatief gecontinueerd.
 
 **PEROPERATIEF**
@@ -81,16 +81,15 @@ _controle ACT (?)_ (algemene target-waarde ACT bij vasculaire heelkunde : 200sec
 
 >[!INFO]
 > **Protamine**
+
 > Ongewenste effecten
->
 > - Systemische hypotensie, bradycardie en verhoogde kans op anafylactische reactie bij een te snelle toediening.
 > - Catastrofale pulmonale hypertensie met rechterventrikelfalen en cardiovasculaire collaps treedt op bij 0,2 – 4% van de patiënten.
 >
 > Nota
->
 > - Vermoeden van kruissensitiviteit bij visallergie of ten gevolge van autosensitisatie na vasectomie, cfr. extractie van protamine uit zalmsperma, echter lijkt dit fenomeen niet klinisch relevant.
-> - verhoogd risico op de ontwikkeling van antiprotamine-antilichamen en overgevoeligheidsreacties na eerdere toediening van protamine of een protaminebevattend insuline (vb insuline aspart protamine)
-> - protamine is een anticoagulans in de afwezigheid van heparine;
+> - Verhoogd risico op de ontwikkeling van antiprotamine-antilichamen en overgevoeligheidsreacties na eerdere toediening van protamine of een protaminebevattend insuline (vb insuline aspart protamine)
+> - Protamine is een anticoagulans in de afwezigheid van heparine;
 
 ***Positionering***
 
@@ -117,7 +116,7 @@ Hemodynamische instabiliteit is het gevolg van (1) intrinsieke dysfunctie en (2)
 
 _Verhoogde sympathische outflow._
 
-1.  _Baroreceptorreflex. Bradycardie en hypotensie (verhoogde parasympathische tonus) ten gevolge van activatie van de carotisbaroreceptoren na verwijderen van de plaque._
+2.  _Baroreceptorreflex. Bradycardie en hypotensie (verhoogde parasympathische tonus) ten gevolge van activatie van de carotisbaroreceptoren na verwijderen van de plaque._
 
 _Opm :_ _Een meta-analyse van vijf gerandomiseerde studies toonde aan dat carotissinus zenuwblockade (lokaal lidocaïne druppelen ter hoogte van de glomus caroticum) niet resulteert in minder hemodynamische instabiliteit (bradycardie, hypotensie en hypertensie) per- en postoperatief._
 
@@ -139,7 +138,7 @@ Collaterale cerebrale bloedflow, evaluatiemethodes :
 
 *   **pulsatiliteit arteriële backflow** (distale a carotis interna) bij carotis communis klem. Lage en niet-pulsatiele backflow is een indicatie voor het plaatsen van een shunt (carotisstompdruk (arteriële druk distaal van de klem) wordt niet routinematig gemeten, gezien de lage sensitiviteit en specificiteit)
 
-*   neurofysiologische monitoring zuurstofvoorziening : **cerebrale oxymetrie**. NIRS Near InfraRed Spectroscopy kwantificeert de regionale zuurstofsaturatie rSO2 ter hoogte van de frontale lob (combinatie van zuurstofsaturatie in veneus bloed (grootste aandeel), arterieel en capillair bloed). Het reflecteert de balans tussen zuurstofconsumptie en aanvoer. rSO2 < 50% of een reductie met 10 – 20% ten opzichte van de uitgangswaarde kan duiden op relevante hypoperfusie en is geassocieerd met neurologische complicaties. Hoge negatieve predictieve waarde voor cerebrale ischemie echter lage specificiteit en lage positieve prediciteve waarde. 
+*   neurofysiologische monitoring zuurstofvoorziening : **cerebrale oxymetrie**. NIRS (Near InfraRed Spectroscopy) kwantificeert de regionale zuurstofsaturatie rSO2 ter hoogte van de frontale lob (combinatie van zuurstofsaturatie in veneus bloed (grootste aandeel), arterieel en capillair bloed). Het reflecteert de balans tussen zuurstofconsumptie en aanvoer. rSO2 < 50% of een reductie met 10 – 20% ten opzichte van de uitgangswaarde kan duiden op relevante hypoperfusie en is geassocieerd met neurologische complicaties. Hoge negatieve predictieve waarde voor cerebrale ischemie echter lage specificiteit en lage positieve prediciteve waarde. 
 
 Zo indirecte aanwijzingen voor cerebrale hypoperfusie is een shunt (carotis-bypass) geïndiceerd.
 
@@ -156,9 +155,7 @@ Overnachting op de PAZA. (Brief in kws, telefonische overdracht aan collega F2 v
 
 ***Neurologisch deficit***
 
-Incidentie perioperatief iCVA is 5%
-
-Neurologisch deficit vastgesteld bij ontwaken
+Incidentie perioperatief iCVA is 5%. Neurologisch deficit vastgesteld bij ontwaken.
 
 Peroperatieve cerebrale ischemie :
 
@@ -192,9 +189,7 @@ Arteriële bloeding vanuit de carotispatch-sutuur is snel progressief met risico
 
 Een klinisch significant wondhematoom (2%) is meestal het gevolg van een capillaire bloeding. (Een vacuumdrain wordt geplaatst om hematoomvorming te voorkomen.)
 
-***Craniale zenuwdysfunctie*** ‘CNI’ cranial nerve injury
-
-zelden irreversibel.
+***Craniale zenuwdysfunctie*** ‘CNI’ cranial nerve injury; zelden irreversibel.
 
 _n laryngeus recurrens (heesheid, moeizaam hoesten, slikklachten) (4,2%)_
 
@@ -220,7 +215,7 @@ Meest frequent gedurende de eerste 5 postoperatieve dagen met de piekincidentie 
 
 CHS kan zich presenteren met hoofdpijn, verwardheid, epileptische aanval/convulsies, misselijkheid en braken en finaal neurologische uitval..
 
-MRIgrafische bevindingen (o.a. vasogeen oedeem, petechiale bloeding) kunnen de diagnose ondersteunen .
+MRI-grafische bevindingen (o.a. vasogeen oedeem, petechiale bloeding) kunnen de diagnose ondersteunen .
 
 Farmacologische controle van de bloeddruk is essentieel.
 
@@ -229,21 +224,12 @@ Postoperatieve cognitieve dysfunctie treedt frequent op na carotisendarterectomi
 
 **REFERENTIES**
 
-*   lesmateriaal/powerpointpresentatie dr Missant
-*   Bonati, L, et al. (2021). European Stroke Organisation guideline on endarterectomy and stenting for carotid artery stenosis. _European Stroke Journal,_ 6(2), I-XLVII.
-
-[https://doi.org/10.1177/23969873211012121](https://doi.org/10.1177/23969873211012121)
-
-*   Naylor, R., et al. (2022). Editor’s choice – European Society for Vascular Surgery (ESVS) 2023 Clinical Practice Guidelines on the Management of Atherosclerotic Carotid and Vertebral Artery Disease. _European Journal of Vascular and Endovascular Surgery,_ 65(1), 7–111. 
-
-[https://doi.org/10.1016/j.ejvs.2022.04.011](https://doi.org/10.1016/j.ejvs.2022.04.011)
-
+*   Lesmateriaal/powerpointpresentatie dr Missant
+*   Bonati, L, et al. (2021). European Stroke Organisation guideline on endarterectomy and stenting for carotid artery stenosis. _European Stroke Journal,_ 6(2), I-XLVII. [https://doi.org/10.1177/23969873211012121](https://doi.org/10.1177/23969873211012121)
+*   Naylor, R., et al. (2022). Editor’s choice – European Society for Vascular Surgery (ESVS) 2023 Clinical Practice Guidelines on the Management of Atherosclerotic Carotid and Vertebral Artery Disease. _European Journal of Vascular and Endovascular Surgery,_ 65(1), 7–111. [https://doi.org/10.1016/j.ejvs.2022.04.011](https://doi.org/10.1016/j.ejvs.2022.04.011)
 *   Bevilacqua, S., et al. Anesthetic management of carotid endarterectomy: an update from Italian guidelines. J Anesth Analg Crit Care 2, 24 (2022). [https://doi.org/10.1186/s44158-022-00052-9](https://doi.org/10.1186/s44158-022-00052-9)
 *   Kirchhoff, F., & Eckstein, H. (2022). Locoregional Anaesthesia and Intra-Operative Angiography in Carotid endarterectomy: 16 year results of a consecutive single centre series. _European Journal of Vascular and Endovascular Surgery,_ 65(2), 223–232. https://doi.org/10.1016/j.ejvs.2022.10.002
 *   Brasil, S., Chesnut, R., & Robba, C. (2024). Noninvasive neuromonitoring in acute brain injured patients_. Intensive Care Medicine,_ 50(6), 960–963. [https://doi.org/10.1007/s00134-024-07406-7](https://doi.org/10.1007/s00134-024-07406-7)
-*   Reslan, O. M., et al. (2022). Peri-Procedural management of hemodynamic instability in patients undergoing carotid revascularization. _Annals of Vascular Surgery_, 85, 406–417. 
-
-[https://doi.org/10.1016/j.avsg.2022.03.030](https://doi.org/10.1016/j.avsg.2022.03.030)
-
+*   Reslan, O. M., et al. (2022). Peri-Procedural management of hemodynamic instability in patients undergoing carotid revascularization. _Annals of Vascular Surgery_, 85, 406–417. [https://doi.org/10.1016/j.avsg.2022.03.030](https://doi.org/10.1016/j.avsg.2022.03.030)
 *   So, V., & Poon, C. (2016). Intraoperative neuromonitoring in major vascular surgery. _British Journal of Anaesthesia,_ 117, ii13–ii25. [https://doi.org/10.1093/bja/aew218](https://doi.org/10.1093/bja/aew218)
 *   Yao
