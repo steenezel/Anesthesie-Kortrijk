@@ -13,7 +13,7 @@ diagram_images: "/images/blocks/acb_anatomy_diagram.webp"
 Hieronder vind je de belangrijkste stappen en aandachtspunten voor het succesvol plaatsen van een ACB.
 
 > [!WARNING]
-> **Toxische Dosis:** 
+> **Toxische Dosis:**  <br />  
 > Wees alert op de cumulatieve dosis lokale anesthetica bij bilaterale procedures of combinatie met een iPACK block. Maximale veiligheid primeert.
 
 ### Stap-voor-stap techniek
@@ -23,7 +23,7 @@ Hieronder vind je de belangrijkste stappen en aandachtspunten voor het succesvol
 3. De 'saphenous nerve' bevindt zich meestal anterolateraal van de arterie.
 
 > [!TIP]
-> **Adductoren-trek:** 
+> **Adductoren-trek:**  <br />
 > Een lichte 'jiggle' van de spuit bij het inspuiten van de eerste 2ml helpt om te verifiëren of je in de juiste fascie-plane zit (tussen sartorius en vastus medialis).
 
 ### Visuele ondersteuning
