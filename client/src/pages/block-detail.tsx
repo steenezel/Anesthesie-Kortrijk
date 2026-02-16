@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkBreaks from 'remark-breaks';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
@@ -139,12 +140,12 @@ export default function BlockDetail() {
     const parts = content.split('<CaudalCalc />');
     return (
       <>
-        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents as any}>
+        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={markdownComponents as any}>
           {parts[0]}
         </ReactMarkdown>
         {parts.length > 1 && <CaudalCalculator />}
         {parts.length > 1 && (
-          <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents as any}>
+          <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={markdownComponents as any}>
             {parts[1]}
           </ReactMarkdown>
         )}

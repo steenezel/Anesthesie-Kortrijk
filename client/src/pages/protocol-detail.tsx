@@ -4,6 +4,7 @@ import { ChevronLeft, FileWarning, Clock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Zoom from 'react-medium-image-zoom';
+import remarkBreaks from 'remark-breaks';
 import 'react-medium-image-zoom/dist/styles.css';
 
 // We scannen alle markdown bestanden
@@ -151,7 +152,7 @@ export default function ProtocolDetail() {
         prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
 
         <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
+          remarkPlugins={[remarkGfm, remarkBreaks]}
           components={markdownComponents as any}
         >
           {markdownBody}
