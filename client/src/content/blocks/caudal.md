@@ -3,9 +3,9 @@ title: "Caudaal Blok"
 indication: "Analgesie voor infra-umbilicale chirurgie (urologie, liesbreuk, orthopedie onderste ledematen)."
 anatomy: "Identificatie van de sacrale cornua en de hiatus sacralis. De naald passeert het ligamentum sacrococcygeum."
 settings: "Lineaire probe (high frequency) in transversale en sagittale doorsnede. 'In-plane' of 'out-of-plane' techniek."
-sono_images: "/images/blocks/caudal_sono_trans.jpg,/images/blocks/caudal_sono_sag.jpg"
-position_images: "/images/blocks/caudal_position.jpg"
-diagram_images: "/images/blocks/caudal_anatomy.png"
+sono_images: "/images/blocks/caudal_ultrasound.webp,"
+position_images: "/images/blocks/caudal_positioning.jpg"
+diagram_images: "/images/blocks/caudal_anatomy.jpg"
 ---
 
 ### Techniek

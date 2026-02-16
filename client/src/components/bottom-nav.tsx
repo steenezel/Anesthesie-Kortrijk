@@ -1,4 +1,3 @@
-// client/src/components/bottom-nav.tsx
 import { Link, useLocation } from "wouter";
 import { Home, Calculator, Phone, BookOpen, Search, Crosshair } from "lucide-react";
 
@@ -7,11 +6,8 @@ export function BottomNav() {
 
   const navItems = [
     { href: "/", icon: Home, label: "Home" },
-    { href: "/protocols", icon: BookOpen, label: "Protocollen" },
-    { href: "/blocks", icon: Crosshair, label: "Blocks" },
-    { href: "/calculator", icon: Calculator, label: "Calculators" },
     { href: "/contacts", icon: Phone, label: "Lijst" },
-    { href: "/search", icon: Search, label: "Zoeken" }, // Nu naar de zoekfunctie
+    { href: "/search", icon: Search, label: "Zoeken" },
   ];
 
   return (
