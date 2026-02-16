@@ -45,6 +45,11 @@ Per patiënt bespreken in overleg met dr. D'Hondt. Afhankelijk van locatie lets
 **Specifieke aandachtspunten**
 
 -   Blood salvage: afname bloed via arteriële lijn. Aansluiten bloedtransfusiezak op arteriële of dikke perifere lijn, op weegschaal leggen, vullen tot 0.7% lichaamsgewicht is afgenomen. Zak weegt ca 80g, maximum toegelaten volume is 450 +- 10%, dus maximum toegelaten totaalgewicht is 575g. Tijdens bloedafname bloeddruk met manchet opvolgen. 
+
+> [!TIP]
+> **Aansluiten bloedafnamezak**
+> Prik de gummi van een dikke perifere lijn aan met de naald van de bloedafnamezak.
+
 -   Andere manieren van bloedafname zijn mogelijk (perifeer, centraal), maar hierbij NIET helpen met een spuit: dit activeert stolling en leidt tot bloedzak vol klonters. Arteriële is meest betrouwbare, zij het niet altijd de snelste manier. 
 -   Hypovolemie nastreven: infusen minimaal laten lopen. Hypotensie opvangen met NA. 
 -   Na resectie lever: eerst eigen bloed terugtransfunderen, daarna tekort opvullen met Plasmalyte (op geleide SVV of 1 liter blind) 

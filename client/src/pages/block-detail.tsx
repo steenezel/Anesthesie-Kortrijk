@@ -133,7 +133,7 @@ export default function BlockDetail() {
             {config.title}
           </div>
           {/* whitespace-pre-wrap is essentieel voor je enters en spaties */}
-          <div className="text-slate-900 leading-relaxed font-medium italic whitespace-pre-wrap prose-p:m-0 prose-p:inline">
+          <div className="text-slate-900 leading-snug font-medium italic whitespace-pre-wrap prose-p:margin-0">
             {cleanRecursive(children)}
           </div>
         </div>
