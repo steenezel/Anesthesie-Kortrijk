@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 // We laden alle content in
-const allProtocols = import.meta.glob('../content/protocols/*.md', { query: 'raw', eager: true });
+const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
 const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
 
 export default function SearchPage() {
@@ -20,11 +20,13 @@ export default function SearchPage() {
       const content = file.default || file;
       const titleMatch = content.match(/title: "(.*)"/);
       const indicationMatch = content.match(/indication: "(.*)"/);
+      const pathParts = path.split('/');
+      const category = pathParts.length > 3 ? pathParts[pathParts.length - 2] : "Protocol";
       
       items.push({
         title: titleMatch ? titleMatch[1] : path.split('/').pop(),
         description: indicationMatch ? indicationMatch[1] : "Protocol",
-        href: `/protocols/${path.split('/').pop()?.replace('.md', '')}`,
+        href: `/protocols/${path.replace('../content/protocols/', '').replace('.md', '')}`,
         type: "Protocol",
         icon: BookOpen,
         color: "bg-blue-500",
