@@ -13,7 +13,7 @@ diagram_images: "/images/blocks/rectus_diagram.jpg"
 De effectiviteit van het block hangt af van de correcte depositie van het lokaal anestheticum (LA) over de volledige breedte van de schede.
 
 > [!INFO]
-> Voor een volledige midline analgesie is een  &nbsp;**bilaterale**&nbsp;  uitvoering noodzakelijk, aangezien de zenuwbanen de middellijn niet oversteken.
+> Voor een volledige midline analgesie is een **bilaterale**  uitvoering noodzakelijk, aangezien de zenuwbanen de middellijn niet oversteken.
 
 | Structuren | Echogeniciteit | Herkenning |
 | :--- | :--- | :--- |
@@ -26,7 +26,7 @@ De effectiviteit van het block hangt af van de correcte depositie van het lokaal
 Tijdens de naaldvoering is precisie essentieel om intraperitoneale injectie te voorkomen.
 
 > [!WARNING]
-> Let op voor de &nbsp;**a. epigastrica superior**. Gebruik altijd kleurendoppler voordat je de naald opvoert om vasculaire punctie te vermijden.
+> Let op voor de **a. epigastrica superior**. Gebruik altijd kleurendoppler voordat je de naald opvoert om vasculaire punctie te vermijden.
 
 > [!TIP]
 > Injecteer een kleine hoeveelheid fysiologisch water ('hydrodissectie') om de ruimte tussen de spier en de achterste schede open te duwen voordat je het lokaal anestheticum geeft.

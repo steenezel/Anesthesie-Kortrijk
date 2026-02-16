@@ -13,5 +13,5 @@ diagram_images: "/images/blocks/peng-anatomy-diagram.png"
 * **Naald:** Gebruik bij voorkeur een 80mm of 100mm stimuplex-naald vanwege de diepte bij oudere patiënten.
 
 > [!WARNING]
-> **Toxische Dosis:**  <br />
+> **Toxische Dosis:**
 > Let op bij dit block. Overschrijdt nooit de maximale dosis van 2mg/kg.
