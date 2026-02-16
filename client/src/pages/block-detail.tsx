@@ -89,40 +89,56 @@ export default function BlockDetail() {
       </div>
     ),
     blockquote: ({ children }: any) => {
-      const flattenText = (node: any): string => {
-        if (typeof node === 'string') return node;
-        if (Array.isArray(node)) return node.map(flattenText).join('');
-        if (node?.props?.children) return flattenText(node.props.children);
-        return '';
-      };
-      const fullText = flattenText(children);
-      const isWarning = fullText.includes("[!WARNING]");
-      const isInfo = fullText.includes("[!INFO]");
-      const isTip = fullText.includes("[!TIP]");
+  const flattenText = (node: any): string => {
+    if (typeof node === 'string') return node;
+    if (Array.isArray(node)) return node.map(flattenText).join('');
+    if (node?.props?.children) return flattenText(node.props.children);
+    return '';
+  };
 
-      if (!isWarning && !isInfo && !isTip) {
-        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
-      }
+  const fullText = flattenText(children);
+  const isWarning = fullText.includes("[!WARNING]");
+  const isInfo = fullText.includes("[!INFO]");
+  const isTip = fullText.includes("[!TIP]");
 
-      const cleanText = (node: any): any => {
-        if (typeof node === 'string') return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trim();
-        if (Array.isArray(node)) return node.map(cleanText);
-        if (node?.props?.children) return React.cloneElement(node, { children: cleanText(node.props.children) });
-        return node;
-      };
+  if (!isWarning && !isInfo && !isTip) {
+    return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
+  }
 
-      const config = isWarning 
-        ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
-        : isInfo 
-        ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
-        : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+  // Verbeterde schoonmaak-logica die tags en spaties respecteert
+  const config = isWarning 
+    ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+    : isInfo 
+    ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+    : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
 
-      return (
-        <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
-          <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>{config.title}</div>
-          <div className="text-slate-900 leading-relaxed font-medium italic">{cleanText(children)}</div>
-        </div>
-      );
+  return (
+    <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
+      <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
+        {config.title}
+      </div>
+      {/* whitespace-pre-wrap: behoudt spaties en line breaks
+          prose-p:m-0: verwijdert extra marges rond paragrafen binnen de box
+      */}
+      <div className="text-slate-900 leading-relaxed font-medium italic whitespace-pre-wrap prose-p:m-0">
+        {/* We mappen de kinderen direct; ReactMarkdown handelt de vette tekst en spaties dan zelf af */}
+        {React.Children.map(children, (child: any) => {
+          // Als het kind een paragraaf is, halen we de markertags eruit
+          if (child?.props?.children) {
+            const newChildren = React.Children.map(child.props.children, (innerChild) => {
+              if (typeof innerChild === 'string') {
+                return innerChild.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
+              }
+              return innerChild;
+            });
+            return <>{newChildren}</>;
+          }
+          return child;
+        })}
+      </div>
+    </div>
+  );
+}
     }
   };
 
