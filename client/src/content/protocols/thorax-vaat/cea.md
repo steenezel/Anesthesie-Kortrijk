@@ -19,36 +19,36 @@ Focale neurologische uitval
 
 Ipsilaterale hemisferische tekenen van ischemie : contralaterale hemianopsie, contralaterale hemiparese, contralateraal hemisensorisch deficit.
 
-A cerebri media (ACM) infarct :
-
-*   contralaterale hemiplegie/hemiparese (vooral gelaat en arm)
-*   contralaterale hemihypoësthesie/ gevoelsverlies (vooral gelaat en arm)
-*   contralaterale homonieme hemianopsie (de helft van het gezichtsveld valt uit aan beide ogen)
-*   blik- en hoofddeviatie naar de kant van het infarct
-*   dominante hemisfeer: afasie; niet-dominante hemisfeer: anosognosie, apraxie, contralateraal visospatieel hemineglect.
-
-(bij 95% van de rechtshandigen is de linkerhemisfeer dominant, bij de helft van de linkshandigen is de linkerhemisfeer dominant)
-
-A. cerebri anterior infarct
-
-*   parese van het contralaterale been
-*   gevoelsverlies in het contralaterale been
-*   urinaire incontinentie
-
-Arteria ophthalmica
-
-*   oculaire ischemie : partieel of volledig visusverlies in één oog.
-
-Amaurosis fugax, ‘oculaire TIA’: tijdelijke mono-oculaire blindheid.
+>A cerebri media (ACM) infarct :
+>
+> *   contralaterale hemiplegie/hemiparese (vooral gelaat en arm)
+> *   contralaterale hemihypoësthesie/ gevoelsverlies (vooral gelaat en arm)
+> *   contralaterale homonieme hemianopsie (de helft van het gezichtsveld valt uit aan beide ogen)
+> *   blik- en hoofddeviatie naar de kant van het infarct
+> *   dominante hemisfeer: afasie; niet-dominante hemisfeer: anosognosie, apraxie, contralateraal visospatieel hemineglect.
+>
+> (bij 95% van de rechtshandigen is de linkerhemisfeer dominant, bij de helft van de linkshandigen is de linkerhemisfeer dominant)
+>
+> A. cerebri anterior infarct
+> 
+> *   parese van het contralaterale been
+> *   gevoelsverlies in het contralaterale been
+> *   urinaire incontinentie
+>
+> Arteria ophthalmica
+>
+> *   oculaire ischemie : partieel of volledig visusverlies in één oog.
+>
+> Amaurosis fugax, ‘oculaire TIA’: tijdelijke mono-oculaire blindheid.
 
 ***Asymptomatische a carotis interna stenose*** . CEA is enkel geïndiceerd zo argumenten voor een hoog risico op iCVA (klinische bevindingen en/of beeldvorming).
 
 > [!INFO]
 > **Aandachtspunten**
 > Patiëntenpopulatie met frequent belangrijke comorbiditeit : diabetes mellitus, arteriële hypertensie, perifeer arterieel vaatlijden, coronair lijden, hartfalen, COPD, chronische nierinsufficiëntie,…
->  
+>
 > Preoperatief documenteren van voorafbestaande neurologische uitval.
->   
+> 
 > Duale antiplaatjestherapie. Asaflow steeds verderzetten. In geval van een symptomatische carotisstenose worden de antiaggregantia (asaflow en clopidogrel) perioperatief gecontinueerd.
 
 **PEROPERATIEF**
@@ -75,13 +75,13 @@ Amaurosis fugax, ‘oculaire TIA’: tijdelijke mono-oculaire blindheid.
 *   **noradrenaline** drip (noradrenaline 4mg/4mL in 46mL glucose 5%)
 *   **heparine** (5000IE/mL) voorafgaand aan carotisklem. Dosis (100IE/kg, in de praktijk vaak circa 5000IE) en exacte tijdstip van toediening wordt aangegeven door chirurg. Timer wordt gestart na toediening van heparine. Na één uur wordt, in functie van de duur van de ingreep, een herhaaldosis gegeven.
 
-_controle ACT (?)_ (algemene target-waarde ACT bij vasculaire heelkunde : 200sec, normale ACT waarde bedraagt 90 – 150 sec)
+> _controle ACT (?)_ (algemene target-waarde ACT bij vasculaire heelkunde : 200sec, normale ACT waarde bedraagt 90 – 150 sec)
 
 *   **protaminesulfaat** 1400 E/mL (toediening op vraag van de chirurg). Trage toediening, infusie over circa 5-10 minuten. 1 IE protamine neutraliseert 1 IE ongefractioneerd heparine. Dosis protamine wordt berekend op basis van de initieel toegediende dosis heparine. (of laatste 4 uur toegediende hoeveelheid UFH?). Protamine werkt onmiddellijk. Werkingsduur van protamine is korter dan van heparines, na 2 – 3 uur kan een rebound-effect van heparine optreden.
 
 >[!INFO]
 > **Protamine**
-
+>
 > Ongewenste effecten
 > - Systemische hypotensie, bradycardie en verhoogde kans op anafylactische reactie bij een te snelle toediening.
 > - Catastrofale pulmonale hypertensie met rechterventrikelfalen en cardiovasculaire collaps treedt op bij 0,2 – 4% van de patiënten.
