@@ -86,6 +86,7 @@ export default function BlockDetail() {
       </div>
     ),
     blockquote: ({ children }: any) => {
+      // Zet de children om naar tekst om het type box te bepalen
       const flattenText = (node: any): string => {
         if (typeof node === 'string') return node;
         if (Array.isArray(node)) return node.map(flattenText).join('');
@@ -98,6 +99,7 @@ export default function BlockDetail() {
       const isInfo = fullText.includes("[!INFO]");
       const isTip = fullText.includes("[!TIP]");
 
+      // Standaard blockquote als er geen speciale marker is
       if (!isWarning && !isInfo && !isTip) {
         return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
       }
@@ -108,24 +110,31 @@ export default function BlockDetail() {
         ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
         : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
 
+      // Recursieve functie om de markers uit de tekst te halen zonder de rest aan te raken
+      const cleanRecursive = (node: any): any => {
+        if (typeof node === 'string') {
+          // Haal enkel de marker weg, behoud alle spaties en enters
+          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "");
+        }
+        if (Array.isArray(node)) {
+          return node.map(cleanRecursive);
+        }
+        if (React.isValidElement(node) && node.props && (node.props as any).children) {
+          return React.cloneElement(node, {
+            children: cleanRecursive((node.props as any).children)
+          } as any);
+        }
+        return node;
+      };
+
       return (
         <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
           <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
             {config.title}
           </div>
-          <div className="text-slate-900 leading-relaxed font-medium italic whitespace-pre-wrap prose-p:m-0">
-            {React.Children.map(children, (child: any) => {
-              if (child?.props?.children) {
-                const newChildren = React.Children.map(child.props.children, (innerChild) => {
-                  if (typeof innerChild === 'string') {
-                    return innerChild.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
-                  }
-                  return innerChild;
-                });
-                return <>{newChildren}</>;
-              }
-              return child;
-            })}
+          {/* whitespace-pre-wrap is essentieel voor je enters en spaties */}
+          <div className="text-slate-900 leading-relaxed font-medium italic whitespace-pre-wrap prose-p:m-0 prose-p:inline">
+            {cleanRecursive(children)}
           </div>
         </div>
       );
