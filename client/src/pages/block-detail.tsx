@@ -1,6 +1,6 @@
 import React from "react";
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, Eye, Image as ImageIcon, Ruler } from "lucide-react";
+import { ChevronLeft, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
@@ -11,7 +11,7 @@ import 'react-medium-image-zoom/dist/styles.css';
 // Importeer de calculators
 import CaudalCalculator from "@/components/CaudalCalculator";
 
-// Scan alle markdown bestanden in de content/blocks map
+// Scan alle markdown bestanden
 const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
 
 export default function BlockDetail() {
@@ -22,7 +22,6 @@ export default function BlockDetail() {
   const backUrl = queryParams.get('from') || '/blocks';
   const isFromProtocol = queryParams.has('from');
 
-  // 1. ROBUUSTE ZOEKMETHODE (Ongevoelig voor hoofdletters/extensies)
   const fileKey = Object.keys(allBlocks).find(key => 
     key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`)
   );
@@ -38,7 +37,6 @@ export default function BlockDetail() {
     );
   }
 
-  // 2. PARSER HELPERS (Zonder Regex-crashes)
   const getField = (field: string) => {
     const lines = rawContent.split('\n');
     const line = lines.find((l: string) => l.trim().startsWith(`${field}:`));
@@ -67,7 +65,6 @@ export default function BlockDetail() {
     body: rawContent.replace(/^---[\s\S]*?---/, '').trim()
   };
 
-  // 3. MARKDOWN COMPONENTEN (Video, Zoom, Gekleurde Boxen)
   const markdownComponents = {
     p: ({ children }: any) => {
       const content = React.Children.toArray(children).join("");
@@ -89,60 +86,52 @@ export default function BlockDetail() {
       </div>
     ),
     blockquote: ({ children }: any) => {
-  const flattenText = (node: any): string => {
-    if (typeof node === 'string') return node;
-    if (Array.isArray(node)) return node.map(flattenText).join('');
-    if (node?.props?.children) return flattenText(node.props.children);
-    return '';
-  };
+      const flattenText = (node: any): string => {
+        if (typeof node === 'string') return node;
+        if (Array.isArray(node)) return node.map(flattenText).join('');
+        if (node?.props?.children) return flattenText(node.props.children);
+        return '';
+      };
 
-  const fullText = flattenText(children);
-  const isWarning = fullText.includes("[!WARNING]");
-  const isInfo = fullText.includes("[!INFO]");
-  const isTip = fullText.includes("[!TIP]");
+      const fullText = flattenText(children);
+      const isWarning = fullText.includes("[!WARNING]");
+      const isInfo = fullText.includes("[!INFO]");
+      const isTip = fullText.includes("[!TIP]");
 
-  if (!isWarning && !isInfo && !isTip) {
-    return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
-  }
+      if (!isWarning && !isInfo && !isTip) {
+        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
+      }
 
-  // Verbeterde schoonmaak-logica die tags en spaties respecteert
-  const config = isWarning 
-    ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
-    : isInfo 
-    ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
-    : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+      const config = isWarning 
+        ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+        : isInfo 
+        ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+        : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
 
-  return (
-    <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
-      <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
-        {config.title}
-      </div>
-      {/* whitespace-pre-wrap: behoudt spaties en line breaks
-          prose-p:m-0: verwijdert extra marges rond paragrafen binnen de box
-      */}
-      <div className="text-slate-900 leading-relaxed font-medium italic whitespace-pre-wrap prose-p:m-0">
-        {/* We mappen de kinderen direct; ReactMarkdown handelt de vette tekst en spaties dan zelf af */}
-        {React.Children.map(children, (child: any) => {
-          // Als het kind een paragraaf is, halen we de markertags eruit
-          if (child?.props?.children) {
-            const newChildren = React.Children.map(child.props.children, (innerChild) => {
-              if (typeof innerChild === 'string') {
-                return innerChild.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
+      return (
+        <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
+          <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
+            {config.title}
+          </div>
+          <div className="text-slate-900 leading-relaxed font-medium italic whitespace-pre-wrap prose-p:m-0">
+            {React.Children.map(children, (child: any) => {
+              if (child?.props?.children) {
+                const newChildren = React.Children.map(child.props.children, (innerChild) => {
+                  if (typeof innerChild === 'string') {
+                    return innerChild.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
+                  }
+                  return innerChild;
+                });
+                return <>{newChildren}</>;
               }
-              return innerChild;
-            });
-            return <>{newChildren}</>;
-          }
-          return child;
-        })}
-      </div>
-    </div>
-  );
-}
+              return child;
+            })}
+          </div>
+        </div>
+      );
     }
   };
 
-  // 4. CONTENT RENDERER (Voor de Calculator tag)
   const renderBodyWithComponents = (content: string) => {
     const parts = content.split('<CaudalCalc />');
     return (
