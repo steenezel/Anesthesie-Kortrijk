@@ -12,7 +12,8 @@ diagram_images: "/images/blocks/caudal_anatomy.jpg"
 Plaats de patiënt in zijligging (Sims-positie). Na identificatie van de hiatus sacralis wordt de naald opgevoerd onder een hoek van 45 graden tot een 'pop' voelbaar is (ligamentum sacrococcygeum). Kantel de naald daarna en voer 2-3 mm op in het epidurale kanaal.
 
 > [!WARNING]
-> **Aspiratie:** Aspireer altijd zorgvuldig voor bloed of liquor vooraleer te injecteren. Injecteer traag en observeer de hartslag.
+> **Aspiratie:**  
+> Aspireer altijd zorgvuldig voor bloed of liquor vooraleer te injecteren. Injecteer traag en observeer de hartslag.
 
 <CaudalCalc />
 
