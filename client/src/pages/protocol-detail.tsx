@@ -124,15 +124,24 @@ export default function ProtocolDetail() {
                 : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
 
               return (
-                <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
-                  <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
-                    {config.title}
-                  </div>
-                 <div className="text-slate-900 leading-tight font-medium italic whitespace-pre-wrap prose-p:my-0">
-                    {cleanRecursive(children)}
-                  </div>
-                </div>
-              );
+  <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
+    <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>
+      {config.title}
+    </div>
+    {/* We gebruiken een div als wrapper met 'leading-tight' en 'whitespace-pre-wrap' */}
+    <div className="text-slate-900 leading-tight font-medium italic whitespace-pre-wrap">
+      {React.Children.map(cleanRecursive(children), (child: any) => {
+        // We dwingen elke paragraaf of element binnen de box om GEEN marge te hebben
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, {
+            style: { margin: 0, padding: 0, display: 'inline' }
+          } as any);
+        }
+        return child;
+      })}
+    </div>
+  </div>
+);
             },
             
             table: ({ children }: any) => (
