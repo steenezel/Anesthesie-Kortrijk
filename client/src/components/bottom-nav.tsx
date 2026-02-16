@@ -1,16 +1,13 @@
 import { Link, useLocation } from "wouter";
-import { Home, Calculator, Phone, BookOpen, GraduationCap, Crosshair } from "lucide-react";
+import { Home, Calculator, Phone, BookOpen, Search, Crosshair } from "lucide-react";
 
 export function BottomNav() {
   const [location] = useLocation();
 
   const navItems = [
     { href: "/", icon: Home, label: "Home" },
-    { href: "/protocols", icon: BookOpen, label: "Protocollen" },
-    { href: "/blocks", icon: Crosshair, label: "Blocks" }, // Nieuwe toevoeging
-    { href: "/calculator", icon: Calculator, label: "Calculators" },
     { href: "/contacts", icon: Phone, label: "Lijst" },
-    { href: "/onboarding", icon: GraduationCap, label: "Onboard" },
+    { href: "/search", icon: Search, label: "Zoeken" },
   ];
 
   return (
@@ -18,7 +15,7 @@ export function BottomNav() {
       <div className="max-w-2xl mx-auto flex justify-around items-center h-16 px-1">
         {navItems.map((item) => {
           const isActive = location === item.href;
-          const Icon = item.icon; // We slaan het icoon even op in een variabele met hoofdletter
+          const Icon = item.icon;
 
           return (
             <Link key={item.href} href={item.href}>

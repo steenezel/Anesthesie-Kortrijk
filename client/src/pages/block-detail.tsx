@@ -1,17 +1,18 @@
 import React from "react";
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, Eye, Image as ImageIcon, Ruler } from "lucide-react";
+import { ChevronLeft, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkBreaks from 'remark-breaks';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
 // Importeer de calculators
 import CaudalCalculator from "@/components/CaudalCalculator";
 
-// Scan alle markdown bestanden in de content/blocks map
+// Scan alle markdown bestanden
 const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
 
 export default function BlockDetail() {
@@ -22,7 +23,6 @@ export default function BlockDetail() {
   const backUrl = queryParams.get('from') || '/blocks';
   const isFromProtocol = queryParams.has('from');
 
-  // 1. ROBUUSTE ZOEKMETHODE (Ongevoelig voor hoofdletters/extensies)
   const fileKey = Object.keys(allBlocks).find(key => 
     key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`)
   );
@@ -38,7 +38,6 @@ export default function BlockDetail() {
     );
   }
 
-  // 2. PARSER HELPERS (Zonder Regex-crashes)
   const getField = (field: string) => {
     const lines = rawContent.split('\n');
     const line = lines.find((l: string) => l.trim().startsWith(`${field}:`));
@@ -67,7 +66,6 @@ export default function BlockDetail() {
     body: rawContent.replace(/^---[\s\S]*?---/, '').trim()
   };
 
-  // 3. MARKDOWN COMPONENTEN (Video, Zoom, Gekleurde Boxen)
   const markdownComponents = {
     p: ({ children }: any) => {
       const content = React.Children.toArray(children).join("");
@@ -95,6 +93,7 @@ export default function BlockDetail() {
         if (node?.props?.children) return flattenText(node.props.children);
         return '';
       };
+
       const fullText = flattenText(children);
       const isWarning = fullText.includes("[!WARNING]");
       const isInfo = fullText.includes("[!INFO]");
@@ -104,39 +103,49 @@ export default function BlockDetail() {
         return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
       }
 
-      const cleanText = (node: any): any => {
-        if (typeof node === 'string') return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trim();
-        if (Array.isArray(node)) return node.map(cleanText);
-        if (node?.props?.children) return React.cloneElement(node, { children: cleanText(node.props.children) });
-        return node;
-      };
-
       const config = isWarning 
         ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
         : isInfo 
         ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
         : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
 
+      const cleanRecursive = (node: any): any => {
+        if (typeof node === 'string') {
+          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
+        }
+        if (Array.isArray(node)) return node.map(cleanRecursive);
+        if (node?.props?.children) {
+          return React.cloneElement(node, {
+            ...node.props,
+            children: cleanRecursive(node.props.children)
+          } as any);
+        }
+        return node;
+      };
+
       return (
-        <div className={`my-8 border-l-8 p-6 rounded-r-3xl shadow-sm ${config.styles}`}>
-          <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>{config.title}</div>
-          <div className="text-slate-900 leading-relaxed font-medium italic">{cleanText(children)}</div>
+        <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
+          <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>
+            {config.title}
+          </div>
+          <div className="text-slate-900 leading-snug font-medium italic whitespace-pre-wrap [&_p]:m-0">
+            {cleanRecursive(children)}
+          </div>
         </div>
       );
     }
   };
 
-  // 4. CONTENT RENDERER (Voor de Calculator tag)
   const renderBodyWithComponents = (content: string) => {
     const parts = content.split('<CaudalCalc />');
     return (
       <>
-        <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents as any}>
+        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={markdownComponents as any}>
           {parts[0]}
         </ReactMarkdown>
         {parts.length > 1 && <CaudalCalculator />}
         {parts.length > 1 && (
-          <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents as any}>
+          <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} components={markdownComponents as any}>
             {parts[1]}
           </ReactMarkdown>
         )}

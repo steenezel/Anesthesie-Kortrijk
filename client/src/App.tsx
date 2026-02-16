@@ -19,6 +19,7 @@ import InfoPage from "@/pages/info";
 import NotFound from "@/pages/not-found";
 import ContactsPage from "@/pages/contacts";
 import GamePage from "@/pages/game";
+import SearchPage from "@/pages/search";
 import OnboardingPage from "@/pages/onboarding";
 import { BottomNav } from "@/components/bottom-nav";
 
@@ -123,6 +124,7 @@ function Router() {
           <Route path="/calculator/peds-calculator" component={PedsCalculator} />
           <Route path="/contacts" component={ContactsPage} />
           <Route path="/game" component={GamePage} />
+          <Route path="/search" component={SearchPage} />
           <Route path="/checklist" component={ChecklistPage} />
           <Route path="/info" component={InfoPage} />
           <Route path="/onboarding" component={OnboardingPage} />

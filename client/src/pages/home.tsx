@@ -6,9 +6,11 @@ import {
   Syringe, 
   Tablets, 
   Phone, 
+  Search,
+  GraduationCap,
   Calculator
 } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { 
   Dialog, 
@@ -64,6 +66,15 @@ const categories = [
     isExternal: false
   },
   {
+    title: "Onboarding",
+    description: "Info voor assistenten & staf.",
+    icon: GraduationCap,
+    href: "/onboarding",
+    color: "bg-slate-700",
+    lightColor: "bg-slate-50",
+    borderColor: "border-slate-200"
+  },
+  {
     title: "E17 Bridginglink",
     description: "Beleid bloedverdunners.",
     icon: Tablets,
@@ -76,6 +87,7 @@ const categories = [
 ];
 
 export default function Home() {
+  const [location, setLocation] = useLocation() as [string, (to: string) => void];
   const [tapCount, setTapCount] = useState(0);
   const [showEgg, setShowEgg] = useState(false);
   const [currentQuote, setCurrentQuote] = useState({ text: "", author: "" });
@@ -110,6 +122,25 @@ export default function Home() {
       </div>
 
          <PWAInstallPrompt />
+
+      {/* ZOEKBALK (De Trigger) */}
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }} 
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-2xl mx-auto px-1"
+      >
+        <div 
+          onClick={() => setLocation("/search")}
+          className="relative group cursor-pointer"
+        >
+          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-slate-400 group-hover:text-teal-500 transition-colors" />
+          </div>
+          <div className="w-full bg-white border-2 border-slate-100 h-14 rounded-2xl flex items-center px-12 text-slate-400 font-medium shadow-sm group-hover:border-teal-100 transition-all">
+            Zoek protocollen, medicatie of blocks...
+          </div>
+        </div>
+      </motion.div>
 
       {/* EASTER EGG */}
       <Dialog open={showEgg} onOpenChange={setShowEgg}>
