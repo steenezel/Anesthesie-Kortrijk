@@ -36,6 +36,92 @@ export default function ProtocolDetail() {
   const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
   const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
 
+  const markdownComponents = {
+    img: ({ src, alt }: { src?: string; alt?: string }) => (
+      <div className="my-8">
+        <Zoom>
+          <img 
+            src={src} 
+            alt={alt} 
+            className="w-full h-auto rounded-2xl shadow-lg border border-slate-100 transition-all hover:shadow-xl" 
+          />
+        </Zoom>
+        {alt && (
+          <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-4 px-4 leading-relaxed">
+            {alt}
+          </p>
+        )}
+      </div>
+    ),
+
+    blockquote: ({ children }: any) => {
+      const flattenText = (node: any): string => {
+        if (typeof node === 'string') return node;
+        if (Array.isArray(node)) return node.map(flattenText).join('');
+        if (node?.props?.children) return flattenText(node.props.children);
+        return '';
+      };
+
+      const fullText = flattenText(children);
+      const isWarning = fullText.includes("[!WARNING]");
+      const isInfo = fullText.includes("[!INFO]");
+      const isTip = fullText.includes("[!TIP]");
+
+      if (!isWarning && !isInfo && !isTip) {
+        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
+      }
+
+      const config = isWarning 
+        ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+        : isInfo 
+        ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+        : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+
+      const cleanRecursive = (node: any): any => {
+        if (typeof node === 'string') {
+          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
+        }
+        if (Array.isArray(node)) return node.map(cleanRecursive);
+        if (node?.props?.children) {
+          return React.cloneElement(node, {
+            ...node.props,
+            children: cleanRecursive(node.props.children)
+          } as any);
+        }
+        return node;
+      };
+
+      return (
+        <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
+          <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>
+            {config.title}
+          </div>
+          <div className="text-slate-900 leading-snug font-medium italic whitespace-pre-wrap [&_p]:m-0">
+            {cleanRecursive(children)}
+          </div>
+        </div>
+      );
+    },
+    
+    table: ({ children }: any) => (
+      <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
+        <table className="min-w-full border-collapse">{children}</table>
+      </div>
+    ),
+    thead: ({ children }: any) => <thead className="bg-slate-50/80 backdrop-blur-sm">{children}</thead>,
+    tr: ({ children }: any) => <tr className="border-b border-slate-100 last:border-0">{children}</tr>,
+    th: ({ children }: any) => (
+      <th className="px-4 py-3 text-left text-[10px] font-black uppercase text-slate-500 tracking-widest border-r border-slate-100 last:border-0">
+        {children}
+      </th>
+    ),
+    td: ({ children }: any) => (
+      <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0">
+        {children}
+      </td>
+    ),
+  };
+
   return (
     <div className="space-y-6 pb-20 px-4 animate-in fade-in duration-700">
       {/* NAVIGATIE */}
@@ -58,7 +144,7 @@ export default function ProtocolDetail() {
 
       <hr className="border-slate-100" />
 
-      {/* MARKDOWN CONTENT MET UPGRADED LAYOUT */}
+      {/* MARKDOWN CONTENT */}
       <div className="prose prose-slate prose-base max-w-none 
         prose-ul:list-disc prose-li:marker:text-teal-600
         prose-strong:text-teal-700 prose-strong:font-black
@@ -66,97 +152,7 @@ export default function ProtocolDetail() {
 
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
-          components={{
-            img: ({ src, alt }: { src?: string; alt?: string }) => (
-              <div className="my-8">
-                <Zoom>
-                  <img 
-                    src={src} 
-                    alt={alt} 
-                    className="w-full h-auto rounded-2xl shadow-lg border border-slate-100 transition-all hover:shadow-xl" 
-                  />
-                </Zoom>
-                {alt && (
-                  <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-4 px-4 leading-relaxed">
-                    {alt}
-                  </p>
-                )}
-              </div>
-            ),
-
-            blockquote: ({ children }: any) => {
-  const flattenText = (node: any): string => {
-    if (typeof node === 'string') return node;
-    if (Array.isArray(node)) return node.map(flattenText).join('');
-    if (node?.props?.children) return flattenText(node.props.children);
-    return '';
-  };
-
-  const fullText = flattenText(children);
-  const isWarning = fullText.includes("[!WARNING]");
-  const isInfo = fullText.includes("[!INFO]");
-  const isTip = fullText.includes("[!TIP]");
-
-  if (!isWarning && !isInfo && !isTip) {
-    return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
-  }
-
-  const config = isWarning 
-    ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
-    : isInfo 
-    ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
-    : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
-
-  const cleanRecursive = (node: any): any => {
-    if (typeof node === 'string') {
-      // .trimStart() is cruciaal: het verwijdert de 'Enter' na de marker [!WARNING]
-      return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
-    }
-    if (Array.isArray(node)) return node.map(cleanRecursive);
-    if (node?.props?.children) {
-      return React.cloneElement(node, {
-        ...node.props,
-        children: cleanRecursive(node.props.children)
-      } as any);
-    }
-    return node;
-  };
-
-  return (
-    <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
-      <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>
-        {config.title}
-      </div>
-      {/* - leading-snug: compacte regelafstand
-          - whitespace-pre-wrap: behoudt jouw bewuste enters
-          - [&_p]:m-0: dit is de 'Nuclear Option'. Het dwingt ELKE paragraaf 
-            binnen deze div naar een marge van 0, ongeacht wat Tailwind prose zegt.
-      */}
-      <div className="text-slate-900 leading-snug font-medium italic whitespace-pre-wrap [&_p]:m-0">
-        {cleanRecursive(children)}
-      </div>
-    </div>
-  );
-},
-            
-            table: ({ children }: any) => (
-              <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
-                <table className="min-w-full border-collapse">{children}</table>
-              </div>
-            ),
-            thead: ({ children }: any) => <thead className="bg-slate-50/80 backdrop-blur-sm">{children}</thead>,
-            tr: ({ children }: any) => <tr className="border-b border-slate-100 last:border-0">{children}</tr>,
-            th: ({ children }: any) => (
-              <th className="px-4 py-3 text-left text-[10px] font-black uppercase text-slate-500 tracking-widest border-r border-slate-100 last:border-0">
-                {children}
-              </th>
-            ),
-            td: ({ children }: any) => (
-              <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0">
-                {children}
-              </td>
-            ),
-          }}
+          components={markdownComponents as any}
         >
           {markdownBody}
         </ReactMarkdown>

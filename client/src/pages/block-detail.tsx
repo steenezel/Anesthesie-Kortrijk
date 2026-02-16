@@ -86,60 +86,55 @@ export default function BlockDetail() {
       </div>
     ),
     blockquote: ({ children }: any) => {
-  const flattenText = (node: any): string => {
-    if (typeof node === 'string') return node;
-    if (Array.isArray(node)) return node.map(flattenText).join('');
-    if (node?.props?.children) return flattenText(node.props.children);
-    return '';
+      const flattenText = (node: any): string => {
+        if (typeof node === 'string') return node;
+        if (Array.isArray(node)) return node.map(flattenText).join('');
+        if (node?.props?.children) return flattenText(node.props.children);
+        return '';
+      };
+
+      const fullText = flattenText(children);
+      const isWarning = fullText.includes("[!WARNING]");
+      const isInfo = fullText.includes("[!INFO]");
+      const isTip = fullText.includes("[!TIP]");
+
+      if (!isWarning && !isInfo && !isTip) {
+        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
+      }
+
+      const config = isWarning 
+        ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+        : isInfo 
+        ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+        : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+
+      const cleanRecursive = (node: any): any => {
+        if (typeof node === 'string') {
+          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
+        }
+        if (Array.isArray(node)) return node.map(cleanRecursive);
+        if (node?.props?.children) {
+          return React.cloneElement(node, {
+            ...node.props,
+            children: cleanRecursive(node.props.children)
+          } as any);
+        }
+        return node;
+      };
+
+      return (
+        <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
+          <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>
+            {config.title}
+          </div>
+          <div className="text-slate-900 leading-snug font-medium italic whitespace-pre-wrap [&_p]:m-0">
+            {cleanRecursive(children)}
+          </div>
+        </div>
+      );
+    }
   };
 
-  const fullText = flattenText(children);
-  const isWarning = fullText.includes("[!WARNING]");
-  const isInfo = fullText.includes("[!INFO]");
-  const isTip = fullText.includes("[!TIP]");
-
-  if (!isWarning && !isInfo && !isTip) {
-    return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
-  }
-
-  const config = isWarning 
-    ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
-    : isInfo 
-    ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
-    : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
-
-  const cleanRecursive = (node: any): any => {
-    if (typeof node === 'string') {
-      // .trimStart() is cruciaal: het verwijdert de 'Enter' na de marker [!WARNING]
-      return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
-    }
-    if (Array.isArray(node)) return node.map(cleanRecursive);
-    if (node?.props?.children) {
-      return React.cloneElement(node, {
-        ...node.props,
-        children: cleanRecursive(node.props.children)
-      } as any);
-    }
-    return node;
-  };
-
-  return (
-    <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
-      <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>
-        {config.title}
-      </div>
-      {/* - leading-snug: compacte regelafstand
-          - whitespace-pre-wrap: behoudt jouw bewuste enters
-          - [&_p]:m-0: dit is de 'Nuclear Option'. Het dwingt ELKE paragraaf 
-            binnen deze div naar een marge van 0, ongeacht wat Tailwind prose zegt.
-      */}
-      <div className="text-slate-900 leading-snug font-medium italic whitespace-pre-wrap [&_p]:m-0">
-        {cleanRecursive(children)}
-      </div>
-    </div>
-  );
-    }
-},
   const renderBodyWithComponents = (content: string) => {
     const parts = content.split('<CaudalCalc />');
     return (
