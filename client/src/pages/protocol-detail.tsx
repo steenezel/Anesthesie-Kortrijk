@@ -128,7 +128,7 @@ export default function ProtocolDetail() {
                   <div className={`font-black text-[10px] mb-2 tracking-[0.2em] ${config.color}`}>
                     {config.title}
                   </div>
-                  <div className="text-slate-900 leading-snug font-medium italic whitespace-pre-wrap prose-p:m-0 prose-p:inline">
+                 <div className="text-slate-900 leading-tight font-medium italic whitespace-pre-wrap prose-p:my-0">
                     {cleanRecursive(children)}
                   </div>
                 </div>
