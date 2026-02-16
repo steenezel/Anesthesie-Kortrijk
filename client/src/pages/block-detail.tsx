@@ -138,8 +138,8 @@ export default function BlockDetail() {
       </div>
     </div>
   );
+    }
 },
-
   const renderBodyWithComponents = (content: string) => {
     const parts = content.split('<CaudalCalc />');
     return (
