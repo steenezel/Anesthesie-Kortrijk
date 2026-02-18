@@ -15,25 +15,34 @@ export default function SearchPage() {
   const searchIndex = useMemo(() => {
     const items: any[] = [];
 
-    // Verwerk protocollen
+    // Verwerk protocollen in search.tsx
     Object.entries(allProtocols).forEach(([path, file]: [string, any]) => {
       const content = file.default || file;
-      const titleMatch = content.match(/title: "(.*)"/);
-      const indicationMatch = content.match(/indication: "(.*)"/);
       const pathParts = path.split('/');
-      const category = pathParts.length > 3 ? pathParts[pathParts.length - 2] : "Protocol";
       
+      // We halen de fileName op (bijv. 'gastric-bypass'), exact zoals in je lijst
+      const fileName = pathParts[pathParts.length - 1].replace('.md', '');
+      
+      // Bepaal de categorie voor de beschrijving
+      let discipline = pathParts[pathParts.length - 2];
+      if (discipline.toLowerCase() === 'protocols') {
+        discipline = 'Algemeen';
+      }
+
+      const titleMatch = typeof content === 'string' ? content.match(/title: "(.*)"/) : null;
+      const indicationMatch = typeof content === 'string' ? content.match(/indication: "(.*)"/) : null;
+
       items.push({
-        title: titleMatch ? titleMatch[1] : path.split('/').pop(),
-        description: indicationMatch ? indicationMatch[1] : "Protocol",
-        href: `/protocols/${path.replace('../content/protocols/', '').replace('.md', '')}`,
+        title: titleMatch ? titleMatch[1] : fileName.replace(/-/g, ' '),
+        description: indicationMatch ? indicationMatch[1] : `Discipline: ${discipline}`,
+        // CRUCIAL: We gebruiken hier alleen fileName, net als in protocol-list.tsx
+        href: `/protocols/${fileName}`, 
         type: "Protocol",
         icon: BookOpen,
         color: "bg-blue-500",
-        content: content.toLowerCase()
+        content: typeof content === 'string' ? content.toLowerCase() : ""
       });
-    });
-
+});
     // Verwerk blocks
     Object.entries(allBlocks).forEach(([path, file]: [string, any]) => {
       const content = file.default || file;
