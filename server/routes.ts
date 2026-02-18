@@ -3,15 +3,16 @@ import { type Server } from "http";
 import { storage } from "./storage";
 import Redis from "ioredis";
 
-// We initialiseren de verbinding met de volledige URL
-// ioredis haalt de gebruikersnaam, wachtwoord en poort hier automatisch uit.
-const redis = new Redis(process.env.REDIS_URL || "");
-
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   
+  const redis = new Redis(process.env.REDIS_URL || "");
+  redis.on("error", (err) => {
+    console.error("Redis Runtime Error:", err);
+  });
+
   // 1. TEST ROUTE
   app.get("/api/kv-test", async (_req, res) => {
     try {
