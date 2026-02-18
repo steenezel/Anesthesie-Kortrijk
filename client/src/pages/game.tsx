@@ -19,6 +19,8 @@ export default function GamePage() {
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameState, setGameState] = useState<"start" | "playing" | "gameover">("start");
+  const [globalCounter, setGlobalCounter] = useState(0);
+  const [isLeaderboardLoading, setIsLeaderboardLoading] = useState(false);
   
   // Highscore States
   const [playerName, setPlayerName] = useState("");
@@ -34,18 +36,28 @@ export default function GamePage() {
   }, []);
 
   const fetchLeaderboard = async () => {
-    try {
-      const res = await fetch("/api/highscores");
-      if (res.ok) {
-        const data = await res.json();
-        // Redis data komt vaak binnen als [name, score, name, score] of objecten
-        // De API die we schreven geeft objecten terug
-        setLeaderboard(data);
-      }
-    } catch (err) {
-      console.error("Kon leaderboard niet laden", err);
+  setIsLeaderboardLoading(true);
+  try {
+    // Haal scores op
+    const resScores = await fetch("/api/highscores");
+    if (resScores.ok) {
+      const data = await resScores.json();
+      setLeaderboard(data);
     }
-  };
+
+    // Haal de globale teller op
+    const resStats = await fetch("/api/game-stats");
+    if (resStats.ok) {
+      const data = await resStats.json();
+      // We gebruiken hier de setGlobalCounter die je net hebt aangemaakt
+      setGlobalCounter(data.totalAttempts || 0);
+    }
+  } catch (err) {
+    console.error("Data fetch error", err);
+  } finally {
+    setIsLeaderboardLoading(false);
+  }
+};
 
   const submitScore = async () => {
     if (!playerName.trim() || score === 0 || isSubmitting) return;
@@ -136,12 +148,17 @@ export default function GamePage() {
   }, [birdPos, pipes, gameState]);
 
   const triggerGameOver = () => {
-    setGameState("gameover");
-    if (score > highScore) {
-      setHighScore(score);
-      localStorage.setItem("flappy_ane_highscore", score.toString());
-    }
-  };
+  setGameState("gameover");
+  
+  // Update de teller op de server
+  fetch("/api/game-stats/increment", { method: "POST" })
+    .then(() => fetchLeaderboard()); // Ververs direct de cijfers op het scherm
+
+  if (score > highScore) {
+    setHighScore(score);
+    localStorage.setItem("flappy_ane_highscore", score.toString());
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-slate-950 flex flex-col items-center justify-center overflow-hidden touch-none select-none" onClick={jump}>
@@ -186,22 +203,37 @@ export default function GamePage() {
              </Button>
 
              {leaderboard.length > 0 && (
-               <div className="w-full max-w-xs bg-black/30 rounded-2xl p-4 border border-white/5">
-                 <div className="flex items-center gap-2 mb-3 justify-center text-orange-400">
-                    <Trophy className="h-4 w-4" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Vakgroep Top 5</span>
-                 </div>
-                 <div className="space-y-2">
-                   {leaderboard.slice(0, 5).map((entry, idx) => (
-                     <div key={idx} className="flex justify-between items-center text-xs border-b border-white/5 pb-1 last:border-0">
-                       <span className="font-bold text-slate-400 w-4">{idx + 1}.</span>
-                       <span className="flex-1 text-left px-2 font-medium truncate uppercase">{entry.member}</span>
-                       <span className="font-black text-teal-400">{entry.score}</span>
-                     </div>
-                   ))}
-                 </div>
-               </div>
-             )}
+  <div className="w-full max-w-xs bg-black/30 rounded-2xl p-4 border border-white/5 shadow-xl">
+    {/* Header */}
+    <div className="flex items-center gap-2 mb-3 justify-center text-orange-400">
+      <Trophy className="h-4 w-4" />
+      <span className="text-[10px] font-black uppercase tracking-[0.2em]">Dienst Top 5</span>
+    </div>
+    
+    {/* De Top 5 Lijst */}
+    <div className="space-y-2 mb-4">
+      {leaderboard.slice(0, 5).map((entry, idx) => (
+        <div key={idx} className="flex justify-between items-center text-xs border-b border-white/5 pb-1 last:border-0">
+          <span className={`font-bold w-4 ${idx === 0 ? "text-orange-400" : "text-slate-400"}`}>{idx + 1}.</span>
+          <span className="flex-1 text-left px-2 font-medium truncate uppercase">{entry.member}</span>
+          <span className="font-black text-teal-400">{entry.score}</span>
+        </div>
+      ))}
+    </div>
+
+    {/* De Global Counter: subtiel onderaan de lijst */}
+    <div className="pt-3 border-t border-white/10 text-center">
+      <div className="inline-block px-3 py-1 bg-teal-500/5 rounded-full border border-teal-500/10">
+        <p className="text-[8px] font-black uppercase tracking-[0.2em] text-teal-500/60 leading-none">
+          Totaal aantal intubatiepogingen
+        </p>
+        <p className="text-lg font-black text-teal-400 tabular-nums leading-tight">
+          {globalCounter.toLocaleString('nl-BE')}
+        </p>
+      </div>
+    </div>
+  </div>
+)}
           </div>
         )}
 

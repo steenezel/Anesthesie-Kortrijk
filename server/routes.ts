@@ -44,6 +44,26 @@ export async function registerRoutes(
     }
   });
 
+  // Update de Global Counter bij elke Game Over
+  app.post("/api/game-stats/increment", async (_req, res) => {
+    try {
+      const totalAttempts = await kv.incr("global_bird_attempts");
+      res.json({ totalAttempts });
+    } catch (error) {
+      res.status(500).send("Counter error");
+    }
+  });
+
+  // Haal de huidige stand van de Global Counter op
+  app.get("/api/game-stats", async (_req, res) => {
+    try {
+      const totalAttempts = await kv.get("global_bird_attempts");
+      res.json({ totalAttempts: totalAttempts || 0 });
+    } catch (error) {
+      res.status(500).send("Counter error");
+    }
+  });
+  
   // 4. ADMIN: VERWIJDEREN
   app.delete("/api/highscores/:name", async (req, res) => {
     try {
