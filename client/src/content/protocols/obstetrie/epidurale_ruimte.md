@@ -47,7 +47,11 @@ De epidurale ruimte is niet leeg, maar gevuld met weefsels die de verspreiding v
 
 De diepte van de epidurale ruimte (de afstand tussen het ligamentum flavum en de dura mater) varieert aanzienlijk naargelang het niveau. Dit bepaalt de "foutmarge" bij het opzoeken van de _Loss of Resistance_ (LOR).
 
-**NiveauGemiddelde Diepte (Middellijn)Klinische RelevantieCervicaal (C7)**1 – 1,5 mmZeer nauw; hoog risico op dural puncture.**Midden-thoracaal**3 – 5 mmToegang bemoeilijkt door steile processus spinosi.**Lumbaal (L2-L3)5 – 6 mm**Grootste ruimte; veiligste niveau voor LOR.
+| Niveau | Diepte | Relevantie |
+| :--- | :--- | :--- |
+| Cervicaal (C7) | 1-1,5 mm | Zeer nauw, hoog risico op dural puncture |
+| Mid-thoracaal | 3-5 mm | Moeilijk door steile proc spinosi |
+| Lumbaal | 5-6 mm | Grootste ruimte; veiligste voor LOR |
 
 > **Let op:** De afstand van de huid tot de epidurale ruimte varieert sterk (gemiddeld 4-6 cm bij volwassenen), maar kan bij obese patiënten oplopen tot meer dan 8 cm.
 
