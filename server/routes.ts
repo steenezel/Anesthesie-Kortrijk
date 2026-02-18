@@ -1,42 +1,28 @@
 import type { Express } from "express";
 import { type Server } from "http";
 import { storage } from "./storage";
-import { Redis } from "@upstash/redis";
+import Redis from "ioredis";
 
-/**
- * We initialiseren de Redis client buiten de functie.
- * Vercel vult de KV_REST_API_URL en KV_REST_API_TOKEN automatisch in
- * vanuit je omgevingsvariabelen.
- */
-const redis = Redis.fromEnv();
+// We initialiseren de verbinding met de volledige URL
+// ioredis haalt de gebruikersnaam, wachtwoord en poort hier automatisch uit.
+const redis = new Redis(process.env.REDIS_URL || "");
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   
-  // --- START FLAPPY API (REDIS / UPSTASH) ---
-
-  // 1. TEST ROUTE: Om te zien of de database "leeft"
+  // 1. TEST ROUTE
   app.get("/api/kv-test", async (_req, res) => {
     try {
-      const testKey = "test_connection";
-      const testValue = "OK - " + new Date().toLocaleTimeString('nl-BE');
-      
-      await redis.set(testKey, testValue);
-      const result = await redis.get(testKey);
-      
-      res.json({ 
-        status: "success", 
-        message: "Verbinding met Upstash/Redis werkt!", 
-        data: result 
-      });
+      await redis.set("test_connection", "OK - verbinding via RedisLabs");
+      const result = await redis.get("test_connection");
+      res.json({ status: "success", data: result });
     } catch (error) {
       console.error("Redis Connection Error:", error);
       res.status(500).json({ 
         status: "error", 
-        message: "Database verbinding mislukt",
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error.message : String(error) 
       });
     }
   });
@@ -45,33 +31,31 @@ export async function registerRoutes(
   app.post("/api/highscores", async (req, res) => {
     try {
       const { name, score } = req.body;
-      if (!name || typeof score !== 'number') {
-        return res.status(400).json({ message: "Naam en score zijn verplicht" });
-      }
-
-      // ZADD voegt de score toe aan de gesorteerde lijst
-      await redis.zadd("flappy_anesthetist", { score, member: name });
+      if (!name || typeof score !== 'number') return res.status(400).send("Ongeldige data");
+      
+      // ioredis gebruikt een iets andere syntax voor zadd dan upstash
+      await redis.zadd("flappy_anesthetist", score, name);
       res.json({ success: true });
     } catch (error) {
-      console.error("Score Save Error:", error);
-      res.status(500).json({ message: "Kon score niet opslaan" });
+      res.status(500).send("Database fout");
     }
   });
 
   // 3. TOP 10 OPHALEN
   app.get("/api/highscores", async (_req, res) => {
     try {
-      // ZRANGE met 'rev: true' haalt de hoogste scores eerst op
-      const topScores = await redis.zrange("flappy_anesthetist", 0, 9, { 
-        rev: true, 
-        withScores: true 
-      });
+      // 'REV' voor hoogste eerst, 'WITHSCORES' om ook de punten te krijgen
+      const rawData = await redis.zrevrange("flappy_anesthetist", 0, 9, "WITHSCORES");
       
-      // Upstash geeft dit terug als een array van objecten: [{member: "X", score: 10}, ...]
-      res.json(topScores);
+      // ioredis geeft een vlakke array [name1, score1, name2, score2] terug
+      // We vormen dit om naar het formaat dat onze frontend verwacht
+      const scores = [];
+      for (let i = 0; i < rawData.length; i += 2) {
+        scores.push({ member: rawData[i], score: parseInt(rawData[i+1]) });
+      }
+      res.json(scores);
     } catch (error) {
-      console.error("Leaderboard Fetch Error:", error);
-      res.status(500).json({ message: "Kon leaderboard niet ophalen" });
+      res.status(500).send("Database onbereikbaar");
     }
   });
 
@@ -81,7 +65,7 @@ export async function registerRoutes(
       const totalAttempts = await redis.incr("global_bird_attempts");
       res.json({ totalAttempts });
     } catch (error) {
-      res.status(500).json({ message: "Kon teller niet bijwerken" });
+      res.status(500).send("Counter error");
     }
   });
 
@@ -89,23 +73,11 @@ export async function registerRoutes(
   app.get("/api/game-stats", async (_req, res) => {
     try {
       const totalAttempts = await redis.get("global_bird_attempts");
-      res.json({ totalAttempts: totalAttempts || 0 });
+      res.json({ totalAttempts: parseInt(totalAttempts || "0") });
     } catch (error) {
-      res.status(500).json({ message: "Kon teller niet ophalen" });
+      res.status(500).send("Counter error");
     }
   });
-
-  // 6. ADMIN: VERWIJDEREN (Optioneel, mocht je het toch nodig hebben)
-  app.delete("/api/highscores/:name", async (req, res) => {
-    try {
-      await redis.zrem("flappy_anesthetist", req.params.name);
-      res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ message: "Verwijderen mislukt" });
-    }
-  });
-
-  // --- EINDE FLAPPY API ---
 
   return httpServer;
 }
