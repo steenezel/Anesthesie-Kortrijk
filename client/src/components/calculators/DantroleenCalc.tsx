@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { AlertTriangle } from "lucide-react";
 
 export default function DantroleenCalc() {
-  const [weight, setWeight] = useState<number | "">("");
+  const [weight, setWeight] = useState<number | "">(70);
 
   const weightNum = Number(weight);
   

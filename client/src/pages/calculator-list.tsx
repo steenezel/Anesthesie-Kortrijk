@@ -32,8 +32,8 @@ const calculators = [
     title: "Dantroleen",
     description: "Bij maligne hyperthermie",
     path: "/calculator/dantroleen",
-    icon: <ThermometerSun className="h-6 w-6 text-pink-600" />,
-    color: "border-pink-100 bg-pink-50"
+    icon: <ThermometerSun className="h-6 w-6 text-green-600" />,
+    color: "border-green-100 bg-green-50"
   }
 ];
 
