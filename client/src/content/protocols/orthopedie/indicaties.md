@@ -3,7 +3,6 @@ title: "Indicaties Blocks Orthopedie"
 discipline: "orthopedie"
 lastUpdated: "Februari 2026"
 ---
-sono_images: ["/images/blocks/indicaties.jpg"]
 
 >[!INFO]
 > Dit overzicht dient als leidraad voor de block-keuze bij orthopedische chirurgie in AZ Groeninge. Houd steeds rekening met specifieke voorkeuren van de chirurg.
