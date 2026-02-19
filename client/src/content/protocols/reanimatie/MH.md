@@ -33,7 +33,7 @@ lastUpdated: "03/2019"
 
 ### B. Medicatie (Dantrolene)
 
-Elke flacon **Dantrium 20 mg** moet opgelost worden in **60 ml Aqua ad injectabilia**.
+Elke flacon **Dantrium 20 mg** moet opgelost worden in **60 ml Aqua ad injectabilia**. Dantrium is **niet** compatibel met fysiologisch of glucose-oplossingen.
 
 > _In de koffer zit 1 zak Aqua van 1000ml; gebruik de 50ml spuiten uit de koffer._
 
@@ -67,7 +67,7 @@ Bij patiënten met een gekend risico (MH-gevoeligheid, familiehistoriek, bepaald
 
 *   **Toestel:** Verwijder verdampers of vergrendel ze.
     
-*   **Vapor-Clean Filters:** Plaats de filters **vóór** inductie. Spoel het toestel 90 seconden met maximale flow.
+*   **Vapor-Clean Filters:** Flush het toestel 90 seconden en plaats de filters **vóór** inductie. Het toestel wordt nu MH-safe beschouwd.
     
 *   **TIVA:** Gebruik uitsluitend Propofol, Opioïden en Rocuronium.
     
