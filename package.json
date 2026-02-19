@@ -71,6 +71,7 @@
     "react-medium-image-zoom": "^5.2.14",
     "@tailwindcss/typography": "^0.5.10",
     "react-resizable-panels": "^2.1.9",
+    "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
     "remark-breaks": "^4.0.0",
     "recharts": "^2.15.4",

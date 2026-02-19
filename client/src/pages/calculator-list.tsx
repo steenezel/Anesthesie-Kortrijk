@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShieldAlert, Apple, ChevronRight, Baby } from "lucide-react";
+import { ShieldAlert, Apple, ChevronRight, Baby, ThermometerSun } from "lucide-react";
 
 const calculators = [
   {
@@ -26,6 +26,14 @@ const calculators = [
     path: "/calculator/peds-calculator",
     icon: <Baby className="h-6 w-6 text-pink-600" />,
     color: "border-pink-100 bg-pink-50"
+  },
+  {
+    id: "dantroleencalc",
+    title: "Dantroleen",
+    description: "Bij maligne hyperthermie",
+    path: "/calculator/dantroleen",
+    icon: <ThermometerSun className="h-6 w-6 text-green-600" />,
+    color: "border-green-100 bg-green-50"
   }
 ];
 

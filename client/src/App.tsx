@@ -14,6 +14,7 @@ import CalculatorPage from "@/pages/last";
 import CalculatorList from "@/pages/calculator-list";
 import ApfelCalculator from "@/pages/apfel";
 import PedsCalculator from "@/pages/peds-calculator";
+import DantroleenPage from "@/pages/dantroleen.js";
 import ChecklistPage from "@/pages/checklist";
 import InfoPage from "@/pages/info";
 import NotFound from "@/pages/not-found";
@@ -122,6 +123,7 @@ function Router() {
           <Route path="/calculator/last" component={CalculatorPage} />
           <Route path="/calculator/apfel" component={ApfelCalculator} />
           <Route path="/calculator/peds-calculator" component={PedsCalculator} />
+          <Route path="/calculator/dantroleen" component={DantroleenPage} />
           <Route path="/contacts" component={ContactsPage} />
           <Route path="/game" component={GamePage} />
           <Route path="/search" component={SearchPage} />

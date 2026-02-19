@@ -3,9 +3,11 @@ import { useRoute, Link } from "wouter";
 import { ChevronLeft, FileWarning, Clock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from 'rehype-raw';
 import Zoom from 'react-medium-image-zoom';
 import remarkBreaks from 'remark-breaks';
 import 'react-medium-image-zoom/dist/styles.css';
+import DantroleenCalc from '../components/calculators/DantroleenCalc.js';
 
 // We scannen alle markdown bestanden
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
@@ -103,6 +105,8 @@ export default function ProtocolDetail() {
         </div>
       );
     },
+
+    dantroleencalc: () => <DantroleenCalc />,
     
     table: ({ children }: any) => (
       <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
@@ -117,10 +121,10 @@ export default function ProtocolDetail() {
       </th>
     ),
     td: ({ children }: any) => (
-      <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0">
-        {children}
+      <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0 whitespace-pre-line">
+      {children}
       </td>
-    ),
+),
   };
 
   return (
@@ -153,6 +157,7 @@ export default function ProtocolDetail() {
 
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkBreaks]}
+          rehypePlugins={[rehypeRaw]}
           components={markdownComponents as any}
         >
           {markdownBody}
