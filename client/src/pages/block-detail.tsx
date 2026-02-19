@@ -9,10 +9,8 @@ import remarkBreaks from 'remark-breaks';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
-// Importeer de calculators
 import CaudalCalculator from "@/components/CaudalCalculator";
 
-// Scan alle markdown bestanden
 const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
 
 export default function BlockDetail() {
@@ -58,8 +56,13 @@ export default function BlockDetail() {
   const blockData = {
     title: getField("title"),
     indication: getField("indication"),
+    distribution: getField("distribution"),
+    target: getField("target"),
+    volume: getField("volume"),
     anatomy: getField("anatomy"),
+    positioning: getField("positioning"),
     settings: getField("settings"),
+    tips: getField("tips"),
     sonoImages: getListField("sono_images"),
     posImages: getListField("position_images"),
     diagramImages: getListField("diagram_images"),
@@ -72,7 +75,7 @@ export default function BlockDetail() {
       if (content.startsWith("video:")) {
         const videoSrc = content.replace("video:", "").trim();
         return (
-          <div className="my-8 rounded-[2rem] overflow-hidden shadow-2xl bg-black aspect-video border-4 border-slate-900 group relative">
+          <div className="my-8 rounded-[2rem] overflow-hidden shadow-2xl bg-black aspect-video border-4 border-slate-900">
             <video controls playsInline muted loop className="w-full h-full object-cover">
               <source src={videoSrc} type="video/mp4" />
             </video>
@@ -176,27 +179,27 @@ export default function BlockDetail() {
         )}
       </div>
 
-      <Tabs defaultValue="info" className="w-full">
+      <Tabs defaultValue="summary" className="w-full">
         <TabsList className="grid w-full grid-cols-3 bg-slate-100 p-1.5 rounded-2xl h-14 mb-8">
-          <TabsTrigger value="info" className="rounded-xl text-[10px] font-black uppercase">Info</TabsTrigger>
+          <TabsTrigger value="summary" className="rounded-xl text-[10px] font-black uppercase">Samenvatting</TabsTrigger>
           <TabsTrigger value="anatomy" className="rounded-xl text-[10px] font-black uppercase">Anatomie</TabsTrigger>
           <TabsTrigger value="technique" className="rounded-xl text-[10px] font-black uppercase">Techniek</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="info" className="space-y-6">
-          <Card className="border-slate-200 rounded-2xl shadow-sm">
-            <CardContent className="p-6">
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-teal-600 mb-3">Indicatie</h3>
-              <p className="text-sm text-slate-700 font-medium leading-relaxed">{blockData.indication}</p>
-            </CardContent>
-          </Card>
-          <div className="prose prose-sm prose-slate max-w-none">
+        <TabsContent value="summary" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <SummaryItem label="Indicatie" content={blockData.indication} />
+            <SummaryItem label="Distributie" content={blockData.distribution} />
+            <SummaryItem label="Target" content={blockData.target} />
+            <SummaryItem label="Volume" content={blockData.volume} />
+          </div>
+          <div className="prose prose-sm prose-slate max-w-none pt-4">
             {renderBodyWithComponents(blockData.body)}
           </div>
         </TabsContent>
 
         <TabsContent value="anatomy" className="space-y-6">
-          <Card className="border-slate-200 rounded-2xl p-6">
+          <Card className="border-slate-200 rounded-2xl p-6 shadow-sm">
             <h3 className="text-[10px] font-black uppercase tracking-widest text-teal-600 mb-3">Functionele Anatomie</h3>
             <p className="text-sm text-slate-700 font-medium leading-relaxed">{blockData.anatomy}</p>
           </Card>
@@ -204,15 +207,39 @@ export default function BlockDetail() {
         </TabsContent>
 
         <TabsContent value="technique" className="space-y-6">
-          <Card className="border-slate-200 rounded-2xl p-6">
-            <h3 className="text-[10px] font-black uppercase tracking-widest text-teal-600 mb-3">Scan & Benadering</h3>
-            <p className="text-sm text-slate-700 font-medium leading-relaxed">{blockData.settings}</p>
-          </Card>
+          <div className="space-y-4">
+            <Card className="border-slate-200 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-teal-600 mb-3">Installatie</h3>
+              <p className="text-sm text-slate-700 font-medium leading-relaxed">{blockData.positioning}</p>
+            </Card>
+            <Card className="border-slate-200 rounded-2xl p-6 shadow-sm">
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-teal-600 mb-3">Scantechniek</h3>
+              <p className="text-sm text-slate-700 font-medium leading-relaxed">{blockData.settings}</p>
+            </Card>
+            {blockData.tips && (
+              <Card className="border-emerald-200 bg-emerald-50/30 rounded-2xl p-6 shadow-sm">
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-3">Tips & Tricks</h3>
+                <p className="text-sm text-slate-700 font-medium leading-relaxed">{blockData.tips}</p>
+              </Card>
+            )}
+          </div>
           <ImageGrid images={blockData.posImages} title="Positionering" />
           <ImageGrid images={blockData.sonoImages.slice(1)} title="Aanvullende Sono-beelden" />
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+function SummaryItem({ label, content }: { label: string, content: string }) {
+  if (!content) return null;
+  return (
+    <Card className="border-slate-100 bg-slate-50/50 rounded-2xl shadow-none">
+      <CardContent className="p-4">
+        <h3 className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">{label}</h3>
+        <p className="text-xs text-slate-800 font-bold leading-tight">{content}</p>
+      </CardContent>
+    </Card>
   );
 }
 

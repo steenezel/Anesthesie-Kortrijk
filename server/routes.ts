@@ -1,16 +1,68 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { type Server } from "http";
+import Redis from "ioredis";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+  
+  const redis = new Redis(process.env.REDIS_URL || "");
+  redis.on("error", (err) => {
+    console.error("Redis Runtime Error:", err);
+  });
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  // 2. SCORE OPSLAAN
+  app.post("/api/highscores", async (req, res) => {
+    try {
+      const { name, score } = req.body;
+      if (!name || typeof score !== 'number') return res.status(400).send("Ongeldige data");
+      
+      // ioredis gebruikt een iets andere syntax voor zadd dan upstash
+      await redis.zadd("flappy_anesthetist", score, name);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).send("Database fout");
+    }
+  });
+
+  // 3. TOP 10 OPHALEN
+  app.get("/api/highscores", async (_req, res) => {
+    try {
+      // 'REV' voor hoogste eerst, 'WITHSCORES' om ook de punten te krijgen
+      const rawData = await redis.zrevrange("flappy_anesthetist", 0, 9, "WITHSCORES");
+      
+      // ioredis geeft een vlakke array [name1, score1, name2, score2] terug
+      // We vormen dit om naar het formaat dat onze frontend verwacht
+      const scores = [];
+      for (let i = 0; i < rawData.length; i += 2) {
+        scores.push({ member: rawData[i], score: parseInt(rawData[i+1]) });
+      }
+      res.json(scores);
+    } catch (error) {
+      res.status(500).send("Database onbereikbaar");
+    }
+  });
+
+  // 4. GLOBAL COUNTER: OPHOGEN
+  app.post("/api/game-stats/increment", async (_req, res) => {
+    try {
+      const totalAttempts = await redis.incr("global_bird_attempts");
+      res.json({ totalAttempts });
+    } catch (error) {
+      res.status(500).send("Counter error");
+    }
+  });
+
+  // 5. GLOBAL COUNTER: OPHALEN
+  app.get("/api/game-stats", async (_req, res) => {
+    try {
+      const totalAttempts = await redis.get("global_bird_attempts");
+      res.json({ totalAttempts: parseInt(totalAttempts || "0") });
+    } catch (error) {
+      res.status(500).send("Counter error");
+    }
+  });
 
   return httpServer;
 }
