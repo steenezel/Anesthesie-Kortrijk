@@ -12,21 +12,6 @@ export async function registerRoutes(
     console.error("Redis Runtime Error:", err);
   });
 
-  // 1. TEST ROUTE
-  app.get("/api/kv-test", async (_req, res) => {
-    try {
-      await redis.set("test_connection", "OK - verbinding via RedisLabs");
-      const result = await redis.get("test_connection");
-      res.json({ status: "success", data: result });
-    } catch (error) {
-      console.error("Redis Connection Error:", error);
-      res.status(500).json({ 
-        status: "error", 
-        details: error instanceof Error ? error.message : String(error) 
-      });
-    }
-  });
-
   // 2. SCORE OPSLAAN
   app.post("/api/highscores", async (req, res) => {
     try {
