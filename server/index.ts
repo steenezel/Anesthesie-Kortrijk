@@ -1,6 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { serveStatic } from "./static";
+import { registerRoutes } from "./routes.js"; // VOEG .js TOE
+import { serveStatic } from "./static.js";   // VOEG .js TOE
 import { createServer } from "http";
 
 const app = express();

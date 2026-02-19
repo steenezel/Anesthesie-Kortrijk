@@ -1,6 +1,5 @@
 import type { Express } from "express";
 import { type Server } from "http";
-import { storage } from "./storage";
 import Redis from "ioredis";
 
 export async function registerRoutes(
