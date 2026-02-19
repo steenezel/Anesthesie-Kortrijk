@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import Zoom from 'react-medium-image-zoom';
 import remarkBreaks from 'remark-breaks';
 import 'react-medium-image-zoom/dist/styles.css';
+import DantroleenCalc from '../components/calculators/DantroleenCalc.js';
 
 // We scannen alle markdown bestanden
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
@@ -103,6 +104,8 @@ export default function ProtocolDetail() {
         </div>
       );
     },
+
+    dantroleencalc: () => <DantroleenCalc />,
     
     table: ({ children }: any) => (
       <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
