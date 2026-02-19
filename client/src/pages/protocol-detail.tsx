@@ -121,10 +121,10 @@ export default function ProtocolDetail() {
       </th>
     ),
     td: ({ children }: any) => (
-      <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0">
-        {children}
+      <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0 whitespace-pre-line">
+      {children}
       </td>
-    ),
+),
   };
 
   return (
