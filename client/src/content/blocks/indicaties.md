@@ -10,10 +10,10 @@ discipline: "Orthopedie"
 
 | Chirurgie | Block |
 | :--- | :--- |
-| **Arthroscopie schouder** | ISB <br> *(Needling: geen block; Putzeys AC-resectie: geen block)* |
-| **Mobilisatie frozen shoulder** | ISB <br> *(VCDW: catheter; Pierreux: langwerkend single shot)* |
+| **Arthroscopie schouder** | ISB  *(Needling: geen block; Putzeys AC-resectie: geen block)* |
+| **Mobilisatie frozen shoulder** | ISB  *(VCDW: catheter; Pierreux: langwerkend single shot)* |
 | **Schouderprothese / arthrotomie** | ISB |
-| **Proximale humerusfractuur** | ISB ( ! opzoeken n. axillaris uitval) |
+| **Proximale humerusfractuur** | ISB      ( ! opzoeken n. axillaris uitval) |
 | **Humeral shaft fractuur** | ISB ( ! opzoeken n. radialis uitval) |
 | **Elleboog / Radiuskap / Prothese** | Supraclaviculair (postop na chir. evaluatie) |
 | **Bicepspees herstel** | Supraclaviculair |
