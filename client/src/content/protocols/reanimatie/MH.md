@@ -43,7 +43,9 @@ Elke flacon **Dantrium 20 mg** moet opgelost worden in **60 ml Aqua ad injectabi
 * **Vervolgdosis:** 1 mg/kg IV om de 5-10 minuten tot normalisatie van endtidal CO2 en cardiale functie.
 * **Maximumdosis:** 10 mg/kg.
 
-<dantroleencalc />
+
+<dantroleencalc></dantroleencalc>
+
 
 ### C. Supportieve maatregelen:
 
