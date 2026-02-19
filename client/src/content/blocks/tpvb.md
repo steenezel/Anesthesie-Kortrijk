@@ -6,7 +6,7 @@ title: "Thoracaal Paravertebraal Block (TPVB)"
 indication: "Mastectomie, thoracotomie, ribfracturen en postherpetische neuralgie."
 distribution: "Ipsilaterale somatische en sympathische zenuwblokkade (dorsale en ventrale rami)."
 target: "De wigvormige ruimte tussen de pleura en het superieur costotransversaal ligament."
-volume: "15-20 ml per niveau (of verdeeld over meerdere niveaus)"
+volume: "ropivacaine 0.5% 15-20 ml per niveau (of 20 ml verdeeld over meerdere niveaus)"
 
 # Voor de tab 'Anatomie'
 anatomy: "De paravertebrale ruimte wordt anterolateraal begrensd door de pleura parietalis en posterieur door het superieur costotransversaal ligament. Het communiceert mediaal met de epidurale ruimte."
@@ -23,10 +23,6 @@ diagram_images: ["/images/blocks/tpvb_anatomy.jpg"]
 position_images: ["/images/blocks/tpvb_position.jpg"]
 ---
 
-# =========================================================================
-# BODY: Specifieke instructies voor Mastectomie & Approach
-# =========================================================================
-
 ## Mastectomie met Okselevidement
 Voor een volledige mastectomie inclusief okselevidement is een brede spreiding van de analgesie noodzakelijk (T2 tot T6).
 
@@ -40,10 +36,10 @@ Voor een volledige mastectomie inclusief okselevidement is een brede spreiding v
 
 ### 1. In-plane Techniek (Lateraal naar Mediaal)
 Deze techniek biedt het beste zicht op de naaldpunt tijdens de gehele procedure.
-* Plaats de probe sagitaal (paramediaan) om de dwarsuitsteeksels (transverse processes) en de pleura te identificeren.
-* Schuif de probe lateraal tot tussen twee dwarsuitsteeksels.
+* Start met het scannen van de ribben, schuif de probe naar mediaal tot je de processi transversi ziet verschijnen. 
 * Steek de naald in-plane in van caudaal naar craniaal of lateraal naar mediaal.
 * **Doel:** De naaldpunt penetreert het superieur costotransversaal ligament.
+* **Let op:** Het zicht op de naaldpunt is beperkt; vertrouw op het wegduwen van de pleura bij het passeren van het ligament.
 
 ### 2. Out-of-plane Techniek
 Vaak gebruikt bij een transversale scan-as.
