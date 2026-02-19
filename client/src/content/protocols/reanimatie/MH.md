@@ -5,8 +5,8 @@ lastUpdated: "03/2019"
 
 >[!WARNING]
 >
-> **CRISIS SITUATIE:** Roep onmiddellijk om hulp en vraag de **MH-set**.
-> **Locatie Dantrolene:** De 'koffer antidota anesthesie' aan de reanimatiekar op de **PAZA**.
+> **CRISIS SITUATIE:** Roep onmiddellijk om hulp (optrekken dantroleen!).
+> **Locatie Dantrolene:** De witte koffer Antidota hangt aan de reanimatiekar op de **PAZA**.
 > **Reservevoorraad:** Bijkomend 30 flacons Dantrium in de **Vanas-kast (Verdieping 9)**.
 
 1\. Acute Behandeling (STOP-SCHEMA)
@@ -40,7 +40,7 @@ Elke flacon **Dantrium 20 mg** moet opgelost worden in **60 ml Aqua ad injectabi
 > Wachtdienst firma voor bijkomende levering Dantrium: 0478/798117 of 02/3631570.
 
 * **Startdosis:** 2,5 mg/kg IV bolus.
-* **Vervolgdosis:** 1 mg/kg IV om de 5-10 minuten tot normalisatie van $etCO_{2}$ en cardiale functie.
+* **Vervolgdosis:** 1 mg/kg IV om de 5-10 minuten tot normalisatie van endtidal CO2 en cardiale functie.
 * **Maximumdosis:** 10 mg/kg.
 
 <dantroleencalc />

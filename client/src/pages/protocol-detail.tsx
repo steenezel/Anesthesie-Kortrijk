@@ -3,6 +3,7 @@ import { useRoute, Link } from "wouter";
 import { ChevronLeft, FileWarning, Clock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from 'rehype-raw';
 import Zoom from 'react-medium-image-zoom';
 import remarkBreaks from 'remark-breaks';
 import 'react-medium-image-zoom/dist/styles.css';
@@ -156,6 +157,7 @@ export default function ProtocolDetail() {
 
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkBreaks]}
+          rehypePlugins={[rehypeRaw]}
           components={markdownComponents as any}
         >
           {markdownBody}
