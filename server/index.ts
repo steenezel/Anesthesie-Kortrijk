@@ -85,10 +85,8 @@ async function startServer() {
     });
   }
 }
+// Zorg dat de server wordt geïnitialiseerd
+startServer().catch(console.error);
 
-startServer();
-
-// DIT IS DE FIX VOOR DE LOGS:
+// De absolute noodzaak voor Vercel:
 export default app;
-
-
