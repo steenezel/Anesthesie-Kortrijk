@@ -14,7 +14,7 @@ diagram_images: ["/images/blocks/rectus_diagram.jpg", "/images/blocks/rectus_ana
 De effectiviteit van het block hangt af van de correcte depositie van het lokaal anestheticum (LA) over de volledige breedte van de schede.
 
 > [!INFO]
-> Voor een volledige midline analgesie is een **bilaterale**uitvoering noodzakelijk, aangezien de zenuwbanen de middellijn niet oversteken.
+> Voor een volledige midline analgesie is een **bilaterale**&nbsp; uitvoering noodzakelijk, aangezien de zenuwbanen de middellijn niet oversteken.
 
 | Structuren | Echogeniciteit | Herkenning |
 | :--- | :--- | :--- |
