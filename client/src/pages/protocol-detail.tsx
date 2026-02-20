@@ -56,6 +56,12 @@ export default function ProtocolDetail() {
         )}
       </div>
     ),
+    
+    strong: ({ children }: any) => (
+    <strong className="font-black text-teal-700 mr-[0.25em]">
+      {children}
+    </strong>
+    ),
 
     blockquote: ({ children }: any) => {
       const flattenText = (node: any): string => {

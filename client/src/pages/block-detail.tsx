@@ -89,6 +89,13 @@ export default function BlockDetail() {
         <Zoom><img src={src} alt={alt} className="rounded-3xl border border-slate-100 shadow-md w-full" /></Zoom>
       </div>
     ),
+
+    strong: ({ children }: any) => (
+    <strong className="font-black text-teal-700 mr-[0.25em]">
+      {children}
+    </strong>
+    ),
+
     blockquote: ({ children }: any) => {
       const flattenText = (node: any): string => {
         if (typeof node === 'string') return node;
@@ -114,9 +121,7 @@ export default function BlockDetail() {
 
       const cleanRecursive = (node: any): any => {
         if (typeof node === 'string') {
-          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "")
-          .replace(/&nbsp;/g, "\u00A0")
-          .trimStart();
+          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
         }
         if (Array.isArray(node)) return node.map(cleanRecursive);
         if (node?.props?.children) {
