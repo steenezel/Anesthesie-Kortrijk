@@ -10,7 +10,7 @@ const DAILY_SOLUTIONS = [
   "TUMOR", "NAALD", "ADERS", "PROBE", "SPIER",
   "HOOFT", "ANOUK", "CARLO", "MARIE", "ELINE",
   "JORNE", "LOUIS", "WACHT", "SPOED", "KAMER",
-  "LIJST", "DRAMA", "SNOEP", "CHIPS"
+  "LIJST", "DRAMA", "SNOEP", "CHIPS", "SPUIT"
 ];
 
 const AZERTY_KEYS = [
@@ -56,32 +56,37 @@ export default function AnesthesiaWordle() {
 
   // 3. Logica voor toetsaanslagen (virtueel en fysiek)
   const handleKeyPress = (key: string) => {
-    if (gameStatus !== 'playing') return;
+  if (gameStatus !== 'playing') return;
 
-    const formattedKey = key.toUpperCase();
+  // We normaliseren de input naar hoofdletters
+  const k = key.toUpperCase();
 
-    if (formattedKey === 'ENTER') {
-      if (currentGuess.length !== 5) return;
-      
-      const lowerGuess = currentGuess.toLowerCase();
-      // Check tegen de grote lijst en de winnende lijst
-      if (!validWords.includes(lowerGuess) && !DAILY_SOLUTIONS.map(w => w.toLowerCase()).includes(lowerGuess)) {
-        alert("Geen geldig Nederlands woord");
-        return;
-      }
-
-      const newGuesses = [...guesses, formattedKey];
-      setGuesses(newGuesses);
-      setCurrentGuess('');
-
-      if (formattedKey === solution) setGameStatus('won');
-      else if (newGuesses.length >= 6) setGameStatus('lost');
-    } else if (formattedKey === '⌫' || formattedKey === 'BACKSPACE') {
-      setCurrentGuess(prev => prev.slice(0, -1));
-    } else if (/^[A-Z]$/.test(formattedKey) && currentGuess.length < 5) {
-      setCurrentGuess(prev => prev + formattedKey);
+  if (k === 'ENTER') {
+    if (currentGuess.length !== 5) return;
+    
+    const lowerGuess = currentGuess.toLowerCase();
+    if (!validWords.includes(lowerGuess) && !DAILY_SOLUTIONS.map(w => w.toLowerCase()).includes(lowerGuess)) {
+      alert("Geen geldig woord");
+      return;
     }
-  };
+
+    const newGuesses = [...guesses, currentGuess.toUpperCase()];
+    setGuesses(newGuesses);
+    setCurrentGuess('');
+
+    if (currentGuess.toUpperCase() === solution) setGameStatus('won');
+    else if (newGuesses.length >= 6) setGameStatus('lost');
+  } 
+  else if (k === '⌫' || k === 'BACKSPACE' || k === 'DELETE') {
+    setCurrentGuess(prev => prev.slice(0, -1));
+  } 
+  // Belangrijk: check of het exact 1 letter is en GEEN 'ENTER'
+  else if (/^[A-Z]$/.test(k) && k !== 'ENTER') {
+    if (currentGuess.length < 5) {
+      setCurrentGuess(prev => prev + k);
+    }
+  }
+};
 
   useEffect(() => {
     const onPhysicalKeyDown = (e: KeyboardEvent) => handleKeyPress(e.key);
@@ -140,12 +145,16 @@ export default function AnesthesiaWordle() {
           <div key={i} className="flex justify-center gap-1.5">
             {row.map(key => (
               <button
-                key={key}
-                onClick={() => handleKeyPress(key)}
-                className={`h-12 ${key.length > 1 ? 'px-3 text-[10px]' : 'w-8 text-sm'} font-black rounded-xl flex items-center justify-center active:scale-90 transition-all ${getKeyStyle(key)}`}
-              >
-                {key}
-              </button>
+              key={key}
+              type="button" // Voorkom form submission trekjes
+              onClick={(e) => {
+                e.preventDefault();
+                handleKeyPress(key);
+              }}
+              className={`h-12 ${key.length > 1 ? 'px-3 text-[10px]' : 'w-8 text-sm'} ...`}
+  >
+    {key}
+  </button>
             ))}
           </div>
         ))}
