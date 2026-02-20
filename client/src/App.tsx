@@ -22,6 +22,7 @@ import ContactsPage from "@/pages/contacts";
 import GamePage from "@/pages/game";
 import SearchPage from "@/pages/search";
 import OnboardingPage from "@/pages/onboarding";
+import WordlePage from "./pages/WordlePage";
 import { BottomNav } from "@/components/bottom-nav";
 
 // --- DE BEWAKER (AuthGuard) ---
@@ -129,6 +130,7 @@ function Router() {
           <Route path="/search" component={SearchPage} />
           <Route path="/checklist" component={ChecklistPage} />
           <Route path="/info" component={InfoPage} />
+          <Route path="/wordle" component={WordlePage} />
           <Route path="/onboarding" component={OnboardingPage} />
           <Route component={NotFound} />
         </Switch>
