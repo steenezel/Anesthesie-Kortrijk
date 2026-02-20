@@ -19,6 +19,6 @@ lastUpdated: "Januari 2026"
 * **Bolus:** 1.5 mL/kg over 1 minuut.
 * **Infuus:** 0.25 mL/kg/min.
 
-[LAST calculator](/pages/last?from=/protocols/last-guidelines)
+[LAST calculator](/calculator/last?from=/protocols/last-guidelines)
 
 ![ASRA guidelines](/images/protocols/last_asra.jpg)
