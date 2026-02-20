@@ -1,11 +1,12 @@
 ---
 title: "Rectus Sheath Block"
-indication: "Anesthesie en analgesie voor midline incisies (navelbreuk, laparotomie)."
-anatomy: "De rectusschede bevat de m. rectus abdominis. De doelwitlocatie is de ruimte tussen de spier en de achterste rectusschede."
-settings: "Lineaire probe (10-15 MHz), "in-plane" techniek, 21G-22G naald."
+indication: "Analgesie voor midline incisies (navelbreuk, laparotomie)."
+anatomy: "De targetlocatie is de ruimte tussen rectusspier en de achterste rectusschede."
+positioning: "Ruglig."
+settings: "Lineaire probe (10-15 MHz), in-plane, 80mm of 150mm naald (bij obesitas). Diepte 5cm." 
 sono_images: "/images/blocks/rectus_hero.jpg"
 position_images: "/images/blocks/rectus_pos.jpg"
-diagram_images: "/images/blocks/rectus_diagram.jpg"
+diagram_images: ["/images/blocks/rectus_diagram.jpg", "/images/blocks/rectus_anatomie_sono.jpg"]
 ---
 
 ### Procedurele Details
@@ -23,13 +24,13 @@ De effectiviteit van het block hangt af van de correcte depositie van het lokaal
 
 ### Expert Tips & Veiligheid
 
-Tijdens de naaldvoering is precisie essentieel om intraperitoneale injectie te voorkomen.
+Probeer zo lateraal mogelijk tussen rectusspier en rectusschede te prikken voor maximaal block. Schuif de naald op naar mediaal tijdens injectie in de gecreëerde ruimte.
 
 > [!WARNING]
 > Let op voor de **a. epigastrica superior**. Gebruik altijd kleurendoppler voordat je de naald opvoert om vasculaire punctie te vermijden.
 
 > [!TIP]
-> Injecteer een kleine hoeveelheid fysiologisch water ('hydrodissectie') om de ruimte tussen de spier en de achterste schede open te duwen voordat je het lokaal anestheticum geeft.
+> Prik zo lateraal mogelijk. Houd de naald zoveel mogelijk parallel met de probe.
 
 ### Video Demonstratie
 

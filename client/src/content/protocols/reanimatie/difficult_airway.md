@@ -50,7 +50,8 @@ lastUpdated: "20/02/2026"
 
 * **Techniek:** 2-persoons maskerventilatie (4-handen techniek met Guedel).
 * **Verslapping:** Verifieer volledige spierverslapping (TOF 0). Overweeg extra curarisatie indien nodig.
-* **Beslispunt:** * **Gelukt?** Wek de patiënt.
+* **Beslispunt:**
+    * **Gelukt?** Wek de patiënt.
     * **Niet gelukt?** 👉 **CICO-situatie (Plan D)**.
 </details>
 
@@ -59,8 +60,8 @@ lastUpdated: "20/02/2026"
 ## PLAN D: Emergency FONA (Front of Neck Access)
 *Focus: Chirurgische luchtweg (Can't Intubate, Can't Oxygenate).*
 
-[ !WARNING ]
-**START ONMIDDELLIJK:** Scalpel - Bougie - Tube techniek.
+> [!WARNING]
+> **START ONMIDDELLIJK:** Scalpel - Bougie - Tube techniek.
 
 <details open>
 <summary><b>Klik voor stappenplan eFONA (Scalpel-Bougie-Tube)</b></summary>
@@ -71,7 +72,7 @@ lastUpdated: "20/02/2026"
 4. **Rotatie:** Draai het scalpel 90° (om ruimte te maken voor de bougie).
 5. **Bougie:** Voer de bougie in de trachea (richting caudaal).
 6. **Tube:** Schuif een cuffed tube (maat 6.0) over de bougie.
-7. **Bevestig:** Verifieer positie met $etCO_{2}$.
+7. **Bevestig:** Verifieer positie met etCO2.
 </details>
 
 
