@@ -14,7 +14,7 @@ diagram_images: ["/images/blocks/rectus_diagram.jpg", "/images/blocks/rectus_ana
 De effectiviteit van het block hangt af van de correcte depositie van het lokaal anestheticum (LA) over de volledige breedte van de schede.
 
 > [!INFO]
-> Voor een volledige midline analgesie is een **bilaterale**  uitvoering noodzakelijk, aangezien de zenuwbanen de middellijn niet oversteken.
+> Voor een volledige midline analgesie is een **bilaterale**\  uitvoering noodzakelijk, aangezien de zenuwbanen de middellijn niet oversteken.
 
 | Structuren | Echogeniciteit | Herkenning |
 | :--- | :--- | :--- |
@@ -27,10 +27,10 @@ De effectiviteit van het block hangt af van de correcte depositie van het lokaal
 Probeer zo lateraal mogelijk tussen rectusspier en rectusschede te prikken voor maximaal block. Schuif de naald op naar mediaal tijdens injectie in de gecreëerde ruimte.
 
 > [!WARNING]
-> Let op voor de **a. epigastrica superior**. Gebruik altijd kleurendoppler voordat je de naald opvoert om vasculaire punctie te vermijden.
+> Let op voor de **a. epigastrica superior**. Gebruik altijd **kleurendoppler**{" "} voordat je de naald opvoert om vasculaire punctie te vermijden.
 
 > [!TIP]
-> Prik zo lateraal mogelijk. Houd de naald zoveel mogelijk parallel met de probe.
+> Prik zo **lateraal**<span></span> mogelijk. Houd de **naald** (hier staat een Alt08203) zoveel mogelijk parallel met de probe.
 
 ### Video Demonstratie
 
