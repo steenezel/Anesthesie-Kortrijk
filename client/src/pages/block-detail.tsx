@@ -91,7 +91,7 @@ export default function BlockDetail() {
     ),
 
     strong: ({ children }: any) => (
-    <strong className="font-black text-teal-700 mr-[0.25em]">
+    <strong className="font-bold text-teal-900 mr-[0.25em]">
       {children}
     </strong>
     ),

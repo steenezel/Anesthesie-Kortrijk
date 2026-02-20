@@ -56,9 +56,9 @@ export default function ProtocolDetail() {
         )}
       </div>
     ),
-    
+
     strong: ({ children }: any) => (
-    <strong className="font-black text-teal-700 mr-[0.25em]">
+    <strong className="font-bold text-teal-900 mr-[0.25em]">
       {children}
     </strong>
     ),
@@ -156,9 +156,9 @@ export default function ProtocolDetail() {
       <hr className="border-slate-100" />
 
       {/* MARKDOWN CONTENT */}
-      <div className="prose prose-slate prose-base max-w-none 
+      <div className="prose prose-slate prose-sm max-w-none 
         prose-ul:list-disc prose-li:marker:text-teal-600
-        prose-strong:text-teal-700 prose-strong:font-black
+        prose-strong:text-teal-900 prose-strong:font-bold
         prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
 
         <ReactMarkdown
