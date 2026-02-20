@@ -66,7 +66,7 @@ export default function AnesthesiaWordle() {
     
     const lowerGuess = currentGuess.toLowerCase();
     if (!validWords.includes(lowerGuess) && !DAILY_SOLUTIONS.map(w => w.toLowerCase()).includes(lowerGuess)) {
-      alert("Geen geldig woord");
+      showError("Niet in woordenlijst");
       return;
     }
 
@@ -114,6 +114,15 @@ export default function AnesthesiaWordle() {
         Anesthesie<span className="text-teal-600 font-light">dle</span>
       </h2>
       
+{/* FOUTMELDING OVERLAY */}
+<div className="h-10 flex items-center justify-center">
+  {errorMessage && (
+    <div className="bg-slate-800 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg animate-in fade-in zoom-in duration-200 shadow-lg">
+      {errorMessage}
+    </div>
+  )}
+</div>
+
       {/* HET RASTER */}
 <div className="grid grid-rows-6 gap-2 mb-8">
   {[...Array(6)].map((_, i) => (
