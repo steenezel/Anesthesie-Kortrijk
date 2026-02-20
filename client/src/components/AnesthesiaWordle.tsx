@@ -115,29 +115,16 @@ export default function AnesthesiaWordle() {
       </h2>
       
       {/* HET RASTER */}
-      <div className="grid grid-rows-6 gap-2 mb-8">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="grid grid-cols-5 gap-2">
-            {[...Array(5)].map((_, j) => {
-              const guess = guesses[i] || (i === guesses.length ? currentGuess : "");
-              const isFinal = i < guesses.length;
-              let style = "bg-white border-slate-200 text-slate-900";
-              
-              if (isFinal) {
-                if (guess[j] === solution[j]) style = "bg-emerald-500 border-emerald-600 text-white";
-                else if (solution.includes(guess[j])) style = "bg-amber-400 border-amber-500 text-white";
-                else style = "bg-slate-400 border-slate-500 text-white";
-              }
-
-              return (
-                <div key={j} className={`w-14 h-14 border-2 flex items-center justify-center text-2xl font-black rounded-2xl uppercase transition-all duration-500 shadow-sm ${style}`}>
-                  {guess[j]}
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
+<div className="grid grid-rows-6 gap-2 mb-8">
+  {[...Array(6)].map((_, i) => (
+    <WordRow 
+      key={i} 
+      guess={guesses[i] || (i === guesses.length ? currentGuess : "")} 
+      isFinal={i < guesses.length}
+      solution={solution}
+    />
+  ))}
+</div>
 
       {/* VIRTUEEL AZERTY TOETSENBORD */}
       <div className="w-full space-y-2">
@@ -178,6 +165,58 @@ export default function AnesthesiaWordle() {
           </button>
         </div>
       )}
+    </div>
+    
+  );
+}
+function WordRow({ guess, isFinal, solution }: { guess: string, isFinal: boolean, solution: string }) {
+  const getLetterStyles = () => {
+    const styles = Array(5).fill("bg-white border-slate-200 text-slate-900");
+    if (!isFinal) return styles;
+
+    const solChars = solution.split('');
+    const guessChars = guess.split('');
+    const usedIndices = Array(5).fill(false);
+
+    // Eerst groen markeren
+    guessChars.forEach((char, i) => {
+      if (char === solChars[i]) {
+        styles[i] = "bg-emerald-500 border-emerald-600 text-white";
+        usedIndices[i] = true;
+      }
+    });
+
+    // Dan pas geel markeren (met check op dubbele letters)
+    guessChars.forEach((char, i) => {
+      if (styles[i].includes("bg-emerald-500")) return;
+
+      const solIndex = solChars.findIndex((sChar, idx) => sChar === char && !usedIndices[idx]);
+
+      if (solIndex !== -1) {
+        styles[i] = "bg-amber-400 border-amber-500 text-white";
+        usedIndices[solIndex] = true;
+      } else {
+        styles[i] = "bg-slate-400 border-slate-500 text-white";
+      }
+    });
+
+    return styles;
+  };
+
+  const letterStyles = getLetterStyles();
+
+  return (
+    <div className="grid grid-cols-5 gap-2">
+      {[...Array(5)].map((_, i) => (
+        <div 
+          key={i} 
+          className={`w-14 h-14 border-2 flex items-center justify-center text-2xl font-black rounded-2xl uppercase transition-all duration-500 shadow-sm ${
+            isFinal ? letterStyles[i] : (guess[i] ? "bg-white border-slate-400 text-slate-900 scale-105" : "bg-white border-slate-200 text-slate-900")
+          }`}
+        >
+          {guess[i]}
+        </div>
+      ))}
     </div>
   );
 }
