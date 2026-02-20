@@ -39,11 +39,11 @@ Bij de paramediane techniek is het doelwit de **lamina** van de onderste wervel 
     
 2.  **Insteekpunt:** Ga **1 cm lateraal** en **1 cm caudaal** (of op gelijke hoogte met de bovenrand) van deze processus spinosus.
     
-3.  **Richting:** Voer de naald loodrecht in tot u bot raakt (de lamina). Dit is uw referentiepunt voor diepte.
+3.  **Richting:** Voer de naald loodrecht in tot je bot raakt (de lamina). Dit is uw referentiepunt voor diepte.
     
-4.  **Redirectie:** Trek de naald iets terug en richt deze **caudaal-naal-craniaal** (ongeveer 10-15° naar de middellijn) en **cephalisch** (10-15° omhoog).
+4.  **Redirectie:** Trek de naald iets terug en richt deze **mediaal** (ongeveer 10-15° naar de middellijn) en **craniaal** (10-15° omhoog).
     
-5.  **LOR:** Schuif de naald op tot u het ligamentum flavum voelt (toegenomen weerstand) gevolgd door de _Loss of Resistance_ (LOR).
+5.  **LOR:** Schuif de naald op tot je het ligamentum flavum voelt (toegenomen weerstand) gevolgd door de _Loss of Resistance_ (LOR).
     
 
 4\. Specifieke Aandachtspunten
@@ -51,7 +51,7 @@ Bij de paramediane techniek is het doelwit de **lamina** van de onderste wervel 
 
 *   **Geen "Grit":** Omdat u de interspinale ligamenten mist, voelt de naald "vrijer" aan in de spieren. De weerstand van het ligamentum flavum is de eerste echte anatomische marker.
     
-*   **Botcontact:** Als u bot raakt na de redirectie, is dit meestal de lamina. Gebruik dit om de naald voorzichtig "omhoog te wandelen" (walking off) tot u het interlaminair venster intrapt.
+*   **Botcontact:** Als je bot raakt na de redirectie, is dit meestal de lamina. Gebruik dit om de naald voorzichtig "omhoog te wandelen" (walking off) tot u het interlaminair venster intrapt.
     
 *   **Veneuze punctie:** De epidurale venen liggen lateraal geconcentreerd. Een te verre laterale hoek vergroot de kans op een bloederige punctie.
     
