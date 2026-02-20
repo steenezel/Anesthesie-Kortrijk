@@ -1,5 +1,6 @@
 ---
 title: "Maligne hyperthermie"
+discipline: "reanimatie"
 lastUpdated: "03/2019"
 ---
 

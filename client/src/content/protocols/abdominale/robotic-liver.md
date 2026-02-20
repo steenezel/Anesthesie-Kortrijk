@@ -10,6 +10,11 @@ lastUpdated: "Januari 2025"
 **Anesthesia for robotic liver surgery**
 -----------------------------------------
 
+> January 2025
+> DOI: 10.1007/978-3-031-76536-0_5
+> In book: Textbook of Robotic Liver Surgery
+> Pieter Jan Steelant
+
 While robotic liver surgery (RLS) and laparoscopic liver surgery (LLS) differ substantially from a surgical point of view, both techniques are very similar in terms of anesthesia management. In this chapter, we discuss the main points of interest for anesthesia in RLS, paying particular attention to the differences with LLS. We also address some current discussion points about anesthesia in minimally invasive liver surgery. 
 
  Minimally invasive liver surgery (MILS) includes both LLS and RLS. MILS is gaining popularity worldwide. Despite initial concerns about the safety profile, both short-term and long-term, the benefits of MILS have become clear in recent years. LLS for colorectal liver metastases has proven to be safe, both surgically and oncologically, and is associated with reduced postoperative morbidity ​\[1,2\]​. 

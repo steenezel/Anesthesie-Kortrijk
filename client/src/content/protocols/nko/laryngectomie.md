@@ -6,7 +6,7 @@ lastUpdated: "Januari 2026"
 
 ORL – LARYNGECTOMIE 
 
-Peroperatief – anesthesie  
+**Peroperatief – anesthesie**
 
 Inductie: 
 
@@ -50,7 +50,7 @@ Anti-emetica 
 *   Ondansetron 4mg 
     
 
-Postoperatieve aandachtspunten 
+**Postoperatieve aandachtspunten**
 
 Opname IZ 
 
