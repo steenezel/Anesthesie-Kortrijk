@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// @ts-ignore
+// @ts-expect-error
 import { validWords } from '../data/puzzle_words_5.js';
 
 // --- JOUW WINNENDE WOORDEN LIJST ---
