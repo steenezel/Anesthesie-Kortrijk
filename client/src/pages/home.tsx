@@ -146,7 +146,7 @@ export default function Home() {
       <Dialog open={showEgg} onOpenChange={setShowEgg}>
         <DialogContent className="sm:max-w-md bg-orange-50 border-orange-200">
   <DialogHeader>
-    <DialogTitle className="text-2xl font-black text-orange-800 uppercase italic flex items-center gap-2">
+    <DialogTitle className="text-2xl font-black text-orange-800 uppercase flex items-center gap-2">
       ☕ De Koffiekamer
     </DialogTitle>
   </DialogHeader>
@@ -165,7 +165,7 @@ export default function Home() {
               <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 p-6 text-white cursor-pointer shadow-lg shadow-teal-500/20 hover:shadow-xl hover:scale-[1.02] transition-all">
                 <div className="absolute top-0 right-0 -mt-4 -mr-4 bg-white/20 w-24 h-24 rounded-full blur-2xl"></div>
                 <Syringe className="h-10 w-10 mb-3 text-white/80 -rotate-90 group-hover:rotate-0 transition-transform duration-500" />
-                <h3 className="text-2xl font-black uppercase tracking-tighter italic leading-none">Flappy Anesthetist</h3>
+                <h3 className="text-2xl font-black uppercase tracking-tighter leading-none">Flappy Anesthetist</h3>
                 <p className="text-[10px] font-bold opacity-90 uppercase tracking-widest mt-1">Red de luchtweg!</p>
               </div>
             </Link>

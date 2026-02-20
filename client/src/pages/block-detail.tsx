@@ -110,7 +110,7 @@ export default function BlockDetail() {
       const isTip = fullText.includes("[!TIP]");
 
       if (!isWarning && !isInfo && !isTip) {
-        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
+        return <blockquote className="border-l-4 border-slate-200 pl-6 my-8 text-slate-600">{children}</blockquote>;
       }
 
       const config = isWarning 
@@ -138,7 +138,7 @@ export default function BlockDetail() {
           <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>
             {config.title}
           </div>
-          <div className="text-slate-900 leading-snug font-medium italic whitespace-pre-wrap [&_p]:m-0">
+          <div className="text-slate-900 leading-snug font-normal whitespace-pre-wrap [&_p]:m-0">
             {cleanRecursive(children)}
           </div>
         </div>
