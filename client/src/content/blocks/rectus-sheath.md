@@ -30,7 +30,7 @@ Probeer zo lateraal mogelijk tussen rectusspier en rectusschede te prikken voor 
 > Let op voor de **a. epigastrica superior**. Gebruik altijd kleurendoppler voordat je de naald opvoert om vasculaire punctie te vermijden.
 
 > [!TIP]
-> Prik zo **lateraal**• mogelijk. Houd de **naald**[]() zoveel mogelijk parallel met de probe.
+> Prik zo **lateraal** mogelijk. Houd de **naald**[]() zoveel mogelijk parallel met de probe.
 
 ### Video Demonstratie
 

@@ -114,7 +114,9 @@ export default function BlockDetail() {
 
       const cleanRecursive = (node: any): any => {
         if (typeof node === 'string') {
-          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
+          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "")
+          .replace(/&nbsp;/g, "\u00A0")
+          .trimStart();
         }
         if (Array.isArray(node)) return node.map(cleanRecursive);
         if (node?.props?.children) {
