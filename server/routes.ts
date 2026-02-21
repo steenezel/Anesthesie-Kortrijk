@@ -12,19 +12,35 @@ export async function registerRoutes(
     console.error("Redis Runtime Error:", err);
   });
 
-  // 2. SCORE OPSLAAN
-  app.post("/api/highscores", async (req, res) => {
-    try {
-      const { name, score } = req.body;
-      if (!name || typeof score !== 'number') return res.status(400).send("Ongeldige data");
-      
-      // ioredis gebruikt een iets andere syntax voor zadd dan upstash
-      await redis.zadd("flappy_anesthetist", score, name);
-      res.json({ success: true });
-    } catch (error) {
-      res.status(500).send("Database fout");
+ // 2. SCORE OPSLAAN
+app.post("/api/highscores", async (req, res) => {
+  try {
+    const { name, score } = req.body;
+    const numericScore = Number(score);
+
+    if (!name || isNaN(numericScore)) {
+      return res.status(400).send("Ongeldige data");
     }
-  });
+
+    const cleanName = name.trim().toUpperCase();
+    
+    // 1. Haal eerst de bestaande score op van deze persoon
+    const existingScoreRaw = await redis.zscore("flappy_anesthetist", cleanName);
+    const existingScore = existingScoreRaw ? parseInt(existingScoreRaw, 10) : -1;
+
+    // 2. Alleen opslaan als de nieuwe score ECHT hoger is (of als er nog geen score was)
+    if (numericScore > existingScore) {
+      await redis.zadd("flappy_anesthetist", numericScore, cleanName);
+      res.json({ success: true, updated: true });
+    } else {
+      res.json({ success: true, updated: false });
+    }
+
+  } catch (error) {
+    console.error("Fout bij opslaan score:", error);
+    res.status(500).send("Database fout");
+  }
+});
 
   // 3. TOP 10 OPHALEN
   app.get("/api/highscores", async (_req, res) => {
@@ -36,7 +52,7 @@ export async function registerRoutes(
       // We vormen dit om naar het formaat dat onze frontend verwacht
       const scores = [];
       for (let i = 0; i < rawData.length; i += 2) {
-        scores.push({ member: rawData[i], score: parseInt(rawData[i+1]) });
+        scores.push({ member: rawData[i], score: parseInt(rawData[i+1], 10) });
       }
       res.json(scores);
     } catch (error) {
@@ -66,3 +82,4 @@ export async function registerRoutes(
 
   return httpServer;
 }
+
