@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
-// @ts-expect-error
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+
+// @ts-ignore
+// eslint-disable-next-line
 import { validWords } from '../data/puzzle_words_5.js';
 
-// --- JOUW WINNENDE WOORDEN LIJST ---
 const DAILY_SOLUTIONS = [
-  "BLOCK", "JOERI", "BARTH", "TUBES", "GLIDE", 
-  "SERUM", "BLOED", "FLUIM", "BLAAS", "DRAIN",
-  "TUMOR", "NAALD", "ADERS", "PROBE", "SPIER",
-  "HOOFT", "ANOUK", "CARLO", "MARIE", "ELINE",
-  "JORNE", "LOUIS", "WACHT", "SPOED", "KAMER",
-  "LIJST", "DRAMA", "SNOEP", "CHIPS", "SPUIT"
+  "BLOCK", "SPINA", "PENTO", "DORSI", "NARCO", 
+  "TUTOR", "RECAP", "VOLUM", "LARYN", "DRAIN",
+  "KNOOP", "NAALD", "THORE", "SEVOR", "CARPA"
 ];
-
 
 const AZERTY_KEYS = [
   ["A", "Z", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -26,7 +24,6 @@ export default function AnesthesiaWordle() {
   const [gameStatus, setGameStatus] = useState<'playing' | 'won' | 'lost'>('playing');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Initialiseer het woord van de dag
   useEffect(() => {
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 0);
@@ -44,7 +41,8 @@ export default function AnesthesiaWordle() {
     const emojiGrid = guesses.map(guess => {
       return guess.split('').map((letter, i) => {
         if (letter === solution[i]) return '🟩';
-        if (solution.includes(letter)) return '🟨';
+        // Alternatief voor .includes()
+        if (solution.indexOf(letter) !== -1) return '🟨';
         return '⬜';
       }).join('');
     }).join('\n');
@@ -67,10 +65,11 @@ export default function AnesthesiaWordle() {
       if (currentGuess.length !== 5) return;
       
       const lowerGuess = currentGuess.toLowerCase();
-      const isValid = validWords.includes(lowerGuess) || 
-                      DAILY_SOLUTIONS.map(w => w.toLowerCase()).includes(lowerGuess);
+      // Alternatief voor .includes()
+      const isInValidWords = validWords.indexOf(lowerGuess) !== -1;
+      const isInSolutions = DAILY_SOLUTIONS.map(w => w.toLowerCase()).indexOf(lowerGuess) !== -1;
 
-      if (!isValid) {
+      if (!isInValidWords && !isInSolutions) {
         showError("Niet in woordenlijst");
         return;
       }
@@ -92,7 +91,6 @@ export default function AnesthesiaWordle() {
     }
   };
 
-  // Luister naar fysiek toetsenbord
   useEffect(() => {
     const onPhysicalKeyDown = (e: KeyboardEvent) => handleKeyPress(e.key);
     window.addEventListener('keydown', onPhysicalKeyDown);
@@ -101,35 +99,32 @@ export default function AnesthesiaWordle() {
 
   const getKeyStyle = (key: string) => {
     const allGuessedLetters = guesses.join("");
-    if (!allGuessedLetters.includes(key)) return "bg-slate-200 text-slate-900 border-b-4 border-slate-300";
+    if (allGuessedLetters.indexOf(key) === -1) return "bg-slate-200 text-slate-900 border-b-4 border-slate-300";
     
     const isCorrect = guesses.some(g => g.split("").some((l, i) => l === key && solution[i] === key));
     if (isCorrect) return "bg-emerald-500 text-white border-b-4 border-emerald-700";
 
-    const isPresent = solution.includes(key);
-    if (isPresent) return "bg-amber-400 text-white border-b-4 border-amber-600";
+    if (solution.indexOf(key) !== -1) return "bg-amber-400 text-white border-b-4 border-amber-600";
 
     return "bg-slate-400 text-white opacity-40";
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-md mx-auto p-4 select-none animate-in fade-in duration-500">
+    <div className="flex flex-col items-center w-full max-w-md mx-auto p-4 select-none">
       <h2 className="text-3xl font-black text-slate-900 mb-2 tracking-tighter uppercase italic text-center">
         Anesthesie<span className="text-teal-600 font-light">dle</span>
       </h2>
       
-      {/* FOUTMELDING OVERLAY */}
       <div className="h-10 flex items-center justify-center mb-2">
         {errorMessage && (
-          <div className="bg-slate-800 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg animate-in fade-in zoom-in duration-200 shadow-lg">
+          <div className="bg-slate-800 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg shadow-lg">
             {errorMessage}
           </div>
         )}
       </div>
 
-      {/* HET RASTER */}
       <div className="grid grid-rows-6 gap-2 mb-8">
-        {[...Array(6)].map((_, i) => (
+        {[0, 1, 2, 3, 4, 5].map((i) => (
           <WordRow 
             key={i} 
             guess={guesses[i] || (i === guesses.length ? currentGuess : "")} 
@@ -139,7 +134,6 @@ export default function AnesthesiaWordle() {
         ))}
       </div>
 
-      {/* VIRTUEEL AZERTY TOETSENBORD */}
       <div className="w-full space-y-2">
         {AZERTY_KEYS.map((row, i) => (
           <div key={i} className="flex justify-center gap-1.5">
@@ -157,9 +151,8 @@ export default function AnesthesiaWordle() {
         ))}
       </div>
 
-      {/* WIN/LOSE MODAL */}
       {gameStatus !== 'playing' && (
-        <div className="mt-8 p-6 bg-white rounded-[2.5rem] shadow-2xl border-2 border-teal-500 text-center animate-in zoom-in duration-300 w-full">
+        <div className="mt-8 p-6 bg-white rounded-[2.5rem] shadow-2xl border-2 border-teal-500 text-center w-full">
           <p className="font-black text-teal-600 text-2xl uppercase mb-1">
             {gameStatus === 'won' ? "🥇 GEWELDIG!" : "Helaas!"}
           </p>
@@ -180,14 +173,16 @@ export default function AnesthesiaWordle() {
 
 function WordRow({ guess, isFinal, solution }: { guess: string, isFinal: boolean, solution: string }) {
   const getLetterStyles = () => {
-    const styles = Array(5).fill("bg-white border-slate-200 text-slate-900");
+    // Vervang .fill() door een loop
+    const styles = [];
+    for(let i=0; i<5; i++) styles.push("bg-white border-slate-200 text-slate-900");
+    
     if (!isFinal) return styles;
 
     const solChars = solution.split('');
     const guessChars = guess.split('');
-    const usedIndices = Array(5).fill(false);
+    const usedIndices = [false, false, false, false, false];
 
-    // Groen
     guessChars.forEach((char, i) => {
       if (char === solChars[i]) {
         styles[i] = "bg-emerald-500 border-emerald-600 text-white";
@@ -195,10 +190,18 @@ function WordRow({ guess, isFinal, solution }: { guess: string, isFinal: boolean
       }
     });
 
-    // Geel
     guessChars.forEach((char, i) => {
-      if (styles[i].includes("bg-emerald-500")) return;
-      const solIndex = solChars.findIndex((sChar, idx) => sChar === char && !usedIndices[idx]);
+      if (styles[i].indexOf("bg-emerald-500") !== -1) return;
+      
+      // Handmatige findIndex vervanging
+      let solIndex = -1;
+      for(let idx=0; idx<solChars.length; idx++) {
+        if(solChars[idx] === char && !usedIndices[idx]) {
+          solIndex = idx;
+          break;
+        }
+      }
+
       if (solIndex !== -1) {
         styles[i] = "bg-amber-400 border-amber-500 text-white";
         usedIndices[solIndex] = true;
@@ -214,7 +217,7 @@ function WordRow({ guess, isFinal, solution }: { guess: string, isFinal: boolean
 
   return (
     <div className="grid grid-cols-5 gap-2">
-      {[...Array(5)].map((_, i) => (
+      {[0, 1, 2, 3, 4].map((i) => (
         <div 
           key={i} 
           className={`w-14 h-14 border-2 flex items-center justify-center text-2xl font-black rounded-2xl uppercase transition-all duration-500 shadow-sm ${

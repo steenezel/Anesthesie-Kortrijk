@@ -1,0 +1,8 @@
+// const DAILY_SOLUTIONS = [
+//  "BLOCK", "JOERI", "BARTH", "TUBES", "GLIDE", 
+//  "SERUM", "BLOED", "FLUIM", "BLAAS", "DRAIN",
+//  "TUMOR", "NAALD", "ADERS", "PROBE", "SPIER",
+//  "HOOFT", "ANOUK", "CARLO", "MARIE", "ELINE",
+//  "JORNE", "LOUIS", "WACHT", "SPOED", "KAMER",
+//  "LIJST", "DRAMA", "SNOEP", "CHIPS", "SPUIT"
+// ];
