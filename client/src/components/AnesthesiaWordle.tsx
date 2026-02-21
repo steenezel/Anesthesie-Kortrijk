@@ -1,14 +1,17 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-// @ts-ignore
+// @ts-expect-error: Negeer ontbrekende types voor de woordenlijst
 // eslint-disable-next-line
 import { validWords } from '../data/puzzle_words_5.js';
 
 const DAILY_SOLUTIONS = [
-  "BLOCK", "SPINA", "PENTO", "DORSI", "NARCO", 
-  "TUTOR", "RECAP", "VOLUM", "LARYN", "DRAIN",
-  "KNOOP", "NAALD", "THORE", "SEVOR", "CARPA"
+  "BLOCK", "JOERI", "BARTH", "TUBES", "GLIDE", 
+  "SERUM", "BLOED", "FLUIM", "BLAAS", "DRAIN",
+  "TUMOR", "NAALD", "ADERS", "PROBE", "SPIER",
+  "HOOFT", "ANOUK", "CARLO", "MARIE", "ELINE",
+  "JORNE", "LOUIS", "WACHT", "SPOED", "KAMER",
+  "LIJST", "DRAMA", "SNOEP", "CHIPS", "SPUIT"
 ];
 
 const AZERTY_KEYS = [
@@ -32,10 +35,10 @@ export default function AnesthesiaWordle() {
     setSolution(word.toUpperCase());
   }, []);
 
-  const showError = (msg: string) => {
-    setErrorMessage(msg);
-    setTimeout(() => setErrorMessage(null), 2000);
-  };
+ const showError = useCallback((msg: string) => {
+setErrorMessage(msg);
+setTimeout(() => setErrorMessage(null), 2000);
+}, []);
 
   const shareResult = () => {
     const emojiGrid = guesses.map(guess => {
@@ -57,7 +60,7 @@ export default function AnesthesiaWordle() {
     }
   };
 
-  const handleKeyPress = (key: string) => {
+  const handleKeyPress = useCallback((key: string) => {
     if (gameStatus !== 'playing') return;
     const k = key.toUpperCase();
 
@@ -78,9 +81,10 @@ export default function AnesthesiaWordle() {
       setGuesses(newGuesses);
       setCurrentGuess('');
 
-      if (currentGuess.toUpperCase() === solution) setGameStatus('won');
-      else if (newGuesses.length >= 6) setGameStatus('lost');
-    } 
+     if (currentGuess.toUpperCase() === solution) setGameStatus('won');
+      else if (newGuesses.length >= 6)
+      setGameStatus('lost');
+    }
     else if (k === '⌫' || k === 'BACKSPACE' || k === 'DELETE') {
       setCurrentGuess(prev => prev.slice(0, -1));
     } 
@@ -89,13 +93,13 @@ export default function AnesthesiaWordle() {
         setCurrentGuess(prev => prev + k);
       }
     }
-  };
+  }, [currentGuess, gameStatus, guesses, solution, showError]);
 
   useEffect(() => {
     const onPhysicalKeyDown = (e: KeyboardEvent) => handleKeyPress(e.key);
     window.addEventListener('keydown', onPhysicalKeyDown);
     return () => window.removeEventListener('keydown', onPhysicalKeyDown);
-  }, [currentGuess, gameStatus, guesses, solution]);
+  }, [currentGuess, gameStatus, guesses, solution, handleKeyPress]);
 
   const getKeyStyle = (key: string) => {
     const allGuessedLetters = guesses.join("");
@@ -174,7 +178,7 @@ export default function AnesthesiaWordle() {
 function WordRow({ guess, isFinal, solution }: { guess: string, isFinal: boolean, solution: string }) {
   const getLetterStyles = () => {
     // Vervang .fill() door een loop
-    const styles = [];
+    const styles: string[] = [];
     for(let i=0; i<5; i++) styles.push("bg-white border-slate-200 text-slate-900");
     
     if (!isFinal) return styles;
