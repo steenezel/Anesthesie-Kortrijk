@@ -23,7 +23,7 @@ export default function ProtocolDetail() {
 
   const fileData = fileKey ? (allProtocols[fileKey] as any) : null;
   // Forceer conversie naar string en verwijder eventuele verborgen whitespace aan het begin/eind
-  let rawContent = String(fileData?.default || fileData || "").trim();
+  const rawContent = String(fileData?.default || fileData || "").trim();
   
   if (!rawContent) {
     return (

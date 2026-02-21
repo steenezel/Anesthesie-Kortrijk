@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect, useCallback } from 'react';
 
 // @ts-expect-error: Negeer ontbrekende types voor de woordenlijst
-// eslint-disable-next-line
+ 
 import { validWords } from '../data/puzzle_words_5.js';
 
 const DAILY_SOLUTIONS = [

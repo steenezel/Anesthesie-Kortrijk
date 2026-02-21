@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Syringe, Play, RotateCcw, Trophy, User, Send, Loader2 } from "lucide-react";
+import { Syringe, RotateCcw, Trophy, Send, Loader2 } from "lucide-react";
 import { Link } from "wouter";
 import { Input } from "@/components/ui/input";
 
@@ -28,38 +28,35 @@ export default function GamePage() {
   const [highScore, setHighScore] = useState(0);
   const [gameState, setGameState] = useState<"start" | "playing" | "gameover">("start");
   const [globalCounter, setGlobalCounter] = useState(0);
-  const [isLeaderboardLoading, setIsLeaderboardLoading] = useState(false);
-  
   const [playerName, setPlayerName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [leaderboard, setLeaderboard] = useState<{member: string, score: number}[]>([]);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("flappy_ane_highscore");
-    if (saved) setHighScore(parseInt(saved));
-    fetchLeaderboard();
-  }, []);
+// EERST de functie definiëren
+const fetchLeaderboard = useCallback(async () => {
+try {
+const resScores = await fetch("/api/highscores");
+if (resScores.ok) {
+const data = await resScores.json();
+setLeaderboard(data);
+}
+const resStats = await fetch("/api/game-stats");
+if (resStats.ok) {
+const data = await resStats.json();
+setGlobalCounter(data.totalAttempts || 0);
+}
+} catch (err) {
+console.error("Data fetch error", err);
+}
+}, []);
 
-  const fetchLeaderboard = async () => {
-    setIsLeaderboardLoading(true);
-    try {
-      const resScores = await fetch("/api/highscores");
-      if (resScores.ok) {
-        const data = await resScores.json();
-        setLeaderboard(data);
-      }
-      const resStats = await fetch("/api/game-stats");
-      if (resStats.ok) {
-        const data = await resStats.json();
-        setGlobalCounter(data.totalAttempts || 0);
-      }
-    } catch (err) {
-      console.error("Data fetch error", err);
-    } finally {
-      setIsLeaderboardLoading(false);
-    }
-  };
+// DAARNA pas de useEffect die de functie aanroept
+useEffect(() => {
+const saved = localStorage.getItem("flappy_ane_highscore");
+if (saved) setHighScore(parseInt(saved));
+fetchLeaderboard();
+}, [fetchLeaderboard]);
 
   const submitScore = async () => {
     if (!playerName.trim() || score === 0 || isSubmitting) return;
@@ -148,28 +145,27 @@ export default function GamePage() {
     return () => clearInterval(timeId);
   }, [gameState, birdVelocity]);
 
-  // Collision detection
-  useEffect(() => {
-    if (gameState !== "playing") return;
-    if (birdPos < 0 || birdPos > GAME_HEIGHT - BIRD_SIZE) triggerGameOver();
+const triggerGameOver = useCallback(() => {
+setGameState("gameover");
+fetch("/api/game-stats/increment", { method: "POST" }).then(() => fetchLeaderboard());
+if (score > highScore) {
+setHighScore(score);
+localStorage.setItem("flappy_ane_highscore", score.toString());
+}
+}, [score, highScore, fetchLeaderboard]);
 
-    pipes.forEach((pipe) => {
-      if (70 > pipe.x && 50 < pipe.x + PIPE_WIDTH) {
-        if (birdPos < pipe.topHeight || birdPos + BIRD_SIZE > pipe.topHeight + PIPE_GAP) {
-          triggerGameOver();
-        }
-      }
-    });
-  }, [birdPos, pipes, gameState]);
+useEffect(() => {
+if (gameState !== "playing") return;
+if (birdPos < 0 || birdPos > GAME_HEIGHT - BIRD_SIZE) triggerGameOver();
 
-  const triggerGameOver = () => {
-    setGameState("gameover");
-    fetch("/api/game-stats/increment", { method: "POST" }).then(() => fetchLeaderboard());
-    if (score > highScore) {
-      setHighScore(score);
-      localStorage.setItem("flappy_ane_highscore", score.toString());
-    }
-  };
+pipes.forEach((pipe) => {
+if (70 > pipe.x && 50 < pipe.x + PIPE_WIDTH) {
+if (birdPos < pipe.topHeight || birdPos + BIRD_SIZE > pipe.topHeight + PIPE_GAP) {
+triggerGameOver();
+}
+}
+});
+}, [birdPos, pipes, gameState, triggerGameOver]);
 
   return (
     <div className="fixed inset-0 bg-slate-950 flex flex-col items-center justify-center overflow-hidden touch-none select-none" onClick={jump}>
