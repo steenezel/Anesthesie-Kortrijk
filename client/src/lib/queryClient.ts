@@ -1,8 +1,3 @@
-// We importeren de types en de klasse op de meest expliciete manier
-import { QueryClient } from "@tanstack/react-query";
-import type { QueryFunction, QueryKey } from "@tanstack/react-query";
-
-// De rest van de code blijft hetzelfde...
 // We importeren alles als 'TanStack' om pad-conflicten te vermijden
 import * as TanStack from "@tanstack/react-query";
 

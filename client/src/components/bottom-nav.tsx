@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Home, Calculator, Phone, BookOpen, Search, Crosshair } from "lucide-react";
+import { Home, Phone, Search } from "lucide-react";
 
 export function BottomNav() {
   const [location] = useLocation();

@@ -21,6 +21,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { quotes } from "@/data/quotes";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
+import AnesthesiaWordle from "@/components/AnesthesiaWordle";
+
 // @ts-expect-error: __BUILD_DATE__ is defined globally by Vite during the build process
 const buildDate = __BUILD_DATE__;
 
@@ -146,26 +148,48 @@ export default function Home() {
       <Dialog open={showEgg} onOpenChange={setShowEgg}>
         <DialogContent className="sm:max-w-md bg-orange-50 border-orange-200">
   <DialogHeader>
-    <DialogTitle className="text-2xl font-black text-orange-800 uppercase italic flex items-center gap-2">
+    <DialogTitle className="text-2xl font-black text-orange-800 uppercase flex items-center gap-2">
       ☕ De Koffiekamer
     </DialogTitle>
   </DialogHeader>
-  <div className="space-y-6 pt-4">
-    <div className="p-4 bg-white rounded-2xl border border-orange-100 shadow-sm">
-  <p className="text-xs italic text-slate-600 leading-relaxed">
-    "{currentQuote.text}"
-  </p>
-  <p className="text-[10px] text-right mt-3 font-black text-orange-400 uppercase tracking-widest">
-    — {currentQuote.author}
-  </p>
-</div>
+        <div className="space-y-6 pt-4">
+          <div className="p-4 bg-white rounded-2xl border border-orange-100 shadow-sm">
+        <p className="text-xs italic text-slate-600 leading-relaxed">
+          "{currentQuote.text}"
+        </p>
+        <p className="text-[10px] text-right mt-3 font-black text-orange-400 uppercase tracking-widest">
+          — {currentQuote.author}
+        </p>
+        </div>
     
+    {/* DE NIEUWE WORDLE LINK */}
+        <Link href="/wordle">
+          <div className="group relative overflow-hidden rounded-2xl bg-white border-2 border-orange-200 p-6 cursor-pointer shadow-sm hover:shadow-md hover:scale-[1.02] transition-all" onClick={() => setShowEgg(false)}>
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <h3 className="text-2xl font-black uppercase tracking-tighter leading-none text-orange-800">
+                  Anesthesie<span className="text-orange-400 font-light">dle</span>
+                </h3>
+                <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest">
+                  Het dagelijkse vijfletterwoord
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
+                <div className="w-3 h-3 bg-emerald-500 rounded-sm"></div>
+                <div className="w-3 h-3 bg-slate-200 rounded-sm"></div>
+                <div className="w-3 h-3 bg-amber-400 rounded-sm"></div>
+                <div className="w-3 h-3 bg-emerald-500 rounded-sm"></div>
+              </div>
+            </div>
+          </div>
+        </Link>
+
     {/* DE NIEUWE GAME KNOP */}
     <Link href="/game">
               <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 p-6 text-white cursor-pointer shadow-lg shadow-teal-500/20 hover:shadow-xl hover:scale-[1.02] transition-all">
                 <div className="absolute top-0 right-0 -mt-4 -mr-4 bg-white/20 w-24 h-24 rounded-full blur-2xl"></div>
                 <Syringe className="h-10 w-10 mb-3 text-white/80 -rotate-90 group-hover:rotate-0 transition-transform duration-500" />
-                <h3 className="text-2xl font-black uppercase tracking-tighter italic leading-none">Flappy Anesthetist</h3>
+                <h3 className="text-2xl font-black uppercase tracking-tighter leading-none">Flappy Anesthetist</h3>
                 <p className="text-[10px] font-bold opacity-90 uppercase tracking-widest mt-1">Red de luchtweg!</p>
               </div>
             </Link>

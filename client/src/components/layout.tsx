@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Home, ClipboardList, Info as InfoIcon } from "lucide-react";
 import { cn } from "@/lib/utils";

@@ -23,7 +23,7 @@ export default function ProtocolDetail() {
 
   const fileData = fileKey ? (allProtocols[fileKey] as any) : null;
   // Forceer conversie naar string en verwijder eventuele verborgen whitespace aan het begin/eind
-  let rawContent = String(fileData?.default || fileData || "").trim();
+  const rawContent = String(fileData?.default || fileData || "").trim();
   
   if (!rawContent) {
     return (
@@ -57,6 +57,12 @@ export default function ProtocolDetail() {
       </div>
     ),
 
+    strong: ({ children }: any) => (
+    <strong className="font-bold text-teal-900 mr-[0.25em]">
+      {children}
+    </strong>
+    ),
+
     blockquote: ({ children }: any) => {
       const flattenText = (node: any): string => {
         if (typeof node === 'string') return node;
@@ -71,7 +77,7 @@ export default function ProtocolDetail() {
       const isTip = fullText.includes("[!TIP]");
 
       if (!isWarning && !isInfo && !isTip) {
-        return <blockquote className="border-l-4 border-slate-200 pl-6 italic my-8 text-slate-600">{children}</blockquote>;
+        return <blockquote className="border-l-4 border-slate-200 pl-6 my-8 text-slate-600">{children}</blockquote>;
       }
 
       const config = isWarning 
@@ -99,7 +105,7 @@ export default function ProtocolDetail() {
           <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>
             {config.title}
           </div>
-          <div className="text-slate-900 leading-snug font-medium italic whitespace-pre-wrap [&_p]:m-0">
+          <div className="text-slate-900 leading-snug font-normal whitespace-pre-wrap [&_p]:m-0">
             {cleanRecursive(children)}
           </div>
         </div>
@@ -150,9 +156,9 @@ export default function ProtocolDetail() {
       <hr className="border-slate-100" />
 
       {/* MARKDOWN CONTENT */}
-      <div className="prose prose-slate prose-base max-w-none 
+      <div className="prose prose-slate prose-sm max-w-none 
         prose-ul:list-disc prose-li:marker:text-teal-600
-        prose-strong:text-teal-700 prose-strong:font-black
+        prose-strong:text-teal-900 prose-strong:font-bold
         prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
 
         <ReactMarkdown
