@@ -39,6 +39,8 @@ export default function ProtocolDetail() {
   const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
   const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
 
+  
+
   const markdownComponents = {
     img: ({ src, alt }: { src?: string; alt?: string }) => (
       <div className="my-8">
@@ -63,6 +65,7 @@ export default function ProtocolDetail() {
     </strong>
     ),
 
+    
     blockquote: ({ children }: any) => {
       const flattenText = (node: any): string => {
         if (typeof node === 'string') return node;
@@ -99,6 +102,8 @@ export default function ProtocolDetail() {
         }
         return node;
       };
+       
+      
 
       return (
         <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
