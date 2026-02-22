@@ -275,7 +275,7 @@ export default function GamePage() {
         {/* GAME OVER SCHERM */}
         {gameState === "gameover" && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-950/95 text-white z-30 text-center p-6" onClick={(e) => e.stopPropagation()}>
-             <h2 className="text-4xl font-black uppercase mb-2 text-red-400 italic">ASPIRATIE!</h2>
+             <h2 className="text-4xl font-black uppercase mb-2 text-red-400">Boeken Toe!</h2>
              <div className="grid grid-cols-2 gap-4 mb-6 w-full max-w-xs">
                 <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
                    <p className="text-[10px] opacity-50 mb-1">Score</p>
