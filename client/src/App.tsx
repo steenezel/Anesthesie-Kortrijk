@@ -167,6 +167,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ScrollToTop />
       <Toaster />
       <Analytics />
       {/* We wikkelen de Router in de AuthGuard */}
