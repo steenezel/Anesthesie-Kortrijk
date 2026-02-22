@@ -11,7 +11,9 @@ const DAILY_SOLUTIONS = [
   "TUMOR", "NAALD", "ADERS", "PROBE", "SPIER",
   "HOOFT", "ANOUK", "CARLO", "MARIE", "ELINE",
   "JORNE", "LOUIS", "WACHT", "SPOED", "KAMER",
-  "LIJST", "DRAMA", "SNOEP", "CHIPS", "SPUIT"
+  "LIJST", "DRAMA", "SNOEP", "CHIPS", "SPUIT",
+  "FEMUR", "BREUK", "LEVER", "BRADY", "TACHY",
+  "FEEST"
 ];
 
 const AZERTY_KEYS = [
@@ -155,20 +157,43 @@ setTimeout(() => setErrorMessage(null), 2000);
         ))}
       </div>
 
+  {/* RESULTAAT MODAL (POPUP) */}
       {gameStatus !== 'playing' && (
-        <div className="mt-8 p-6 bg-white rounded-[2.5rem] shadow-2xl border-2 border-teal-500 text-center w-full">
-          <p className="font-black text-teal-600 text-2xl uppercase mb-1">
-            {gameStatus === 'won' ? "🥇 GEWELDIG!" : "Helaas!"}
-          </p>
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-6">
-            Het woord was: <span className="text-slate-900">{solution}</span>
-          </p>
-          <button
-            onClick={shareResult}
-            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-black py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all uppercase text-xs tracking-[0.2em] shadow-lg shadow-teal-100 active:scale-95"
-          >
-            <span className="text-xl">📤</span> Deel Resultaat
-          </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl border-2 border-teal-500 p-8 w-full max-w-sm relative animate-in fade-in zoom-in duration-300">
+            
+            {/* Sluitknopje rechtsboven */}
+            <button 
+              onClick={() => setGameStatus('playing')} // Zet status even 'terug' om te kijken, of maak een aparte state
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 font-bold"
+            >
+              ✕
+            </button>
+
+            <p className="font-black text-teal-600 text-3xl uppercase mb-1 text-center">
+              {gameStatus === 'won' ? "🥇 GEWELDIG!" : "Helaas!"}
+            </p>
+            
+            <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest mb-8 text-center">
+              Het woord was: <span className="text-slate-900">{solution}</span>
+            </p>
+
+            <div className="space-y-4">
+              <button
+                onClick={shareResult}
+                className="w-full bg-teal-600 hover:bg-teal-700 text-white font-black py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transition-all uppercase text-xs tracking-[0.2em] shadow-lg shadow-teal-100 active:scale-95"
+              >
+                <span className="text-xl">📤</span> Deel Resultaat
+              </button>
+
+              <button
+                onClick={() => window.location.reload()} // Optie om opnieuw te spelen of te sluiten
+                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black py-3 px-6 rounded-2xl text-[10px] uppercase tracking-widest transition-all"
+              >
+                Sluiten
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
