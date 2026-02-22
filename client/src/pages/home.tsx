@@ -21,7 +21,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { quotes } from "@/data/quotes";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
-import AnesthesiaWordle from "@/components/AnesthesiaWordle";
 
 // @ts-expect-error: __BUILD_DATE__ is defined globally by Vite during the build process
 const buildDate = __BUILD_DATE__;
@@ -89,7 +88,7 @@ const categories = [
 ];
 
 export default function Home() {
-  const [location, setLocation] = useLocation() as [string, (to: string) => void];
+  const [, setLocation] = useLocation() as [string, (to: string) => void];
   const [tapCount, setTapCount] = useState(0);
   const [showEgg, setShowEgg] = useState(false);
   const [currentQuote, setCurrentQuote] = useState({ text: "", author: "" });

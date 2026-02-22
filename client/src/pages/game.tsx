@@ -24,6 +24,7 @@ export default function GamePage() {
   const [birdVelocity, setBirdVelocity] = useState(0);
   const [pipes, setPipes] = useState<Pipe[]>([]);
   const [score, setScore] = useState(0);
+  const [bgPos, setBgPos] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameState, setGameState] = useState<"start" | "playing" | "gameover">("start");
   const [globalCounter, setGlobalCounter] = useState(0);
@@ -126,6 +127,7 @@ export default function GamePage() {
       timeId = setInterval(() => {
         setBirdPos((pos) => pos + birdVelocity);
         setBirdVelocity((vel) => vel + GRAVITY);
+        setBgPos((prev) => (prev - (GAME_SPEED * 0.2)) % 1000); // Beweegt trager voor diepte
         setPipes((currentPipes) => {
           const movedPipes = currentPipes
             .map((pipe) => ({ ...pipe, x: pipe.x - GAME_SPEED }))
@@ -165,24 +167,76 @@ export default function GamePage() {
   }, [birdPos, pipes, gameState, triggerGameOver]);
 
   return (
-    <div className="fixed inset-0 bg-slate-950 flex flex-col items-center justify-center overflow-hidden touch-none select-none" onClick={jump}>
-      <div className="relative w-full max-w-lg bg-slate-900 border-y-4 border-teal-500/30 overflow-hidden shadow-2xl" style={{ height: GAME_HEIGHT }}>
-        
-        {/* De Spuit */}
-        <div className="absolute left-[50px] z-20" style={{ top: birdPos, width: BIRD_SIZE, height: BIRD_SIZE, transform: `rotate(${birdVelocity * 3}deg)` }}>
-          <Syringe className="w-full h-full -rotate-90 text-teal-400 drop-shadow-[0_0_8px_rgba(45,212,191,0.6)]" />
+  <div className="fixed inset-0 bg-slate-950 flex flex-col items-center justify-center overflow-hidden touch-none select-none" onClick={jump}>
+    <div className="relative w-full max-w-lg bg-slate-900 border-y-4 border-teal-500/30 overflow-hidden shadow-2xl" style={{ height: GAME_HEIGHT }}>
+      
+      {/* PARALLAX ACHTERGROND (De "Luchtweg" wand) */}
+      <div 
+        className="absolute inset-0 opacity-20"
+        style={{ 
+          backgroundImage: `radial-gradient(circle at 20px 20px, #334155 2px, transparent 0)`,
+          backgroundSize: '40px 40px',
+          transform: `translateX(${bgPos}px)`
+        }}
+      />
+     {/* VAGE ECG-LIJNEN (Ononderbroken loop) */}
+<div 
+  className="absolute inset-0 opacity-15 pointer-events-none"
+  style={{ 
+    // We gebruiken bgPos om de lijn te verschuiven
+    transform: `translateX(${bgPos % 500}px)`, 
+    width: '200%', // Genoeg ruimte voor twee patronen
+    display: 'flex'
+  }}
+>
+  <svg width="1000" height="500" viewBox="0 0 1000 500" preserveAspectRatio="none" className="flex-none">
+    <path 
+      // Dit pad bevat nu TWEE keer hetzelfde ritme achter elkaar (0-500 en 500-1000)
+      d="M0 300 L100 300 L110 280 L120 320 L130 300 L200 300 L210 200 L225 400 L240 300 L350 300 L360 290 L370 310 L380 300 L500 300 
+         L600 300 L610 280 L620 320 L630 300 L700 300 L710 200 L725 400 L740 300 L850 300 L860 290 L870 310 L880 300 L1000 300" 
+      stroke="#2dd4bf" strokeWidth="3" fill="none"
+    />
+  </svg>
+</div>
+      {/* De Spuit (De Bird) */}
+      <div className="absolute left-[50px] z-30" style={{ top: birdPos, width: BIRD_SIZE, height: BIRD_SIZE, transform: `rotate(${birdVelocity * 3}deg)` }}>
+        <Syringe className="w-full h-full -rotate-90 text-teal-400 drop-shadow-[0_0_12px_rgba(45,212,191,0.8)]" />
+      </div>
+
+      {/* ANATOMISCHE OBSTAKELS */}
+      {pipes.map((pipe, i) => (
+        <div key={i} className="z-20">
+          {/* BOVEN: DE TANDEN */}
+          <div 
+            className="absolute top-0 bg-slate-100 border-b-4 border-slate-300 shadow-[inset_0_-10px_10px_rgba(0,0,0,0.1)]" 
+            style={{ 
+              left: pipe.x, 
+              width: PIPE_WIDTH, 
+              height: pipe.topHeight,
+              clipPath: 'polygon(0% 0%, 100% 0%, 100% 93%, 85% 98%, 75% 92%, 65% 99%, 50% 91%, 35% 97%, 25% 94%, 15% 98%, 0% 90%)'
+            }} 
+          />
+          
+      {/* ONDER: NU OOK TANDEN (Gespiegeld) */}
+          <div 
+            className={`absolute bottom-0 shadow-lg ${pipe.type === "slime" ? "bg-teal-300 border-emerald-600" : "bg-rose-300 border-rose-500"}`} 
+            style={{ 
+              left: pipe.x, 
+              width: PIPE_WIDTH, 
+              height: GAME_HEIGHT - pipe.topHeight - PIPE_GAP,
+              // Gespiegelde polygon voor de onderste tanden
+              clipPath: 'polygon(0% 10%, 15% 2%, 25% 5%, 35% 3%, 50% 8%, 65% 2%, 75% 5%, 85% 2%, 100% 7%, 100% 100%, 0% 100%)'
+            }} 
+          />
         </div>
+      ))}
 
-        {/* Obstakels */}
-        {pipes.map((pipe, i) => (
-          <div key={i} className="z-10">
-            <div className={`absolute top-0 rounded-b-2xl border-b-8 ${pipe.type === "slime" ? "bg-green-500 border-green-700" : "bg-slate-100 border-slate-300"}`} style={{ left: pipe.x, width: PIPE_WIDTH, height: pipe.topHeight }} />
-            <div className={`absolute bottom-0 rounded-t-2xl border-t-8 ${pipe.type === "slime" ? "bg-green-500 border-green-700" : "bg-slate-100 border-slate-300"}`} style={{ left: pipe.x, width: PIPE_WIDTH, height: GAME_HEIGHT - pipe.topHeight - PIPE_GAP }} />
-          </div>
-        ))}
-
-        {/* Score */}
-        {gameState === "playing" && <div className="absolute top-10 left-1/2 -translate-x-1/2 text-6xl font-black text-white/20 z-0">{score}</div>}
+      {/* Score-weergave tijdens spelen */}
+      {gameState === "playing" && (
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 text-8xl font-black text-white/10 z-0">
+          {score}
+        </div>
+      )}
 
         {/* START SCHERM (ARCADE STYLE) */}
         {gameState === "start" && (
