@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { useState, useEffect } from "react"; // Toegevoegd voor de login
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -109,11 +109,32 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function ScrollToTop() {
+  const [location] = useLocation();
+
+  useEffect(() => {
+    // We gebruiken een kleine timeout om de browser de tijd te geven
+    // de nieuwe pagina-inhoud te laden voordat we scrollen.
+    const timer = setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "instant", // "instant" voorkomt dat je de pagina ziet omhoog glijden
+      });
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [location]); // Telkens als 'location' verandert, start dit effect
+
+  return null; // Deze component toont niets op het scherm
+}
+
 // --- DE ROUTER ---
 function Router() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 px-4 pb-6 sm:px-6 lg:px-8 max-w-2xl mx-auto w-full pt-[max(20px,env(safe-area-inset-top))]">
+        <ScrollToTop /> {/* Zorgt voor de reset bij elke paginawissel */}
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/protocols" component={ProtocolList} />
@@ -139,6 +160,8 @@ function Router() {
     </div>
   );
 }
+
+
 
 // --- DE HOOFD APP ---
 function App() {
