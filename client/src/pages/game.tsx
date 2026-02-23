@@ -191,11 +191,24 @@ export default function GamePage() {
 >
   <svg width="1000" height="500" viewBox="0 0 1000 500" preserveAspectRatio="none" className="flex-none">
     <path 
-      // Dit pad bevat nu TWEE keer hetzelfde ritme achter elkaar (0-500 en 500-1000)
-      d="M0 300 L100 300 L110 280 L120 320 L130 300 L200 300 L210 200 L225 400 L240 300 L350 300 L360 290 L370 310 L380 300 L500 300 
-         L600 300 L610 280 L620 320 L630 300 L700 300 L710 200 L725 400 L740 300 L850 300 L860 290 L870 310 L880 300 L1000 300" 
-      stroke="#2dd4bf" strokeWidth="3" fill="none"
-    />
+  d="M0 300 
+     L80 300 
+     Q90 280 100 300 
+     L110 300 
+     L120 200 L135 400 L150 300 
+     L180 300 
+     Q200 270 220 300 
+     L500 300
+     /* Herhaling voor de loop */
+     L580 300 
+     Q590 280 600 300 
+     L610 300 
+     L620 200 L635 400 L650 300 
+     L680 300 
+     Q700 270 720 300 
+     L1000 300" 
+  stroke="#2dd4bf" strokeWidth="3" fill="none"
+/>
   </svg>
 </div>
       {/* De Spuit (De Bird) */}
