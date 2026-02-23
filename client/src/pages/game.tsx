@@ -306,7 +306,7 @@ export default function GamePage() {
         {/* GAME OVER SCHERM */}
         {gameState === 'gameover' && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-950/95 text-white z-30 text-center p-6" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-4xl font-black uppercase mb-2 text-red-400 italic">BOEKEN TOE!</h2>
+            <h2 className="text-4xl font-black uppercase mb-2 text-red-400 ">BOEKEN TOE!</h2>
             <div className="grid grid-cols-2 gap-4 mb-6 w-full max-w-xs">
               <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
                 <p className="text-[10px] opacity-50">Score</p>
@@ -330,6 +330,9 @@ export default function GamePage() {
             <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100 font-black rounded-xl py-6 w-full max-w-xs" onClick={resetGame}>
               <RotateCcw className="w-5 h-5 mr-2" /> NIEUWE POGING
             </Button>
+             <Button variant="ghost" className="text-white/50 hover:text-white uppercase text-[10px] font-bold tracking-widest" asChild>
+                    <Link href="/">Afsluiten</Link>
+                </Button>
           </div>
         )}
       </div>
