@@ -91,7 +91,7 @@ export default function ContactsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input 
             placeholder="Zoek collega of functie..." 
-            className="pl-10 h-12 bg-slate-50 border-slate-200 rounded-xl"
+            className="pl-10 h-10 bg-slate-50 border-slate-200 rounded-xl"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -103,7 +103,7 @@ export default function ContactsPage() {
           <Card key={i} className="border-slate-100 shadow-sm active:scale-[0.95] transition-transform">
             <CardContent className="p-0">
               {/* Hier gebeurt de magie: de 'tel:' link krijgt automatisch de prefix mee */}
-              <a href={`tel:${hospitalPrefix}${contact.phone}`} className="flex items-center justify-between p-4">
+              <a href={`tel:${hospitalPrefix}${contact.phone}`} className="flex items-center justify-between p-1">
                 <div className="flex items-center gap-4">
                   <div className={`p-2 rounded-lg ${contact.category === 'staf' ? 'bg-teal-50 text-teal-600' : 'bg-blue-50 text-blue-600'}`}>
                     {contact.category === 'staf' ? <Stethoscope className="h-5 w-5" /> : <GraduationCap className="h-5 w-5" />}
