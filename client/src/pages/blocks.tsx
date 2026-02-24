@@ -63,15 +63,15 @@ export default function Blocks() {
       </div>
 
       {/* BLOCK LIST: Enkele kolom, hoge densiteit */}
-      <div className="grid gap-3">
+      <div className="grid gap-2">
         {filteredBlocks.length > 0 ? (
           filteredBlocks.map((block) => (
             <Link key={block.id} href={`/blocks/${block.id}`}>
               <Card className="group cursor-pointer border-2 border-slate-50 shadow-sm hover:border-teal-200 hover:shadow-md active:scale-[0.98] transition-all rounded-2xl overflow-hidden">
                 <CardContent className="p-0">
-                  <div className="flex items-center p-5">
-                    <div className="p-3 bg-slate-50 rounded-xl mr-4 text-slate-400 group-hover:bg-teal-600 group-hover:text-white transition-all duration-300">
-                      <Crosshair size={20} />
+                  <div className="flex items-center p-2">
+                    <div className="p-2 bg-slate-50 rounded-xl mr-4 text-slate-400 group-hover:bg-teal-600 group-hover:text-white transition-all duration-300">
+                      <Crosshair size={16} />
                     </div>
                     <span className="flex-1 font-black text-slate-800 uppercase tracking-tight text-sm">
                       {block.title}
