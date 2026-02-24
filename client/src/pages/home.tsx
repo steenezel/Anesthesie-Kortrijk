@@ -49,7 +49,7 @@ const categories = [
   },
   {
     title: "Calculators",
-    description: "LAST | Apfel | Pediatrie",
+    description: "LAST | Apfel | Pediatrie | Dantrium",
     icon: Calculator,
     href: "/calculator",
     color: "bg-teal-600",

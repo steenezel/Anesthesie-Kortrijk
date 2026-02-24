@@ -72,9 +72,9 @@ Structuur:
 
 ·         F2 – OKA / Materniteit (week Oka, weekend inslapend)
 
-·         Bij aanmelding urgentie door chirurgie steeds coördinatie VPK 5150 op de hoogte brengen zodat VPK wachten worden gecontacteerd.
+  ·         Bij aanmelding urgentie door chirurgie steeds coördinatie VPK 5150 op de hoogte brengen zodat VPK wachten worden gecontacteerd.
 
-·         Er worden geen ‘urgente’ ingrepen gepland voor het electief programma.
+  ·         Er worden geen ‘urgente’ ingrepen gepland voor het electief programma.
 
 ·         F3 – Oproepbaar na toeren
 
@@ -138,15 +138,15 @@ Gemiddelde werkweek: 48 uur (opt-out mogelijk tot 72 uur).
 
 ·         Klassiek
 
-·         Controleer koppeling monitor en registratie parameters.
+  ·         Controleer koppeling monitor en registratie parameters.
 
-·         Vul acties, luchtweg, oplijning, LRA en positie in.
+  ·         Vul acties, luchtweg, oplijning, LRA en positie in.
 
-·         Correct ontslagtype selecteren.
+  ·         Correct ontslagtype selecteren.
 
 ·         Bij korte ingrepen
 
-·         Fast track invullijst voor coloscopie, ECT, cataract,  DISE, handchirurgie dagziekenhuis…
+  ·         Fast track invullijst voor coloscopie, ECT, cataract,  DISE, handchirurgie dagziekenhuis…
 
 ### 6.3 Medicatie en Metavision
 
@@ -158,17 +158,17 @@ Gemiddelde werkweek: 48 uur (opt-out mogelijk tot 72 uur).
 
 ·         Materniteit
 
-·         Sectio code rood – oranje -  geel
+  ·         Sectio code rood – oranje -  geel
 
-·         Code walking epidural pompen: 7770
+  ·         Code walking epidural pompen: 7770
 
-·         Procedure spinale catheter ###
+  ·         Procedure spinale catheter ###
 
 ·         Pijnpompen (PCIA/PCEA): APT-contact aanmaken, tarificatie invullen.
 
 ·         PAZA overnachting: KANE-brief, zorgpad lanceren (specifieke labo’s en orders) en ABP/NIBP in boek.
 
-·         Klassiek bij osteotomie, thyroidectomie, carotisendarterectomie, DIEP flap
+  ·         Klassiek bij osteotomie, thyroidectomie, carotisendarterectomie, DIEP flap
 
 ·         Esketamine: template ‘Esketamine intraveneus’ gebruiken.
 
@@ -176,37 +176,37 @@ Gemiddelde werkweek: 48 uur (opt-out mogelijk tot 72 uur).
 
 ## 8\. Contacten en Nuttige Nummers
 
-·         Telefoonnummers
+* Telefoonnummers
 
-·         Dagcoördinator anesthesie: 5155
+  ·         Dagcoördinator anesthesie: 5155
 
-·         Dagcoördinator verpleegkunde: 5150
+  ·         Dagcoördinator verpleegkunde: 5150
 
-·         Intensieve – arts:
+  ·         Intensieve – arts: 3075
 
-·         Intensieve – VPK: 1600
+  ·         Intensieve – VPK: 1600
 
-·         Labo bloed: 4263
+  ·         Labo bloed: 4263
 
-·         Massief transfusieprotocol: 4215 ###
+  ·         Massief transfusieprotocol: 4215
 
-·         Blockroom: 5127
+  ·         Blockroom: 5127
 
-·         Verloskamer: 1040
+  ·         Verloskamer: 1040
 
-·         Bistro: 5500
+  ·         Bistro: 5500
 
-·         Aanwezigheidsbeeld
+*        Aanwezigheidsbeeld
 
-·         Intensieve zorgen: 30016
+  ·         Intensieve zorgen: 30016
 
-·         Materniteit: 30013
+  ·         Materniteit: 30013
 
-·         Spoed: 30112
+  ·         Spoed: 30112
 
-·         PAZA: 30002
+  ·         PAZA: 30002
 
-·         Preoperatieve raadpleging: 30006
+  ·         Preoperatieve raadpleging: 30006
 
 ## 9\. Aanspreekpunten
 
