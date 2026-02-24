@@ -107,9 +107,9 @@ export default function Journalclub() {
         <div className="grid grid-cols-1 gap-3">
           {DISCIPLINES.map((disc) => (
             <button key={disc.id} onClick={() => setActiveFolder(disc.id)} className="group flex items-center justify-between p-5 bg-white border-2 border-slate-100 rounded-[28px] hover:border-teal-500 transition-all active:scale-95">
-              <div className="flex items-center gap-5">
-                <div className={`p-4 rounded-2xl ${disc.bg} ${disc.color} group-hover:bg-teal-600 group-hover:text-white transition-colors`}><disc.icon size={28} /></div>
-                <h3 className="text-xl font-black uppercase tracking-tighter text-slate-800">{disc.id}</h3>
+              <div className="flex items-center gap-2">
+                <div className={`p-2 rounded-lg ${disc.bg} ${disc.color} group-hover:bg-teal-600 group-hover:text-white transition-colors`}><disc.icon size={20} /></div>
+                <h3 className="text-base font-black uppercase tracking-tighter text-slate-800">{disc.id}</h3>
               </div>
               <ChevronRight className="text-slate-200 group-hover:text-teal-600" />
             </button>
