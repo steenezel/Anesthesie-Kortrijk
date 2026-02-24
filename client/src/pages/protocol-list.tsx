@@ -7,9 +7,16 @@ import {
   BookOpen, 
   Stethoscope, 
   Activity, 
-  Scissors, 
+  Bone, 
   Baby, 
-  HeartPulse 
+  HeartPulse, 
+  GlassWater,
+  Hamburger,
+  Brain,
+  Rose,
+  Ear,
+  Zap,
+  TreePalm
 } from "lucide-react";
 
 // Scan alle markdown bestanden in de protocols map
@@ -54,10 +61,15 @@ export default function ProtocolList() {
   // Icon helper
   const getIcon = (name: string) => {
     switch (name.toLowerCase()) {
-      case 'orthopedie': return <Scissors className="h-5 w-5" />;
-      case 'pediatrie': return <Baby className="h-5 w-5" />;
-      case 'cardio': return <HeartPulse className="h-5 w-5" />;
-      case 'algemeen': return <Stethoscope className="h-5 w-5" />;
+      case 'orthopedie': return <Bone className="h-5 w-5" />;
+      case 'urologie': return <GlassWater className="h-5 w-5" />;
+      case 'neurochirurgie': return <Brain className="h-5 w-5" />;
+      case 'obstetrie-epidurale': return <Rose className="h-5 w-5" />;
+      case 'nko': return <Ear className="h-5 w-5" />;
+      case 'reanimatie': return <Zap className="h-5 w-5" />;
+      case 'buitendiensten': return <TreePalm className="h-5 w-5" />;
+      case 'thorax-vaat': return <Stethoscope className="h-5 w-5" />;
+      case 'abdominale': return <Hamburger className="h-5 w-5" />;
       default: return <Activity className="h-5 w-5" />;
     }
   };
@@ -102,7 +114,7 @@ export default function ProtocolList() {
               onClick={() => setActiveDiscipline(discipline)}
               className="hover:border-blue-400 transition-all cursor-pointer border-slate-200 shadow-none active:scale-[0.98] group"
             >
-              <CardContent className="p-4 flex items-center justify-between">
+              <CardContent className="p-1 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
                     {getIcon(discipline)}
@@ -127,7 +139,7 @@ export default function ProtocolList() {
               href={`/protocols/${protocol.id}?fromDiscipline=${encodeURIComponent(activeDiscipline)}`}
             >
               <Card className="hover:border-teal-400 transition-all cursor-pointer border-slate-200 shadow-none">
-                <CardContent className="p-4 flex items-center justify-between">
+                <CardContent className="p-2 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <BookOpen className="h-4 w-4 text-slate-300" />
                     <span className="font-bold text-slate-700 uppercase tracking-tight text-sm">
