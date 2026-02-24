@@ -1,5 +1,7 @@
 ---
 title: "Pressure-Support vs Controlled Ventilation: PROBESE Trial"
+disciplines: ["Anesthesie"]
+date: "2026-02-24"
 pubmed_id: "31157366"
 type: "Research"
 ---

@@ -35,6 +35,10 @@ export default function JournalDetail() {
   // Extractie van Metadata en Body
   const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
   const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
+  const discMatch = rawContent.match(/disciplines: \[(.*)\]/) || rawContent.match(/disciplines: (.*)/);
+  const disciplines = discMatch 
+    ? discMatch[1].replace(/"/g, '').split(',').map(d => d.trim()) 
+    : [];
   const pubmedId = rawContent.match(/pubmed_id: "(.*)"/)?.[1];
 
   // De specifieke markdown componenten logica
@@ -141,6 +145,14 @@ export default function JournalDetail() {
           Terug naar overzicht
         </div>
       </Link>
+
+      <div className="flex gap-2 mb-3">
+      {disciplines.map(d => (
+        <div key={d} className="bg-teal-100 text-teal-700 text-[9px] font-black px-2 py-1 rounded uppercase tracking-widest">
+          {d}
+        </div>
+      ))}
+      </div>
 
       {/* TITEL SECTIE */}
       <div className="space-y-4">
