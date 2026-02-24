@@ -1,123 +1,119 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  Key, 
-  MapPin, 
-  Users, 
-  AlertTriangle, 
-  ChevronRight,
-  Info
-} from "lucide-react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import React from "react";
+import { ChevronLeft, Clock } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from 'rehype-raw';
+import Zoom from 'react-medium-image-zoom';
+import remarkBreaks from 'remark-breaks';
+import {Link} from 'wouter';
+import 'react-medium-image-zoom/dist/styles.css';
+
+// We halen specifiek het onboarding bestand binnen
+const onboardingFiles = import.meta.glob('../content/onboarding.md', { query: 'raw', eager: true });
 
 export default function OnboardingPage() {
+  // Omdat het één specifiek bestand is, pakken we de eerste key
+  const fileKey = Object.keys(onboardingFiles)[0];
+  const fileData = fileKey ? (onboardingFiles[fileKey] as any) : null;
+  const rawContent = String(fileData?.default || fileData || "").trim();
+
+  // Hergebruik van jouw Frontmatter-stripper
+  const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
+  const title = rawContent.match(/title: "(.*)"/)?.[1] || "Onboarding";
+  const subtitle = rawContent.match(/subtitle: "(.*)"/)?.[1] || "AZ Groeninge";
+
+  // Identieke component mapping als in je protocollen
+  const markdownComponents = {
+    img: ({ src, alt }: { src?: string; alt?: string }) => (
+      <div className="my-8">
+        <Zoom>
+          <img src={src} alt={alt} className="w-full h-auto rounded-2xl shadow-lg border border-slate-100" />
+        </Zoom>
+        {alt && <p className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 mt-4">{alt}</p>}
+      </div>
+    ),
+    
+    strong: ({ children }: any) => <strong className="font-bold text-teal-900">{children}</strong>,
+
+    blockquote: ({ children }: any) => {
+      const flattenText = (node: any): string => {
+        if (typeof node === 'string') return node;
+        if (Array.isArray(node)) return node.map(flattenText).join('');
+        if (node?.props?.children) return flattenText(node.props.children);
+        return '';
+      };
+
+      const fullText = flattenText(children);
+      const isWarning = fullText.includes("[!WARNING]");
+      const isInfo = fullText.includes("[!INFO]");
+      const isTip = fullText.includes("[!TIP]");
+
+      if (!isWarning && !isInfo && !isTip) {
+        return <blockquote className="border-l-4 border-slate-200 pl-6 my-8 text-slate-600">{children}</blockquote>;
+      }
+
+      const config = isWarning 
+        ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+        : isInfo 
+        ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ LOGISTIEK", color: "text-blue-600" }
+        : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+
+      const cleanRecursive = (node: any): any => {
+        if (typeof node === 'string') return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
+        if (Array.isArray(node)) return node.map(cleanRecursive);
+        if (node?.props?.children) {
+          return React.cloneElement(node, { ...node.props, children: cleanRecursive(node.props.children) } as any);
+        }
+        return node;
+      };
+
+      return (
+        <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
+          <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>{config.title}</div>
+          <div className="text-slate-900 leading-snug font-normal whitespace-pre-wrap [&_p]:m-0">
+            {cleanRecursive(children)}
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
-    <div className="space-y-6 pb-24 animate-in fade-in duration-500">
+    <div className="space-y-6 pb-24 px-4 animate-in fade-in duration-700">
+      <Link href="/">
+  <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group mb-4">
+    <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
+    Terug naar Home
+  </div>
+</Link>
       <header>
         <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900">
-          On<span className="text-teal-600">boarding</span>
+          {title.split('boarding')[0]}<span className="text-teal-600">boarding</span>
         </h1>
         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-          AZ Groeninge • Welkom in de Dienst Anesthesie
+          {subtitle}
         </p>
       </header>
 
-      {/* 1. LOGISTIEK & TOEGANG */}
-      <Card className="border-l-4 border-l-blue-500 shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
-            <Key className="h-4 w-4 text-blue-500" /> Logistiek & Toegang
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
-              <AccordionTrigger className="text-sm font-bold">Badge & Kledij</AccordionTrigger>
-              <AccordionContent className="text-slate-600 text-sm space-y-2">
-                <p>• **Badge:** Af te halen bij de personeelsdienst (Route 12). Geeft toegang tot OK-complex en lockers.</p>
-                <p>• **Kledij:** Beschikbaar via de kledingautomaat op niveau -1. Maat doorgeven bij start.</p>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
-              <AccordionTrigger className="text-sm font-bold">IT & Logins</AccordionTrigger>
-              <AccordionContent className="text-slate-600 text-sm space-y-2">
-                <p>• **EPD (HiX):** Login via je algemene ziekenhuisaccount.</p>
-                <p>• **PACSON:** Radiologie viewer op elk werkstation.</p>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </CardContent>
-      </Card>
-
-      {/* 2. ZAAL-SPECIFIEKE TIPS (Jouw specialisaties) */}
-      <div className="space-y-3">
-        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 pl-1">Zaal-Specifieke Tips</h3>
-        <div className="grid gap-3">
-          <Card className="hover:bg-slate-50 transition-colors cursor-help">
-            <CardContent className="p-4 flex items-start gap-4">
-              <div className="bg-purple-100 p-2 rounded-lg text-purple-600 font-bold text-xs">OK 5</div>
-              <div>
-                <h4 className="font-bold text-sm uppercase">Robot-chirurgie (Uro/Abdo)</h4>
-                <p className="text-xs text-slate-500 mt-1">Focus op positionering en beperkte toegang tot de patiënt. Check altijd de arm-vrijheid.</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="hover:bg-slate-50 transition-colors cursor-help">
-            <CardContent className="p-4 flex items-start gap-4">
-              <div className="bg-rose-100 p-2 rounded-lg text-rose-600 font-bold text-xs">OK 8</div>
-              <div>
-                <h4 className="font-bold text-sm uppercase">Borstchirurgie</h4>
-                <p className="text-xs text-slate-500 mt-1">Standaard PECS I/II of Serratus Plane blocks. Overleg met de chirurg over lokale infiltratie.</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+        <Clock className="h-3 w-3 mr-1" /> Info laatst gecontroleerd: {new Date().toLocaleDateString('nl-BE')}
       </div>
 
-      {/* 3. EXPERTISE & MENTOREN */}
-      <Card className="border-l-4 border-l-teal-500 shadow-sm">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-black uppercase tracking-widest flex items-center gap-2">
-            <Users className="h-4 w-4 text-teal-500" /> Wie is Wie?
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-           <div className="divide-y divide-slate-100">
-              <div className="p-4 flex justify-between items-center">
-                <div>
-                  <p className="font-bold text-sm">Locoregionale Expert</p>
-                  <p className="text-xs text-slate-500">Aanspreekpunt voor complexe blocks.</p>
-                </div>
-                <Info className="h-4 w-4 text-slate-300" />
-              </div>
-              <div className="p-4 flex justify-between items-center">
-                <div>
-                  <p className="font-bold text-sm">Medisch Diensthoofd</p>
-                  <p className="text-xs text-slate-500">Algemene organisatie en planning.</p>
-                </div>
-                <Info className="h-4 w-4 text-slate-300" />
-              </div>
-           </div>
-        </CardContent>
-      </Card>
+      <hr className="border-slate-100" />
 
-      {/* 4. EMERGENCY LOCATIONS */}
-      <Card className="bg-red-50 border-red-200">
-        <CardContent className="p-4">
-          <h3 className="text-red-700 font-black uppercase text-xs flex items-center gap-2 mb-3">
-            <AlertTriangle className="h-4 w-4" /> Emergency Flashcard
-          </h3>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="bg-white p-3 rounded-xl border border-red-100 shadow-sm">
-              <p className="text-[10px] font-bold text-slate-400 uppercase">Moeilijke Luchtweg</p>
-              <p className="text-xs font-black text-red-600">Tegenover OK 4</p>
-            </div>
-            <div className="bg-white p-3 rounded-xl border border-red-100 shadow-sm">
-              <p className="text-[10px] font-bold text-slate-400 uppercase">Lipid Rescue</p>
-              <p className="text-xs font-black text-red-600">In elke blok-kar</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="prose prose-slate prose-sm max-w-none 
+        prose-ul:list-disc prose-li:marker:text-teal-600
+        prose-strong:text-teal-900 prose-strong:font-bold
+        prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
+        
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkBreaks]}
+          rehypePlugins={[rehypeRaw]}
+          components={markdownComponents as any}
+        >
+          {markdownBody}
+        </ReactMarkdown>
+      </div>
     </div>
   );
 }

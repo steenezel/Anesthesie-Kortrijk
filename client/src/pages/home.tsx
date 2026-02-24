@@ -8,7 +8,8 @@ import {
   Phone, 
   Search,
   GraduationCap,
-  Calculator
+  Calculator,
+  BookOpenCheck
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
@@ -48,7 +49,7 @@ const categories = [
   },
   {
     title: "Calculators",
-    description: "LAST | Apfel | Pediatrie",
+    description: "LAST | Apfel | Pediatrie | Dantrium",
     icon: Calculator,
     href: "/calculator",
     color: "bg-teal-600",
@@ -84,7 +85,16 @@ const categories = [
     lightColor: "bg-red-50",
     borderColor: "border-red-200",
     isExternal: true
-  }
+  },
+    {
+    title: "Journal Club",
+    description: "Evidence, schmevidence.",
+    icon: BookOpenCheck,
+    href: "/journalclub",
+    color: "bg-slate-700",
+    lightColor: "bg-slate-50",
+    borderColor: "border-slate-200"
+  },
 ];
 
 export default function Home() {

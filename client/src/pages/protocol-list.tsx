@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronRight, BookOpen, Stethoscope, Activity, Scissors } from "lucide-react";
+import { ChevronRight, ChevronLeft, BookOpen, Stethoscope, Activity, Scissors } from "lucide-react";
 
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
 
@@ -38,6 +38,12 @@ export default function ProtocolList() {
 
   return (
     <div className="space-y-8 pb-20">
+      <Link href="/">
+  <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group mb-4">
+    <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
+    Terug naar Home
+  </div>
+</Link>
       <div className="space-y-2">
         <h1 className="text-4xl font-black tracking-tighter uppercase text-slate-900">
           Protocollen <span className="text-blue-600">Anesthesie</span>
