@@ -134,24 +134,27 @@ export default function Home() {
 
          <PWAInstallPrompt />
 
-      {/* ZOEKBALK (De Trigger) */}
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }} 
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-xl mx-auto px-1"
-      >
-        <div 
-          onClick={() => setLocation("/search")}
-          className="relative group cursor-pointer"
-        >
-          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-slate-400 group-hover:text-teal-500 transition-colors" />
-          </div>
-          <div className="w-full bg-white border-2 border-slate-100 h-14  rounded-xl flex items-center px-8 text-xs text-center text-slate-400 font-medium shadow-sm group-hover:border-teal-100 transition-all">
-            Zoek protocollen, medicatie of blocks...
-          </div>
-        </div>
-      </motion.div>
+   {/* ZOEKBALK (De Trigger) */}
+<motion.div 
+  initial={{ opacity: 0, y: 10 }} 
+  animate={{ opacity: 1, y: 0 }}
+  className="max-w-xl mx-auto px-1"
+>
+  <div 
+    onClick={() => setLocation("/search")}
+    className="relative group cursor-pointer"
+  >
+    {/* Zoek-icoon: We houden dit absoluut links */}
+    <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
+      <Search className="h-5 w-5 text-slate-400 group-hover:text-teal-500 transition-colors" />
+    </div>
+
+    {/* De Balk: Gebruik justify-center voor perfecte centrering */}
+    <div className="w-full bg-white border-2 border-slate-100 h-10 rounded-xl flex items-center justify-center px-4 text-xs text-slate-400 font-medium shadow-sm group-hover:border-teal-100 transition-all">
+      Zoek protocollen, medicatie of blocks...
+    </div>
+  </div>
+</motion.div>
 
 {/* EASTER EGG */}
 <Dialog open={showEgg} onOpenChange={setShowEgg}>
