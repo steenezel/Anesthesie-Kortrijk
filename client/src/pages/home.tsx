@@ -91,9 +91,9 @@ const categories = [
     description: "Evidence, schmevidence.",
     icon: BookOpenCheck,
     href: "/journalclub",
-    color: "bg-slate-700",
-    lightColor: "bg-slate-50",
-    borderColor: "border-slate-200"
+    color: "bg-cyan-700",
+    lightColor: "bg-cyan-50",
+    borderColor: "border-cyan-200"
   },
 ];
 

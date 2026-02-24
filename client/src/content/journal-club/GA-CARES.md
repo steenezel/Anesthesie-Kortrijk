@@ -1,6 +1,9 @@
 ---
 title: "Anesthesia Type during Cancer Surgery: GA-CARES Trial"
+disciplines: ["Anesthesie"]
+date: "2026-02-24"
 pubmed_id: "41363871"
+type: "Research"
 ---
 
 ### **Studie: GA-CARES Trial (RCT)**
