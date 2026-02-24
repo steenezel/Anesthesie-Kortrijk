@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronRight, BookOpenCheck, FileText } from "lucide-react";
+import { ChevronRight, ChevronLeft, BookOpenCheck, FileText } from "lucide-react";
 
 // We halen alle markdown bestanden uit de journal-club map
 const allArticles = import.meta.glob('../content/journal-club/*.md', { query: 'raw', eager: true });
@@ -21,6 +21,12 @@ export default function Journalclub() {
 
   return (
     <div className="space-y-6 pb-24 animate-in fade-in duration-500">
+        <Link href="/">
+  <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group mb-4">
+    <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
+    Terug naar Home
+  </div>
+</Link>
       <header className="space-y-2">
         <h1 className="text-4xl font-black tracking-tighter uppercase text-slate-900">
           Journal <span className="text-teal-600">Club</span>

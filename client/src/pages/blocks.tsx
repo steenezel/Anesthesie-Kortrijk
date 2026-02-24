@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, ChevronRight, Crosshair, BookOpen, Activity } from "lucide-react";
+import { Search, ChevronRight, ChevronLeft, Crosshair, BookOpen, Activity } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 // Scan automatisch alle .md bestanden in de blocks map
@@ -32,7 +32,15 @@ export default function Blocks() {
   );
 
   return (
+    
     <div className="space-y-8 pb-24 animate-in fade-in duration-500 max-w-2xl mx-auto px-2">
+
+      <Link href="/">
+  <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group mb-4">
+    <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
+    Terug naar Home
+  </div>
+</Link>
       {/* HEADER: Consistent met Protocols */}
       <header className="space-y-2">
         <h1 className="text-4xl font-black text-slate-900 uppercase tracking-tighter leading-none">

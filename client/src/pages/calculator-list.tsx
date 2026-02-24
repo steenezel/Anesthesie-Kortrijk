@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShieldAlert, Apple, ChevronRight, Baby, ThermometerSun } from "lucide-react";
+import { ShieldAlert, Apple, ChevronRight, ChevronLeft, Baby, ThermometerSun } from "lucide-react";
 
 const calculators = [
   {
@@ -40,6 +40,12 @@ const calculators = [
 export default function CalculatorList() {
   return (
     <div className="space-y-6 pb-20">
+      <Link href="/">
+  <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group mb-4">
+    <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
+    Terug naar Home
+  </div>
+</Link>
       <div className="space-y-2">
         <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900">
           Calculators

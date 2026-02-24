@@ -1,10 +1,11 @@
 import React from "react";
-import { Info, Clock } from "lucide-react";
+import { ChevronLeft, Clock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from 'rehype-raw';
 import Zoom from 'react-medium-image-zoom';
 import remarkBreaks from 'remark-breaks';
+import {Link} from 'wouter';
 import 'react-medium-image-zoom/dist/styles.css';
 
 // We halen specifiek het onboarding bestand binnen
@@ -79,6 +80,12 @@ export default function OnboardingPage() {
 
   return (
     <div className="space-y-6 pb-24 px-4 animate-in fade-in duration-700">
+      <Link href="/">
+  <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group mb-4">
+    <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
+    Terug naar Home
+  </div>
+</Link>
       <header>
         <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900">
           {title.split('boarding')[0]}<span className="text-teal-600">boarding</span>

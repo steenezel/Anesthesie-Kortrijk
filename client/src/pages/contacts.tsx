@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Link } from "wouter";
 import { Input } from "@/components/ui/input";
-import { Phone, Search, Stethoscope, GraduationCap} from "lucide-react";
+import { Phone, Search, Stethoscope, GraduationCap, ChevronLeft} from "lucide-react";
 
 const contacts = [
 { name: "Carmen Alegret", role: "Staf", phone: "3040", category: "staf" },
@@ -76,6 +77,12 @@ export default function ContactsPage() {
 
   return (
     <div className="space-y-6 pb-24">
+      <Link href="/">
+  <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group mb-4">
+    <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
+    Terug naar Home
+  </div>
+</Link>
       <header className="pt-2">
         <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900">
           Telefoon<span className="text-teal-600">lijst</span>
