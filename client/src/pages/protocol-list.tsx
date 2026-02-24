@@ -1,119 +1,156 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronRight, ChevronLeft, BookOpen, Stethoscope, Activity, Scissors } from "lucide-react";
+import { 
+  ChevronRight, 
+  ChevronLeft, 
+  BookOpen, 
+  Stethoscope, 
+  Activity, 
+  Bone, 
+  Baby, 
+  HeartPulse, 
+  GlassWater,
+  Hamburger,
+  Brain,
+  Rose,
+  Ear,
+  Zap,
+  TreePalm
+} from "lucide-react";
 
+// Scan alle markdown bestanden in de protocols map
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
 
 export default function ProtocolList() {
-  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
+  // State om bij te houden welke discipline we bekijken
+  const [activeDiscipline, setActiveDiscipline] = useState<string | null>(null);
 
-  // 1. Data voorbereiden uit de bestanden
-  const protocols = Object.keys(allProtocols).map((path) => {
-    const pathParts = path.split('/');
-    let discipline = pathParts[pathParts.length - 2];
-    
-    // Als de discipline 'protocols' is, betekent het dat het bestand in de hoofdmap staat
-    if (discipline.toLowerCase() === 'protocols') {
-      discipline = 'Algemeen';
+  // 1. Data verwerken
+  const protocols = useMemo(() => {
+    return Object.keys(allProtocols).map((path) => {
+      const pathParts = path.split('/');
+      let discipline = pathParts[pathParts.length - 2];
+      
+      // Fallback voor bestanden die niet in een submap staan
+      if (discipline.toLowerCase() === 'protocols') {
+        discipline = 'Algemeen';
+      }
+
+      const fileName = pathParts[pathParts.length - 1].replace('.md', '');
+      const fileData = allProtocols[path] as any;
+      const rawContent = fileData.default || fileData;
+      
+      // Zoek titel in frontmatter
+      const titleMatch = typeof rawContent === 'string' ? rawContent.match(/title: "(.*)"/) : null;
+      const title = titleMatch ? titleMatch[1] : fileName.replace(/-/g, ' ');
+
+      return { discipline, id: fileName, title };
+    });
+  }, []);
+
+  // Unieke lijst van disciplines maken voor de "mappen"
+  const disciplines = useMemo(() => {
+    const unique = Array.from(new Set(protocols.map(p => p.discipline)));
+    return unique.sort();
+  }, [protocols]);
+
+  // Protocollen filteren op de gekozen discipline
+  const filteredProtocols = protocols.filter(p => p.discipline === activeDiscipline);
+
+  // Icon helper
+  const getIcon = (name: string) => {
+    switch (name.toLowerCase()) {
+      case 'orthopedie': return <Bone className="h-5 w-5" />;
+      case 'urologie': return <GlassWater className="h-5 w-5" />;
+      case 'neurochirurgie': return <Brain className="h-5 w-5" />;
+      case 'obstetrie-epidurale': return <Rose className="h-5 w-5" />;
+      case 'nko': return <Ear className="h-5 w-5" />;
+      case 'reanimatie': return <Zap className="h-5 w-5" />;
+      case 'buitendiensten': return <TreePalm className="h-5 w-5" />;
+      case 'thorax-vaat': return <Stethoscope className="h-5 w-5" />;
+      case 'abdominale': return <Hamburger className="h-5 w-5" />;
+      default: return <Activity className="h-5 w-5" />;
     }
-
-    const fileName = pathParts[pathParts.length - 1].replace('.md', '');
-    const fileData = allProtocols[path] as any;
-    const rawContent = fileData.default || fileData;
-    
-    const titleMatch = typeof rawContent === 'string' ? rawContent.match(/title: "(.*)"/) : null;
-    const title = titleMatch ? titleMatch[1] : fileName.replace(/-/g, ' ');
-
-    return { discipline, id: fileName, title };
-  });
-
-  // 2. Unieke disciplines ophalen voor het keuzemenu
-  const disciplines = Array.from(new Set(protocols.map(p => p.discipline)));
-
-  // 3. Filter de lijst op basis van selectie
-  const filteredProtocols = selectedDiscipline 
-    ? protocols.filter(p => p.discipline === selectedDiscipline)
-    : [];
+  };
 
   return (
-    <div className="space-y-8 pb-20">
-      <Link href="/">
-  <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group mb-4">
-    <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
-    Terug naar Home
-  </div>
-</Link>
-      <div className="space-y-2">
-        <h1 className="text-4xl font-black tracking-tighter uppercase text-slate-900">
-          Protocollen <span className="text-blue-600">Anesthesie</span>
-        </h1>
-        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-                  AZ Groeninge • Protocollen Kritieke Diensten
-                </p>
-              </div>
-
-      {/* STAP 1: HET KEUZEMENU (DISCIPLINES) */}
-      <div className="grid grid-cols-2 gap-3">
-        {disciplines.map((disc) => (
-          <button
-            key={disc}
-            onClick={() => setSelectedDiscipline(disc === selectedDiscipline ? null : disc)}
-            className={`p-4 rounded-xl border-2 transition-all text-left flex flex-col gap-3 ${
-              selectedDiscipline === disc 
-                ? "border-blue-600 bg-blue-50 ring-2 ring-blue-100" 
-                : "border-slate-100 bg-white hover:border-slate-300 shadow-sm"
-            }`}
-          >
-            <div className={`p-2 w-fit rounded-lg ${selectedDiscipline === disc ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-500"}`}>
-              <Scissors className="h-5 w-5" />
+    <div className="p-4 pb-24 space-y-6 animate-in fade-in duration-500">
+      
+      {/* HEADER LOGICA */}
+      {!activeDiscipline ? (
+        <div className="space-y-2">
+          <Link href="/">
+            <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer mb-4 group">
+              <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
+              Home
             </div>
-            <span className="font-black uppercase tracking-tighter text-sm leading-none">
-              {disc}
-            </span>
+          </Link>
+          <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900">Protocollen</h1>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">AZ Groeninge • Disciplines</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <button 
+            onClick={() => setActiveDiscipline(null)}
+            className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-widest cursor-pointer mb-4 group border-none bg-transparent p-0"
+          >
+            <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
+            Terug naar disciplines
           </button>
-        ))}
-      </div>
-
-      {/* STAP 2: DE LIJST MET INGREPEN (VERSCHIJNT BIJ SELECTIE) */}
-      {selectedDiscipline && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="flex items-center justify-between border-b pb-2">
-            <h2 className="text-xs font-black uppercase tracking-widest text-blue-600">
-              Ingrepen: {selectedDiscipline}
-            </h2>
-            <span className="text-[10px] font-bold text-slate-400 uppercase">
-              {filteredProtocols.length} items
-            </span>
-          </div>
-
-          <div className="grid gap-2">
-            {filteredProtocols.map((protocol) => (
-             <Link key={protocol.id} href={`/protocols/${protocol.id}`}>
-  <Card className="hover:border-teal-400 transition-all cursor-pointer border-slate-200 shadow-none">
-    <CardContent className="p-4 flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <BookOpen className="h-4 w-4 text-slate-300" />
-        <span className="font-bold text-slate-700 uppercase tracking-tight text-sm">
-          {protocol.title}
-        </span>
-      </div>
-      <ChevronRight className="h-4 w-4 text-slate-300" />
-    </CardContent>
-  </Card>
-</Link>
-            ))}
-          </div>
+          <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900">{activeDiscipline}</h1>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">{filteredProtocols.length} Richtlijnen beschikbaar</p>
         </div>
       )}
 
-      {/* Placeholder als er nog niets gekozen is */}
-      {!selectedDiscipline && (
-        <div className="py-20 text-center space-y-3 opacity-40">
-          <Activity className="h-8 w-8 mx-auto text-slate-300" />
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-            Selecteer een discipline om de lijst te laden
-          </p>
+      <hr className="border-slate-100" />
+
+      {/* SCHERM 1: LIJST MET DISCIPLINES (MAPPEN) */}
+      {!activeDiscipline && (
+        <div className="grid grid-cols-1 gap-3 animate-in fade-in duration-300">
+          {disciplines.map((discipline) => (
+            <Card 
+              key={discipline} 
+              onClick={() => setActiveDiscipline(discipline)}
+              className="hover:border-blue-400 transition-all cursor-pointer border-slate-200 shadow-none active:scale-[0.98] group"
+            >
+              <CardContent className="p-1 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    {getIcon(discipline)}
+                  </div>
+                  <span className="font-bold text-slate-700 uppercase tracking-tight text-sm">
+                    {discipline}
+                  </span>
+                </div>
+                <ChevronRight className="h-4 w-4 text-slate-300" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* SCHERM 2: LIJST MET PROTOCOLLEN VOOR DE GEKOZEN DISCIPLINE */}
+      {activeDiscipline && (
+        <div className="grid gap-2 animate-in slide-in-from-right-4 duration-300">
+          {filteredProtocols.map((protocol) => (
+            <Link 
+              key={protocol.id} 
+              href={`/protocols/${protocol.id}?fromDiscipline=${encodeURIComponent(activeDiscipline)}`}
+            >
+              <Card className="hover:border-teal-400 transition-all cursor-pointer border-slate-200 shadow-none">
+                <CardContent className="p-2 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <BookOpen className="h-4 w-4 text-slate-300" />
+                    <span className="font-bold text-slate-700 uppercase tracking-tight text-sm">
+                      {protocol.title}
+                    </span>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-slate-300" />
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
         </div>
       )}
     </div>

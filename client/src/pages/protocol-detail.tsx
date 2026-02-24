@@ -15,6 +15,8 @@ const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: '
 export default function ProtocolDetail() {
   const [, params] = useRoute("/protocols/:id");
   const id = params?.id?.toLowerCase();
+  const queryParams = new URLSearchParams(window.location.search);
+  const fromDiscipline = queryParams.get('fromDiscipline');
 
   // Zoek het bestand dat eindigt op /id.md
   const fileKey = Object.keys(allProtocols).find(key => 
@@ -22,7 +24,6 @@ export default function ProtocolDetail() {
   );
 
   const fileData = fileKey ? (allProtocols[fileKey] as any) : null;
-  // Forceer conversie naar string en verwijder eventuele verborgen whitespace aan het begin/eind
   const rawContent = String(fileData?.default || fileData || "").trim();
   
   if (!rawContent) {
@@ -35,11 +36,14 @@ export default function ProtocolDetail() {
     );
   }
 
-  // Verbeterde Frontmatter-stripper
-  const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
-  const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
+  // --- LOGICA VOOR TITEL & CONTENT ---
+  // 1. Haal de titel uit de frontmatter
+  const titleMatch = rawContent.match(/title: "(.*)"/);
+  const title = titleMatch ? titleMatch[1] : id?.replace(/-/g, ' ');
 
-  
+  // 2. Strip de frontmatter (alles tussen de eerste --- en ---)
+  // We gebruiken enkel markdownBody voor de rest van het bestand
+  const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
 
   const markdownComponents = {
     img: ({ src, alt }: { src?: string; alt?: string }) => (
@@ -60,12 +64,11 @@ export default function ProtocolDetail() {
     ),
 
     strong: ({ children }: any) => (
-    <strong className="font-bold text-teal-900 mr-[0.25em]">
-      {children}
-    </strong>
+      <strong className="font-bold text-teal-900 mr-[0.25em]">
+        {children}
+      </strong>
     ),
 
-    
     blockquote: ({ children }: any) => {
       const flattenText = (node: any): string => {
         if (typeof node === 'string') return node;
@@ -102,8 +105,6 @@ export default function ProtocolDetail() {
         }
         return node;
       };
-       
-      
 
       return (
         <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
@@ -133,18 +134,18 @@ export default function ProtocolDetail() {
     ),
     td: ({ children }: any) => (
       <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0 whitespace-pre-line">
-      {children}
+        {children}
       </td>
-),
+    ),
   };
 
   return (
     <div className="space-y-6 pb-20 px-4 animate-in fade-in duration-700">
-      {/* NAVIGATIE */}
+      {/* DYNAMISCHE TERUGKNOP */}
       <Link href="/protocols">
         <div className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group">
           <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
-          Terug naar overzicht
+          {fromDiscipline ? `Terug naar ${fromDiscipline}` : "Terug naar overzicht"}
         </div>
       </Link>
 
