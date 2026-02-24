@@ -80,7 +80,7 @@ export default function Journalclub() {
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-600 mt-1">{filteredArticles.length} publicaties</p>
           </div>
         </header>
-        <div className="grid gap-3">
+        <div className="grid grid-cols-1 w-full gap-2">
           {filteredArticles.map(article => <ArticleCard key={article.id} article={article} />)}
         </div>
       </div>
@@ -123,20 +123,31 @@ export default function Journalclub() {
 function ArticleCard({ article }: { article: any }) {
   return (
     <Link href={`/journalclub/${article.id}`}>
-      <Card className="hover:border-teal-500 transition-all cursor-pointer border-slate-200 shadow-sm bg-white overflow-hidden group">
-        <CardContent className="p-4 flex items-center justify-between">
-          <div className="flex items-center gap-4 min-w-0">
-            <div className="p-2 bg-slate-50 rounded-lg text-slate-400 group-hover:text-teal-600 transition-colors"><BookOpenCheck className="h-5 w-5" /></div>
-            <div className="truncate">
-              <span className="font-bold text-slate-700 uppercase tracking-tight text-sm block truncate">{article.title}</span>
-              <div className="flex gap-1 mt-1">
+      <Card className="hover:border-teal-500 transition-all cursor-pointer border-slate-200 shadow-sm bg-white overflow-hidden group w-full">
+        <CardContent className="p-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            {/* Icoon iets compacter */}
+            <div className="p-2 bg-slate-50 rounded-lg text-slate-400 group-hover:text-teal-600 shrink-0">
+              <BookOpenCheck className="h-4 w-4" />
+            </div>
+            
+            <div className="min-w-0 flex-1">
+              {/* Titel: Gewone tekst, kleiner lettertype, geen all-caps */}
+              <span className="text-sm font-semibold text-slate-700 leading-tight block truncate">
+                {article.title}
+              </span>
+              
+              {/* Tags: Iets subtieler */}
+              <div className="flex flex-wrap gap-1 mt-1">
                 {article.disciplines.map((d: string) => (
-                  <span key={d} className="text-[8px] font-black px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded uppercase tracking-tighter">{d}</span>
+                  <span key={d} className="text-[7px] font-bold px-1.5 py-0.5 bg-slate-100 text-slate-400 rounded uppercase tracking-tighter">
+                    {d}
+                  </span>
                 ))}
               </div>
             </div>
           </div>
-          <ChevronRight className="h-4 w-4 text-slate-300 shrink-0" />
+          <ChevronRight className="h-4 w-4 text-slate-300 shrink-0 group-hover:translate-x-1 transition-transform" />
         </CardContent>
       </Card>
     </Link>
