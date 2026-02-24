@@ -1,6 +1,6 @@
 ---
 title: "Oxygen Targets in Acute Hypoxemic Respiratory Failure: HOT-ICU Trial" 
-pubmed\_id: "33471452" 
+pubmed_id: "33471452 " 
 type: "Research"
 ---
 

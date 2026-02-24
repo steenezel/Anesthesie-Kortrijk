@@ -1,6 +1,6 @@
 ---
 title: "Pressure-Support vs Controlled Ventilation: PROBESE Trial"
-pubmed_id: "39542108"
+pubmed_id: "31157366"
 type: "Research"
 ---
 
