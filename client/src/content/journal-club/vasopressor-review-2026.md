@@ -1,5 +1,7 @@
 ---
 title: "Perioperative Vasopressor Management: Review 2026"
+disciplines: ["Anesthesie"]
+date: "2026-02-24"
 pubmed_id: "41384618"
 type: "Review"
 ---

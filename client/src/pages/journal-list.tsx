@@ -4,7 +4,7 @@ import { ChevronRight, ChevronLeft, BookOpenCheck, FileText, Clock, Stethoscope,
 
 const allArticles = import.meta.glob('../content/journal-club/*.md', { query: 'raw', eager: true });
 
-const DISCIPLINES = ["Anesthesie", "Intensieve Zorgen", "Urgentie"];
+const DISCIPLINES = ["Anesthesie", "ICU", "Urgentie"];
 
 export default function Journalclub() {
   // 1. Data voorbereiden met uitgebreide parsing
@@ -69,7 +69,7 @@ export default function Journalclub() {
           <section key={disc} className="space-y-3 pt-4">
             <h2 className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-900">
               {disc === "Anesthesie" && <Stethoscope className="h-4 w-4 text-blue-500" />}
-              {disc === "Intensieve Zorgen" && <Activity className="h-4 w-4 text-purple-500" />}
+              {disc === "ICU" && <Activity className="h-4 w-4 text-purple-500" />}
               {disc === "Urgentie" && <Zap className="h-4 w-4 text-orange-500" />}
               {disc}
             </h2>

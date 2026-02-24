@@ -1,7 +1,7 @@
 ---
 title: "Oxygen Targets in Acute Hypoxemic Respiratory Failure: HOT-ICU Trial" 
 pubmed_id: "33471452 " 
-disciplines: ["Intensieve", "Urgentie"]
+disciplines: ["ICU"]
 date: "2026-02-24"
 type: "Research"
 ---
