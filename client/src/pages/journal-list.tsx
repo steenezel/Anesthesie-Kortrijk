@@ -9,7 +9,8 @@ import {
   Stethoscope, 
   Activity, 
   Zap, 
-  FolderOpen 
+  FolderOpen, 
+  Siren
 } from "lucide-react";
 
 const allArticles = import.meta.glob('../content/journal-club/*.md', { query: 'raw', eager: true });
@@ -17,7 +18,8 @@ const allArticles = import.meta.glob('../content/journal-club/*.md', { query: 'r
 const DISCIPLINES = [
   { id: "Anesthesie", icon: Stethoscope, color: "text-blue-500", bg: "bg-blue-50" },
   { id: "ICU", icon: Activity, color: "text-purple-500", bg: "bg-purple-50" },
-  { id: "Urgentie", icon: Zap, color: "text-orange-500", bg: "bg-orange-50" },
+  { id: "Urgentie", icon: Siren, color: "text-orange-500", bg: "bg-orange-50" },
+  { id: "Pijn", icon: Zap, color: "text-cyan-500", bg: "bg-cyan-50" }
 ];
 
 export default function Journalclub() {
@@ -93,20 +95,15 @@ export default function Journalclub() {
       <Link href="/"><div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-4"><ChevronLeft className="h-4 w-4 mr-1" /> Home</div></Link>
       
       <section>
-        <h1 className="text-5xl font-black tracking-tighter uppercase text-slate-900 mb-2">Journal <span className="text-teal-600">Club</span></h1>
+        <h1 className="text-3xl font-black tracking-tightest uppercase text-slate-900 mb-2">Journal <span className="text-teal-600">Club</span></h1>
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">Evidence Based Medicine</p>
       </section>
 
-      <section className="space-y-4">
-        <h2 className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400"><Clock size={14} /> Nieuwste updates</h2>
-        <div className="grid gap-2">{recentArticles.map(a => <ArticleCard key={a.id} article={a} />)}</div>
-      </section>
-
-      <section className="space-y-4">
+           <section className="space-y-4">
         <h2 className="text-[11px] font-black uppercase tracking-widest text-slate-400">Disciplines</h2>
-        <div className="grid grid-cols-1 gap-3">
+        <div className="grid grid-cols-1 gap-2">
           {DISCIPLINES.map((disc) => (
-            <button key={disc.id} onClick={() => setActiveFolder(disc.id)} className="group flex items-center justify-between p-5 bg-white border-2 border-slate-100 rounded-[28px] hover:border-teal-500 transition-all active:scale-95">
+            <button key={disc.id} onClick={() => setActiveFolder(disc.id)} className="group flex items-center justify-between p-2 bg-white border-2 border-slate-100 rounded-[28px] hover:border-teal-500 transition-all active:scale-95">
               <div className="flex items-center gap-2">
                 <div className={`p-2 rounded-lg ${disc.bg} ${disc.color} group-hover:bg-teal-600 group-hover:text-white transition-colors`}><disc.icon size={20} /></div>
                 <h3 className="text-base font-black uppercase tracking-tighter text-slate-800">{disc.id}</h3>
@@ -116,6 +113,13 @@ export default function Journalclub() {
           ))}
         </div>
       </section>
+
+      <section className="space-y-4">
+        <h2 className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400"><Clock size={14} /> Nieuwste updates</h2>
+        <div className="grid gap-2">{recentArticles.map(a => <ArticleCard key={a.id} article={a} />)}</div>
+      </section>
+
+ 
     </div>
   );
 }

@@ -124,7 +124,7 @@ export default function Home() {
         className="text-center space-y-2 cursor-pointer select-none" 
         onClick={handleLogoTap}
       >
-        <h1 className="text-4xl font-black tracking-tighter text-slate-900 uppercase">
+        <h1 className="text-3xl font-black tracking-tighter text-slate-900 uppercase">
           Anesthesie <span className="text-teal-600">Kortrijk</span>
         </h1>
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
@@ -138,7 +138,7 @@ export default function Home() {
       <motion.div 
         initial={{ opacity: 0, y: 10 }} 
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-2xl mx-auto px-1"
+        className="max-w-xl mx-auto px-1"
       >
         <div 
           onClick={() => setLocation("/search")}
@@ -147,7 +147,7 @@ export default function Home() {
           <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-slate-400 group-hover:text-teal-500 transition-colors" />
           </div>
-          <div className="w-full bg-white border-2 border-slate-100 h-14 rounded-2xl flex items-center px-8 text-slate-400 font-medium shadow-sm group-hover:border-teal-100 transition-all">
+          <div className="w-full bg-white border-2 border-slate-100 h-14  rounded-xl flex items-center px-8 text-xs text-center text-slate-400 font-medium shadow-sm group-hover:border-teal-100 transition-all">
             Zoek protocollen, medicatie of blocks...
           </div>
         </div>
@@ -243,7 +243,7 @@ export default function Home() {
 </Dialog>
 
       {/* NAVIGATIE GRID */}
-      <div className="grid gap-4 max-w-2xl mx-auto">
+      <div className="grid gap-2 max-w-xl mx-auto">
         {categories.map((category, index) => (
           <motion.div
             key={category.title}
