@@ -22,6 +22,8 @@ import ContactsPage from "@/pages/contacts";
 import GamePage from "@/pages/game";
 import SearchPage from "@/pages/search";
 import OnboardingPage from "@/pages/onboarding";
+import Journalclub from "@/pages/journal-list";
+import JournalDetail from "@/pages/journal-detail";
 import WordlePage from "./pages/WordlePage";
 import { BottomNav } from "@/components/bottom-nav";
 
@@ -153,6 +155,8 @@ function Router() {
           <Route path="/info" component={InfoPage} />
           <Route path="/wordle" component={WordlePage} />
           <Route path="/onboarding" component={OnboardingPage} />
+          <Route path="/journalclub" component={Journalclub} />
+          <Route path="/journalclub/:id" component={JournalDetail} />
           <Route component={NotFound} />
         </Switch>
       </main>
