@@ -1,11 +1,14 @@
 import React from "react";
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, FileWarning, ExternalLink, BookOpen } from "lucide-react";
+import { ChevronLeft, FileWarning, ExternalLink, Clock } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from 'rehype-raw';
+import Zoom from 'react-medium-image-zoom';
 import remarkBreaks from 'remark-breaks';
+import 'react-medium-image-zoom/dist/styles.css';
 
+// We scannen specifiek de journal-club map
 const allJournals = import.meta.glob('../content/journal-club/*.md', { query: 'raw', eager: true });
 
 export default function JournalDetail() {
@@ -29,31 +32,130 @@ export default function JournalDetail() {
     );
   }
 
-  // Extractie van Metadata uit Frontmatter
+  // Extractie van Metadata en Body
   const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
   const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
   const pubmedId = rawContent.match(/pubmed_id: "(.*)"/)?.[1];
 
+  // De specifieke markdown componenten logica
+  const markdownComponents = {
+    img: ({ src, alt }: { src?: string; alt?: string }) => (
+      <div className="my-8">
+        <Zoom>
+          <img 
+            src={src} 
+            alt={alt} 
+            className="w-full h-auto rounded-2xl shadow-lg border border-slate-100 transition-all hover:shadow-xl" 
+          />
+        </Zoom>
+        {alt && (
+          <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-4 px-4 leading-relaxed">
+            {alt}
+          </p>
+        )}
+      </div>
+    ),
+
+    // Speciale definitie voor vette tekst
+    strong: ({ children }: any) => (
+      <strong className="font-bold text-teal-900 mr-[0.25em]">
+        {children}
+      </strong>
+    ),
+
+    // De complexe blockquote-parser voor [!TIP], [!INFO], [!WARNING]
+    blockquote: ({ children }: any) => {
+      const flattenText = (node: any): string => {
+        if (typeof node === 'string') return node;
+        if (Array.isArray(node)) return node.map(flattenText).join('');
+        if (node?.props?.children) return flattenText(node.props.children);
+        return '';
+      };
+
+      const fullText = flattenText(children);
+      const isWarning = fullText.includes("[!WARNING]");
+      const isInfo = fullText.includes("[!INFO]");
+      const isTip = fullText.includes("[!TIP]");
+
+      if (!isWarning && !isInfo && !isTip) {
+        return <blockquote className="border-l-4 border-slate-200 pl-6 my-8 text-slate-600">{children}</blockquote>;
+      }
+
+      const config = isWarning 
+        ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+        : isInfo 
+        ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+        : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+
+      const cleanRecursive = (node: any): any => {
+        if (typeof node === 'string') {
+          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
+        }
+        if (Array.isArray(node)) return node.map(cleanRecursive);
+        if (node?.props?.children) {
+          return React.cloneElement(node, {
+            ...node.props,
+            children: cleanRecursive(node.props.children)
+          } as any);
+        }
+        return node;
+      };
+
+      return (
+        <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
+          <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>
+            {config.title}
+          </div>
+          <div className="text-slate-900 leading-snug font-normal whitespace-pre-wrap [&_p]:m-0">
+            {cleanRecursive(children)}
+          </div>
+        </div>
+      );
+    },
+
+    table: ({ children }: any) => (
+      <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
+        <table className="min-w-full border-collapse">{children}</table>
+      </div>
+    ),
+    thead: ({ children }: any) => <thead className="bg-slate-50/80 backdrop-blur-sm">{children}</thead>,
+    tr: ({ children }: any) => <tr className="border-b border-slate-100 last:border-0">{children}</tr>,
+    th: ({ children }: any) => (
+      <th className="px-4 py-3 text-left text-[10px] font-black uppercase text-slate-500 tracking-widest border-r border-slate-100 last:border-0">
+        {children}
+      </th>
+    ),
+    td: ({ children }: any) => (
+      <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0 whitespace-pre-line">
+        {children}
+      </td>
+    ),
+  };
+
   return (
     <div className="space-y-6 pb-20 px-4 animate-in fade-in duration-700">
+      {/* NAVIGATIE */}
       <Link href="/journalclub">
-        <div className="flex items-center text-slate-500 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group">
+        <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group">
           <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
-          Terug naar Journal Club
+          Terug naar overzicht
         </div>
       </Link>
 
+      {/* TITEL SECTIE */}
       <div className="space-y-4">
         <div className="space-y-2">
           <div className="bg-teal-100 text-teal-700 text-[9px] font-black px-2 py-1 rounded w-fit uppercase tracking-widest">
             Scientific Review
           </div>
-          <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900 leading-[1.1]">
+          <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900 leading-tight">
             {title}
           </h1>
+          <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+            <Clock className="h-3 w-3 mr-1" /> Gepubliceerd: {new Date().toLocaleDateString('nl-BE')}
+          </div>
         </div>
 
-        {/* PubMed Knop: Enkel zichtbaar als pubmed_id bestaat */}
         {pubmedId && (
           <a 
             href={`https://pubmed.ncbi.nlm.nih.gov/${pubmedId}/`}
@@ -69,12 +171,16 @@ export default function JournalDetail() {
 
       <hr className="border-slate-100" />
 
+      {/* MARKDOWN CONTENT */}
       <div className="prose prose-slate prose-sm max-w-none 
-        prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-teal-700 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4
-        prose-strong:text-teal-900 prose-blockquote:border-teal-500 prose-blockquote:bg-teal-50/50 prose-blockquote:rounded-r-2xl">
+        prose-ul:list-disc prose-li:marker:text-teal-600
+        prose-strong:text-teal-900 prose-strong:font-bold
+        prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
+
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkBreaks]}
           rehypePlugins={[rehypeRaw]}
+          components={markdownComponents as any}
         >
           {markdownBody}
         </ReactMarkdown>
