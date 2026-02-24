@@ -147,7 +147,7 @@ export default function Home() {
           <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-slate-400 group-hover:text-teal-500 transition-colors" />
           </div>
-          <div className="w-full bg-white border-2 border-slate-100 h-14 rounded-2xl flex items-center px-12 text-slate-400 font-medium shadow-sm group-hover:border-teal-100 transition-all">
+          <div className="w-full bg-white border-2 border-slate-100 h-14 rounded-2xl flex items-center px-8 text-slate-400 font-medium shadow-sm group-hover:border-teal-100 transition-all">
             Zoek protocollen, medicatie of blocks...
           </div>
         </div>
@@ -257,10 +257,10 @@ export default function Home() {
                   <CardContent className="p-0">
                     <div className="flex items-stretch">
                       <div className={`${category.color} w-2`}></div>
-                      <div className="flex-1 p-6 flex items-center justify-between">
+                      <div className="flex-1 p-2 flex items-center justify-between">
                         <div className="flex items-center gap-5">
-                          <div className={`p-3 rounded-2xl ${category.lightColor} text-primary transition-transform group-hover:scale-110 duration-300`}>
-                            <category.icon className={`h-8 w-8 ${category.color.replace('bg-', 'text-')}`} />
+                          <div className={`p-2 rounded-2xl ${category.lightColor} text-primary transition-transform group-hover:scale-110 duration-300`}>
+                            <category.icon className={`h-6 w-6 ${category.color.replace('bg-', 'text-')}`} />
                           </div>
                           <div>
                             <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{category.title}</h2>
@@ -279,10 +279,10 @@ export default function Home() {
                   <CardContent className="p-0">
                     <div className="flex items-stretch">
                       <div className={`${category.color} w-2`}></div>
-                      <div className="flex-1 p-6 flex items-center justify-between">
+                      <div className="flex-1 p-2 flex items-center justify-between">
                         <div className="flex items-center gap-5">
-                          <div className={`p-3 rounded-2xl ${category.lightColor} text-primary transition-transform group-hover:scale-110 duration-300`}>
-                            <category.icon className={`h-8 w-8 ${category.color.replace('bg-', 'text-')}`} />
+                          <div className={`p-2 rounded-2xl ${category.lightColor} text-primary transition-transform group-hover:scale-110 duration-300`}>
+                            <category.icon className={`h-6 w-6 ${category.color.replace('bg-', 'text-')}`} />
                           </div>
                           <div>
                             <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{category.title}</h2>
