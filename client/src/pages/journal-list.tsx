@@ -93,7 +93,7 @@ export default function Journalclub() {
       <Link href="/"><div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-4"><ChevronLeft className="h-4 w-4 mr-1" /> Home</div></Link>
       
       <section>
-        <h1 className="text-5xl font-black tracking-tighter uppercase text-slate-900 mb-2">Journal Club</h1>
+        <h1 className="text-5xl font-black tracking-tighter uppercase text-slate-900 mb-2">Journal <span className="text-teal-600">Club</span></h1>
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">Evidence Based Medicine</p>
       </section>
 
