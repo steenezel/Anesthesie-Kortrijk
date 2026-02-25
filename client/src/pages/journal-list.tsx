@@ -115,7 +115,7 @@ export default function Journalclub() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-slate-400"><Clock size={14} /> Nieuwste updates</h2>
+        <h2 className="flex items-center gap-2 text-[12px] font-black uppercase tracking-widest text-slate-400"><Clock size={14} /> Recentste toevoegingen</h2>
         <div className="grid gap-2">{recentArticles.map(a => <ArticleCard key={a.id} article={a} />)}</div>
       </section>
 
@@ -136,14 +136,14 @@ function ArticleCard({ article }: { article: any }) {
             </div>
             
             <div className="min-w-0 flex-1">
-              <span className="text-sm font-semibold text-slate-700 leading-snug break-words block truncate">
+              <span className="text-sm font-light text-slate-700 leading-snug break-words block truncate">
                 {article.title}
               </span>
               
               {/* Tags: Iets subtieler */}
               <div className="flex flex-wrap gap-1 mt-1">
                 {article.disciplines.map((d: string) => (
-                  <span key={d} className="text-[7px] font-bold px-1.5 py-0.5 bg-slate-100 text-slate-400 rounded uppercase tracking-tighter">
+                  <span key={d} className="text-[8px] font-semibold px-1.5 py-0.5 bg-slate-100 text-slate-400 rounded uppercase tracking-tighter">
                     {d}
                   </span>
                 ))}
