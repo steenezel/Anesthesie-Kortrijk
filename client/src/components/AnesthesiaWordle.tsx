@@ -6,14 +6,12 @@ import { useState, useEffect, useCallback } from 'react';
 import { validWords } from '../data/puzzle_words_5.js';
 
 const DAILY_SOLUTIONS = [
-  "BLOCK", "JOERI", "BARTH", "TUBES", "GLIDE", 
+  "ANOUK", "CARLO", "MARIE", "ELINE","BLOCK", "JOERI", "BARTH", "TUBES", "GLIDE", 
   "SERUM", "BLOED", "FLUIM", "BLAAS", "DRAIN",
   "TUMOR", "NAALD", "ADERS", "PROBE", "SPIER",
-  "HOOFT", "ANOUK", "CARLO", "MARIE", "ELINE",
+  "HOOFT", "FEMUR", "BREUK", "LEVER", "BRADY",     "TACHY","FEEST", "DENIS", "ABCES","JORNE", "KABEL", 
   "WACHT", "SPOED", "KAMER", "LOUIS", "BORST",
-  "LIJST", "DRAMA", "SNOEP", "CHIPS", "SPUIT",
-  "FEMUR", "BREUK", "LEVER", "BRADY", "TACHY",
-  "FEEST", "DENIS", "ABCES","JORNE", "KABEL"
+  "LIJST", "DRAMA", "SNOEP", "CHIPS", "SPUIT"
 ];
 
 const AZERTY_KEYS = [
