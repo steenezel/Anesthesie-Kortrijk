@@ -136,8 +136,7 @@ function ArticleCard({ article }: { article: any }) {
             </div>
             
             <div className="min-w-0 flex-1">
-              {/* Titel: Gewone tekst, kleiner lettertype, geen all-caps */}
-              <span className="text-sm font-semibold text-slate-700 leading-tight block truncate">
+              <span className="text-sm font-semibold text-slate-700 leading-snug break-words block truncate">
                 {article.title}
               </span>
               
@@ -155,5 +154,6 @@ function ArticleCard({ article }: { article: any }) {
         </CardContent>
       </Card>
     </Link>
+    
   );
 }
