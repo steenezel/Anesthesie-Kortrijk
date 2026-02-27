@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShieldAlert, Apple, ChevronRight, ChevronLeft, Baby, ThermometerSun } from "lucide-react";
+import { ShieldAlert, Apple, ChevronRight, ChevronLeft, Baby, ThermometerSun, Atom } from "lucide-react";
 
 const calculators = [
   {
@@ -34,7 +34,15 @@ const calculators = [
     path: "/calculator/dantroleen",
     icon: <ThermometerSun className="h-6 w-6 text-green-600" />,
     color: "border-green-100 bg-green-50"
-  }
+  },
+  {
+    id: "sedation-peds",
+    title: "Peds Sedatie MRI",
+    description: "Dexdor & Atropine voor MRI",
+    path: "/calculator/sedation-peds",
+    icon: <Atom className="h-6 w-6 text-teal-600" />,
+    color: "border-teal-100 bg-teal-50"
+},
 ];
 
 export default function CalculatorList() {

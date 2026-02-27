@@ -8,6 +8,8 @@ import Zoom from 'react-medium-image-zoom';
 import remarkBreaks from 'remark-breaks';
 import 'react-medium-image-zoom/dist/styles.css';
 import DantroleenCalc from '../components/calculators/DantroleenCalc.js';
+import SedationPedsCalculator from "@/components/calculators/SedationPedsCalculator";
+
 
 // We scannen alle markdown bestanden
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
@@ -117,6 +119,8 @@ export default function ProtocolDetail() {
         </div>
       );
     },
+
+    SedationPedsCalculator: () => <SedationPedsCalculator />,
 
     dantroleencalc: () => <DantroleenCalc />,
     

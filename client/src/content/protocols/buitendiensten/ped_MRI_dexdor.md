@@ -48,3 +48,6 @@ Time out met radiologen 
 - Atropine 10 mcg/kg: wachten op effect
 - Dexdor 2 mcg/kg inductie *heel trage iv bolus*
 - Onderhoud: Dexdor 0.5 mcg/kg elke 20 minuten
+
+### Dosering Calculator
+<SedationPedsCalculator />
