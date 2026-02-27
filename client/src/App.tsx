@@ -26,6 +26,8 @@ import Journalclub from "@/pages/journal-list";
 import JournalDetail from "@/pages/journal-detail";
 import WordlePage from "./pages/WordlePage";
 import { BottomNav } from "@/components/bottom-nav";
+import SedationCalculatorPage from "@/pages/sedation-peds";
+
 
 // --- DE BEWAKER (AuthGuard) ---
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -157,6 +159,7 @@ function Router() {
           <Route path="/onboarding" component={OnboardingPage} />
           <Route path="/journalclub" component={Journalclub} />
           <Route path="/journalclub/:id" component={JournalDetail} />
+          <Route path="/calculator/sedation-peds" component={SedationCalculatorPage} />
           <Route component={NotFound} />
         </Switch>
       </main>

@@ -8,6 +8,7 @@ import Zoom from 'react-medium-image-zoom';
 import remarkBreaks from 'remark-breaks';
 import 'react-medium-image-zoom/dist/styles.css';
 import DantroleenCalc from '../components/calculators/DantroleenCalc.js';
+import SedationPedsCalculator from "@/components/calculators/SedationPedsCalculator";
 
 // We scannen alle markdown bestanden
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
@@ -37,15 +38,14 @@ export default function ProtocolDetail() {
   }
 
   // --- LOGICA VOOR TITEL & CONTENT ---
-  // 1. Haal de titel uit de frontmatter
   const titleMatch = rawContent.match(/title: "(.*)"/);
   const title = titleMatch ? titleMatch[1] : id?.replace(/-/g, ' ');
 
-  // 2. Strip de frontmatter (alles tussen de eerste --- en ---)
-  // We gebruiken enkel markdownBody voor de rest van het bestand
+  // Strip de frontmatter (alles tussen de eerste --- en ---)
   const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
 
   const markdownComponents = {
+    // AFBEELDINGEN
     img: ({ src, alt }: { src?: string; alt?: string }) => (
       <div className="my-8">
         <Zoom>
@@ -63,12 +63,14 @@ export default function ProtocolDetail() {
       </div>
     ),
 
+    // ACCENTEN
     strong: ({ children }: any) => (
       <strong className="font-bold text-teal-900 mr-[0.25em]">
         {children}
       </strong>
     ),
 
+    // DE BELANGRIJKE RECURSIEVE BLOCKQUOTE PARSER
     blockquote: ({ children }: any) => {
       const flattenText = (node: any): string => {
         if (typeof node === 'string') return node;
@@ -118,8 +120,12 @@ export default function ProtocolDetail() {
       );
     },
 
+    // CALCULATORS
+    SedationPedsCalculator: () => <SedationPedsCalculator />,
+    sedationpedscalculator: () => <SedationPedsCalculator />, // Backup voor case-sensitivity
     dantroleencalc: () => <DantroleenCalc />,
     
+    // TABELLEN
     table: ({ children }: any) => (
       <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
         <table className="min-w-full border-collapse">{children}</table>
@@ -141,7 +147,6 @@ export default function ProtocolDetail() {
 
   return (
     <div className="space-y-6 pb-20 px-4 animate-in fade-in duration-700">
-      {/* DYNAMISCHE TERUGKNOP */}
       <Link href="/protocols">
         <div className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group">
           <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
@@ -149,7 +154,6 @@ export default function ProtocolDetail() {
         </div>
       </Link>
 
-      {/* TITEL SECTIE */}
       <div className="space-y-2">
         <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900 leading-tight">
           {title}
@@ -161,7 +165,6 @@ export default function ProtocolDetail() {
 
       <hr className="border-slate-100" />
 
-      {/* MARKDOWN CONTENT */}
       <div className="prose prose-slate prose-sm max-w-none 
         prose-ul:list-disc prose-li:marker:text-teal-600
         prose-strong:text-teal-900 prose-strong:font-bold
