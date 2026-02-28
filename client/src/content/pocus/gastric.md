@@ -1,25 +1,18 @@
 ---
-title: "Maaglediging (Gastric)"
-category: "Anesthesie"
-difficulty: "Advanced"
+title: "Gastric POCUS"
+indication: "Objectiveren van aspiratierisico door maaginhoud. Nuttig bij patiënten met onduidelijke nuchter-status, gastroparese, GLP1-agonisten, spoedingrepen."
+anatomy: "/images/pocus/gastric_algo.jpg"
+context: "Bij een full stomach bevinding wordt het anesthesieplan aangepast naar een **Rapid Sequence Induction (RSI)** of uitstel van de ingreep indien mogelijk."
+setup: "Convex voor volwassenen; Lineair voor slanke patiënten of kinderen. Diepte 10-15cm."
+patpos: "/images/pocus/gastric_probepos.jpg"
+probepos: "Plaats de probe in het **sagittale/transversale vlak** in de epigastrische regio."
+reference: "/images/pocus/gastric_reference.jpg"
+clearsign: "/images/pocus/gastric_clearsign.jpg"
+pathology: "/images/pocus/gastric_pathology.jpg"
+algorhythm: "/images/pocus/gastric_algo.jpg"
 ---
 
-# Maaglediging (Gastric)
-
-Het doel van Gastric POCUS is het inschatten van het aspiratierisico door de maaginhoud (nuchter, vloeistof of vast voedsel) te visualiseren.
-
-> [!INFO]
-> Dit protocol is met name nuttig bij patiënten met onduidelijke nuchterstatus, gastroparese (diabetes), inname van GLP1-agonisten of bij spoedoperaties.
-
-### Relevantie voor AZ Groeninge
-Bij een "full stomach" bevinding wordt het anesthesieplan aangepast naar een **Rapid Sequence Induction (RSI)** of uitstel van de ingreep indien mogelijk.
-
-## Acquisitie
-
-### Instellingen & Probe
-* **Probe:** Curvilinear (Convex) voor volwassenen; Lineair voor slanke patiënten of kinderen.
-* **Preset:** Abdominaal.
-* **Diepte:** 10-15 cm (zorg dat de aorta zichtbaar is).
+# Gastric Pocus
 
 ### Positionering & Scan-vlak
 1.  Plaats de probe in het **sagittale/transversale vlak** in de epigastrische regio.
