@@ -9,7 +9,8 @@ import {
   Search,
   GraduationCap,
   Calculator,
-  BookOpenCheck
+  BookOpenCheck,
+  Waves
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
@@ -66,6 +67,15 @@ const categories = [
     lightColor: "bg-orange-50",
     borderColor: "border-orange-200",
     isExternal: false
+  },
+  {
+    title: "POCUS",
+    description: "Focus!",
+    icon: Waves,
+    href: "/pocus",
+    color: "bg-fuchsia-700",
+    lightColor: "bg-fuchsia-50",
+    borderColor: "border-fuchsia-200"
   },
   {
     title: "Onboarding",
