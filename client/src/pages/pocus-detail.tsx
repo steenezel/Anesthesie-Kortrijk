@@ -7,6 +7,9 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from 'remark-breaks';
 import rehypeRaw from 'rehype-raw';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
@@ -159,7 +162,7 @@ export default function PocusDetail() {
           
           {bodySections.algemeen && (
             <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
-              <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeRaw]}>
+              <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]}>
                 {bodySections.algemeen}
               </ReactMarkdown>
             </div>
@@ -175,7 +178,7 @@ export default function PocusDetail() {
           
           {bodySections.acquisitie && (
             <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
-              <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeRaw]}>
+              <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]}>
                 {bodySections.acquisitie}
               </ReactMarkdown>
             </div>
