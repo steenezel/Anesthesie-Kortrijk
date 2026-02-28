@@ -1,7 +1,7 @@
 ---
 title: "Gastric POCUS"
 indication: "Objectiveren van aspiratierisico door maaginhoud. Nuttig bij patiënten met onduidelijke nuchter-status, gastroparese, GLP1-agonisten, spoedingrepen."
-anatomy: "/images/pocus/gastric_algo.jpg"
+anatomy: "/images/pocus/gastric_anatomy.jpg"
 context: "Bij een full stomach bevinding wordt het anesthesieplan aangepast naar een **Rapid Sequence Induction (RSI)** of uitstel van de ingreep indien mogelijk."
 setup: "Convex voor volwassenen; Lineair voor slanke patiënten of kinderen. Diepte 10-15cm."
 patpos: "/images/pocus/gastric_probepos.jpg"

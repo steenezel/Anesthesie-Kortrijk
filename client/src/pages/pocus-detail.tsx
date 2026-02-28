@@ -61,6 +61,17 @@ export default function PocusDetail() {
     algorhythm: getField("algorhythm"),
     body: rawContent.replace(/^---[\s\S]*?---/, '').trim()
   };
+  const splitBody = (content: string) => {
+    // We splitsen op de Markdown headers
+    const parts = content.split(/##\s+(?:Acquisitie|Interpretatie)/i);
+    return {
+      algemeen: parts[0] || "",
+      acquisitie: content.includes("## Acquisitie") ? content.split(/##\s+Acquisitie/i)[1].split(/##\s+Interpretatie/i)[0] : "",
+      interpretatie: content.includes("## Interpretatie") ? content.split(/##\s+Interpretatie/i)[1] : ""
+    };
+  };
+
+  const bodySections = splitBody(pocusData.body);
 
   const markdownComponents = {
     p: ({ children }: any) => <p className="mb-6 leading-relaxed text-slate-700 font-medium">{children}</p>,
@@ -140,28 +151,50 @@ export default function PocusDetail() {
           <TabsTrigger value="interpretatie" className="rounded-xl text-[10px] font-black uppercase">Interpretatie</TabsTrigger>
         </TabsList>
         
+{/* TAB 1: ALGEMEEN */}
         <TabsContent value="algemeen" className="space-y-4">
           <SmartContent label="Indicatie" content={pocusData.indication} />
           <SmartContent label="Anatomie" content={pocusData.anatomy} />
           <SmartContent label="Klinische Context" content={pocusData.context} />
-          <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100 mt-6">
-            <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeRaw]}>
-                {pocusData.body.split('##')[0]}
-            </ReactMarkdown>
-          </div>
+          
+          {bodySections.algemeen && (
+            <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
+              <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeRaw]}>
+                {bodySections.algemeen}
+              </ReactMarkdown>
+            </div>
+          )}
         </TabsContent>
 
+        {/* TAB 2: ACQUISITIE */}
         <TabsContent value="acquisitie" className="space-y-4">
           <SmartContent label="Toestel & Setup" content={pocusData.setup} />
           <SmartContent label="Patiënt Positie" content={pocusData.patpos} />
           <SmartContent label="Probe Locatie" content={pocusData.probepos} />
           <SmartContent label="Referentiebeeld" content={pocusData.reference} />
+          
+          {bodySections.acquisitie && (
+            <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
+              <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeRaw]}>
+                {bodySections.acquisitie}
+              </ReactMarkdown>
+            </div>
+          )}
         </TabsContent>
 
+        {/* TAB 3: INTERPRETATIE */}
         <TabsContent value="interpretatie" className="space-y-4">
           <SmartContent label="Normaalbeeld" content={pocusData.clearsign} />
           <SmartContent label="Pathologie" content={pocusData.pathology} />
           <SmartContent label="Beslisboom / Algoritme" content={pocusData.algorhythm} />
+          
+          {bodySections.interpretatie && (
+            <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
+              <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeRaw]}>
+                {bodySections.interpretatie}
+              </ReactMarkdown>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>
