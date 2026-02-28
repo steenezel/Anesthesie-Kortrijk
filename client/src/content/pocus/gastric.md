@@ -12,14 +12,13 @@ pathology: "/images/pocus/gastric_pathology.jpg"
 algorhythm: "/images/pocus/gastric_algo.jpg"
 ---
 
-# Gastric Pocus
+## Acquisitie
 
 ### Positionering & Scan-vlak
 1.  Plaats de probe in het **sagittale/transversale vlak** in de epigastrische regio.
 2.  Identificeer de **lever (linker lob)** als anatomisch venster en houd de **aorta** onderaan in beeld.
 3.  Zoek het **antrum** van de maag, gesitueerd tussen de linker leverlob (anterior) en de pancreas (posterior).
 4.  Scan de patiënt eerst in **rugligging (supine)** en vervolgens in **Right Lateral Decubitus (RLD)**. RLD is sensitiever voor het detecteren van vloeistof.
-
 
 
 ## Interpretatie
