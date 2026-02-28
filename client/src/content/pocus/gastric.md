@@ -44,5 +44,7 @@ Bij de interpretatie maken we gebruik van de Perlas-score (Grade 0-2).
 
 ### Volume Berekening (Optioneel)
 Indien Grade 1, kan het volume berekend worden via de CSA (Cross-Sectional Area):
+
 $$Area = \frac{(A \times B \times \pi)}{4}$$
+
 *(Waarbij A en B de diameters van het antrum zijn in RLD)*.

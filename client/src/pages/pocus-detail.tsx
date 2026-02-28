@@ -155,50 +155,59 @@ export default function PocusDetail() {
         </TabsList>
         
 {/* TAB 1: ALGEMEEN */}
-        <TabsContent value="algemeen" className="space-y-4">
-          <SmartContent label="Indicatie" content={pocusData.indication} />
-          <SmartContent label="Anatomie" content={pocusData.anatomy} />
-          <SmartContent label="Klinische Context" content={pocusData.context} />
-          
-          {bodySections.algemeen && (
-            <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
-              <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]}>
-                {bodySections.algemeen}
-              </ReactMarkdown>
-            </div>
-          )}
-        </TabsContent>
+<TabsContent value="algemeen" className="space-y-4">
+  <SmartContent label="Indicatie" content={pocusData.indication} />
+  <SmartContent label="Anatomie" content={pocusData.anatomy} />
+  <SmartContent label="Klinische Context" content={pocusData.context} />
+  
+  {bodySections.algemeen && (
+    <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]} 
+        rehypePlugins={[rehypeRaw, rehypeKatex]}
+        components={markdownComponents as any}
+        children={bodySections.algemeen} 
+      />
+    </div>
+  )}
+</TabsContent>
 
-        {/* TAB 2: ACQUISITIE */}
-        <TabsContent value="acquisitie" className="space-y-4">
-          <SmartContent label="Toestel & Setup" content={pocusData.setup} />
-          <SmartContent label="Patiënt Positie" content={pocusData.patpos} />
-          <SmartContent label="Probe Locatie" content={pocusData.probepos} />
-          <SmartContent label="Referentiebeeld" content={pocusData.reference} />
-          
-          {bodySections.acquisitie && (
-            <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
-              <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]} rehypePlugins={[rehypeRaw, rehypeKatex]}>
-                {bodySections.acquisitie}
-              </ReactMarkdown>
-            </div>
-          )}
-        </TabsContent>
+{/* TAB 2: ACQUISITIE */}
+<TabsContent value="acquisitie" className="space-y-4">
+  <SmartContent label="Toestel & Setup" content={pocusData.setup} />
+  <SmartContent label="Patiënt Positie" content={pocusData.patpos} />
+  <SmartContent label="Probe Locatie" content={pocusData.probepos} />
+  <SmartContent label="Referentiebeeld" content={pocusData.reference} />
+  
+  {bodySections.acquisitie && (
+    <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]} 
+        rehypePlugins={[rehypeRaw, rehypeKatex]}
+        components={markdownComponents as any}
+        children={bodySections.acquisitie} 
+      />
+    </div>
+  )}
+</TabsContent>
 
-        {/* TAB 3: INTERPRETATIE */}
-        <TabsContent value="interpretatie" className="space-y-4">
-          <SmartContent label="Normaalbeeld" content={pocusData.clearsign} />
-          <SmartContent label="Pathologie" content={pocusData.pathology} />
-          <SmartContent label="Beslisboom / Algoritme" content={pocusData.algorhythm} />
-          
-          {bodySections.interpretatie && (
-            <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
-              <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeRaw]}>
-                {bodySections.interpretatie}
-              </ReactMarkdown>
-            </div>
-          )}
-        </TabsContent>
+{/* TAB 3: INTERPRETATIE */}
+<TabsContent value="interpretatie" className="space-y-4">
+  <SmartContent label="Normaalbeeld" content={pocusData.clearsign} />
+  <SmartContent label="Pathologie" content={pocusData.pathology} />
+  <SmartContent label="Beslisboom / Algoritme" content={pocusData.algorhythm} />
+  
+  {bodySections.interpretatie && (
+    <div className="prose prose-sm prose-slate max-w-none pt-4 border-t border-slate-100">
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]} 
+        rehypePlugins={[rehypeRaw, rehypeKatex]}
+        components={markdownComponents as any}
+        children={bodySections.interpretatie} 
+      />
+    </div>
+  )}
+</TabsContent>
       </Tabs>
     </div>
   );
