@@ -14,9 +14,7 @@ Dit protocol beschrijft de anesthesiologische ondersteuning bij het plaatsen van
 
 * **Antibiotica**: **Cefazoline 2g IV** (30 min. voor incisie). *Vervolgschema*: gedurende 24 uur postoperatief.
 * **Positionering**: Patiënt ligt wakker op de buik (**buiklig**).
-* Armen fixeren boven het hoofd met de 'katjes'.
-* Zorg voor adequate polstering van drukpunten (gezicht, bekken, knieën).
-
+* Armen fixeren boven het hoofd met de 'katjes'. Drukpuntcontrole gezicht, knieën.
 
 * **Monitoring & Zuurstof**: Standaard monitoring + O2 via masker (6-10L).
 
@@ -24,7 +22,7 @@ Dit protocol beschrijft de anesthesiologische ondersteuning bij het plaatsen van
 
 De procedure volgt een vaste flow waarbij de sedatie wordt aangepast aan de chirurgische stappen. Kies één van de onderstaande sedatiemethodes:
 
-| Fase | **Optie A: Propofol (Klassiek)** | **Optie B: Remimazolam (Byfavo)** |
+| Fase | **Klassiek: Propofol** | **Hipster: Remimazolam (Byfavo)** |
 | :--- | :--- | :--- |
 | **1. Start Sedatie** | **Propofol TCI** (Target 3.0) | **Byfavo** oplaaddosis 5-10 mg bolus |
 | **2. Onderhoud** | TCI bijsturen op geleide van patiënt | Infuus **0,25 mg/kg/uur** (1mg/mL) |
@@ -38,7 +36,7 @@ De procedure volgt een vaste flow waarbij de sedatie wordt aangepast aan de chir
 
 * **Mobilisatie**: Strikte **platte rust** tot de ochtend na de procedure (ter preventie van electrode-dislocatie en PDPH).
 * **Thromboseprofylaxe**: **Fraxiparine** (dosis volgens gewicht) te starten de **avond van de ingreep**.
-* **Antibiotica**: Continueer Cefazoline schema tot 24u na start.
+* **Antibiotica**: Cefazoline 24u verder.
 * **Recovery**: Standaard observatie; aandacht voor motoriek en sensibiliteit van de onderste ledematen.
 
 **Referenties**

@@ -19,7 +19,7 @@ export default function CaudalCalculator() {
             type="number" 
             value={weight} 
             onChange={(e) => setWeight(Number(e.target.value))}
-            className="text-3xl h-16 font-black text-center border-orange-100 bg-white focus-visible:ring-orange-500 rounded-2xl"
+            className="text-3xl h-16 font-mono font-black text-center border-orange-100 bg-white focus-visible:ring-orange-500 rounded-2xl"
           />
         </div>
 
