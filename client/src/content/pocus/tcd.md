@@ -5,14 +5,12 @@ anatomy: "/images/pocus/tcd_anatomy.jpg"
 context: "Nuttig op IZ/OK om secundaire hersenschade te monitoren zonder transport naar CT. Een Mean Flow Velocity (MFV) > 120 cm/s suggereert vasospasme."
 setup: "Phased array probe (Cardiac). Preset: TCD of Cardiac. Frequentie laag (2 MHz) om door het bot te penetreren."
 patpos: "Rugligging met het hoofd in neutrale positie."
-probepos: "Plaats de probe op het **transtemporale venster**: net boven de jukbeenboog, tussen de tragus en de buitenste ooghoek."
+probepos: "Plaats de probe op het transtemporale venster: net boven de jukbeenboog, tussen de tragus en de buitenste ooghoek."
 reference: "/images/pocus/tcd_butterfly.jpg"
 clearsign: "MCA (Middle Cerebral Artery) stroomt richting de probe (rood op kleur-doppler) op een diepte van 45-60 mm."
 pathology: "/images/pocus/tcd_vasospasm.jpg"
 algorhythm: "/images/pocus/tcd_pi_calc.jpg"
 ---
-
-# Transcraniael Doppler (TCD)
 
 TCD via het temporale venster biedt een real-time blik op de cerebrale hemodynamiek. We focussen primair op de MCA (arteria cerebri media) omdat deze 70% van de hemisferische bloedstroom verzorgt.
 
