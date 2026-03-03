@@ -7,14 +7,25 @@ import Zoom from 'react-medium-image-zoom';
 import remarkBreaks from 'remark-breaks';
 import {Link} from 'wouter';
 import 'react-medium-image-zoom/dist/styles.css';
+import { useRoute } from "wouter";
 
-// We halen specifiek het onboarding bestand binnen
-const onboardingFiles = import.meta.glob('../content/onboarding.md', { query: 'raw', eager: true });
+// We scannen nu de hele map voor alle .md bestanden in content
+const onboardingFiles = import.meta.glob('../content/*.md', { query: 'raw', eager: true });
 
 export default function OnboardingPage() {
-  // Omdat het één specifiek bestand is, pakken we de eerste key
-  const fileKey = Object.keys(onboardingFiles)[0];
+  const [, params] = useRoute("/onboarding/:type");
+  const type = params?.type; // 'staf' of 'aso'
+
+  // We bepalen welk bestand we moeten laden op basis van de URL
+  // Als type 'staf' is, zoeken we onboarding.md, anders onboarding-aso.md
+  const fileName = type === "aso" ? "onboarding-aso.md" : "onboarding.md";
+  
+  const fileKey = Object.keys(onboardingFiles).find(key => key.endsWith(fileName));
   const fileData = fileKey ? (onboardingFiles[fileKey] as any) : null;
+  
+  // Foutmelding als bestand niet bestaat
+  if (!fileData) return <div className="p-8 text-center uppercase font-black">Bestand niet gevonden</div>;
+
   const rawContent = String(fileData?.default || fileData || "").trim();
 
   // Hergebruik van jouw Frontmatter-stripper

@@ -158,6 +158,8 @@ function Router() {
           <Route path="/info" component={InfoPage} />
           <Route path="/wordle" component={WordlePage} />
           <Route path="/onboarding" component={OnboardingPage} />
+          <Route path="/onboarding" component={OnboardingSelection} /> 
+          <Route path="/onboarding/:type" component={OnboardingPage} />
           <Route path="/journalclub" component={Journalclub} />
           <Route path="/journalclub/:id" component={JournalDetail} />
           <Route path="/calculator/sedation-peds" component={SedationCalculatorPage} />
