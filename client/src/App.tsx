@@ -22,6 +22,7 @@ import ContactsPage from "@/pages/contacts";
 import GamePage from "@/pages/game";
 import SearchPage from "@/pages/search";
 import OnboardingPage from "@/pages/onboarding";
+import OnboardingSelection from "@/pages/onboarding-selection";
 import Journalclub from "@/pages/journal-list";
 import JournalDetail from "@/pages/journal-detail";
 import WordlePage from "./pages/WordlePage";
@@ -157,7 +158,6 @@ function Router() {
           <Route path="/checklist" component={ChecklistPage} />
           <Route path="/info" component={InfoPage} />
           <Route path="/wordle" component={WordlePage} />
-          <Route path="/onboarding" component={OnboardingPage} />
           <Route path="/onboarding" component={OnboardingSelection} /> 
           <Route path="/onboarding/:type" component={OnboardingPage} />
           <Route path="/journalclub" component={Journalclub} />
