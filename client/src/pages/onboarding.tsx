@@ -35,14 +35,31 @@ export default function OnboardingPage() {
 
   // Identieke component mapping als in je protocollen
   const markdownComponents = {
-    img: ({ src, alt }: { src?: string; alt?: string }) => (
-      <div className="my-8">
-        <Zoom>
-          <img src={src} alt={alt} className="w-full h-auto rounded-2xl shadow-lg border border-slate-100" />
-        </Zoom>
-        {alt && <p className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 mt-4">{alt}</p>}
-      </div>
-    ),
+ img: ({ src, alt }: { src?: string; alt?: string }) => {
+  // Check of de alt-tekst onze speciale trigger bevat
+  const isSmall = alt?.includes("size-small");
+
+  return (
+    <div className={isSmall ? "my-4" : "my-8"}>
+      <Zoom>
+        <img 
+          src={src} 
+          alt={alt} 
+          className={
+            isSmall 
+              ? "w-auto max-h-32 rounded-lg border border-slate-200" // Compacte styling
+              : "w-full h-auto rounded-2xl shadow-lg border border-slate-100" // Standaard grote styling
+          } 
+        />
+      </Zoom>
+      {alt && !isSmall && (
+        <p className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 mt-4">
+          {alt}
+        </p>
+      )}
+    </div>
+  );
+},
     
     strong: ({ children }: any) => <strong className="font-bold text-teal-900">{children}</strong>,
 

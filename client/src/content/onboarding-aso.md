@@ -44,7 +44,7 @@ Slaapkamer: dormitorium: E921 \- kamer 16
   - Medicatie in emv controleren & zo nodig on hold   
   - Patiënt zien op de kamer   
   - Aanduiden voor vpe dat pt gezien & medicatie gecontroleerd \-\> “zorgregistraties \- pt preop gezien”  
-    ![](/images/onboarding/OB_img5.png) 
+    ![size-small](/images/onboarding/OB_img5.png) 
     ![](/images/onboarding/OB_img6.png)
 
 ## APT pomp opstarten in OK
