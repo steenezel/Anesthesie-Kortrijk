@@ -7,14 +7,25 @@ import Zoom from 'react-medium-image-zoom';
 import remarkBreaks from 'remark-breaks';
 import {Link} from 'wouter';
 import 'react-medium-image-zoom/dist/styles.css';
+import { useRoute } from "wouter";
 
-// We halen specifiek het onboarding bestand binnen
-const onboardingFiles = import.meta.glob('../content/onboarding.md', { query: 'raw', eager: true });
+// We scannen nu de hele map voor alle .md bestanden in content
+const onboardingFiles = import.meta.glob('../content/*.md', { query: 'raw', eager: true });
 
 export default function OnboardingPage() {
-  // Omdat het één specifiek bestand is, pakken we de eerste key
-  const fileKey = Object.keys(onboardingFiles)[0];
+  const [, params] = useRoute("/onboarding/:type");
+  const type = params?.type; // 'staf' of 'aso'
+
+  // We bepalen welk bestand we moeten laden op basis van de URL
+  // Als type 'staf' is, zoeken we onboarding.md, anders onboarding-aso.md
+  const fileName = type === "aso" ? "onboarding-aso.md" : "onboarding.md";
+  
+  const fileKey = Object.keys(onboardingFiles).find(key => key.endsWith(fileName));
   const fileData = fileKey ? (onboardingFiles[fileKey] as any) : null;
+  
+  // Foutmelding als bestand niet bestaat
+  if (!fileData) return <div className="p-8 text-center uppercase font-black">Bestand niet gevonden</div>;
+
   const rawContent = String(fileData?.default || fileData || "").trim();
 
   // Hergebruik van jouw Frontmatter-stripper
@@ -24,14 +35,31 @@ export default function OnboardingPage() {
 
   // Identieke component mapping als in je protocollen
   const markdownComponents = {
-    img: ({ src, alt }: { src?: string; alt?: string }) => (
-      <div className="my-8">
-        <Zoom>
-          <img src={src} alt={alt} className="w-full h-auto rounded-2xl shadow-lg border border-slate-100" />
-        </Zoom>
-        {alt && <p className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 mt-4">{alt}</p>}
-      </div>
-    ),
+ img: ({ src, alt }: { src?: string; alt?: string }) => {
+  // Check of de alt-tekst onze speciale trigger bevat
+  const isSmall = alt?.includes("size-small");
+
+  return (
+    <div className={isSmall ? "my-4" : "my-8"}>
+      <Zoom>
+        <img 
+          src={src} 
+          alt={alt} 
+          className={
+            isSmall 
+              ? "w-auto max-h-32 rounded-lg border border-slate-200" // Compacte styling
+              : "w-full h-auto rounded-2xl shadow-lg border border-slate-100" // Standaard grote styling
+          } 
+        />
+      </Zoom>
+      {alt && !isSmall && (
+        <p className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 mt-4">
+          {alt}
+        </p>
+      )}
+    </div>
+  );
+},
     
     strong: ({ children }: any) => <strong className="font-bold text-teal-900">{children}</strong>,
 
