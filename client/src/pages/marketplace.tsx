@@ -96,40 +96,41 @@ export default function Marketplace() {
           </Card>
         )}
 
-        {view === "list" && (
-          <div className="space-y-3">
-            <h2 className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Aangeboden dagen</h2>
-            {isLoading ? (
-              <Loader2 className="mx-auto animate-spin text-slate-300 mt-10" />
-            ) : offers?.length === 0 ? (
-              <p className="text-center text-slate-400 py-10 text-sm italic">Geen verlof beschikbaar momenteel.</p>
-            ) : (
-              offers?.map((offer: any) => (
-                <Card key={offer.id} className="border-none shadow-sm rounded-2xl overflow-hidden active:scale-95 transition-transform">
-                  <div className="flex items-center p-4 gap-4">
-                    <div className="h-12 w-12 bg-blue-50 rounded-xl flex flex-col items-center justify-center text-blue-600">
-                      <span className="text-[10px] font-black uppercase">{format(new Date(offer.date), "MMM", { locale: nl })}</span>
-                      <span className="text-lg font-black leading-none">{format(new Date(offer.date), "dd")}</span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs font-black uppercase text-slate-900">{offer.providerName}</p>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase">{format(new Date(offer.date), "eeee d MMMM yyyy", { locale: nl })}</p>
-                    </div>
-                    <Button size="icon" variant="ghost" onClick={() => {
-                      toast({
-                        title: "Contact",
-                        description: `Neem contact op met ${offer.providerName} om dit over te nemen.`,
-                      });
-                    }}>
-                      <Info className="h-5 w-5 text-slate-300" />
-                    </Button>
-                  </div>
-                </Card>
-              ))
-            )}
+  {view === "list" && (
+  <div className="space-y-3">
+    <h2 className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Aangeboden dagen</h2>
+    {isLoading ? (
+      <Loader2 className="mx-auto animate-spin text-slate-300 mt-10" />
+    ) : (!offers || (Array.isArray(offers) && offers.length === 0)) ? (
+      <p className="text-center text-slate-400 py-10 text-sm italic">Geen verlof beschikbaar momenteel.</p>
+    ) : (
+      // We forceren hier dat 'offers' als array wordt gezien om de TS-fout op te lossen
+      (offers as any[]).map((offer: any) => (
+        <Card key={offer.id} className="border-none shadow-sm rounded-2xl overflow-hidden active:scale-95 transition-transform">
+          <div className="flex items-center p-4 gap-4">
+            <div className="h-12 w-12 bg-blue-50 rounded-xl flex flex-col items-center justify-center text-blue-600">
+              <span className="text-[10px] font-black uppercase">{format(new Date(offer.date), "MMM", { locale: nl })}</span>
+              <span className="text-lg font-black leading-none">{format(new Date(offer.date), "dd")}</span>
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-black uppercase text-slate-900">{offer.providerName}</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase">{format(new Date(offer.date), "eeee d MMMM yyyy", { locale: nl })}</p>
+            </div>
+            <Button size="icon" variant="ghost" onClick={() => {
+              toast({
+                title: "Contact",
+                description: `Neem contact op met ${offer.providerName} om dit over te nemen.`,
+              });
+            }}>
+              <Info className="h-5 w-5 text-slate-300" />
+            </Button>
           </div>
-        )}
-      </div>
+        </Card>
+      ))
+    )}
+  </div>
+)}
+     </div>
     </div>
   );
 }
