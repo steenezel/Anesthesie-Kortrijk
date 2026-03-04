@@ -1,6 +1,9 @@
 import type { Express } from "express";
 import { type Server } from "http";
 import Redis from "ioredis";
+import { db } from "./db.js"; // Dit verwijst naar je database connectie bestand
+import { marketplace, insertMarketplaceSchema } from "@shared/schema";
+import { sql } from "drizzle-orm";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -11,6 +14,31 @@ export async function registerRoutes(
   redis.on("error", (err) => {
     console.error("Redis Runtime Error:", err);
   });
+
+  // --- NIEUW: MARKTPLAATS ROUTES ---
+  app.get("/api/marketplace", async (_req, res) => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const results = await db.select().from(marketplace)
+        .where(sql`${marketplace.date} >= ${today}`)
+        .orderBy(marketplace.date);
+      res.json(results);
+    } catch (error) {
+      console.error("Fout bij ophalen marktplaats:", error);
+      res.status(500).send("Fout bij ophalen marktplaats");
+    }
+  });
+
+  app.post("/api/marketplace", async (req, res) => {
+    try {
+      const validatedData = insertMarketplaceSchema.parse(req.body);
+      const result = await db.insert(marketplace).values(validatedData).returning();
+      res.json(result[0]);
+    } catch (error) {
+      res.status(400).send("Ongeldige data");
+    }
+  });
+  // --- EINDE MARKTPLAATS ROUTES ---
 
  // 2. SCORE OPSLAAN
 app.post("/api/highscores", async (req, res) => {

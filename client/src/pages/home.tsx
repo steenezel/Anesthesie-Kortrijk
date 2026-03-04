@@ -105,6 +105,16 @@ const categories = [
     lightColor: "bg-cyan-50",
     borderColor: "border-cyan-200"
   },
+    {
+    title: "Marktplaats",
+    description: "Verlof aanbieden of overnemen",
+    icon: ShoppingBag, // Importeer deze uit lucide-react bovenaan
+    href: "/marketplace",
+    color: "bg-amber-400",
+    lightColor: "bg-amber-50",
+    borderColor: "border-amber-200",
+    isExternal: false
+  },
 ];
 
 export default function Home() {
