@@ -211,18 +211,23 @@ export default function Marketplace() {
                       </Button>
                       
                       {/* Verwijder knop voor admin/beheer */}
-                      <Button 
+                     {/* Alleen renderen als isAdmin écht true is */}
+                    {clickCount >= 5 && (
+                    <Button 
                         size="icon" 
                         variant="ghost" 
-                        className="text-slate-200 hover:text-red-500"
-                        onClick={() => {
-                          if (confirm("Zeker dat je deze aanbieding wilt verwijderen?")) {
+                        className="text-slate-200 hover:text-red-500 transition-colors"
+                        onClick={(e) => {
+                        // e.stopPropagation voorkomt dat je per ongeluk andere klik-events triggert
+                        e.stopPropagation(); 
+                        if (confirm("Zeker dat je deze aanbieding wilt verwijderen?")) {
                             deleteMutation.mutate(offer.id);
-                          }
+                        }
                         }}
-                      >
+                        >
                         <Trash2 className="h-4 w-4" />
-                      </Button>
+                        </Button>
+                        )}
                     </div>
                   </div>
                 </Card>
