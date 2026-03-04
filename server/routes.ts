@@ -37,6 +37,17 @@ app.get("/api/marketplace", async (_req, res) => {
       res.status(400).send("Ongeldige data");
     }
   });
+
+app.delete("/api/marketplace/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await db.delete(marketplace).where(sql`${marketplace.id} = ${id}`);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).send("Kon niet verwijderen");
+  }
+});
+
   // --- EINDE MARKTPLAATS ROUTES ---
 
  // 2. SCORE OPSLAAN
