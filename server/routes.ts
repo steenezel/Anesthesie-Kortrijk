@@ -16,20 +16,15 @@ export async function registerRoutes(
   });
 
   // --- NIEUW: MARKTPLAATS ROUTES ---
- app.get("/api/marketplace", async (_req, res) => {
+app.get("/api/marketplace", async (_req, res) => {
   try {
-    // We pakken de datum van NU in België/Nederland formaat YYYY-MM-DD
-    const today = new Date().toLocaleDateString('en-CA'); // 'en-CA' output is altijd YYYY-MM-DD
-    
-    const results = await db.select().from(marketplace)
-      .where(sql`${marketplace.date} >= ${today}`)
-      .orderBy(marketplace.date);
-    
-    console.log("Gevonden voor datum:", today, results); // Dit zie je in je Vercel logs
+    // Haal voor nu even ALLES op om te zien of de verbinding werkt
+    const results = await db.select().from(marketplace).orderBy(marketplace.date);
+    console.log("API Verzending naar client:", results);
     res.json(results || []);
   } catch (error) {
-    console.error("Fout bij ophalen marktplaats:", error);
-    res.status(500).send("Fout bij ophalen marktplaats");
+    console.error("Database Error:", error);
+    res.status(500).json({ error: "Database onbereikbaar" });
   }
 });
 

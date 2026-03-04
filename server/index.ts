@@ -1,5 +1,5 @@
 import express, { type Express, type Request, Response, NextFunction } from "express";
-import { createServer, type Server as HttpServer } from "http";
+import { createServer } from "http";
 import { registerRoutes } from "./routes.js";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -20,9 +20,9 @@ const log = (msg: string) => {
 
 async function startServer() {
   try {
-    const httpServer: HttpServer = createServer(app);
+    const httpServer = createServer(app);
 
-    // GEFORCEERDE TYPES OM DE BUILD TE REDDEN
+    // Gebruik 'as any' om de strikte TS check in de editor te negeren
     await registerRoutes(httpServer as any, app as any);
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -48,7 +48,6 @@ async function startServer() {
     }
 
     const PORT = Number(process.env.PORT) || 5000;
-    
     httpServer.listen(PORT, "0.0.0.0", () => {
       log(`Server running on port ${PORT}`);
     });
@@ -58,3 +57,6 @@ async function startServer() {
 }
 
 startServer();
+
+// DIT IS DE ONTBREKENDE SCHAKEL VOOR VERCEL:
+export default app;
