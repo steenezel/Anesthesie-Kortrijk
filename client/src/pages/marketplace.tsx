@@ -35,13 +35,17 @@ export default function Marketplace() {
     },
   });
 
-  const handleOfferSubmit = () => {
-    if (!selectedDate || !name) return;
-    mutation.mutate({
-      providerName: name,
-      date: format(selectedDate, "yyyy-MM-dd"),
-    });
-  };
+const handleOfferSubmit = () => {
+  if (!selectedDate || !name) return;
+  
+  // Gebruik format uit date-fns om zeker te zijn van YYYY-MM-DD
+  const dateString = format(selectedDate, "yyyy-MM-dd");
+  
+  mutation.mutate({
+    providerName: name,
+    date: dateString,
+  });
+};
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">

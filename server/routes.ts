@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { type Server } from "http";
 import Redis from "ioredis";
 import { db } from "./db.js"; // Dit verwijst naar je database connectie bestand
-import { marketplace, insertMarketplaceSchema } from "@shared/schema";
+import { marketplace, insertMarketplaceSchema } from "../shared/schema.js";
 import { sql } from "drizzle-orm";
 
 export async function registerRoutes(
@@ -16,18 +16,22 @@ export async function registerRoutes(
   });
 
   // --- NIEUW: MARKTPLAATS ROUTES ---
-  app.get("/api/marketplace", async (_req, res) => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const results = await db.select().from(marketplace)
-        .where(sql`${marketplace.date} >= ${today}`)
-        .orderBy(marketplace.date);
-      res.json(results);
-    } catch (error) {
-      console.error("Fout bij ophalen marktplaats:", error);
-      res.status(500).send("Fout bij ophalen marktplaats");
-    }
-  });
+ app.get("/api/marketplace", async (_req, res) => {
+  try {
+    // We pakken de datum van NU in België/Nederland formaat YYYY-MM-DD
+    const today = new Date().toLocaleDateString('en-CA'); // 'en-CA' output is altijd YYYY-MM-DD
+    
+    const results = await db.select().from(marketplace)
+      .where(sql`${marketplace.date} >= ${today}`)
+      .orderBy(marketplace.date);
+    
+    console.log("Gevonden voor datum:", today, results); // Dit zie je in je Vercel logs
+    res.json(results || []);
+  } catch (error) {
+    console.error("Fout bij ophalen marktplaats:", error);
+    res.status(500).send("Fout bij ophalen marktplaats");
+  }
+});
 
   app.post("/api/marketplace", async (req, res) => {
     try {
