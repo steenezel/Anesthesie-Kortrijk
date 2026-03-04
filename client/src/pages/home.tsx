@@ -10,7 +10,8 @@ import {
   GraduationCap,
   Calculator,
   BookOpenCheck,
-  Waves
+  Waves,
+  ShoppingBag
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
