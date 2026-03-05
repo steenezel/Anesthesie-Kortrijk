@@ -14,7 +14,7 @@ import CalculatorPage from "@/pages/last";
 import CalculatorList from "@/pages/calculator-list";
 import ApfelCalculator from "@/pages/apfel";
 import PedsCalculator from "@/pages/peds-calculator";
-import DantroleenPage from "@/pages/dantroleen.js";
+import DantroleenPage from "@/pages/dantroleen";
 import ChecklistPage from "@/pages/checklist";
 import InfoPage from "@/pages/info";
 import NotFound from "@/pages/not-found";
