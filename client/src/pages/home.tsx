@@ -10,7 +10,8 @@ import {
   GraduationCap,
   Calculator,
   BookOpenCheck,
-  Waves
+  Waves,
+  ShoppingBag
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
@@ -104,6 +105,16 @@ const categories = [
     color: "bg-cyan-700",
     lightColor: "bg-cyan-50",
     borderColor: "border-cyan-200"
+  },
+    {
+    title: "Marktplaats",
+    description: "Verlof aanbieden of overnemen",
+    icon: ShoppingBag, // Importeer deze uit lucide-react bovenaan
+    href: "/marketplace",
+    color: "bg-amber-400",
+    lightColor: "bg-amber-50",
+    borderColor: "border-amber-200",
+    isExternal: false
   },
 ];
 

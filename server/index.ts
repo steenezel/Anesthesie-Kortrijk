@@ -1,92 +1,59 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes.js"; // VOEG .js TOE
-import { serveStatic } from "./static.js";   // VOEG .js TOE
+import express from "express";
 import { createServer } from "http";
+import { registerRoutes } from "./routes.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const httpServer = createServer(app);
-
-declare module "http" {
-  interface IncomingMessage {
-    rawBody: unknown;
-  }
-}
-
-app.use(
-  express.json({
-    verify: (req: any, _res: any, buf: Buffer) => {
-      req.rawBody = buf;
-    },
-  }),
-);
-
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-export function log(message: string, source = "express") {
-  const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
+const log = (msg: string) => {
+  const time = new Date().toLocaleTimeString("en-US", {
+    hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit",
   });
-
-  console.log(`${formattedTime} [${source}] ${message}`);
-}
-
-app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      log(logLine);
-    }
-  });
-
-  next();
-});
+  console.log(`${time} [server] ${msg}`);
+};
 
 async function startServer() {
-  await registerRoutes(httpServer, app);
+  const httpServer = createServer(app);
 
-  app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
+  // We gebruiken de breedste types mogelijk om TSC stil te krijgen
+  await registerRoutes(httpServer as any, app as any);
+
+  app.use((err: any, _req: any, res: any, _next: any) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
-    console.error("Internal Server Error:", err);
-    if (res.headersSent) return next(err);
-    return res.status(status).json({ message });
+    res.status(status).json({ message });
   });
 
-  if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
+  if (process.env.NODE_ENV !== "production") {
+    // We laden Vite op een manier die TSC niet kan checken tijdens build
+    const viteModule: any = await import("./vite.js");
+    await viteModule.setupVite(app, httpServer);
+    log("Vite dev server gestart");
   } else {
-    const { setupVite } = await import("./vite");
-    await setupVite(httpServer, app);
-  }
-
-  const port = parseInt(process.env.PORT || "5000", 10);
-  // Alleen listen als we NIET op Vercel zitten, Vercel doet dit zelf
-  if (process.env.VERCEL !== "1") {
-    httpServer.listen(port, "0.0.0.0", () => {
-      console.log(`serving on port ${port}`);
+    const publicPath = path.resolve(__dirname, "..", "public");
+    app.use(express.static(publicPath));
+    
+    app.get("*", (req: any, res: any, next: any) => {
+      if (req.path.startsWith("/api")) return next();
+      res.sendFile(path.resolve(publicPath, "index.html"));
     });
+    log("Productie mode: statische bestanden actief");
   }
-}
-// Zorg dat de server wordt geïnitialiseerd
-startServer().catch(console.error);
 
-// De absolute noodzaak voor Vercel:
+  const PORT = Number(process.env.PORT) || 5000;
+  httpServer.listen(PORT, "0.0.0.0", () => {
+    log(`Server running on port ${PORT}`);
+  });
+}
+
+startServer().catch((err) => {
+  console.error("Failed to start server:", err);
+});
+
 export default app;

@@ -1,6 +1,9 @@
 import type { Express } from "express";
 import { type Server } from "http";
 import Redis from "ioredis";
+import { db } from "./db.js"; // Dit verwijst naar je database connectie bestand
+import { marketplace, insertMarketplaceSchema } from "../shared/schema.js";
+import { sql } from "drizzle-orm";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -11,6 +14,41 @@ export async function registerRoutes(
   redis.on("error", (err) => {
     console.error("Redis Runtime Error:", err);
   });
+
+  // --- NIEUW: MARKTPLAATS ROUTES ---
+app.get("/api/marketplace", async (_req, res) => {
+  try {
+    // Haal voor nu even ALLES op om te zien of de verbinding werkt
+    const results = await db.select().from(marketplace).orderBy(marketplace.date);
+    console.log("API Verzending naar client:", results);
+    res.json(results || []);
+  } catch (error) {
+    console.error("Database Error:", error);
+    res.status(500).json({ error: "Database onbereikbaar" });
+  }
+});
+
+  app.post("/api/marketplace", async (req, res) => {
+    try {
+      const validatedData = insertMarketplaceSchema.parse(req.body);
+      const result = await db.insert(marketplace).values(validatedData).returning();
+      res.json(result[0]);
+    } catch (error) {
+      res.status(400).send("Ongeldige data");
+    }
+  });
+
+app.delete("/api/marketplace/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await db.delete(marketplace).where(sql`${marketplace.id} = ${id}`);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).send("Kon niet verwijderen");
+  }
+});
+
+  // --- EINDE MARKTPLAATS ROUTES ---
 
  // 2. SCORE OPSLAAN
 app.post("/api/highscores", async (req, res) => {

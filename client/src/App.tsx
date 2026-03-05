@@ -30,6 +30,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import SedationCalculatorPage from "@/pages/sedation-peds";
 import PocusList from "@/pages/pocus-list";
 import PocusDetail from "@/pages/pocus-detail";
+import Marketplace from "@/pages/marketplace";
 
 // --- DE BEWAKER (AuthGuard) ---
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -165,6 +166,7 @@ function Router() {
           <Route path="/calculator/sedation-peds" component={SedationCalculatorPage} />
           <Route path="/pocus" component={PocusList} />
           <Route path="/pocus/:id" component={PocusDetail} />
+          <Route path="/marketplace" component={Marketplace} />
           <Route component={NotFound} />
         </Switch>
       </main>

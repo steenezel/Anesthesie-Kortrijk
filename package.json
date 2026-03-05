@@ -10,6 +10,7 @@
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",
     "db:push": "drizzle-kit push",
+    "postinstall": "if [ -n \"$DATABASE_URL\" ]; then drizzle-kit push; else echo 'Skipping database push (no DATABASE_URL)'; fi",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives"
   },
   "dependencies": {
@@ -66,6 +67,7 @@
     "next-themes": "^0.4.6",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "postgres": "^3.4.5",
     "pg": "^8.16.3",
     "react": "^19.2.0",
     "react-day-picker": "^9.11.1",
