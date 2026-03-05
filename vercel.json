@@ -4,9 +4,14 @@
   "rewrites": [
     { "source": "/api/auth", "destination": "/api/auth.js" },
     { "source": "/api/callback", "destination": "/api/callback.js" },
-    { "source": "/admin/", "destination": "/admin/index.html" },
+    
     { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/admin/", "destination": "/admin/index.html" },
     { "source": "/admin/(.*)", "destination": "/admin/$1" },
+
+    { "source": "/api/(.*)", "destination": "/api/server.js" },
+
+    
     { "source": "/((?!api|admin).*)", "destination": "/index.html" }
   ]
 }
