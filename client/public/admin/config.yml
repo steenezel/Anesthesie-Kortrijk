@@ -2,8 +2,7 @@ backend:
   name: github
   repo: steenezel/Anesthesie-Kortrijk
   branch: main
-  base_url: https://anesthesie-kortrijk-git-cmssave-pieter-jan-steelants-projects.vercel.app/
-  # https://anesthesie-kortrijk.be
+    # https://anesthesie-kortrijk.be
   auth_endpoint: api/auth
 
 media_folder: "public/images/uploads"
