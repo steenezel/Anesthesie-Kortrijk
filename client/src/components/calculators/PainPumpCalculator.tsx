@@ -2,28 +2,25 @@ import React, { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Clock, Calendar, Syringe, FlaskConical } from "lucide-react";
+import { Clock, Calendar, FlaskConical } from "lucide-react";
 
 export default function PainPumpCalculator() {
+  // We initialiseren met de waarden uit je Excel, maar staan 'undefined' of '0' toe voor de UI
   const [pumpVolume, setPumpVolume] = useState<number>(40);
   const [refTotal, setRefTotal] = useState<number>(460);
   const [refDaily, setRefDaily] = useState<number>(7.595);
   const [extraDaily, setExtraDaily] = useState<number>(50);
 
   const results = useMemo(() => {
-    if (!refDaily || refDaily <= 0 || !refTotal) return null;
+    // Validatie: voorkom delen door nul of lege velden
+    if (!refDaily || refDaily <= 0 || !refTotal || !pumpVolume) return null;
 
-    // 1. Looptijd in dagen
     const durationDays = refTotal / refDaily;
-
-    // 2. Hoeveelheid extra stof totaal
     const extraTotal = extraDaily * durationDays;
-
-    // 3. Verwachte einddatum
+    
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + Math.floor(durationDays));
 
-    // 4. Dagvolume (ml/dag) voor info
     const dailyVolume = pumpVolume / durationDays;
 
     return {
@@ -38,9 +35,11 @@ export default function PainPumpCalculator() {
     };
   }, [pumpVolume, refTotal, refDaily, extraDaily]);
 
+  // Helper om de invoer netjes te verwerken
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => e.target.select();
+  
   return (
     <div className="space-y-6">
-      {/* INPUT SECTION */}
       <Card className="border-slate-200 shadow-sm rounded-[24px] overflow-hidden">
         <CardContent className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -48,8 +47,10 @@ export default function PainPumpCalculator() {
               <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Pomp Volume (ml)</Label>
               <Input 
                 type="number" 
-                value={pumpVolume} 
-                onChange={(e) => setPumpVolume(Number(e.target.value))}
+                inputMode="decimal"
+                value={pumpVolume === 0 ? "" : pumpVolume} 
+                onFocus={handleFocus}
+                onChange={(e) => setPumpVolume(e.target.value === "" ? 0 : Number(e.target.value))}
                 className="rounded-xl border-slate-200 focus:ring-teal-500 h-12 font-bold"
               />
             </div>
@@ -57,8 +58,10 @@ export default function PainPumpCalculator() {
               <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Ref. Totaal (mg)</Label>
               <Input 
                 type="number" 
-                value={refTotal} 
-                onChange={(e) => setRefTotal(Number(e.target.value))}
+                inputMode="decimal"
+                value={refTotal === 0 ? "" : refTotal} 
+                onFocus={handleFocus}
+                onChange={(e) => setRefTotal(e.target.value === "" ? 0 : Number(e.target.value))}
                 className="rounded-xl border-slate-200 focus:ring-teal-500 h-12 font-bold"
               />
             </div>
@@ -69,8 +72,10 @@ export default function PainPumpCalculator() {
               <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Ref. Dosis (mg/dag)</Label>
               <Input 
                 type="number" 
-                value={refDaily} 
-                onChange={(e) => setRefDaily(Number(e.target.value))}
+                inputMode="decimal"
+                value={refDaily === 0 ? "" : refDaily} 
+                onFocus={handleFocus}
+                onChange={(e) => setRefDaily(e.target.value === "" ? 0 : Number(e.target.value))}
                 className="rounded-xl border-slate-200 focus:ring-teal-500 h-12 font-bold text-teal-600"
               />
             </div>
@@ -78,8 +83,10 @@ export default function PainPumpCalculator() {
               <Label className="text-[10px] font-black uppercase text-slate-400 ml-1">Extra Stof (mg/dag)</Label>
               <Input 
                 type="number" 
-                value={extraDaily} 
-                onChange={(e) => setExtraDaily(Number(e.target.value))}
+                inputMode="decimal"
+                value={extraDaily === 0 ? "" : extraDaily} 
+                onFocus={handleFocus}
+                onChange={(e) => setExtraDaily(e.target.value === "" ? 0 : Number(e.target.value))}
                 className="rounded-xl border-slate-200 focus:ring-teal-500 h-12 font-bold text-purple-600"
               />
             </div>
@@ -87,9 +94,8 @@ export default function PainPumpCalculator() {
         </CardContent>
       </Card>
 
-      {/* RESULTS SECTION */}
-      {results && (
-        <div className="grid gap-3">
+      {results ? (
+        <div className="grid gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
           <div className="grid grid-cols-2 gap-3">
             <ResultBox 
               icon={<Clock className="h-4 w-4 text-blue-500" />}
@@ -111,8 +117,8 @@ export default function PainPumpCalculator() {
                 <Calendar className="h-6 w-6" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase text-emerald-700 opacity-70">Verwachte einddatum</p>
-                <p className="text-lg font-black text-emerald-900">{results.endDate}</p>
+                <p className="text-[10px] font-black uppercase text-emerald-700 opacity-70 italic">Verwachte einddatum</p>
+                <p className="text-lg font-black text-emerald-900 leading-none mt-1">{results.endDate}</p>
               </div>
             </CardContent>
           </Card>
@@ -120,6 +126,10 @@ export default function PainPumpCalculator() {
           <p className="text-[9px] text-center text-slate-400 font-bold uppercase tracking-tight italic">
             Flow rate: {results.dailyVolume} ml / dag
           </p>
+        </div>
+      ) : (
+        <div className="p-8 text-center bg-slate-100 rounded-[24px] border border-dashed border-slate-300">
+           <p className="text-[10px] font-black uppercase text-slate-400 italic">Vul alle velden in voor resultaat</p>
         </div>
       )}
     </div>
