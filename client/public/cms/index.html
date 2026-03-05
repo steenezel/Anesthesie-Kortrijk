@@ -8,5 +8,16 @@
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    // Forceer de config als de YAML niet pakt
+    window.CMS_CONFIG = {
+      backend: {
+        name: "github",
+        repo: "steenezel/Anesthesie-Kortrijk",
+        branch: "main",
+        auth_endpoint: "api/auth"
+      }
+    };
+  </script>
 </body>
 </html>

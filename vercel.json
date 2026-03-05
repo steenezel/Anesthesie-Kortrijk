@@ -1,12 +1,10 @@
 {
-  "version": 2,
-  "cleanUrls": true,
   "rewrites": [
-    { "source": "/admin", "destination": "/admin/index.html" },
-    { "source": "/admin/", "destination": "/admin/index.html" },
+    { "source": "/admin", "destination": "/cms/index.html" },
+    { "source": "/admin/", "destination": "/cms/index.html" },
     { "source": "/api/auth", "destination": "/api/auth.js" },
     { "source": "/api/callback", "destination": "/api/callback.js" },
     { "source": "/api/(.*)", "destination": "/api/server.js" },
-    { "source": "/((?!api|admin).*)", "destination": "/index.html" }
+    { "source": "/((?!api|cms|admin).*)", "destination": "/index.html" }
   ]
 }
