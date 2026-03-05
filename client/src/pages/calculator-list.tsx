@@ -12,6 +12,14 @@ const calculators = [
     color: "border-red-100 bg-red-50"
   },
   {
+  id: "painpump",
+  title: "Painpump",
+  description: "Looptijd en bijvulling KLAC pompen",
+  path: "/calculator/painpump",
+  icon: <Syringe className="h-6 w-6 text-emerald-600" />,
+  color: "border-emerald-100 bg-emerald-50"
+  },
+  {
     id: "apfel",
     title: "Apfel-Score",
     description: "Risico op PONV",
