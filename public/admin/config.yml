@@ -1,0 +1,71 @@
+backend:
+  name: github
+  repo: steenezel/Anesthesie-Kortrijk
+  branch: main
+  publish_mode: editorial_workflow # Verplicht voor ziekenhuis-veiligheid (Draft -> Review)
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  # 1. PROTOCOLLEN
+  - name: "protocols"
+    label: "Protocollen"
+    folder: "client/src/content/protocols"
+    extension: "md"
+    format: "frontmatter"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Titel", name: "title", widget: "string" }
+      - { label: "Discipline", name: "discipline", widget: "select", options: ["Cardiac", "Neuro", "Pediatric", "Trauma", "ICU", "Algemeen"] }
+      - { label: "Inhoud", name: "body", widget: "markdown" }
+
+  # 2. REGIONALE BLOCKS
+  - name: "blocks"
+    label: "Blocks (LRA)"
+    folder: "client/src/content/blocks"
+    extension: "md"
+    format: "frontmatter"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Titel", name: "title", widget: "string" }
+      - { label: "Indicaties", name: "indications", widget: "text" }
+      - { label: "Naald / Techniek", name: "technique", widget: "text" }
+      - { label: "Tips & Tricks", name: "tips", widget: "text" }
+      - { label: "Hoofdafbeelding (Sono)", name: "image", widget: "image", required: false }
+      - { label: "Positionering Foto's", name: "posImages", widget: "list", field: { label: "Foto", name: "img", widget: "image" } }
+      - { label: "Extra Sono Foto's", name: "sonoImages", widget: "list", field: { label: "Foto", name: "img", widget: "image" } }
+      - { label: "Volledige Beschrijving (Markdown)", name: "body", widget: "markdown" }
+
+  # 3. JOURNAL CLUB
+  - name: "journalclub"
+    label: "Journal Club"
+    folder: "client/src/content/journal-club"
+    extension: "md"
+    format: "frontmatter"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Titel", name: "title", widget: "string" }
+      - { label: "PubMed ID", name: "pubmedId", widget: "string", required: false, hint: "Alleen de cijfers uit de URL" }
+      - { label: "Samenvatting & Analyse", name: "body", widget: "markdown" }
+
+  # 4. POCUS
+  - name: "pocus"
+    label: "POCUS"
+    folder: "client/src/content/pocus"
+    extension: "md"
+    format: "frontmatter"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Titel", name: "title", widget: "string" }
+      - { label: "Indicatie", name: "indication", widget: "text" }
+      - { label: "Voorbereiding / Probe", name: "preparation", widget: "text" }
+      - { label: "Sono-anatomie", name: "anatomy", widget: "text" }
+      - { label: "Clear Sign (Wat moet je zien?)", name: "clearsign", widget: "text" }
+      - { label: "Pathologie", name: "pathology", widget: "text" }
+      - { label: "Beslisboom / Algoritme (Afbeelding)", name: "algorhythm", widget: "image", required: false }
+      - { label: "Interpretatie Detail (Markdown)", name: "body", widget: "markdown" }
