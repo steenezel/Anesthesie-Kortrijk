@@ -11,10 +11,8 @@ import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  // We zetten de root op de project-root zodat Vite alle mappen kan zien
-  root: "./",
-  // We vertellen Vite dat de publieke bestanden in client/public staan
-  publicDir: "client/public",
+  root: path.resolve(__dirname, "client"),
+  publicDir: "public",
 
   plugins: [
     react(),
@@ -71,7 +69,7 @@ export default defineConfig({
     __VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
   },
   build: {
-    outDir: "dist/public",
+    outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: false,
   }
 });
