@@ -15,7 +15,7 @@ export default defineConfig({
   root: path.resolve(__dirname, "client"),
   
   // 2. Vertel Vite waar de statische bestanden (zoals de admin map) staan
-  publicDir: path.resolve(__dirname, "client/public"),
+  publicDir: "public",
 
   plugins: [
     react(),
@@ -32,6 +32,7 @@ export default defineConfig({
       avif: { quality: 70 },
     }),
     VitePWA({
+      includeAssets: ['**/*'],
       registerType: 'autoUpdate',
       workbox: {
         cleanupOutdatedCaches: true,
@@ -71,9 +72,13 @@ export default defineConfig({
       year: 'numeric',
     })),
   },
-  build: {
-    // 3. Zorg dat de output in de juiste dist map terechtkomt
+ build: {
     outDir: path.resolve(__dirname, "dist/public"),
-    emptyOutDir: false,
-  }
+    emptyOutDir: true, // Mag op true nu we de juiste outDir hebben
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, "client/index.html"), // Forceer het juiste pad
+      },
+    },
+  },
 });
