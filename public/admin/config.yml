@@ -2,7 +2,8 @@ backend:
   name: github
   repo: steenezel/Anesthesie-Kortrijk
   branch: main
-  publish_mode: editorial_workflow # Verplicht voor ziekenhuis-veiligheid (Draft -> Review)
+  base_url: https://anesthesie-kortrijk.be
+  auth_endpoint: api/auth
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
