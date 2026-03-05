@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShieldAlert, Apple, ChevronRight, ChevronLeft, Baby, ThermometerSun, Atom } from "lucide-react";
+import { ShieldAlert, Apple, ChevronRight, ChevronLeft, Baby, ThermometerSun, Atom, Syringe } from "lucide-react";
 
 const calculators = [
   {
@@ -10,6 +10,14 @@ const calculators = [
     path: "/calculator/last",
     icon: <ShieldAlert className="h-6 w-6 text-red-500" />,
     color: "border-red-100 bg-red-50"
+  },
+  {
+  id: "painpump",
+  title: "Painpump",
+  description: "Looptijd en bijvulling KLAC pompen",
+  path: "/calculator/painpump",
+  icon: <Syringe className="h-6 w-6 text-yellow-600" />,
+  color: "border-yellow-100 bg-yellow-50"
   },
   {
     id: "apfel",
@@ -40,8 +48,8 @@ const calculators = [
     title: "Peds Sedatie MRI",
     description: "Dexdor & Atropine voor MRI",
     path: "/calculator/sedation-peds",
-    icon: <Atom className="h-6 w-6 text-teal-600" />,
-    color: "border-teal-100 bg-teal-50"
+    icon: <Atom className="h-6 w-6 text-slate-600" />,
+    color: "border-slate-100 bg-slate-50"
 },
 ];
 

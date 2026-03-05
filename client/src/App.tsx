@@ -31,6 +31,7 @@ import SedationCalculatorPage from "@/pages/sedation-peds";
 import PocusList from "@/pages/pocus-list";
 import PocusDetail from "@/pages/pocus-detail";
 import Marketplace from "@/pages/marketplace";
+import PainPumpPage from "@/pages/painpump";
 
 // --- DE BEWAKER (AuthGuard) ---
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -153,6 +154,7 @@ function Router() {
           <Route path="/calculator/apfel" component={ApfelCalculator} />
           <Route path="/calculator/peds-calculator" component={PedsCalculator} />
           <Route path="/calculator/dantroleen" component={DantroleenPage} />
+          <Route path="/calculator/painpump" component={PainPumpPage} />
           <Route path="/contacts" component={ContactsPage} />
           <Route path="/game" component={GamePage} />
           <Route path="/search" component={SearchPage} />
