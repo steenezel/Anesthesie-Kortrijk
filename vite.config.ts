@@ -11,22 +11,26 @@ import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  // 1. Zet de root naar de client map (VERWIJDER de root onderaan op regel 80 of 86!)
+  root: path.resolve(__dirname, "client"),
+  
+  // 2. Vertel Vite waar de statische bestanden (zoals de admin map) staan
+  publicDir: path.resolve(__dirname, "client/public"),
+
   plugins: [
     react(),
     runtimeErrorOverlay(),
     tailwindcss(),
     metaImagesPlugin(),
-    // UITGEBREIDE IMAGE OPTIMIZER
     ViteImageOptimizer({
       test: /\.(jpe?g|png|gif|tiff|webp|svg|avif)$/i,
       includePublic: true,
       logStats: true,
       png: { quality: 80 },
       jpeg: { quality: 80 },
-      webp: { quality: 75 }, // Balans tussen scherpte en snelheid
+      webp: { quality: 75 },
       avif: { quality: 70 },
     }),
-    // PWA CONFIGURATIE
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
@@ -40,39 +44,26 @@ export default defineConfig({
         description: 'Clinical Decision Support voor AZ Groeninge',
         theme_color: '#0d9488',
         icons: [
-          {
-            src: 'icon-192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'icon-512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' }
         ]
       }
     }),
-    ...(process.env.NODE_ENV !== "production" &&
-    process.env.REPL_ID !== undefined
+    ...(process.env.NODE_ENV !== "production" && process.env.REPL_ID !== undefined
       ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
-          ),
-          await import("@replit/vite-plugin-dev-banner").then((m) =>
-            m.devBanner(),
-          ),
+          import("@replit/vite-plugin-cartographer").then((m) => m.cartographer()),
+          import("@replit/vite-plugin-dev-banner").then((m) => m.devBanner()),
         ]
       : []),
   ],
   resolve: {
     alias: {
+      // Omdat de root nu 'client' is, passen we de alias aan
       "@": path.resolve(__dirname, "./client/src"),
       "@db": path.resolve(__dirname, "./db"),
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
   },
-
   define: {
     __BUILD_DATE__: JSON.stringify(new Date().toLocaleDateString('nl-BE', {
       day: 'numeric',
@@ -80,23 +71,9 @@ export default defineConfig({
       year: 'numeric',
     })),
   },
-  
-  root: "./", 
   build: {
-    outDir: "dist/public",
-    emptyOutDir: false, 
-    rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, "index.html"),
-      },
-    },
-  },
-  server: {
-    host: "0.0.0.0",
-    allowedHosts: true,
-    fs: {
-      strict: true,
-      deny: ["**/.*"],
-    },
-  },
+    // 3. Zorg dat de output in de juiste dist map terechtkomt
+    outDir: path.resolve(__dirname, "dist/public"),
+    emptyOutDir: false,
+  }
 });
