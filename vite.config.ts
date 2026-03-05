@@ -11,11 +11,10 @@ import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  // 1. Zet de root naar de client map (VERWIJDER de root onderaan op regel 80 of 86!)
-  root: path.resolve(__dirname, "client"),
-  
-  // 2. Vertel Vite waar de statische bestanden (zoals de admin map) staan
-  publicDir: "public",
+  root: "./",
+  publicDir: "public", // Zorg dat de admin map in ~/public/admin staat
+  build: {
+    outDir: "dist/public",
 
   plugins: [
     react(),

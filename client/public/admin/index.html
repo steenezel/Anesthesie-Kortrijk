@@ -2,24 +2,21 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Anesthesie Kortrijk CMS</title>
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   <script>
-    // Dit overrulet ALLES. Netlify krijgt geen kans meer.
     window.CMS_CONFIG = {
       backend: {
         name: "github",
         repo: "steenezel/Anesthesie-Kortrijk",
-        branch: "main", // Of je dev branch als je daarop wilt testen
+        branch: "main",
         auth_endpoint: "api/auth",
-        base_url: window.location.origin // Gebruikt dynamisch de huidige preview URL
+        base_url: window.location.origin
       },
-      display_url: window.location.origin,
-      media_folder: "client/public/images/uploads",
-      public_folder: "/images/uploads",
+      media_folder: "client/public/images",
+      public_folder: "/images",
       collections: [
         {
           name: "protocols",
@@ -28,10 +25,9 @@
           create: true,
           fields: [
             { label: "Titel", name: "title", widget: "string" },
-            { label: "Body", name: "body", widget: "markdown" }
+            { label: "Inhoud", name: "body", widget: "markdown" }
           ]
         }
-        // Voeg later de rest toe als de login werkt
       ]
     };
   </script>
