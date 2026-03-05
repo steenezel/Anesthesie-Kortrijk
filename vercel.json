@@ -2,11 +2,23 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/index.js"
+      "source": "/api/auth",
+      "destination": "/api/auth.js"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/api/callback",
+      "destination": "/api/callback.js"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/admin/$1"
+    },
+    {
+      "source": "/((?!api|admin).*)",
       "destination": "/index.html"
     }
   ]
