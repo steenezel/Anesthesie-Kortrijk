@@ -11,10 +11,10 @@ import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  // We zetten de root op de project-root zodat Vite alle mappen kan zien
   root: "./",
-  publicDir: "public", // Zorg dat de admin map in ~/public/admin staat
-  build: {
-    outDir: "dist/public",
+  // We vertellen Vite dat de publieke bestanden in client/public staan
+  publicDir: "client/public",
 
   plugins: [
     react(),
@@ -31,7 +31,6 @@ export default defineConfig({
       avif: { quality: 70 },
     }),
     VitePWA({
-      includeAssets: ['**/*'],
       registerType: 'autoUpdate',
       workbox: {
         cleanupOutdatedCaches: true,
@@ -58,7 +57,6 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      // Omdat de root nu 'client' is, passen we de alias aan
       "@": path.resolve(__dirname, "./client/src"),
       "@db": path.resolve(__dirname, "./db"),
     },
@@ -72,13 +70,8 @@ export default defineConfig({
     })),
     __VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
   },
- build: {
-    outDir: path.resolve(__dirname, "dist/public"),
-    emptyOutDir: true, // Mag op true nu we de juiste outDir hebben
-    rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, "client/index.html"), // Forceer het juiste pad
-      },
-    },
-  },
+  build: {
+    outDir: "dist/public",
+    emptyOutDir: false,
+  }
 });
