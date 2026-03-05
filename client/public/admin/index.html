@@ -1,35 +1,11 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8" />
-  <title>Anesthesie Kortrijk CMS</title>
-</head>
-<body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script>
-    window.CMS_CONFIG = {
-      backend: {
-        name: "github",
-        repo: "steenezel/Anesthesie-Kortrijk",
-        branch: "main",
-        auth_endpoint: "api/auth",
-        base_url: window.location.origin
-      },
-      media_folder: "client/public/images",
-      public_folder: "/images",
-      collections: [
-        {
-          name: "protocols",
-          label: "Protocollen",
-          folder: "client/src/content/protocols",
-          create: true,
-          fields: [
-            { label: "Titel", name: "title", widget: "string" },
-            { label: "Inhoud", name: "body", widget: "markdown" }
-          ]
-        }
-      ]
-    };
-  </script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Anesthesie Kortrijk CMS</title>
+  </head>
+  <body>
+    <!-- Decap CMS laadt automatisch config.yml in deze map -->
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  </body>
 </html>
