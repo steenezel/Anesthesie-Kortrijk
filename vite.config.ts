@@ -71,6 +71,7 @@ export default defineConfig({
       month: 'long',
       year: 'numeric',
     })),
+    __VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
   },
  build: {
     outDir: path.resolve(__dirname, "dist/public"),
