@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShieldAlert, Apple, ChevronRight, ChevronLeft, Baby, ThermometerSun, Atom } from "lucide-react";
+import { ShieldAlert, Apple, ChevronRight, ChevronLeft, Baby, ThermometerSun, Atom, Syringe } from "lucide-react";
 
 const calculators = [
   {
