@@ -1,7 +1,9 @@
 ---
-title: "[PoCUS]: Hocus"
+title: "Hocus"
 date: "2026-03-06"
 author: "steenezel"
+discipline: ""
+pubmedId: ""
 published: true
 ---
 
