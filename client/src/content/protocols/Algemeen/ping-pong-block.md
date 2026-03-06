@@ -1,7 +1,9 @@
 ---
-title: "[Block]: Ping Pong Block"
+title: "Ping Pong Block"
 date: "2026-03-06"
 author: "steenezel"
+discipline: ""
+pubmedId: ""
 published: true
 ---
 
