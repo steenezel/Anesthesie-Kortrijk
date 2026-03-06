@@ -1,0 +1,74 @@
+name: Publish Clinical Content
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  publish:
+    # Voer dit alleen uit als het label 'publish' wordt toegevoegd
+    if: github.event.label.name == 'publish'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse Issue Form
+        uses: stefanbuck/github-issue-parser@v3
+        id: parse
+        with:
+          template-path: .github/ISSUE_TEMPLATE/*.yml # Automatische detectie
+
+      - name: Create Markdown File
+        run: |
+          # 1. Bepaal het type op basis van de labels van de issue
+          # We gebruiken een omweg om de labels veilig te checken
+          IS_BLOCK=$(echo '${{ join(github.event.issue.labels.*.name, ' ') }}' | grep -c "block" || true)
+          IS_POCUS=$(echo '${{ join(github.event.issue.labels.*.name, ' ') }}' | grep -c "pocus" || true)
+          IS_JOURNAL=$(echo '${{ join(github.event.issue.labels.*.name, ' ') }}' | grep -c "journal-club" || true)
+          
+          TITLE="${{ github.event.issue.title }}"
+          # Maak een schone bestandsnaam (slug)
+          FILENAME=$(echo "$TITLE" | sed 's/\[.*\]: //g' | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g').md
+          
+          # 2. Bepaal de juiste map
+          if [ "$IS_BLOCK" -ge 1 ]; then
+            DEST="client/src/content/blocks/$FILENAME"
+          elif [ "$IS_POCUS" -ge 1 ]; then
+            DEST="client/src/content/pocus/$FILENAME"
+          elif [ "$IS_JOURNAL" -ge 1 ]; then
+            DEST="client/src/content/journal-club/$FILENAME"
+          else
+            DEST="client/src/content/protocols/Algemeen/$FILENAME"
+          fi
+
+          # 3. Zorg dat de map bestaat
+          mkdir -p "$(dirname "$DEST")"
+
+          # 4. Schrijf het Markdown bestand
+          # We behouden de body van de issue als inhoud
+          cat <<EOF > "$DEST"
+          ---
+          title: "${{ github.event.issue.title }}"
+          date: "$(date +%Y-%m-%d)"
+          author: "${{ github.event.issue.user.login }}"
+          published: true
+          ---
+          
+          ${{ github.event.issue.body }}
+          EOF
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "Clinical Content Bot"
+          git config --global user.email "bot@azgroeninge.be"
+          git add .
+          # Alleen committen als er wijzigingen zijn
+          git diff-index --quiet HEAD || git commit -m "Content Update: ${{ github.event.issue.title }}"
+          git push
+
+      - name: Close Issue
+        run: gh issue close ${{ github.event.issue.number }} --comment "✅ Content is gepubliceerd naar $DEST en staat live zodra de build klaar is!"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
