@@ -5,70 +5,98 @@ on:
 
 jobs:
   publish:
-    # Voer dit alleen uit als het label 'publish' wordt toegevoegd
+    # Voer dit alleen uit als het label 'publish' handmatig wordt toegevoegd
     if: github.event.label.name == 'publish'
     runs-on: ubuntu-latest
     permissions:
       contents: write
       issues: write
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
+      # 1. Bepaal welk YAML-formulier gebruikt is op basis van de labels
+      - name: Get Template Name
+        id: get_template
+        run: |
+          LABELS="${{ join(github.event.issue.labels.*.name, ' ') }}"
+          if [[ "$LABELS" == *"block"* ]]; then
+            echo "template=new-block.yml" >> $GITHUB_OUTPUT
+          elif [[ "$LABELS" == *"pocus"* ]]; then
+            echo "template=new-pocus.yml" >> $GITHUB_OUTPUT
+          elif [[ "$LABELS" == *"journal-club"* ]]; then
+            echo "template=new-journal.yml" >> $GITHUB_OUTPUT
+          else
+            echo "template=new-protocol.yml" >> $GITHUB_OUTPUT
+          fi
+
+      # 2. Haal de individuele velden uit het formulier (titel, discipline, etc.)
       - name: Parse Issue Form
         uses: stefanbuck/github-issue-parser@v3
         id: parse
         with:
-          template-path: .github/ISSUE_TEMPLATE/*.yml # Automatische detectie
+          template-path: .github/ISSUE_TEMPLATE/${{ steps.get_template.outputs.template }}
 
+      # 3. Maak het Markdown bestand aan op de juiste locatie
       - name: Create Markdown File
         run: |
-          # 1. Bepaal het type op basis van de labels van de issue
-          # We gebruiken een omweg om de labels veilig te checken
-          IS_BLOCK=$(echo '${{ join(github.event.issue.labels.*.name, ' ') }}' | grep -c "block" || true)
-          IS_POCUS=$(echo '${{ join(github.event.issue.labels.*.name, ' ') }}' | grep -c "pocus" || true)
-          IS_JOURNAL=$(echo '${{ join(github.event.issue.labels.*.name, ' ') }}' | grep -c "journal-club" || true)
-          
+          # Haal metadata op
+          LABELS="${{ join(github.event.issue.labels.*.name, ' ') }}"
           TITLE="${{ github.event.issue.title }}"
-          # Maak een schone bestandsnaam (slug)
-          FILENAME=$(echo "$TITLE" | sed 's/\[.*\]: //g' | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g').md
           
-          # 2. Bepaal de juiste map
-          if [ "$IS_BLOCK" -ge 1 ]; then
+          # Stap 1: Schoon de titel op voor de bestandsnaam (slug)
+          # Verwijdert [Block]: etc. en maakt het URL-vriendelijk
+          CLEAN_TITLE=$(echo "$TITLE" | sed 's/\[.*\]: //g')
+          FILENAME=$(echo "$CLEAN_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g').md
+          
+          # Stap 2: Bepaal de doellocatie op basis van labels
+          if [[ "$LABELS" == *"block"* ]]; then
             DEST="client/src/content/blocks/$FILENAME"
-          elif [ "$IS_POCUS" -ge 1 ]; then
+          elif [[ "$LABELS" == *"pocus"* ]]; then
             DEST="client/src/content/pocus/$FILENAME"
-          elif [ "$IS_JOURNAL" -ge 1 ]; then
+          elif [[ "$LABELS" == *"journal-club"* ]]; then
             DEST="client/src/content/journal-club/$FILENAME"
           else
-            DEST="client/src/content/protocols/Algemeen/$FILENAME"
+            # Voor protocollen kijken we naar de gekozen discipline uit het formulier
+            DISCIPLINE="${{ steps.parse.outputs.discipline || 'Algemeen' }}"
+            DEST="client/src/content/protocols/$DISCIPLINE/$FILENAME"
           fi
 
-          # 3. Zorg dat de map bestaat
+          # Stap 3: Maak de map aan als deze nog niet bestaat
           mkdir -p "$(dirname "$DEST")"
 
-          # 4. Schrijf het Markdown bestand
-          # We behouden de body van de issue als inhoud
+          # Stap 4: Schrijf het Markdown bestand met Frontmatter
+          # De data tussen de --- --- wordt door de app gebruikt voor filtering en weergave
           cat <<EOF > "$DEST"
           ---
-          title: "${{ github.event.issue.title }}"
+          title: "$CLEAN_TITLE"
           date: "$(date +%Y-%m-%d)"
           author: "${{ github.event.issue.user.login }}"
+          discipline: "${{ steps.parse.outputs.discipline || '' }}"
+          pubmedId: "${{ steps.parse.outputs.pubmedId || '' }}"
           published: true
           ---
           
           ${{ github.event.issue.body }}
           EOF
+          
+          # Bewaar het pad voor de volgende stap
+          echo "final_path=$DEST" >> $GITHUB_ENV
 
+      # 4. Push de wijzigingen naar de repository
       - name: Commit and Push
         run: |
           git config --global user.name "Clinical Content Bot"
           git config --global user.email "bot@azgroeninge.be"
           git add .
-          # Alleen committen als er wijzigingen zijn
+          # Voorkom foutmelding als er geen wijzigingen zijn
           git diff-index --quiet HEAD || git commit -m "Content Update: ${{ github.event.issue.title }}"
           git push
 
+      # 5. Sluit de issue en geef feedback aan de gebruiker
       - name: Close Issue
-        run: gh issue close ${{ github.event.issue.number }} --comment "✅ Content is gepubliceerd naar $DEST en staat live zodra de build klaar is!"
+        run: |
+          gh issue close ${{ github.event.issue.number }} --comment "✅ Succes! De content is gepubliceerd naar \`$final_path\`. De PWA wordt nu bijgewerkt door Vercel (duurt ca. 1-2 min)."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
