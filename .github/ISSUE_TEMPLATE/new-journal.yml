@@ -1,0 +1,23 @@
+name: "🗞️ Nieuw Journal Club Artikel"
+description: "Publiceer een samenvatting van een nieuw wetenschappelijk artikel"
+title: "[Journal]: "
+labels: ["content-update", "journal-club"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: "Artikel Titel"
+    validations:
+      required: true
+  - type: input
+    id: pubmedId
+    attributes:
+      label: "PubMed ID"
+      description: "Enkel de cijfers (bijv. 34567890)"
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Bespreking & Conclusie"
+      placeholder: "Wat is de impact op onze praktijk?"
+    validations:
+      required: true

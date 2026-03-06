@@ -1,0 +1,36 @@
+name: "🔍 Nieuwe PoCUS Guide"
+description: "Voeg een nieuw Point-of-Care Ultrasound protocol toe"
+title: "[PoCUS]: "
+labels: ["content-update", "pocus"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: "Pocus Naam"
+      placeholder: "bijv. Gastrische Echo"
+    validations:
+      required: true
+  - type: textarea
+    id: indications
+    attributes:
+      label: "Indicaties"
+  - type: textarea
+    id: acquisition
+    attributes:
+      label: "Acquisitie (Hoe beelden te verkrijgen)"
+  - type: textarea
+    id: interpretatie
+    attributes:
+      label: "Interpretatie (Markdown ondersteund)"
+  - type: input
+    id: clearsign
+    attributes:
+      label: "Clear Sign (Afbeelding of Tekst)"
+  - type: input
+    id: pathology
+    attributes:
+      label: "Pathologie (Afbeelding of Tekst)"
+  - type: input
+    id: algorhythm
+    attributes:
+      label: "Beslisboom / Algoritme (Afbeelding link)"

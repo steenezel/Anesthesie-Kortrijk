@@ -1,0 +1,35 @@
+name: "📖 Nieuw Protocol"
+description: "Voeg een klinisch protocol toe aan een specifieke discipline"
+title: "[Protocol]: "
+labels: ["content-update", "protocol"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: "Titel van het Protocol"
+    validations:
+      required: true
+  - type: dropdown
+    id: discipline
+    attributes:
+      label: "Discipline"
+      options:
+        - "abdominale"
+        - "buitendiensten"
+        - "neurochirurgie"
+        - "nko"
+        - "obstetrie-epidurale"
+        - "orthopedie"
+        - "pijnkliniek"
+        - "reanimatie"
+        - "thorax-vaat"
+        - "urologie"
+      validations:
+      required: true
+  - type: textarea
+    id: content
+    attributes:
+      label: "Protocol Inhoud (Markdown)"
+      description: "Gebruik # voor koppen, - voor lijsten, en | voor tabellen."
+    validations:
+      required: true
