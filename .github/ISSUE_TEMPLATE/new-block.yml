@@ -15,16 +15,22 @@ body:
     attributes:
       label: "Samenvatting (Indicaties & Doel)"
       placeholder: "Korte beschrijving voor de overzichtskaart..."
+    validations:
+      required: true
   - type: textarea
     id: anatomy
     attributes:
       label: "Anatomie & Landmarks"
       placeholder: "Beschrijf de belangrijkste landmarks..."
+    validations:
+      required: true
   - type: textarea
     id: technique
     attributes:
       label: "Techniek (Stap-voor-stap)"
       placeholder: "Naaldvoering, ultrasound approach..."
+    validations:
+      required: true
   - type: input
     id: sono_main
     attributes:
@@ -40,3 +46,5 @@ body:
     attributes:
       label: "Tips & Tricks"
       placeholder: "Klinische pearls..."
+    validations:
+      required: true

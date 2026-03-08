@@ -14,14 +14,20 @@ body:
     id: indications
     attributes:
       label: "Indicaties"
+    validations:
+      required: true
   - type: textarea
     id: acquisition
     attributes:
       label: "Acquisitie (Hoe beelden te verkrijgen)"
+    validations:
+      required: true
   - type: textarea
     id: interpretatie
     attributes:
       label: "Interpretatie (Markdown ondersteund)"
+    validations:
+      required: true
   - type: input
     id: clearsign
     attributes:

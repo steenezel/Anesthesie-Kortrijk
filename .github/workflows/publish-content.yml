@@ -21,11 +21,11 @@ jobs:
         id: get_template
         run: |
           LABELS="${{ join(github.event.issue.labels.*.name, ' ') }}"
-          if [[ "$LABELS" == *"block"* ]]; then
+          if [[ "$LABELS" =~ block ]]; then
             echo "template=new-block.yml" >> $GITHUB_OUTPUT
-          elif [[ "$LABELS" == *"pocus"* ]]; then
+          elif [[ "$LABELS" =~ pocus ]]; then
             echo "template=new-pocus.yml" >> $GITHUB_OUTPUT
-          elif [[ "$LABELS" == *"journal-club"* ]]; then
+          elif [[ "$LABELS" =~ journal-club ]]; then
             echo "template=new-journal.yml" >> $GITHUB_OUTPUT
           else
             echo "template=new-protocol.yml" >> $GITHUB_OUTPUT
@@ -44,22 +44,30 @@ jobs:
           # Haal metadata op
           LABELS="${{ join(github.event.issue.labels.*.name, ' ') }}"
           TITLE="${{ github.event.issue.title }}"
+          DISCIPLINE_RAW="${{ steps.parse.outputs.issueparser_discipline }}"
+          PUBMED_RAW="${{ steps.parse.outputs.issueparser_pubmedId }}"
           
           # Stap 1: Schoon de titel op voor de bestandsnaam (slug)
           # Verwijdert [Block]: etc. en maakt het URL-vriendelijk
-          CLEAN_TITLE=$(echo "$TITLE" | sed 's/\[.*\]: //g')
-          FILENAME=$(echo "$CLEAN_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g').md
+          CLEAN_TITLE=$(echo "$TITLE" | sed -E 's/^\[[^]]+\]:\s*//')
+          FILENAME=$(echo "$CLEAN_TITLE" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed -E 's/[^a-z0-9]+/-/g' \
+            | sed -E 's/^-+|-+$//g').md
           
           # Stap 2: Bepaal de doellocatie op basis van labels
-          if [[ "$LABELS" == *"block"* ]]; then
+          if [[ "$LABELS" =~ block ]]; then
             DEST="client/src/content/blocks/$FILENAME"
-          elif [[ "$LABELS" == *"pocus"* ]]; then
+          elif [[ "$LABELS" =~ pocus ]]; then
             DEST="client/src/content/pocus/$FILENAME"
-          elif [[ "$LABELS" == *"journal-club"* ]]; then
+          elif [[ "$LABELS" =~ journal-club ]]; then
             DEST="client/src/content/journal-club/$FILENAME"
           else
             # Voor protocollen kijken we naar de gekozen discipline uit het formulier
-            DISCIPLINE="${{ steps.parse.outputs.discipline || 'Algemeen' }}"
+            DISCIPLINE="$DISCIPLINE_RAW"
+            if [ -z "$DISCIPLINE" ] || [ "$DISCIPLINE" = "_No response_" ]; then
+              DISCIPLINE="Algemeen"
+            fi
             DEST="client/src/content/protocols/$DISCIPLINE/$FILENAME"
           fi
 
@@ -68,18 +76,18 @@ jobs:
 
           # Stap 4: Schrijf het Markdown bestand met Frontmatter
           # De data tussen de --- --- wordt door de app gebruikt voor filtering en weergave
-          cat <<EOF > "$DEST"
-          ---
-          title: "$CLEAN_TITLE"
-          date: "$(date +%Y-%m-%d)"
-          author: "${{ github.event.issue.user.login }}"
-          discipline: "${{ steps.parse.outputs.discipline || '' }}"
-          pubmedId: "${{ steps.parse.outputs.pubmedId || '' }}"
-          published: true
-          ---
-          
-          ${{ github.event.issue.body }}
-          EOF
+          {
+            echo "---"
+            echo "title: \"$CLEAN_TITLE\""
+            echo "date: \"$(date +%Y-%m-%d)\""
+            echo "author: \"${{ github.event.issue.user.login }}\""
+            echo "discipline: \"${DISCIPLINE_RAW}\""
+            echo "pubmedId: \"${PUBMED_RAW}\""
+            echo "published: true"
+            echo "---"
+            echo
+            printf '%s\n' "${{ github.event.issue.body }}"
+          } > "$DEST"
           
           # Bewaar het pad voor de volgende stap
           echo "final_path=$DEST" >> $GITHUB_ENV
