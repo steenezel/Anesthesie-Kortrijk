@@ -24,7 +24,7 @@ body:
         - "reanimatie"
         - "thorax-vaat"
         - "urologie"
-      validations:
+    validations:
       required: true
   - type: textarea
     id: content
