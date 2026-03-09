@@ -18,40 +18,44 @@ jobs:
       - name: Create Markdown File
         id: create_file
         run: |
-          # 1. Haal de ruwe data op
+          # 1. Haal data op
           BODY="${{ github.event.issue.body }}"
           LABELS="${{ join(github.event.issue.labels.*.name, ' ') }}"
-          ISSUE_TITLE="${{ github.event.issue.title }}"
-
-          # Functie om data tussen de ### koppen uit te trekken (Regex)
+          
+          # Functie om tekst tussen ### koppen te extraheren
           extract_field() {
             echo "$BODY" | sed -n "/### $1/,/###/p" | sed '1d;$d' | xargs
           }
 
-          # 2. Extract velden (onafhankelijk van de parser)
+          # 2. Extract velden
+          # We checken verschillende mogelijke namen voor de titel-kop
           TITLE_FIELD=$(extract_field "Titel")
           [ -z "$TITLE_FIELD" ] && TITLE_FIELD=$(extract_field "Pocus Naam")
-          [ -z "$TITLE_FIELD" ] && TITLE_FIELD=$(echo "$ISSUE_TITLE" | sed 's/\[.*\]: //g')
+          [ -z "$TITLE_FIELD" ] && TITLE_FIELD=$(extract_field "Artikel Titel")
+          [ -z "$TITLE_FIELD" ] && TITLE_FIELD="${{ github.event.issue.title }}"
+          
+          # Verwijder [Prefix] uit de titel voor de schone weergave
+          CLEAN_TITLE=$(echo "$TITLE_FIELD" | sed 's/\[.*\]: //g' | xargs)
           
           DISC=$(extract_field "Discipline")
           SUMM=$(extract_field "Samenvatting (Indicaties & Doel)")
           TIPS=$(extract_field "Tips & Tricks")
           PUBMED=$(extract_field "PubMed ID")
 
-          # 3. Bestandsnaam genereren
-          CLEAN_TITLE=$(echo "$TITLE_FIELD" | xargs)
+          # 3. Bestandsnaam genereren (Slug)
           FILENAME=$(echo "$CLEAN_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g').md
 
-          # 4. Routing logica (Strikt)
-          if [[ "$LABELS" == *"block"* ]]; then
+          # 4. DE ROUTING (Gecorrigeerd)
+          # We zoeken naar de specifieke woorden in de string van alle labels
+          if [[ " $LABELS " =~ " block " ]]; then
             DEST="client/src/content/blocks/$FILENAME"
-          elif [[ "$LABELS" == *"pocus"* ]]; then
+          elif [[ " $LABELS " =~ " pocus " ]]; then
             DEST="client/src/content/pocus/$FILENAME"
-          elif [[ "$LABELS" == *"journal-club"* ]]; then
+          elif [[ " $LABELS " =~ " journal-club " ]]; then
             DEST="client/src/content/journal-club/$FILENAME"
           else
-            # Protocol routing
-            case "$DISC" in
+            # Het is een protocol: check de discipline
+            case "${DISC,,}" in # ,, maakt het lowercase voor de check
               "abdominale"|"buitendiensten"|"neurochirurgie"|"nko"|"obstetrie-epidurale"|"orthopedie"|"pijnkliniek"|"reanimatie"|"thorax-vaat"|"urologie")
                 DEST="client/src/content/protocols/$DISC/$FILENAME"
                 ;;
@@ -63,7 +67,7 @@ jobs:
 
           mkdir -p "$(dirname "$DEST")"
 
-          # 5. Schrijf het bestand met alle metadata
+          # 5. Schrijf bestand
           {
             echo "---"
             echo "title: \"$CLEAN_TITLE\""
@@ -80,7 +84,7 @@ jobs:
           } > "$DEST"
           
           echo "final_path=$DEST" >> $GITHUB_ENV
-
+          
       - name: Commit and Push
         run: |
           git config --global user.name "Clinical Content Bot"
@@ -94,3 +98,4 @@ jobs:
           gh issue close ${{ github.event.issue.number }} --comment "✅ Succesvol gepubliceerd naar \`$final_path\`."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
