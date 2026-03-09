@@ -18,9 +18,9 @@ jobs:
       - name: Create Markdown File
         id: create_file
         run: |
-          # 1. Haal data op
+          # 1. Haal de data op
           BODY="${{ github.event.issue.body }}"
-          LABELS="${{ join(github.event.issue.labels.*.name, ' ') }}"
+          ISSUE_TITLE="${{ github.event.issue.title }}"
           
           # Functie om tekst tussen ### koppen te extraheren
           extract_field() {
@@ -28,36 +28,41 @@ jobs:
           }
 
           # 2. Extract velden
-          # We checken verschillende mogelijke namen voor de titel-kop
           TITLE_FIELD=$(extract_field "Titel")
-          [ -z "$TITLE_FIELD" ] && TITLE_FIELD=$(extract_field "Pocus Naam")
-          [ -z "$TITLE_FIELD" ] && TITLE_FIELD=$(extract_field "Artikel Titel")
-          [ -z "$TITLE_FIELD" ] && TITLE_FIELD="${{ github.event.issue.title }}"
+          [ -z "$TITLE_FIELD" ] || [ "$TITLE_FIELD" == "_No response_" ] && TITLE_FIELD=$(extract_field "Pocus Naam")
+          [ -z "$TITLE_FIELD" ] || [ "$TITLE_FIELD" == "_No response_" ] && TITLE_FIELD=$(extract_field "Artikel Titel")
           
-          # Verwijder [Prefix] uit de titel voor de schone weergave
-          CLEAN_TITLE=$(echo "$TITLE_FIELD" | sed 's/\[.*\]: //g' | xargs)
+          # Als alle velden leeg zijn, gebruik de Issue Titel
+          if [ -z "$TITLE_FIELD" ] || [ "$TITLE_FIELD" == "_No response_" ]; then
+            CLEAN_TITLE=$(echo "$ISSUE_TITLE" | sed 's/\[.*\]: //g' | xargs)
+          else
+            CLEAN_TITLE=$(echo "$TITLE_FIELD" | xargs)
+          fi
           
           DISC=$(extract_field "Discipline")
           SUMM=$(extract_field "Samenvatting (Indicaties & Doel)")
           TIPS=$(extract_field "Tips & Tricks")
           PUBMED=$(extract_field "PubMed ID")
 
-          # 3. Bestandsnaam genereren (Slug)
+          # 3. Bestandsnaam genereren
           FILENAME=$(echo "$CLEAN_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g').md
 
-          # 4. DE ROUTING (Gecorrigeerd)
-          # We zoeken naar de specifieke woorden in de string van alle labels
-          if [[ " $LABELS " =~ " block " ]]; then
+          # 4. DE INTELLIGENTE ROUTING (Kijkt naar de inhoud ipv labels)
+          if [[ "$BODY" == *"Anatomie & Landmarks"* ]]; then
+            # Dit veld komt enkel voor in new-block.yml
             DEST="client/src/content/blocks/$FILENAME"
-          elif [[ " $LABELS " =~ " pocus " ]]; then
+          elif [[ "$BODY" == *"Acquisitie"* ]]; then
+            # Dit veld komt enkel voor in new-pocus.yml
             DEST="client/src/content/pocus/$FILENAME"
-          elif [[ " $LABELS " =~ " journal-club " ]]; then
+          elif [[ "$BODY" == *"PubMed ID"* ]]; then
+            # Dit veld komt enkel voor in new-journal.yml
             DEST="client/src/content/journal-club/$FILENAME"
           else
-            # Het is een protocol: check de discipline
-            case "${DISC,,}" in # ,, maakt het lowercase voor de check
+            # Default naar protocollen
+            DISC_LOWER=$(echo "$DISC" | tr '[:upper:]' '[:lower:]')
+            case "$DISC_LOWER" in
               "abdominale"|"buitendiensten"|"neurochirurgie"|"nko"|"obstetrie-epidurale"|"orthopedie"|"pijnkliniek"|"reanimatie"|"thorax-vaat"|"urologie")
-                DEST="client/src/content/protocols/$DISC/$FILENAME"
+                DEST="client/src/content/protocols/$DISC_LOWER/$FILENAME"
                 ;;
               *)
                 DEST="client/src/content/protocols/Algemeen/$FILENAME"
@@ -67,13 +72,13 @@ jobs:
 
           mkdir -p "$(dirname "$DEST")"
 
-          # 5. Schrijf bestand
+          # 5. Schrijf bestand met Frontmatter
           {
             echo "---"
             echo "title: \"$CLEAN_TITLE\""
             echo "date: \"$(date +%Y-%m-%d)\""
             echo "author: \"${{ github.event.issue.user.login }}\""
-            echo "discipline: \"$DISC\""
+            echo "discipline: \"$DISC_LOWER\""
             echo "pubmedId: \"$PUBMED\""
             echo "tips: \"$TIPS\""
             echo "summary: \"$SUMM\""
@@ -98,4 +103,5 @@ jobs:
           gh issue close ${{ github.event.issue.number }} --comment "✅ Succesvol gepubliceerd naar \`$final_path\`."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
