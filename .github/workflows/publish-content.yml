@@ -18,21 +18,18 @@ jobs:
       - name: Create Markdown File
         id: create_file
         run: |
-          # 1. Haal de data op
           BODY="${{ github.event.issue.body }}"
           ISSUE_TITLE="${{ github.event.issue.title }}"
           
-          # Functie om tekst tussen ### koppen te extraheren
           extract_field() {
             echo "$BODY" | sed -n "/### $1/,/###/p" | sed '1d;$d' | xargs
           }
 
-          # 2. Extract velden
-          TITLE_FIELD=$(extract_field "Titel")
+          # 1. Velden extraheren
+          TITLE_FIELD=$(extract_field "Korte Titel")
+          [ -z "$TITLE_FIELD" ] || [ "$TITLE_FIELD" == "_No response_" ] && TITLE_FIELD=$(extract_field "Titel")
           [ -z "$TITLE_FIELD" ] || [ "$TITLE_FIELD" == "_No response_" ] && TITLE_FIELD=$(extract_field "Pocus Naam")
-          [ -z "$TITLE_FIELD" ] || [ "$TITLE_FIELD" == "_No response_" ] && TITLE_FIELD=$(extract_field "Artikel Titel")
           
-          # Als alle velden leeg zijn, gebruik de Issue Titel
           if [ -z "$TITLE_FIELD" ] || [ "$TITLE_FIELD" == "_No response_" ]; then
             CLEAN_TITLE=$(echo "$ISSUE_TITLE" | sed 's/\[.*\]: //g' | xargs)
           else
@@ -40,25 +37,24 @@ jobs:
           fi
           
           DISC=$(extract_field "Discipline")
+          PUBMED=$(extract_field "PubMed ID")
           SUMM=$(extract_field "Samenvatting (Indicaties & Doel)")
           TIPS=$(extract_field "Tips & Tricks")
-          PUBMED=$(extract_field "PubMed ID")
 
-          # 3. Bestandsnaam genereren
           FILENAME=$(echo "$CLEAN_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g').md
 
-          # 4. DE INTELLIGENTE ROUTING (Kijkt naar de inhoud ipv labels)
-          if [[ "$BODY" == *"Anatomie & Landmarks"* ]]; then
-            # Dit veld komt enkel voor in new-block.yml
-            DEST="client/src/content/blocks/$FILENAME"
-          elif [[ "$BODY" == *"Acquisitie"* ]]; then
-            # Dit veld komt enkel voor in new-pocus.yml
-            DEST="client/src/content/pocus/$FILENAME"
-          elif [[ "$BODY" == *"PubMed ID"* ]]; then
-            # Dit veld komt enkel voor in new-journal.yml
+          # 2. INTELLIGENTE ROUTING
+          if [[ "$BODY" == *"Onderzoeksvraag"* ]] || [[ "$BODY" == *"PICO"* ]]; then
             DEST="client/src/content/journal-club/$FILENAME"
+            TYPE="journal"
+          elif [[ "$BODY" == *"Anatomie & Landmarks"* ]]; then
+            DEST="client/src/content/blocks/$FILENAME"
+            TYPE="block"
+          elif [[ "$BODY" == *"Acquisitie"* ]]; then
+            DEST="client/src/content/pocus/$FILENAME"
+            TYPE="pocus"
           else
-            # Default naar protocollen
+            TYPE="protocol"
             DISC_LOWER=$(echo "$DISC" | tr '[:upper:]' '[:lower:]')
             case "$DISC_LOWER" in
               "abdominale"|"buitendiensten"|"neurochirurgie"|"nko"|"obstetrie-epidurale"|"orthopedie"|"pijnkliniek"|"reanimatie"|"thorax-vaat"|"urologie")
@@ -72,13 +68,13 @@ jobs:
 
           mkdir -p "$(dirname "$DEST")"
 
-          # 5. Schrijf bestand met Frontmatter
+          # 3. SCHRIJF BESTAND
           {
             echo "---"
             echo "title: \"$CLEAN_TITLE\""
             echo "date: \"$(date +%Y-%m-%d)\""
             echo "author: \"${{ github.event.issue.user.login }}\""
-            echo "discipline: \"$DISC_LOWER\""
+            echo "discipline: \"$DISC\""
             echo "pubmedId: \"$PUBMED\""
             echo "tips: \"$TIPS\""
             echo "summary: \"$SUMM\""
@@ -89,7 +85,7 @@ jobs:
           } > "$DEST"
           
           echo "final_path=$DEST" >> $GITHUB_ENV
-          
+
       - name: Commit and Push
         run: |
           git config --global user.name "Clinical Content Bot"
@@ -100,8 +96,6 @@ jobs:
 
       - name: Close Issue
         run: |
-          gh issue close ${{ github.event.issue.number }} --comment "✅ Succesvol gepubliceerd naar \`$final_path\`."
+          gh issue close ${{ github.event.issue.number }} --comment "✅ Succes! Journal artikel gepubliceerd naar \`$final_path\`."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
