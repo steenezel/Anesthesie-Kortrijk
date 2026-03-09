@@ -15,58 +15,42 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Get Template Name
-        id: get_template
-        run: |
-          LABELS="${{ join(github.event.issue.labels.*.name, ' ') }}"
-          if [[ "$LABELS" == *"block"* ]]; then
-            echo "template=new-block.yml" >> $GITHUB_OUTPUT
-            echo "type=block" >> $GITHUB_OUTPUT
-          elif [[ "$LABELS" == *"pocus"* ]]; then
-            echo "template=new-pocus.yml" >> $GITHUB_OUTPUT
-            echo "type=pocus" >> $GITHUB_OUTPUT
-          elif [[ "$LABELS" == *"journal-club"* ]]; then
-            echo "template=new-journal.yml" >> $GITHUB_OUTPUT
-            echo "type=journal" >> $GITHUB_OUTPUT
-          else
-            echo "template=new-protocol.yml" >> $GITHUB_OUTPUT
-            echo "type=protocol" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Parse Issue Form
-        uses: stefanbuck/github-issue-parser@v3
-        id: parse
-        with:
-          template-path: .github/ISSUE_TEMPLATE/${{ steps.get_template.outputs.template }}
-
       - name: Create Markdown File
+        id: create_file
         run: |
-          # 1. Data ophalen uit de parser (gebruik exact de ID's uit je YAML)
-          # We gebruiken een fallback naar de Issue Titel als het formulierveld leeg is
-          RAW_TITLE="${{ steps.parse.outputs.title }}"
-          if [ -z "$RAW_TITLE" ] || [ "$RAW_TITLE" == "_No response_" ]; then
-            RAW_TITLE="${{ github.event.issue.title }}"
-          fi
+          # 1. Haal de ruwe data op
+          BODY="${{ github.event.issue.body }}"
+          LABELS="${{ join(github.event.issue.labels.*.name, ' ') }}"
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+
+          # Functie om data tussen de ### koppen uit te trekken (Regex)
+          extract_field() {
+            echo "$BODY" | sed -n "/### $1/,/###/p" | sed '1d;$d' | xargs
+          }
+
+          # 2. Extract velden (onafhankelijk van de parser)
+          TITLE_FIELD=$(extract_field "Titel")
+          [ -z "$TITLE_FIELD" ] && TITLE_FIELD=$(extract_field "Pocus Naam")
+          [ -z "$TITLE_FIELD" ] && TITLE_FIELD=$(echo "$ISSUE_TITLE" | sed 's/\[.*\]: //g')
           
-          # Schoon de titel op (verwijder [Block]: etc)
-          CLEAN_TITLE=$(echo "$RAW_TITLE" | sed 's/\[.*\]: //g' | xargs)
-          
-          # 2. Bestandsnaam genereren (Slug)
+          DISC=$(extract_field "Discipline")
+          SUMM=$(extract_field "Samenvatting (Indicaties & Doel)")
+          TIPS=$(extract_field "Tips & Tricks")
+          PUBMED=$(extract_field "PubMed ID")
+
+          # 3. Bestandsnaam genereren
+          CLEAN_TITLE=$(echo "$TITLE_FIELD" | xargs)
           FILENAME=$(echo "$CLEAN_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g').md
-          
-          # 3. Routing logica
-          TYPE="${{ steps.get_template.outputs.type }}"
-          
-          if [[ "$TYPE" == "block" ]]; then
+
+          # 4. Routing logica (Strikt)
+          if [[ "$LABELS" == *"block"* ]]; then
             DEST="client/src/content/blocks/$FILENAME"
-          elif [[ "$TYPE" == "pocus" ]]; then
+          elif [[ "$LABELS" == *"pocus"* ]]; then
             DEST="client/src/content/pocus/$FILENAME"
-          elif [[ "$TYPE" == "journal" ]]; then
+          elif [[ "$LABELS" == *"journal-club"* ]]; then
             DEST="client/src/content/journal-club/$FILENAME"
           else
-            # Protocol routing met jouw specifieke disciplines
-            DISC="${{ steps.parse.outputs.discipline }}"
-            # Normaliseer discipline (indien leeg of geen match naar Algemeen)
+            # Protocol routing
             case "$DISC" in
               "abdominale"|"buitendiensten"|"neurochirurgie"|"nko"|"obstetrie-epidurale"|"orthopedie"|"pijnkliniek"|"reanimatie"|"thorax-vaat"|"urologie")
                 DEST="client/src/content/protocols/$DISC/$FILENAME"
@@ -79,21 +63,20 @@ jobs:
 
           mkdir -p "$(dirname "$DEST")"
 
-          # 4. Schrijf Markdown met Frontmatter
-          # Belangrijk: we mappen hier de velden voor block-detail.tsx (zoals tips, sono_main)
+          # 5. Schrijf het bestand met alle metadata
           {
             echo "---"
             echo "title: \"$CLEAN_TITLE\""
             echo "date: \"$(date +%Y-%m-%d)\""
             echo "author: \"${{ github.event.issue.user.login }}\""
-            echo "discipline: \"${{ steps.parse.outputs.discipline }}\""
-            echo "pubmedId: \"${{ steps.parse.outputs.pubmedId }}\""
-            echo "tips: \"${{ steps.parse.outputs.tips }}\""
-            echo "summary: \"${{ steps.parse.outputs.summary }}\""
+            echo "discipline: \"$DISC\""
+            echo "pubmedId: \"$PUBMED\""
+            echo "tips: \"$TIPS\""
+            echo "summary: \"$SUMM\""
             echo "published: true"
             echo "---"
             echo ""
-            echo "${{ github.event.issue.body }}"
+            echo "$BODY"
           } > "$DEST"
           
           echo "final_path=$DEST" >> $GITHUB_ENV
@@ -108,6 +91,6 @@ jobs:
 
       - name: Close Issue
         run: |
-          gh issue close ${{ github.event.issue.number }} --comment "✅ Gepubliceerd naar \`$final_path\`. De app wordt bijgewerkt."
+          gh issue close ${{ github.event.issue.number }} --comment "✅ Succesvol gepubliceerd naar \`$final_path\`."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
