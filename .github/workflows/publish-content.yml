@@ -5,7 +5,6 @@ on:
 
 jobs:
   publish:
-    # Voer dit alleen uit als het label 'publish' handmatig wordt toegevoegd
     if: github.event.label.name == 'publish'
     runs-on: ubuntu-latest
     permissions:
@@ -16,95 +15,99 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # 1. Bepaal welk YAML-formulier gebruikt is op basis van de labels
       - name: Get Template Name
         id: get_template
         run: |
           LABELS="${{ join(github.event.issue.labels.*.name, ' ') }}"
-          if [[ "$LABELS" =~ block ]]; then
+          if [[ "$LABELS" == *"block"* ]]; then
             echo "template=new-block.yml" >> $GITHUB_OUTPUT
-          elif [[ "$LABELS" =~ pocus ]]; then
+            echo "type=block" >> $GITHUB_OUTPUT
+          elif [[ "$LABELS" == *"pocus"* ]]; then
             echo "template=new-pocus.yml" >> $GITHUB_OUTPUT
-          elif [[ "$LABELS" =~ journal-club ]]; then
+            echo "type=pocus" >> $GITHUB_OUTPUT
+          elif [[ "$LABELS" == *"journal-club"* ]]; then
             echo "template=new-journal.yml" >> $GITHUB_OUTPUT
+            echo "type=journal" >> $GITHUB_OUTPUT
           else
             echo "template=new-protocol.yml" >> $GITHUB_OUTPUT
+            echo "type=protocol" >> $GITHUB_OUTPUT
           fi
 
-      # 2. Haal de individuele velden uit het formulier (titel, discipline, etc.)
       - name: Parse Issue Form
         uses: stefanbuck/github-issue-parser@v3
         id: parse
         with:
           template-path: .github/ISSUE_TEMPLATE/${{ steps.get_template.outputs.template }}
 
-      # 3. Maak het Markdown bestand aan op de juiste locatie
       - name: Create Markdown File
         run: |
-          # Haal metadata op
-          LABELS="${{ join(github.event.issue.labels.*.name, ' ') }}"
-          TITLE="${{ github.event.issue.title }}"
-          DISCIPLINE_RAW="${{ steps.parse.outputs.issueparser_discipline }}"
-          PUBMED_RAW="${{ steps.parse.outputs.issueparser_pubmedId }}"
+          # 1. Data ophalen uit de parser (gebruik exact de ID's uit je YAML)
+          # We gebruiken een fallback naar de Issue Titel als het formulierveld leeg is
+          RAW_TITLE="${{ steps.parse.outputs.title }}"
+          if [ -z "$RAW_TITLE" ] || [ "$RAW_TITLE" == "_No response_" ]; then
+            RAW_TITLE="${{ github.event.issue.title }}"
+          fi
           
-          # Stap 1: Schoon de titel op voor de bestandsnaam (slug)
-          # Verwijdert [Block]: etc. en maakt het URL-vriendelijk
-          CLEAN_TITLE=$(echo "$TITLE" | sed -E 's/^\[[^]]+\]:\s*//')
-          FILENAME=$(echo "$CLEAN_TITLE" \
-            | tr '[:upper:]' '[:lower:]' \
-            | sed -E 's/[^a-z0-9]+/-/g' \
-            | sed -E 's/^-+|-+$//g').md
+          # Schoon de titel op (verwijder [Block]: etc)
+          CLEAN_TITLE=$(echo "$RAW_TITLE" | sed 's/\[.*\]: //g' | xargs)
           
-          # Stap 2: Bepaal de doellocatie op basis van labels
-          if [[ "$LABELS" =~ block ]]; then
+          # 2. Bestandsnaam genereren (Slug)
+          FILENAME=$(echo "$CLEAN_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g').md
+          
+          # 3. Routing logica
+          TYPE="${{ steps.get_template.outputs.type }}"
+          
+          if [[ "$TYPE" == "block" ]]; then
             DEST="client/src/content/blocks/$FILENAME"
-          elif [[ "$LABELS" =~ pocus ]]; then
+          elif [[ "$TYPE" == "pocus" ]]; then
             DEST="client/src/content/pocus/$FILENAME"
-          elif [[ "$LABELS" =~ journal-club ]]; then
+          elif [[ "$TYPE" == "journal" ]]; then
             DEST="client/src/content/journal-club/$FILENAME"
           else
-            # Voor protocollen kijken we naar de gekozen discipline uit het formulier
-            DISCIPLINE="$DISCIPLINE_RAW"
-            if [ -z "$DISCIPLINE" ] || [ "$DISCIPLINE" = "_No response_" ]; then
-              DISCIPLINE="Algemeen"
-            fi
-            DEST="client/src/content/protocols/$DISCIPLINE/$FILENAME"
+            # Protocol routing met jouw specifieke disciplines
+            DISC="${{ steps.parse.outputs.discipline }}"
+            # Normaliseer discipline (indien leeg of geen match naar Algemeen)
+            case "$DISC" in
+              "abdominale"|"buitendiensten"|"neurochirurgie"|"nko"|"obstetrie-epidurale"|"orthopedie"|"pijnkliniek"|"reanimatie"|"thorax-vaat"|"urologie")
+                DEST="client/src/content/protocols/$DISC/$FILENAME"
+                ;;
+              *)
+                DEST="client/src/content/protocols/Algemeen/$FILENAME"
+                ;;
+            esac
           fi
 
-          # Stap 3: Maak de map aan als deze nog niet bestaat
           mkdir -p "$(dirname "$DEST")"
 
-          # Stap 4: Schrijf het Markdown bestand met Frontmatter
-          # De data tussen de --- --- wordt door de app gebruikt voor filtering en weergave
+          # 4. Schrijf Markdown met Frontmatter
+          # Belangrijk: we mappen hier de velden voor block-detail.tsx (zoals tips, sono_main)
           {
             echo "---"
             echo "title: \"$CLEAN_TITLE\""
             echo "date: \"$(date +%Y-%m-%d)\""
             echo "author: \"${{ github.event.issue.user.login }}\""
-            echo "discipline: \"${DISCIPLINE_RAW}\""
-            echo "pubmedId: \"${PUBMED_RAW}\""
+            echo "discipline: \"${{ steps.parse.outputs.discipline }}\""
+            echo "pubmedId: \"${{ steps.parse.outputs.pubmedId }}\""
+            echo "tips: \"${{ steps.parse.outputs.tips }}\""
+            echo "summary: \"${{ steps.parse.outputs.summary }}\""
             echo "published: true"
             echo "---"
-            echo
-            printf '%s\n' "${{ github.event.issue.body }}"
+            echo ""
+            echo "${{ github.event.issue.body }}"
           } > "$DEST"
           
-          # Bewaar het pad voor de volgende stap
           echo "final_path=$DEST" >> $GITHUB_ENV
 
-      # 4. Push de wijzigingen naar de repository
       - name: Commit and Push
         run: |
           git config --global user.name "Clinical Content Bot"
           git config --global user.email "bot@azgroeninge.be"
           git add .
-          # Voorkom foutmelding als er geen wijzigingen zijn
           git diff-index --quiet HEAD || git commit -m "Content Update: ${{ github.event.issue.title }}"
           git push
 
-      # 5. Sluit de issue en geef feedback aan de gebruiker
       - name: Close Issue
         run: |
-          gh issue close ${{ github.event.issue.number }} --comment "✅ Succes! De content is gepubliceerd naar \`$final_path\`. De PWA wordt nu bijgewerkt door Vercel (duurt ca. 1-2 min)."
+          gh issue close ${{ github.event.issue.number }} --comment "✅ Gepubliceerd naar \`$final_path\`. De app wordt bijgewerkt."
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
