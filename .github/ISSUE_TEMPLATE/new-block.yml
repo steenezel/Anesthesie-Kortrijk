@@ -1,0 +1,50 @@
+name: "➕ Nieuw Regional Block"
+description: "Voeg een nieuwe LRA techniek toe aan de Blocks sectie"
+title: "[Block]: "
+labels: ["content-update", "block"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: "Titel"
+      placeholder: "bijv. Femoralis Nerve Block"
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Samenvatting (Indicaties & Doel)"
+      placeholder: "Korte beschrijving voor de overzichtskaart..."
+    validations:
+      required: true
+  - type: textarea
+    id: anatomy
+    attributes:
+      label: "Anatomie & Landmarks"
+      placeholder: "Beschrijf de belangrijkste landmarks..."
+    validations:
+      required: true
+  - type: textarea
+    id: technique
+    attributes:
+      label: "Techniek (Stap-voor-stap)"
+      placeholder: "Naaldvoering, ultrasound approach..."
+    validations:
+      required: true
+  - type: input
+    id: sono_main
+    attributes:
+      label: "Hoofd Sono-afbeelding"
+      placeholder: "/images/blocks/naam-afbeelding.png"
+  - type: textarea
+    id: sono_extra
+    attributes:
+      label: "Extra Sono-beelden (lijst)"
+      placeholder: "/images/blocks/extra1.png, /images/blocks/extra2.png"
+  - type: textarea
+    id: tips
+    attributes:
+      label: "Tips & Tricks"
+      placeholder: "Klinische pearls..."
+    validations:
+      required: true

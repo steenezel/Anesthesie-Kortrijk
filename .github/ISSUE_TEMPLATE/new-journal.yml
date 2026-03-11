@@ -1,0 +1,40 @@
+name: "🗞️ Nieuw Journal Club Artikel"
+description: "Publiceer een kritische bespreking van een wetenschappelijk artikel"
+title: "[Journal]: "
+labels: ["content-update", "journal-club"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: "Korte Titel"
+      description: "De titel zoals die in de lijst verschijnt."
+    validations:
+      required: true
+  - type: input
+    id: pubmedId
+    attributes:
+      label: "PubMed ID"
+      description: "Enkel de cijfers (bijv. 34567890). Dit genereert de directe link."
+  - type: textarea
+    id: full_reference
+    attributes:
+      label: "Volledige Titel & Referentie"
+      placeholder: "Auteurs, Journal, Jaar..."
+  - type: textarea
+    id: research_question
+    attributes:
+      label: "Onderzoeksvraag"
+  - type: textarea
+    id: pico
+    attributes:
+      label: "PICO"
+      description: "Population, Intervention, Comparison, Outcome."
+  - type: textarea
+    id: results
+    attributes:
+      label: "Belangrijkste Resultaten"
+  - type: textarea
+    id: take_home
+    attributes:
+      label: "Klinische Take-Home"
+      placeholder: "Wat verandert er morgen in de praktijk?"

@@ -32,6 +32,7 @@ import PocusList from "@/pages/pocus-list";
 import PocusDetail from "@/pages/pocus-detail";
 import Marketplace from "@/pages/marketplace";
 import PainPumpPage from "@/pages/painpump";
+import CapriniCalculator from "@/pages/caprini";
 
 // --- DE BEWAKER (AuthGuard) ---
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -169,6 +170,7 @@ function Router() {
           <Route path="/pocus" component={PocusList} />
           <Route path="/pocus/:id" component={PocusDetail} />
           <Route path="/marketplace" component={Marketplace} />
+          <Route path="/calculator/caprini" component={CapriniCalculator} />
           <Route component={NotFound} />
         </Switch>
       </main>

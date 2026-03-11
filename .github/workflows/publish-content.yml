@@ -1,0 +1,101 @@
+name: Publish Clinical Content
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  publish:
+    if: github.event.label.name == 'publish'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create Markdown File
+        id: create_file
+        run: |
+          BODY="${{ github.event.issue.body }}"
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          
+          extract_field() {
+            echo "$BODY" | sed -n "/### $1/,/###/p" | sed '1d;$d' | xargs
+          }
+
+          # 1. Velden extraheren
+          TITLE_FIELD=$(extract_field "Korte Titel")
+          [ -z "$TITLE_FIELD" ] || [ "$TITLE_FIELD" == "_No response_" ] && TITLE_FIELD=$(extract_field "Titel")
+          [ -z "$TITLE_FIELD" ] || [ "$TITLE_FIELD" == "_No response_" ] && TITLE_FIELD=$(extract_field "Pocus Naam")
+          
+          if [ -z "$TITLE_FIELD" ] || [ "$TITLE_FIELD" == "_No response_" ]; then
+            CLEAN_TITLE=$(echo "$ISSUE_TITLE" | sed 's/\[.*\]: //g' | xargs)
+          else
+            CLEAN_TITLE=$(echo "$TITLE_FIELD" | xargs)
+          fi
+          
+          DISC=$(extract_field "Discipline")
+          PUBMED=$(extract_field "PubMed ID")
+          SUMM=$(extract_field "Samenvatting (Indicaties & Doel)")
+          TIPS=$(extract_field "Tips & Tricks")
+
+          FILENAME=$(echo "$CLEAN_TITLE" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g').md
+
+          # 2. INTELLIGENTE ROUTING
+          if [[ "$BODY" == *"Onderzoeksvraag"* ]] || [[ "$BODY" == *"PICO"* ]]; then
+            DEST="client/src/content/journal-club/$FILENAME"
+            TYPE="journal"
+          elif [[ "$BODY" == *"Anatomie & Landmarks"* ]]; then
+            DEST="client/src/content/blocks/$FILENAME"
+            TYPE="block"
+          elif [[ "$BODY" == *"Acquisitie"* ]]; then
+            DEST="client/src/content/pocus/$FILENAME"
+            TYPE="pocus"
+          else
+            TYPE="protocol"
+            DISC_LOWER=$(echo "$DISC" | tr '[:upper:]' '[:lower:]')
+            case "$DISC_LOWER" in
+              "abdominale"|"buitendiensten"|"neurochirurgie"|"nko"|"obstetrie-epidurale"|"orthopedie"|"pijnkliniek"|"reanimatie"|"thorax-vaat"|"urologie")
+                DEST="client/src/content/protocols/$DISC_LOWER/$FILENAME"
+                ;;
+              *)
+                DEST="client/src/content/protocols/Algemeen/$FILENAME"
+                ;;
+            esac
+          fi
+
+          mkdir -p "$(dirname "$DEST")"
+
+          # 3. SCHRIJF BESTAND
+          {
+            echo "---"
+            echo "title: \"$CLEAN_TITLE\""
+            echo "date: \"$(date +%Y-%m-%d)\""
+            echo "author: \"${{ github.event.issue.user.login }}\""
+            echo "discipline: \"$DISC\""
+            echo "pubmedId: \"$PUBMED\""
+            echo "tips: \"$TIPS\""
+            echo "summary: \"$SUMM\""
+            echo "published: true"
+            echo "---"
+            echo ""
+            echo "$BODY"
+          } > "$DEST"
+          
+          echo "final_path=$DEST" >> $GITHUB_ENV
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "Clinical Content Bot"
+          git config --global user.email "bot@azgroeninge.be"
+          git add .
+          git diff-index --quiet HEAD || git commit -m "Content Update: ${{ github.event.issue.title }}"
+          git push
+
+      - name: Close Issue
+        run: |
+          gh issue close ${{ github.event.issue.number }} --comment "✅ Succes! Journal artikel gepubliceerd naar \`$final_path\`."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
