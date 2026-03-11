@@ -37,9 +37,9 @@ const calculators = [
     title: "Caprini-Score",
     description: "DVT-risico bij chirurgie",
     path: "/calculator/caprini",
-    icon: <BadgeCheck className="h-5 w-5 text-emerald-600" />,
-    color: "bg-emerald-50/50",
-    iconBg: "bg-emerald-100"
+    icon: <BadgeCheck className="h-5 w-5 text-lime-600" />,
+    color: "bg-lime-50/50",
+    iconBg: "bg-lime-100"
   },
   {
     id: "apfel",
@@ -131,9 +131,8 @@ export default function CalculatorList() {
         </div>
 
         {/* Quick Tip Footer */}
-        <div className="mt-8 p-4 rounded-3xl bg-slate-900 text-white shadow-xl shadow-slate-200">
-          <p className="text-[9px] font-black uppercase tracking-widest opacity-50 mb-1">Klinische Tip</p>
-          <p className="text-xs font-medium leading-relaxed italic">
+        <div className="mt-8 p-2 rounded-xl bg-slate-600 text-white shadow-xl shadow-slate-200">
+                    <p className="text-xs font-medium leading-relaxed italic">
             "Dubbelcheck altijd de berekende dosis bij pediatrische patiënten en kritieke medicatie."
           </p>
         </div>
