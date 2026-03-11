@@ -8,7 +8,6 @@ import Zoom from 'react-medium-image-zoom';
 import remarkBreaks from 'remark-breaks';
 import 'react-medium-image-zoom/dist/styles.css';
 
-// We scannen specifiek de journal-club map
 const allJournals = import.meta.glob('../content/journal-club/*.md', { query: 'raw', eager: true });
 
 export default function JournalDetail() {
@@ -27,158 +26,73 @@ export default function JournalDetail() {
       <div className="p-10 text-center">
         <FileWarning className="h-10 w-10 mx-auto text-slate-300 mb-4" />
         <p className="text-slate-500 font-black uppercase tracking-tighter">Artikel niet gevonden</p>
-        <Link href="/journalclub" className="text-teal-600 text-xs font-black uppercase underline">Terug naar lijst</Link>
+        <Link href="/journalclub" className="text-teal-600 text-xs font-bold uppercase mt-4 inline-block">
+          Terug naar overzicht
+        </Link>
       </div>
     );
   }
 
- // --- VERBETERDE FRONTMATTER PARSING ---
-  
-  // Titel extractie
-  const titleMatch = rawContent.match(/title:\s*"(.*)"/);
+  // --- STRENGE FRONTMATTER PARSING ---
+  // We isoleren eerst de frontmatter (alles tussen de eerste twee ---)
+  const frontmatterMatch = rawContent.match(/^---([\s\S]*?)---/);
+  const frontmatter = frontmatterMatch ? frontmatterMatch[1] : "";
+
+  // Titel
+  const titleMatch = frontmatter.match(/title:\s*"(.*)"/);
   const title = titleMatch ? titleMatch[1] : "Geen titel";
 
-  // PubMed ID extractie
-  const pubmedIdMatch = rawContent.match(/pubmed_id:\s*"(.*)"/);
+  // PubMed ID
+  const pubmedIdMatch = frontmatter.match(/pubmed_id:\s*"(.*)"/);
   const pubmedId = pubmedIdMatch ? pubmedIdMatch[1].trim() : null;
 
-  // DISCIPLINES PARSING (De fix voor de ICU-fout)
-  // We zoeken specifiek naar de tekst tussen [ ]
-  const disciplinesMatch = rawContent.match(/disciplines:\s*\[(.*?)\]/);
+  // DISCIPLINES (Nu met check op "Intensieve" ipv "ICU" in je MD bestanden)
+  const disciplinesMatch = frontmatter.match(/disciplines:\s*\[(.*?)\]/);
   const disciplines: string[] = disciplinesMatch 
     ? disciplinesMatch[1]
         .split(',')
-        .map(d => d.replace(/["']/g, '').trim()) // Verwijder quotes en spaties
-        .filter(Boolean) // Verwijder lege resultaten
+        .map(d => d.replace(/["']/g, '').trim())
+        .filter(Boolean)
     : [];
 
-  // Body content: alles na de tweede '---'
+  const dateMatch = frontmatter.match(/date:\s*"(.*)"/);
+  const dateStr = dateMatch ? dateMatch[1] : null;
+
+  // De eigenlijke tekst (alles na de frontmatter)
   const markdownBody = rawContent.replace(/^---[\s\S]*?---/, "").trim();
-  
-  // De specifieke markdown componenten logica
-  const markdownComponents = {
-    img: ({ src, alt }: { src?: string; alt?: string }) => (
-      <div className="my-8">
-        <Zoom>
-          <img 
-            src={src} 
-            alt={alt} 
-            className="w-full h-auto rounded-2xl shadow-lg border border-slate-100 transition-all hover:shadow-xl" 
-          />
-        </Zoom>
-        {alt && (
-          <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-4 px-4 leading-relaxed">
-            {alt}
-          </p>
-        )}
-      </div>
-    ),
-
-    // Speciale definitie voor vette tekst
-    strong: ({ children }: any) => (
-      <strong className="font-bold text-teal-900 mr-[0.25em]">
-        {children}
-      </strong>
-    ),
-
-    // De complexe blockquote-parser voor [!TIP], [!INFO], [!WARNING]
-    blockquote: ({ children }: any) => {
-      const flattenText = (node: any): string => {
-        if (typeof node === 'string') return node;
-        if (Array.isArray(node)) return node.map(flattenText).join('');
-        if (node?.props?.children) return flattenText(node.props.children);
-        return '';
-      };
-
-      const fullText = flattenText(children);
-      const isWarning = fullText.includes("[!WARNING]");
-      const isInfo = fullText.includes("[!INFO]");
-      const isTip = fullText.includes("[!TIP]");
-
-      if (!isWarning && !isInfo && !isTip) {
-        return <blockquote className="border-l-4 border-slate-200 pl-6 my-8 text-slate-600">{children}</blockquote>;
-      }
-
-      const config = isWarning 
-        ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
-        : isInfo 
-        ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
-        : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
-
-      const cleanRecursive = (node: any): any => {
-        if (typeof node === 'string') {
-          return node.replace(/\[!WARNING\]|\[!INFO\]|\[!TIP\]/g, "").trimStart();
-        }
-        if (Array.isArray(node)) return node.map(cleanRecursive);
-        if (node?.props?.children) {
-          return React.cloneElement(node, {
-            ...node.props,
-            children: cleanRecursive(node.props.children)
-          } as any);
-        }
-        return node;
-      };
-
-      return (
-        <div className={`my-4 border-l-8 p-5 rounded-r-3xl shadow-sm ${config.styles}`}>
-          <div className={`font-black text-[10px] mb-1 tracking-[0.2em] ${config.color}`}>
-            {config.title}
-          </div>
-          <div className="text-slate-900 leading-snug font-normal whitespace-pre-wrap [&_p]:m-0">
-            {cleanRecursive(children)}
-          </div>
-        </div>
-      );
-    },
-
-    table: ({ children }: any) => (
-      <div className="my-8 overflow-x-auto rounded-2xl border-2 border-slate-100 shadow-sm bg-white">
-        <table className="min-w-full border-collapse">{children}</table>
-      </div>
-    ),
-    thead: ({ children }: any) => <thead className="bg-slate-50/80 backdrop-blur-sm">{children}</thead>,
-    tr: ({ children }: any) => <tr className="border-b border-slate-100 last:border-0">{children}</tr>,
-    th: ({ children }: any) => (
-      <th className="px-4 py-3 text-left text-[10px] font-black uppercase text-slate-500 tracking-widest border-r border-slate-100 last:border-0">
-        {children}
-      </th>
-    ),
-    td: ({ children }: any) => (
-      <td className="px-4 py-3 text-sm text-slate-700 font-medium border-r border-slate-100 last:border-0 whitespace-pre-line">
-        {children}
-      </td>
-    ),
-  };
 
   return (
-    <div className="space-y-6 pb-20 px-4 animate-in fade-in duration-700">
-      {/* NAVIGATIE */}
-      <Link href="/journalclub">
-        <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 group">
-          <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
-          Terug naar overzicht
-        </div>
-      </Link>
-
-      <div className="flex gap-2 mb-3">
-      {disciplines.map(d => (
-        <div key={d} className="bg-teal-100 text-teal-700 text-[9px] font-black px-2 py-1 rounded uppercase tracking-widest">
-          {d}
-        </div>
-      ))}
+    <div className="min-h-screen bg-white pb-24">
+      {/* HEADER NAV */}
+      <div className="p-4 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-10 border-b border-slate-50">
+        <Link href="/journalclub">
+          <a className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest hover:text-teal-600 transition-colors">
+            <ChevronLeft className="h-4 w-4 mr-1" /> Journal Club
+          </a>
+        </Link>
       </div>
 
-      {/* TITEL SECTIE */}
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <div className="bg-teal-100 text-teal-700 text-[9px] font-black px-2 py-1 rounded w-fit uppercase tracking-widest">
-            Scientific Review
-          </div>
-          <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900 leading-tight">
+      <div className="px-6 pt-8 pb-4">
+        {/* TAGS */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {disciplines.map((tag) => (
+            <span 
+              key={tag} 
+              className="px-2.5 py-1 bg-teal-50 text-teal-700 text-[10px] font-black uppercase rounded-lg border border-teal-100 tracking-wider shadow-sm"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* TITEL & INFO */}
+        <div className="space-y-4 mb-8">
+          <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900 leading-[0.95]">
             {title}
           </h1>
           <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
-            <Clock className="h-3 w-3 mr-1" /> Gepubliceerd: {new Date().toLocaleDateString('nl-BE')}
+            <Clock className="h-3 w-3 mr-1" /> 
+            {dateStr ? `Editie: ${dateStr}` : `Gepubliceerd: ${new Date().toLocaleDateString('nl-BE')}`}
           </div>
         </div>
 
@@ -187,29 +101,59 @@ export default function JournalDetail() {
             href={`https://pubmed.ncbi.nlm.nih.gov/${pubmedId}/`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all active:scale-95 shadow-sm"
+            className="inline-flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-teal-600 transition-all active:scale-95 shadow-lg shadow-slate-200 mb-8"
           >
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="h-3.5 w-3.5" />
             Bekijk op PubMed
           </a>
         )}
-      </div>
 
-      <hr className="border-slate-100" />
+        <hr className="border-slate-100 mb-8" />
 
-      {/* MARKDOWN CONTENT */}
-      <div className="prose prose-slate prose-sm max-w-none 
-        prose-ul:list-disc prose-li:marker:text-teal-600
-        prose-strong:text-teal-900 prose-strong:font-bold
-        prose-h3:uppercase prose-h3:tracking-tighter prose-h3:text-slate-800 prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4">
-
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkBreaks]}
-          rehypePlugins={[rehypeRaw]}
-          components={markdownComponents as any}
-        >
-          {markdownBody}
-        </ReactMarkdown>
+        {/* MARKDOWN CONTENT MET JOUW SPECIFIEKE STYLING */}
+        <article className="prose prose-slate prose-sm max-w-none 
+          prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black
+          prose-h3:text-teal-600 prose-h3:mt-8 prose-h3:mb-4
+          prose-p:text-slate-600 prose-p:leading-relaxed
+          prose-strong:text-slate-900 prose-strong:font-bold
+          prose-ul:list-disc prose-li:marker:text-teal-600
+          
+          /* Clinical Pearl Styling (Blockquotes) */
+          prose-blockquote:border-l-teal-500 
+          prose-blockquote:bg-teal-50/50 
+          prose-blockquote:py-1 
+          prose-blockquote:px-4
+          prose-blockquote:rounded-r-xl
+          prose-blockquote:not-italic
+          prose-blockquote:text-teal-900
+          ">
+          <ReactMarkdown 
+            remarkPlugins={[remarkGfm, remarkBreaks]} 
+            rehypePlugins={[rehypeRaw]}
+            components={{
+              img: ({ node, ...props }: any) => (
+                <div className="my-8">
+                  <Zoom>
+                    <img {...props} className="rounded-3xl shadow-xl border border-slate-100 w-full h-auto" alt={props.alt || "Afbeelding"} />
+                  </Zoom>
+                  {props.alt && (
+                    <p className="text-center text-[10px] font-bold uppercase text-slate-400 mt-3 tracking-widest">
+                      {props.alt}
+                    </p>
+                  )}
+                </div>
+              ),
+              // Verwijder de standaard quotes van blockquotes
+              blockquote: ({ children }: { children?: React.ReactNode }) => (
+                <blockquote className="before:content-none after:content-none font-medium italic">
+                  {children}
+                </blockquote>
+              )
+            }}
+          >
+            {markdownBody}
+          </ReactMarkdown>
+        </article>
       </div>
     </div>
   );

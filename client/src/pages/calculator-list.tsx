@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShieldAlert, Apple, ChevronRight, ChevronLeft, Baby, ThermometerSun, Atom, Syringe } from "lucide-react";
+import { ShieldAlert, Apple, ChevronRight, ChevronLeft, Baby, ThermometerSun, Atom, Syringe, BadgeCheck } from "lucide-react";
 
 const calculators = [
   {
@@ -18,6 +18,14 @@ const calculators = [
   path: "/calculator/painpump",
   icon: <Syringe className="h-6 w-6 text-yellow-600" />,
   color: "border-yellow-100 bg-yellow-50"
+  },
+  {
+  id: "caprini",
+  title: "Caprini-Score",
+  description: "DVT-risico bij chirurgie",
+  path: "/calculator/caprini",
+  icon: <BadgeCheck className="h-6 w-6 text-emerald-600" />,
+  color: "border-emerald-100 bg-emerald-50"
   },
   {
     id: "apfel",
