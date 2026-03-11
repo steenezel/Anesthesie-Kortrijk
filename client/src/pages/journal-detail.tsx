@@ -32,15 +32,29 @@ export default function JournalDetail() {
     );
   }
 
-  // Extractie van Metadata en Body
-  const markdownBody = rawContent.replace(/^---[\s\S]*?---/, '').trim();
-  const title = rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
-  const discMatch = rawContent.match(/disciplines: \[(.*)\]/) || rawContent.match(/disciplines: (.*)/);
-  const disciplines = discMatch 
-    ? discMatch[1].replace(/"/g, '').split(',').map(d => d.trim()) 
-    : [];
-  const pubmedId = rawContent.match(/pubmed_id: "(.*)"/)?.[1];
+ // --- VERBETERDE FRONTMATTER PARSING ---
+  
+  // Titel extractie
+  const titleMatch = rawContent.match(/title:\s*"(.*)"/);
+  const title = titleMatch ? titleMatch[1] : "Geen titel";
 
+  // PubMed ID extractie
+  const pubmedIdMatch = rawContent.match(/pubmed_id:\s*"(.*)"/);
+  const pubmedId = pubmedIdMatch ? pubmedIdMatch[1].trim() : null;
+
+  // DISCIPLINES PARSING (De fix voor de ICU-fout)
+  // We zoeken specifiek naar de tekst tussen [ ]
+  const disciplinesMatch = rawContent.match(/disciplines:\s*\[(.*?)\]/);
+  const disciplines: string[] = disciplinesMatch 
+    ? disciplinesMatch[1]
+        .split(',')
+        .map(d => d.replace(/["']/g, '').trim()) // Verwijder quotes en spaties
+        .filter(Boolean) // Verwijder lege resultaten
+    : [];
+
+  // Body content: alles na de tweede '---'
+  const markdownBody = rawContent.replace(/^---[\s\S]*?---/, "").trim();
+  
   // De specifieke markdown componenten logica
   const markdownComponents = {
     img: ({ src, alt }: { src?: string; alt?: string }) => (

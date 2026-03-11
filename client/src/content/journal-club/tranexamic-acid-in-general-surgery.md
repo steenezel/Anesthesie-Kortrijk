@@ -2,7 +2,7 @@
 title: "Tranexamic Acid in General Surgery"
 date: "2026-03-09"
 author: "steenezel"
-discipline: ""
+discipline: ["Anesthesie"]
 pubmedId: "39686008"
 tips: ""
 summary: ""
