@@ -7,10 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, ArrowLeft, LayoutGrid, CloudDownload, Pencil } from "lucide-react";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 
-// Globale imports voor migratie (moet matchen met je detail pagina's)
+// Gebruik de nieuwe React 19 compatibele library
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
+
+// Globale imports voor migratie van lokale bestanden
 const allJournals = import.meta.glob('../content/journal-club/*.md', { query: 'raw', eager: true });
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
 const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
@@ -19,9 +21,9 @@ const allPocus = import.meta.glob('../content/pocus/*.md', { query: 'raw', eager
 const QUILL_MODULES = {
   toolbar: [
     [{ 'header': [2, 3, false] }],
-    ['bold', 'italic', 'underline', 'blockquote'],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    ['link', 'clean']
+    ['link', 'image', 'clean'],
   ],
 };
 
@@ -56,46 +58,48 @@ export default function AdminEditor() {
     }
   }, [mode, queryId]);
 
-  // DATA UIT DATABASE LADEN (Edit-modus)
   async function fetchDatabaseData() {
     setFetching(true);
-    const { data, error } = await supabase.from(type).select('*').eq('id', queryId).single();
-    if (data && !error) {
-      setTitle(data.title);
-      if (type === 'journal_club') {
-        setContent(data.content);
-        setFolder(data.folder || "");
-        setDiscipline(data.disciplines?.[0] || "Anesthesie");
-      } else if (type === 'protocols') {
-        setContent(data.content);
-        setDiscipline(data.discipline || "Anesthesie");
-      } else if (type === 'blocks') {
-        setTab1(data.content_general || "");
-        setTab2(data.content_anatomy || "");
-        setTab3(data.content_technique || "");
-      } else if (type === 'pocus') {
-        setTab1(data.content_indicaties || "");
-        setTab2(data.content_techniek || "");
-        setTab3(data.content_interpretatie || "");
+    try {
+      const { data, error } = await supabase.from(type).select('*').eq('id', queryId).single();
+      if (data && !error) {
+        setTitle(data.title);
+        if (type === 'journal_club') {
+          setContent(data.content || "");
+          setFolder(data.folder || "");
+        } else if (type === 'protocols') {
+          setContent(data.content || "");
+          setDiscipline(data.discipline || "Anesthesie");
+        } else if (type === 'blocks') {
+          setTab1(data.content_general || "");
+          setTab2(data.content_anatomy || "");
+          setTab3(data.content_technique || "");
+        } else if (type === 'pocus') {
+          setTab1(data.content_indicaties || "");
+          setTab2(data.content_techniek || "");
+          setTab3(data.content_interpretatie || "");
+        }
       }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setFetching(false);
     }
-    setFetching(false);
   }
 
-  // DATA UIT LOKAAL BESTAND LADEN (Migratie-modus)
   function parseLocalFile() {
     const source = type === 'blocks' ? allBlocks : type === 'pocus' ? allPocus : type === 'protocols' ? allProtocols : allJournals;
     const fileKey = Object.keys(source).find(k => k.toLowerCase().endsWith(`/${queryId?.toLowerCase()}.md`));
     const raw = fileKey ? String((source[fileKey] as any)?.default || source[fileKey] || "") : "";
 
     if (raw) {
-      const cleanTitle = raw.split('\n')[0].replace('# ', '').trim();
+      const lines = raw.split('\n');
+      const cleanTitle = lines[0].replace('# ', '').trim();
       setTitle(cleanTitle);
 
       if (type === 'blocks' || type === 'pocus') {
-        // Slimme splitter op ## koppen
         const sections = raw.split(/\n## /);
-        setTab1(sections[0].replace(/^# .*\n/, '')); // Algemeen/Indicaties
+        setTab1(sections[0].replace(/^# .*\n/, '')); 
         setTab2(sections.find(s => /anatomie|scan/i.test(s)) || ""); 
         setTab3(sections.find(s => /techniek|interpretatie/i.test(s)) || "");
       } else {
@@ -106,7 +110,7 @@ export default function AdminEditor() {
   }
 
   const handleSave = async () => {
-    if (!title) return toast({ title: "Geen titel", variant: "destructive" });
+    if (!title) return toast({ title: "Titel is verplicht", variant: "destructive" });
     setLoading(true);
 
     const payload: any = { title };
@@ -120,25 +124,25 @@ export default function AdminEditor() {
       : await supabase.from(type).insert([payload]);
 
     if (!error) {
-      toast({ title: mode === 'edit' ? "Bijgewerkt!" : "Opgeslagen!", description: `${title} staat nu in de cloud.` });
+      toast({ title: "Succes!", description: "Opgeslagen in de cloud." });
       setLocation("/"); 
     } else {
-      toast({ title: "Fout", description: error.message, variant: "destructive" });
+      toast({ title: "Fout bij opslaan", description: error.message, variant: "destructive" });
     }
     setLoading(false);
   };
 
-  if (fetching) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-teal-600" /></div>;
+  if (fetching) return <div className="flex h-screen items-center justify-center text-teal-600"><Loader2 className="animate-spin" /></div>;
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-8">
           <Button variant="ghost" onClick={() => window.history.back()} className="font-black uppercase text-[10px] tracking-widest text-slate-400">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Annuleren
+            <ArrowLeft className="mr-2 h-4 w-4" /> Terug
           </Button>
-          <div className="flex items-center gap-2 px-4 py-1.5 bg-amber-100 text-amber-700 rounded-full text-[10px] font-black uppercase tracking-widest">
-            {mode === 'edit' ? <Pencil size={12} /> : <CloudDownload size={12} />} {mode} mode
+          <div className="px-4 py-1.5 bg-teal-100 text-teal-700 rounded-full text-[10px] font-black uppercase tracking-widest">
+            {mode} mode: {type}
           </div>
         </header>
 
@@ -147,13 +151,13 @@ export default function AdminEditor() {
             <div className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Document Type</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type</label>
                   <Select value={type} onValueChange={setType} disabled={mode !== 'new'}>
                     <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="journal_club">Journal Club</SelectItem>
                       <SelectItem value="protocols">Protocol</SelectItem>
-                      <SelectItem value="blocks">Regional Block</SelectItem>
+                      <SelectItem value="blocks">LRA Block</SelectItem>
                       <SelectItem value="pocus">POCUS</SelectItem>
                     </SelectContent>
                   </Select>
@@ -174,12 +178,18 @@ export default function AdminEditor() {
                 </div>
               </div>
 
-              <Input placeholder="Titel..." value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-2xl border-slate-200 h-14 text-xl font-black uppercase" />
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Titel</label>
+                <Input placeholder="Titel..." value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-2xl border-slate-200 h-14 text-xl font-black uppercase italic" />
+              </div>
 
               {(type === "journal_club" || type === "protocols") ? (
-                <div className="rounded-2xl border border-slate-200 overflow-hidden">
-                  {/* @ts-ignore */}
-                  <ReactQuill theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} className="min-h-[300px]" /></div>
+                <div className="space-y-2">
+                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Inhoud (Markdown of Rich Text)</label>
+                   <div className="rounded-2xl border border-slate-200 overflow-hidden min-h-[400px]">
+                      <ReactQuill theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} style={{ height: '350px' }} />
+                   </div>
+                </div>
               ) : (
                 <div className="space-y-6">
                   {[
@@ -189,17 +199,17 @@ export default function AdminEditor() {
                   ].map((t, i) => (
                     <div key={i} className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">{t.label}</label>
-                      <div className="rounded-2xl border border-slate-200 overflow-hidden">
-                        {/* @ts-ignore */}
-                        <ReactQuill theme="snow" value={t.val} onChange={t.set} /></div>
+                      <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
+                        <ReactQuill theme="snow" value={t.val} onChange={t.set} />
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
 
-              <Button onClick={handleSave} disabled={loading} className="w-full h-16 bg-teal-600 hover:bg-teal-700 text-white font-black uppercase tracking-[0.2em] text-xs rounded-3xl transition-all shadow-xl shadow-teal-100">
+              <Button onClick={handleSave} disabled={loading} className="w-full h-16 bg-teal-600 hover:bg-teal-700 text-white font-black uppercase tracking-[0.2em] text-xs rounded-3xl transition-all shadow-xl shadow-teal-100 active:scale-95">
                 {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-2" />}
-                {mode === 'edit' ? 'Wijzigingen Opslaan' : 'Naar Supabase Schrijven'}
+                {mode === 'edit' ? 'Wijzigingen Opslaan' : 'Publiceren naar Cloud'}
               </Button>
             </div>
           </CardContent>
