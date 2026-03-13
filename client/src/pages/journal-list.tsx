@@ -10,7 +10,8 @@ import {
   Activity, 
   Zap, 
   FolderOpen, 
-  Siren
+  Siren,
+  Plus
 } from "lucide-react";
 
 const allArticles = import.meta.glob('../content/journal-club/*.md', { query: 'raw', eager: true });
@@ -101,6 +102,11 @@ export default function Journalclub() {
 
            <section className="space-y-4">
         <h2 className="text-[11px] font-black uppercase tracking-widest text-slate-400">Disciplines</h2>
+        <Link href="/admin?type=journal_club">
+  <button className="fixed bottom-24 right-6 p-4 bg-teal-600 text-white rounded-full shadow-2xl z-50 hover:scale-110 active:scale-95 transition-all">
+    <Plus size={24} />
+  </button>
+</Link>
         <div className="grid grid-cols-1 gap-2">
           {DISCIPLINES.map((disc) => (
             <button key={disc.id} onClick={() => setActiveFolder(disc.id)} className="group flex items-center justify-between p-2 bg-white border-2 border-slate-100 rounded-[28px] hover:border-teal-500 transition-all active:scale-95">
