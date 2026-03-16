@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react"; // <--- useMemo toegevoegd
 import { useRoute, Link } from "wouter";
 import { ChevronLeft, Loader2, Pencil, CloudDownload } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
@@ -15,7 +15,6 @@ export default function BlockDetail() {
   const queryParams = new URLSearchParams(window.location.search);
   const backUrl = queryParams.get('from') || '/blocks';
 
-  // 1. Check of ID een Cloud-UUID is
   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || "");
 
   const { data: dbBlock, isLoading } = useQuery({
@@ -28,29 +27,26 @@ export default function BlockDetail() {
     enabled: !!id && isUuid
   });
 
-  // 2. Lokale fallback data
   const fileKey = Object.keys(allBlocks).find(key => key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`));
   const fileData = fileKey ? (allBlocks[fileKey] as any) : null;
-  const rawContent = fileData?.default || fileData;
+  const rawContent = fileData?.default || fileData || "";
 
-  const parseLocal = (content: string) => {
-    if (!content) return { title: id?.replace(/-/g, ' '), general: "", anatomy: "", technique: "" };
-    const sections = content.split(/\n## /);
+  const local = useMemo(() => {
+    if (!rawContent) return { title: id?.replace(/-/g, ' '), general: "", anatomy: "", technique: "" };
+    const sections = rawContent.split(/\n## /);
     return {
-      title: content.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' '),
-      general: sections[0].replace(/^# .*\n/, '').replace(/title:.*\n/, '').replace(/---.*\n/g, ''),
-      anatomy: sections.find(s => /anatomie|scan/i.test(s))?.replace(/.*anatomy.*\n|.*anatomie.*\n/, '') || "",
-      technique: sections.find(s => /techniek|technique/i.test(s))?.replace(/.*techniek.*\n|.*technique.*\n/, '') || ""
+      title: rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' '),
+      general: sections[0].replace(/^# .*\n/, '').replace(/---[\s\S]*?---/, '').trim(),
+      anatomy: sections.find((s: string) => /anatomie|scan/i.test(s))?.replace(/.*anatomie.*\n|.*anatomy.*\n/i, "") || "",
+      technique: sections.find((s: string) => /techniek|technique/i.test(s))?.replace(/.*techniek.*\n|.*technique.*\n/i, "") || ""
     };
-  };
-
-  const local = useMemo(() => parseLocal(rawContent), [rawContent]);
+  }, [rawContent, id]);
 
   if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-teal-600" /></div>;
 
   return (
     <div className="min-h-screen bg-white pb-20 px-4">
-      <div className="flex items-center justify-between py-4 sticky top-0 bg-white/80 backdrop-blur-md z-10 max-w-3xl mx-auto">
+      <div className="flex items-center justify-between py-4 sticky top-0 bg-white/80 backdrop-blur-md z-10 max-w-3xl mx-auto w-full">
         <Link href={backUrl}>
           <div className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-widest cursor-pointer group">
             <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Terug
@@ -73,8 +69,8 @@ export default function BlockDetail() {
         </div>
       </div>
 
-      <div className="p-6 max-w-3xl mx-auto">
-        <h1 className="text-3xl font-black uppercase tracking-tighter mb-8 italic text-slate-900">
+      <div className="max-w-3xl mx-auto mt-8">
+        <h1 className="text-3xl font-black uppercase tracking-tighter mb-8 italic text-slate-900 leading-none">
           {dbBlock?.title || local.title}
         </h1>
 

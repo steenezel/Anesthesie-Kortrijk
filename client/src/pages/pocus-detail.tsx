@@ -39,8 +39,8 @@ export default function PocusDetail() {
     return {
       title: rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' '),
       indicaties: sections[0].replace(/^# .*\n/, '').replace(/---[\s\S]*?---/, '').trim(),
-      techniek: sections.find(s => /techniek/i.test(s))?.replace(/.*techniek.*\n/, "") || "",
-      interpretatie: sections.find(s => /interpretatie/i.test(s))?.replace(/.*interpretatie.*\n/, "") || ""
+      techniek: sections.find((s: string) => /techniek/i.test(s))?.replace(/.*techniek.*\n/, "") || "",
+      interpretatie: sections.find((s: string) => /interpretatie/i.test(s))?.replace(/.*interpretatie.*\n/, "") || ""
     };
   }, [rawContent, id, isUuid]);
 

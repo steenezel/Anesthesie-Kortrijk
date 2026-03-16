@@ -1,6 +1,6 @@
 import React from "react";
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, FileWarning, Clock, Loader2, Pencil, CloudDownload } from "lucide-react";
+import { ChevronLeft, Clock, Loader2, Pencil, CloudDownload } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
@@ -12,6 +12,11 @@ const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: '
 export default function ProtocolDetail() {
   const [, params] = useRoute("/protocols/:id");
   const id = params?.id;
+  const queryParams = new URLSearchParams(window.location.search);
+  
+  // OPGELOST: fromDiscipline ophalen uit de URL
+  const fromDiscipline = queryParams.get('fromDiscipline');
+
   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || "");
 
   const { data: dbProtocol, isLoading } = useQuery({
@@ -29,56 +34,50 @@ export default function ProtocolDetail() {
   const localContent = fileData?.default || fileData || "";
 
   const title = dbProtocol?.title || localContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
-  const content = dbProtocol?.content || localContent.replace(/---[\s\S]*?---/, '');
+  const content = dbProtocol?.content || localContent.replace(/---[\s\S]*?---/, '').trim();
 
   if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-teal-600" /></div>;
-  
-return (
-  <div className="min-h-screen bg-white pb-20 px-4">
-    {/* Header balk met Terug-knop links en Edit/Migreer rechts */}
-    <div className="flex items-center justify-between py-4 sticky top-0 bg-white/80 backdrop-blur-md z-10">
-      <Link href={fromDiscipline ? `/protocols?discipline=${fromDiscipline}` : "/protocols"}>
-        <div className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-widest cursor-pointer group">
-          <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
-          {fromDiscipline ? `Terug naar ${fromDiscipline}` : "Terug"}
+
+  return (
+    <div className="min-h-screen bg-white pb-20 px-4">
+      <div className="flex items-center justify-between py-4 sticky top-0 bg-white/80 backdrop-blur-md z-10 max-w-3xl mx-auto w-full">
+        <Link href={fromDiscipline ? `/protocols?discipline=${fromDiscipline}` : "/protocols"}>
+          <div className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-widest cursor-pointer group">
+            <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
+            {fromDiscipline ? `Terug naar ${fromDiscipline}` : "Terug"}
+          </div>
+        </Link>
+        
+        <div className="flex gap-2">
+          {dbProtocol ? (
+            <Link href={`/admin?type=protocols&id=${dbProtocol.id}`}>
+              <div className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-teal-600 cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest">
+                <Pencil size={14} /> Edit
+              </div>
+            </Link>
+          ) : localContent && (
+            <Link href={`/admin?migrate=${id}&type=protocols`}>
+              <div className="p-2 bg-amber-50 text-amber-600 rounded-xl cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border border-amber-100">
+                <CloudDownload size={14} /> Migreer
+              </div>
+            </Link>
+          )}
         </div>
-      </Link>
-
-      <div className="flex items-center gap-2">
-        {/* EDIT KNOP: Verschijnt alleen als het protocol uit Supabase komt */}
-        {dbProtocol && (
-          <Link href={`/admin?type=protocols&id=${dbProtocol.id}`}>
-            <a className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-teal-600 hover:bg-teal-50 transition-all flex items-center gap-2 font-black text-[9px] uppercase tracking-widest">
-              <Pencil size={14} /> Edit
-            </a>
-          </Link>
-        )}
-
-        {/* MIGREER KNOP: Verschijnt alleen als het een lokaal .md bestand is */}
-        {!dbProtocol && content && (
-          <Link href={`/admin?migrate=${id}&type=protocols`}>
-            <a className="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-all flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border border-amber-100">
-              <CloudDownload size={14} /> Migreer naar Cloud
-            </a>
-          </Link>
-        )}
       </div>
-    </div>
 
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900 leading-tight mb-2 italic">
+      <div className="max-w-3xl mx-auto mt-8">
+        <h1 className="text-3xl font-black uppercase tracking-tighter italic text-slate-900 leading-tight mb-2">
           {title}
         </h1>
         <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400 mb-8">
-          <Clock className="h-3 w-3 mr-1" /> Laatste update: {new Date().toLocaleDateString('nl-BE')}
+          <Clock className="h-3 w-3 mr-1" /> 
+          {dbProtocol ? `Laatste update: ${new Date(dbProtocol.created_at).toLocaleDateString('nl-BE')}` : "Lokaal bestand"}
         </div>
 
         <div className="prose prose-slate max-w-none">
           <MarkdownRenderer content={content} />
-          
-          {/* CALCULATOR SHORTCODES */}
-          {content.includes("[DANTROLEEN_CALC]") && <div className="mt-8 pt-8 border-t border-slate-100"><DantroleenCalc /></div>}
-          {content.includes("[PEDS_MRI_CALC]") && <div className="mt-8 pt-8 border-t border-slate-100"><SedationPedsCalculator /></div>}
+          {content.includes("[DANTROLEEN_CALC]") && <DantroleenCalc />}
+          {content.includes("[PEDS_SEDATION_CALC]") && <SedationPedsCalculator />}
         </div>
       </div>
     </div>
