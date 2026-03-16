@@ -6,12 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, FileText, Video, Quote } from "lucide-react";
+import { Loader2, Save, ArrowLeft, FileText, Video, Quote, HelpCircle } from "lucide-react";
 
 // @ts-ignore
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
+// Fix voor de TypeScript JSX errors
 const QuillEditor = ReactQuill as any;
 
 const DISCIPLINE_OPTIONS = {
@@ -73,8 +74,6 @@ export default function AdminEditor() {
           setContent(data.content || "");
         }
       }
-    } catch (e) {
-      console.error(e);
     } finally {
       setFetching(false);
     }
@@ -98,18 +97,15 @@ export default function AdminEditor() {
         ? `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer">📄 DOCUMENT: ${file.name}</a></p>`
         : `<p><video controls class="w-full rounded-3xl my-4"><source src="${publicUrl}" type="video/mp4"></video></p>`;
 
-      // Oplossing voor de 'getEditor' null error: we voegen het direct toe aan de state.
-      // Bij Pocus/Blocks voegen we het toe aan het eerste tabblad.
       if (type === 'pocus' || type === 'blocks') {
         setTab1(prev => prev + htmlToInsert);
-        toast({ title: "Toegevoegd aan Tab 1", description: "Je kunt het nu knippen/plakken naar een andere tab." });
+        toast({ title: "Ingevoegd in eerste tabblad" });
       } else {
         setContent(prev => prev + htmlToInsert);
       }
-      
       toast({ title: "Upload geslaagd" });
     } catch (error: any) {
-      toast({ title: "Upload fout", description: error.message, variant: "destructive" });
+      toast({ title: "Fout", description: error.message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -120,26 +116,20 @@ export default function AdminEditor() {
     setLoading(true);
 
     let payload: any = { title };
-
-    if (type === 'protocols') {
-      payload = { ...payload, content, discipline };
-    } else if (type === 'journal_club') {
-      payload = { ...payload, content, disciplines: [discipline], pubmed_id: pubmedId };
-    } else if (type === 'pocus') {
-      payload = { ...payload, content_indicaties: tab1, content_techniek: tab2, content_interpretatie: tab3 };
-    } else if (type === 'blocks') {
-      payload = { ...payload, content_general: tab1, content_anatomy: tab2, content_technique: tab3 };
-    }
+    if (type === 'protocols') payload = { ...payload, content, discipline };
+    else if (type === 'journal_club') payload = { ...payload, content, disciplines: [discipline], pubmed_id: pubmedId };
+    else if (type === 'pocus') payload = { ...payload, content_indicaties: tab1, content_techniek: tab2, content_interpretatie: tab3 };
+    else if (type === 'blocks') payload = { ...payload, content_general: tab1, content_anatomy: tab2, content_technique: tab3 };
 
     const { error } = queryId 
       ? await supabase.from(type).update(payload).eq('id', queryId)
       : await supabase.from(type).insert([payload]);
 
     if (!error) {
-      toast({ title: "Opgeslagen in de cloud!" });
-      setLocation(type === 'pocus' ? '/pocus' : type === 'protocols' ? '/protocols' : '/journal');
+      toast({ title: "Succesvol opgeslagen!" });
+      window.history.back();
     } else {
-      toast({ title: "Fout bij opslaan", description: error.message, variant: "destructive" });
+      toast({ title: "Fout", description: error.message, variant: "destructive" });
     }
     setLoading(false);
   };
@@ -148,97 +138,135 @@ export default function AdminEditor() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <header className="flex items-center justify-between mb-8">
           <Button variant="ghost" onClick={() => window.history.back()} className="font-black uppercase text-[10px] tracking-widest text-slate-400">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Annuleren
+            <ArrowLeft className="mr-2 h-4 w-4" /> Terug
           </Button>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="relative overflow-hidden text-[10px] font-black uppercase tracking-widest h-10 px-4 rounded-xl border-slate-200 bg-white">
-              <FileText className="mr-2 h-4 w-4 text-blue-600" /> PDF
+              <FileText className="mr-2 h-4 w-4 text-blue-600" /> PDF Upload
               <input type="file" accept=".pdf" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFileUpload(e, 'pdf')} />
             </Button>
             <Button variant="outline" size="sm" className="relative overflow-hidden text-[10px] font-black uppercase tracking-widest h-10 px-4 rounded-xl border-slate-200 bg-white">
-              <Video className="mr-2 h-4 w-4 text-purple-600" /> Video
+              <Video className="mr-2 h-4 w-4 text-purple-600" /> Video Upload
               <input type="file" accept="video/mp4" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFileUpload(e, 'video')} />
             </Button>
           </div>
         </header>
 
-        <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-white">
-          <CardContent className="p-8 md:p-12 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type</label>
-                <Select value={type} onValueChange={(v: string) => setType(v as any)} disabled={!!queryId}>
-                  <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold focus:ring-blue-600 text-slate-900"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="protocols">Protocol</SelectItem>
-                    <SelectItem value="pocus">POCUS</SelectItem>
-                    <SelectItem value="journal_club">Journal Club</SelectItem>
-                    <SelectItem value="blocks">LRA Blocks</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {(type === 'protocols' || type === 'journal_club') && (
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Discipline</label>
-                  <Select value={discipline} onValueChange={(v: string) => setDiscipline(v)}>
-                    <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold focus:ring-blue-600 text-slate-900"><SelectValue placeholder="Kies..." /></SelectTrigger>
-                    <SelectContent>
-                      {DISCIPLINE_OPTIONS[type === 'protocols' ? 'protocols' : 'journal_club'].map(d => (
-                        <SelectItem key={d} value={d}>{d}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* EDITOR SECTION */}
+          <div className="w-full lg:flex-1">
+            <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-white">
+              <CardContent className="p-8 md:p-12 space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type Content</label>
+                    <Select value={type} onValueChange={(v: string) => setType(v)} disabled={!!queryId}>
+                      <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="protocols">Protocol</SelectItem>
+                        <SelectItem value="pocus">POCUS</SelectItem>
+                        <SelectItem value="journal_club">Journal Club</SelectItem>
+                        <SelectItem value="blocks">LRA Block</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {(type === 'protocols' || type === 'journal_club') && (
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Discipline</label>
+                      <Select value={discipline} onValueChange={(v: string) => setDiscipline(v)}>
+                        <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold"><SelectValue placeholder="Kies discipline..." /></SelectTrigger>
+                        <SelectContent>
+                          {DISCIPLINE_OPTIONS[type === 'protocols' ? 'protocols' : 'journal_club'].map(d => (
+                            <SelectItem key={d} value={d}>{d}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Titel</label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-2xl border-slate-200 h-14 text-xl font-black uppercase italic focus-visible:ring-blue-600" />
-            </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Titel</label>
+                  <Input value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-2xl border-slate-200 h-14 text-xl font-black uppercase italic" />
+                </div>
 
-            {type === 'journal_club' && (
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">PubMed ID (optioneel)</label>
-                <Input value={pubmedId} onChange={(e) => setPubmedId(e.target.value)} className="rounded-2xl border-slate-200 h-12 font-bold text-blue-600" />
-              </div>
-            )}
-
-            {(type === "protocols" || type === "journal_club") ? (
-              <div className="space-y-2">
-                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 italic flex items-center gap-2">
-                   <Quote size={12}/> Gebruik de quote knop voor Tips (Groen), Waarschuwing (Rood) of Info (Blauw)
-                 </label>
-                 <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
-                    <QuillEditor theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} className="min-h-[400px]" />
-                 </div>
-              </div>
-            ) : (
-              <div className="space-y-10">
-                {[
-                  { label: type === 'pocus' ? "1. Indicaties" : "1. Algemeen", val: tab1, set: setTab1 },
-                  { label: type === 'pocus' ? "2. Acquisitie" : "2. Anatomie", val: tab2, set: setTab2 },
-                  { label: type === 'pocus' ? "3. Interpretatie" : "3. Techniek", val: tab3, set: setTab3 }
-                ].map((t, i) => (
-                  <div key={i} className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-blue-600 ml-1">{t.label}</label>
+                {(type === "protocols" || type === "journal_club") ? (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 italic">Hoofdinhoud</label>
                     <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
-                      <QuillEditor theme="snow" modules={QUILL_MODULES} value={t.val} onChange={t.set} className="min-h-[250px]" />
+                      <QuillEditor theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} className="min-h-[500px]" />
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                ) : (
+                  <div className="space-y-10">
+                    {[
+                      { label: type === 'pocus' ? "1. Indicaties" : "1. Algemeen", val: tab1, set: setTab1 },
+                      { label: type === 'pocus' ? "2. Acquisitie" : "2. Anatomie", val: tab2, set: setTab2 },
+                      { label: type === 'pocus' ? "3. Interpretatie" : "3. Techniek", val: tab3, set: setTab3 }
+                    ].map((t, i) => (
+                      <div key={i} className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-blue-600 ml-1">{t.label}</label>
+                        <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
+                          <QuillEditor theme="snow" modules={QUILL_MODULES} value={t.val} onChange={t.set} className="min-h-[250px]" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-            <Button onClick={handleSave} disabled={loading} className="w-full h-16 bg-slate-900 hover:bg-blue-600 text-white font-black uppercase tracking-[0.2em] text-xs rounded-3xl transition-all shadow-xl active:scale-95">
-              {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-2 h-4 w-4" />}
-              {queryId ? 'Wijzigingen Opslaan' : 'Publiceren naar Cloud'}
-            </Button>
-          </CardContent>
-        </Card>
+                <Button onClick={handleSave} disabled={loading} className="w-full h-16 bg-slate-900 hover:bg-blue-600 text-white font-black uppercase tracking-[0.2em] text-xs rounded-3xl transition-all shadow-xl active:scale-95">
+                  {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-2" />}
+                  {queryId ? 'Opslaan & Bijwerken' : 'Publiceren naar App'}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* SIDEBAR GUIDE (Desktop Only) */}
+          <div className="hidden lg:block w-80 sticky top-8 space-y-4">
+            <div className="bg-white p-6 rounded-[32px] shadow-sm border border-slate-100">
+              <div className="flex items-center gap-2 mb-4 text-blue-600">
+                <HelpCircle size={18} />
+                <h3 className="text-[10px] font-black uppercase tracking-widest italic">Styling Gids</h3>
+              </div>
+              
+              <div className="space-y-6 text-[11px] leading-relaxed text-slate-600">
+                <section>
+                  <p className="font-black text-slate-900 uppercase mb-1">Sub-kopjes</p>
+                  <p>Typ een titel en maak er <b>Koptekst 2</b> van. Dit geeft de blauwe lijn en POCUS-look.</p>
+                </section>
+
+                <section className="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                  <p className="font-black text-emerald-700 uppercase mb-1">💡 Tip Kader</p>
+                  <p className="italic">Druk op de Quote-knop ("). Start de tekst gewoon of met "TIP:".</p>
+                </section>
+
+                <section className="p-3 bg-red-50 rounded-xl border border-red-100">
+                  <p className="font-black text-red-700 uppercase mb-1">⚠️ Waarschuwing</p>
+                  <p className="italic">Druk op de Quote-knop. Start <b>verplicht</b> met "WAARSCHUWING:".</p>
+                </section>
+
+                <section className="p-3 bg-blue-50 rounded-xl border border-blue-100">
+                  <p className="font-black text-blue-700 uppercase mb-1">ℹ️ Info Kader</p>
+                  <p className="italic">Druk op de Quote-knop. Start <b>verplicht</b> met "INFO:".</p>
+                </section>
+
+                <section>
+                  <p className="font-black text-slate-900 uppercase mb-1">Wiskunde</p>
+                  <p>Gebruik dollartekens: <b>$E=mc^2$</b> voor formules op dezelfde regel.</p>
+                </section>
+              </div>
+            </div>
+
+            <div className="bg-slate-900 p-6 rounded-[32px] text-white shadow-xl">
+              <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 underline decoration-slate-700 underline-offset-4">Cloud Info</p>
+              <p className="text-[10px] font-medium leading-snug">Foto's die je rechtstreeks in de editor plakt worden automatisch klikbaar (Zoom) in de app.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

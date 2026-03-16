@@ -60,28 +60,28 @@ export function MarkdownRenderer({ content }: { content: string }) {
         }
 
         if (domNode.name === 'blockquote') {
-          // We casten domNode.children naar any om TS te vrede te stellen binnen de parse-context
-          const childrenReact = domToReact(domNode.children as any);
-          const fullText = flattenText({ props: { children: childrenReact } });
-          
-          const isWarning = /WAARSCHUWING|LET OP/i.test(fullText);
-          const isInfo = /INFO/i.test(fullText);
-          
-          const config = isWarning
-            ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
-            : isInfo
-            ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
-            : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+            const childrenReact = domToReact(domNode.children as any);
+            // Gebruik flattenText om te checken op triggerwoorden
+            const fullText = flattenText({ props: { children: childrenReact } });
+            
+            const isWarning = /WAARSCHUWING|LET OP|CAUTION/i.test(fullText);
+            const isInfo = /INFO|NOTE/i.test(fullText);
+            
+            const config = isWarning
+              ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+              : isInfo
+              ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+              : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
 
-          return (
-            <div className={`my-8 border-l-4 rounded-r-2xl p-6 ${config.styles}`}>
-              <div className={`text-[10px] font-black tracking-widest mb-2 ${config.color}`}>{config.title}</div>
-              <div className="text-slate-700 italic font-medium prose-p:my-0">
-                {childrenReact}
+            return (
+              <div className={`my-8 border-l-4 rounded-r-2xl p-6 ${config.styles}`}>
+                <div className={`text-[10px] font-black tracking-widest mb-2 ${config.color}`}>{config.title}</div>
+                <div className="text-slate-700 italic font-medium prose-p:my-0">
+                  {childrenReact}
+                </div>
               </div>
-            </div>
-          );
-        }
+            );
+          }
 
         if (domNode.name === 'video') {
           return (
