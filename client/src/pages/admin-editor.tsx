@@ -12,7 +12,6 @@ import { Loader2, Save, ArrowLeft, FileText, Video, Quote, HelpCircle } from "lu
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
-// Fix voor de TypeScript JSX errors
 const QuillEditor = ReactQuill as any;
 
 const DISCIPLINE_OPTIONS = {
@@ -41,7 +40,6 @@ export default function AdminEditor() {
   const [fetching, setFetching] = useState(!!queryId);
   const [type, setType] = useState(queryType);
 
-  // Form states
   const [title, setTitle] = useState("");
   const [discipline, setDiscipline] = useState("");
   const [pubmedId, setPubmedId] = useState("");
@@ -99,7 +97,6 @@ export default function AdminEditor() {
 
       if (type === 'pocus' || type === 'blocks') {
         setTab1(prev => prev + htmlToInsert);
-        toast({ title: "Ingevoegd in eerste tabblad" });
       } else {
         setContent(prev => prev + htmlToInsert);
       }
@@ -137,34 +134,37 @@ export default function AdminEditor() {
   if (fetching) return <div className="flex h-screen items-center justify-center text-blue-600"><Loader2 className="animate-spin" /></div>;
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-slate-50 pb-20 p-4 lg:p-10">
+      {/* Brede container voor maximale schermbenutting */}
+      <div className="max-w-7xl mx-auto">
         <header className="flex items-center justify-between mb-8">
           <Button variant="ghost" onClick={() => window.history.back()} className="font-black uppercase text-[10px] tracking-widest text-slate-400">
             <ArrowLeft className="mr-2 h-4 w-4" /> Terug
           </Button>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="relative overflow-hidden text-[10px] font-black uppercase tracking-widest h-10 px-4 rounded-xl border-slate-200 bg-white">
+          <div className="flex gap-3">
+            <Button variant="outline" size="sm" className="relative overflow-hidden text-[10px] font-black uppercase tracking-widest h-10 px-6 rounded-xl border-slate-200 bg-white shadow-sm">
               <FileText className="mr-2 h-4 w-4 text-blue-600" /> PDF Upload
               <input type="file" accept=".pdf" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFileUpload(e, 'pdf')} />
             </Button>
-            <Button variant="outline" size="sm" className="relative overflow-hidden text-[10px] font-black uppercase tracking-widest h-10 px-4 rounded-xl border-slate-200 bg-white">
+            <Button variant="outline" size="sm" className="relative overflow-hidden text-[10px] font-black uppercase tracking-widest h-10 px-6 rounded-xl border-slate-200 bg-white shadow-sm">
               <Video className="mr-2 h-4 w-4 text-purple-600" /> Video Upload
               <input type="file" accept="video/mp4" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFileUpload(e, 'video')} />
             </Button>
           </div>
         </header>
 
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
-          {/* EDITOR SECTION */}
-          <div className="w-full lg:flex-1">
-            <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-white">
-              <CardContent className="p-8 md:p-12 space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
+        {/* Grid layout met 4 kolommen voor betere verdeling */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 items-start">
+          
+          {/* EDITOR SECTION (3 kolommen breed op desktop) */}
+          <div className="lg:col-span-3 space-y-8">
+            <Card className="border-none shadow-xl rounded-[40px] overflow-hidden bg-white">
+              <CardContent className="p-8 lg:p-14 space-y-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type Content</label>
                     <Select value={type} onValueChange={(v: string) => setType(v)} disabled={!!queryId}>
-                      <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-14 font-bold text-slate-700 shadow-inner"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="protocols">Protocol</SelectItem>
                         <SelectItem value="pocus">POCUS</SelectItem>
@@ -174,10 +174,10 @@ export default function AdminEditor() {
                     </Select>
                   </div>
                   {(type === 'protocols' || type === 'journal_club') && (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Discipline</label>
                       <Select value={discipline} onValueChange={(v: string) => setDiscipline(v)}>
-                        <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold"><SelectValue placeholder="Kies discipline..." /></SelectTrigger>
+                        <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-14 font-bold text-slate-700 shadow-inner"><SelectValue placeholder="Kies discipline..." /></SelectTrigger>
                         <SelectContent>
                           {DISCIPLINE_OPTIONS[type === 'protocols' ? 'protocols' : 'journal_club'].map(d => (
                             <SelectItem key={d} value={d}>{d}</SelectItem>
@@ -188,84 +188,97 @@ export default function AdminEditor() {
                   )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Titel</label>
-                  <Input value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-2xl border-slate-200 h-14 text-xl font-black uppercase italic" />
+                  <Input 
+                    value={title} 
+                    onChange={(e) => setTitle(e.target.value)} 
+                    className="rounded-2xl border-slate-200 h-16 text-2xl font-black uppercase italic shadow-sm px-6" 
+                    placeholder="Voer titel in..."
+                  />
                 </div>
 
                 {(type === "protocols" || type === "journal_club") ? (
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 italic">Hoofdinhoud</label>
-                    <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
-                      <QuillEditor theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} className="min-h-[500px]" />
+                    <div className="rounded-3xl border border-slate-200 overflow-hidden bg-white shadow-sm">
+                      <QuillEditor theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} className="min-h-[600px]" />
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-10">
+                  <div className="space-y-12">
                     {[
-                      { label: type === 'pocus' ? "1. Indicaties" : "1. Algemeen", val: tab1, set: setTab1 },
-                      { label: type === 'pocus' ? "2. Acquisitie" : "2. Anatomie", val: tab2, set: setTab2 },
-                      { label: type === 'pocus' ? "3. Interpretatie" : "3. Techniek", val: tab3, set: setTab3 }
+                      { label: type === 'pocus' ? "1. Indicaties / Algemeen" : "1. Algemeen", val: tab1, set: setTab1 },
+                      { label: type === 'pocus' ? "2. Acquisitie / Techniek" : "2. Anatomie", val: tab2, set: setTab2 },
+                      { label: type === 'pocus' ? "3. Interpretatie / Beslisboom" : "3. Techniek", val: tab3, set: setTab3 }
                     ].map((t, i) => (
-                      <div key={i} className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-blue-600 ml-1">{t.label}</label>
-                        <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
-                          <QuillEditor theme="snow" modules={QUILL_MODULES} value={t.val} onChange={t.set} className="min-h-[250px]" />
+                      <div key={i} className="space-y-3">
+                        <label className="text-[11px] font-black uppercase tracking-widest text-blue-600 ml-1">{t.label}</label>
+                        <div className="rounded-3xl border border-slate-200 overflow-hidden bg-white shadow-sm">
+                          <QuillEditor theme="snow" modules={QUILL_MODULES} value={t.val} onChange={t.set} className="min-h-[350px]" />
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
 
-                <Button onClick={handleSave} disabled={loading} className="w-full h-16 bg-slate-900 hover:bg-blue-600 text-white font-black uppercase tracking-[0.2em] text-xs rounded-3xl transition-all shadow-xl active:scale-95">
-                  {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-2" />}
+                <Button onClick={handleSave} disabled={loading} className="w-full h-20 bg-slate-900 hover:bg-blue-600 text-white font-black uppercase tracking-[0.25em] text-sm rounded-[30px] transition-all shadow-xl active:scale-95 mt-10">
+                  {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-3 h-5 w-5" />}
                   {queryId ? 'Opslaan & Bijwerken' : 'Publiceren naar App'}
                 </Button>
               </CardContent>
             </Card>
           </div>
 
-          {/* SIDEBAR GUIDE (Desktop Only) */}
-          <div className="hidden lg:block w-80 sticky top-8 space-y-4">
-            <div className="bg-white p-6 rounded-[32px] shadow-sm border border-slate-100">
-              <div className="flex items-center gap-2 mb-4 text-blue-600">
-                <HelpCircle size={18} />
-                <h3 className="text-[10px] font-black uppercase tracking-widest italic">Styling Gids</h3>
+          {/* SIDEBAR GUIDE (Vaste breedte en sticky) */}
+          <div className="hidden lg:block space-y-6">
+            <div className="sticky top-10 space-y-6">
+              <div className="bg-white p-8 rounded-[40px] shadow-lg border border-slate-100">
+                <div className="flex items-center gap-3 mb-6 text-blue-600">
+                  <HelpCircle size={22} />
+                  <h3 className="text-[11px] font-black uppercase tracking-widest italic">Styling Gids</h3>
+                </div>
+                
+                <div className="space-y-8 text-[11px] leading-relaxed text-slate-600">
+                  <section>
+                    <p className="font-black text-slate-900 uppercase mb-2 flex items-center gap-2">
+                      <span className="w-1 h-4 bg-blue-600 rounded-full" /> Sub-kopjes
+                    </p>
+                    <p>Typ een titel en kies <b>Koptekst 2 (H2)</b> voor de blauwe lijn en POCUS-look.</p>
+                  </section>
+
+                  <section className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+                    <p className="font-black text-emerald-700 uppercase mb-2 italic">💡 Tip Kader</p>
+                    <p>Gebruik de Quote-knop ("). Start optioneel met "TIP:".</p>
+                  </section>
+
+                  <section className="p-4 bg-red-50 rounded-2xl border border-red-100">
+                    <p className="font-black text-red-700 uppercase mb-2 italic">⚠️ Waarschuwing</p>
+                    <p>Gebruik Quote-knop. Start met "WAARSCHUWING:".</p>
+                  </section>
+
+                  <section className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                    <p className="font-black text-blue-700 uppercase mb-2 italic">ℹ️ Info Kader</p>
+                    <p>Gebruik Quote-knop. Start met "INFO:".</p>
+                  </section>
+
+                  <section>
+                    <p className="font-black text-slate-900 uppercase mb-2">Wiskunde</p>
+                    <p>Dollartekens voor formules: <b>$E=mc^2$</b>.</p>
+                  </section>
+                </div>
               </div>
-              
-              <div className="space-y-6 text-[11px] leading-relaxed text-slate-600">
-                <section>
-                  <p className="font-black text-slate-900 uppercase mb-1">Sub-kopjes</p>
-                  <p>Typ een titel en maak er <b>Koptekst 2</b> van. Dit geeft de blauwe lijn en POCUS-look.</p>
-                </section>
 
-                <section className="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
-                  <p className="font-black text-emerald-700 uppercase mb-1">💡 Tip Kader</p>
-                  <p className="italic">Druk op de Quote-knop ("). Start de tekst gewoon of met "TIP:".</p>
-                </section>
-
-                <section className="p-3 bg-red-50 rounded-xl border border-red-100">
-                  <p className="font-black text-red-700 uppercase mb-1">⚠️ Waarschuwing</p>
-                  <p className="italic">Druk op de Quote-knop. Start <b>verplicht</b> met "WAARSCHUWING:".</p>
-                </section>
-
-                <section className="p-3 bg-blue-50 rounded-xl border border-blue-100">
-                  <p className="font-black text-blue-700 uppercase mb-1">ℹ️ Info Kader</p>
-                  <p className="italic">Druk op de Quote-knop. Start <b>verplicht</b> met "INFO:".</p>
-                </section>
-
-                <section>
-                  <p className="font-black text-slate-900 uppercase mb-1">Wiskunde</p>
-                  <p>Gebruik dollartekens: <b>$E=mc^2$</b> voor formules op dezelfde regel.</p>
-                </section>
+              <div className="bg-slate-900 p-8 rounded-[40px] text-white shadow-2xl">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 underline decoration-slate-700 underline-offset-8">Cloud Info</p>
+                <p className="text-[11px] font-medium leading-relaxed opacity-90 italic">
+                  Afbeeldingen in de editor worden automatisch klikbaar voor zoom in de app.
+                  Voeg pdf's en mp4-video's toe op de juiste locatie door je cursor eerst op de goede plaats te zetten en dan op PDF of Video te klikken.
+                </p>
               </div>
-            </div>
-
-            <div className="bg-slate-900 p-6 rounded-[32px] text-white shadow-xl">
-              <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 underline decoration-slate-700 underline-offset-4">Cloud Info</p>
-              <p className="text-[10px] font-medium leading-snug">Foto's die je rechtstreeks in de editor plakt worden automatisch klikbaar (Zoom) in de app.</p>
             </div>
           </div>
+
         </div>
       </div>
     </div>
