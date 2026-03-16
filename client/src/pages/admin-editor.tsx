@@ -83,39 +83,41 @@ export default function AdminEditor() {
   }
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fileType: 'pdf' | 'video') => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    setLoading(true);
-    const fileName = `${Date.now()}_${file.name.replace(/\s/g, '_')}`;
-    const filePath = `${fileType}s/${fileName}`;
+  setLoading(true);
+  const fileName = `${Date.now()}_${file.name.replace(/\s/g, '_')}`;
+  const filePath = `${fileType}s/${fileName}`;
 
-    try {
-      const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
-      if (uploadError) throw uploadError;
+  try {
+    const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
+    if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
-      
-      // Injecteer in de actieve editor (we checken welke tab of hoofdcontent actief is)
-      const htmlToInsert = fileType === 'pdf' 
-        ? `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer">📄 DOCUMENT: ${file.name}</a></p>`
-        : `<p><video controls class="w-full rounded-3xl my-4"><source src="${publicUrl}" type="video/mp4"></video></p>`;
+    const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
+    
+    // Pak de editor instance
+    const quill = quillRef.current.getEditor();
+    const range = quill.getSelection();
+    const position = range ? range.index : quill.getLength();
 
-      if (type === 'pocus' || type === 'blocks') {
-        // Voor tabs: voeg simpelweg toe aan de actieve state (eenvoudigste methode zonder complexe ref-tracking per tab)
-        setTab1(prev => prev + htmlToInsert);
-        toast({ title: "Toegevoegd aan Tab 1", description: "Verplaats indien nodig naar een andere tab." });
-      } else {
-        setContent(prev => prev + htmlToInsert);
-      }
-      
-      toast({ title: "Upload geslaagd" });
-    } catch (error: any) {
-      toast({ title: "Upload fout", description: error.message, variant: "destructive" });
-    } finally {
-      setLoading(false);
+    if (fileType === 'pdf') {
+      // PDF invoegen als link op de cursor positie
+      quill.insertText(position, `📄 DOCUMENT: ${file.name}`, 'link', publicUrl);
+      quill.insertText(position + `📄 DOCUMENT: ${file.name}`.length, '\n');
+    } else {
+      // Video invoegen als HTML op de cursor positie
+      const videoHtml = `<video controls src="${publicUrl}" class="w-full rounded-3xl my-4"></video><p><br></p>`;
+      quill.clipboard.dangerouslyPasteHTML(position, videoHtml);
     }
-  };
+    
+    toast({ title: "Media ingevoegd op cursor positie" });
+  } catch (error: any) {
+    toast({ title: "Fout", description: error.message, variant: "destructive" });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleSave = async () => {
     if (!title) return toast({ title: "Titel is verplicht", variant: "destructive" });

@@ -82,6 +82,20 @@ export function MarkdownRenderer({ content }: { content: string }) {
             </div>
           );
         }
+
+        if (domNode.name === 'video') {
+          return (
+            <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video">
+              <video 
+                controls 
+                className="w-full h-full"
+                {...domNode.attribs}
+              >
+                {domToReact(domNode.children as any)}
+              </video>
+            </div>
+          );
+        }
       }
     };
 
