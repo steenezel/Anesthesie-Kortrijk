@@ -6,17 +6,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Pencil } from "lucide-react";
+import { Loader2, Save, ArrowLeft } from "lucide-react";
 
+// @ts-ignore
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
-// Config voor disciplines per type
+// Globale imports voor migratie van lokale bestanden
+const allJournals = import.meta.glob('../content/journal-club/*.md', { query: 'raw', eager: true });
+const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
+const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
+const allPocus = import.meta.glob('../content/pocus/*.md', { query: 'raw', eager: true });
+
 const DISCIPLINE_OPTIONS = {
   journal_club: ["Anesthesie", "Intensieve", "Urgentie", "Pijn"],
   protocols: [
     "Abdominale", "Buitendiensten", "Neurochirurgie", "NKO", 
-    "Obstetrie-epidurale", "Orthopedie", "Reanimatie", "Thorax-vaat", "Algemeen"
+    "Obstetrie-epidurale", "Orthopedie", "Pijnkliniek", "Reanimatie", "Thorax-vaat", "Algemeen"
   ]
 };
 
@@ -25,7 +31,7 @@ const QUILL_MODULES = {
     [{ 'header': [2, 3, false] }],
     ['bold', 'italic', 'underline', 'strike'],
     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    ['link', 'image', 'clean'], // Afbeeldingen nu overal aan
+    ['link', 'image', 'clean'],
   ],
 };
 
@@ -37,30 +43,37 @@ export default function AdminEditor() {
 
   const queryType = searchParams.get('type') || 'journal_club';
   const queryId = searchParams.get('id');
-  const mode = queryId ? 'edit' : 'new';
+  const migrateId = searchParams.get('migrate');
+  const mode = queryId ? 'edit' : migrateId ? 'migrate' : 'new';
 
   const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(mode === 'edit');
+  const [fetching, setFetching] = useState(mode !== 'new');
   const [type, setType] = useState(queryType);
 
+  // Form states
   const [title, setTitle] = useState("");
   const [discipline, setDiscipline] = useState("");
+  const [pubmedId, setPubmedId] = useState("");
   const [content, setContent] = useState(""); 
   const [tab1, setTab1] = useState(""); 
   const [tab2, setTab2] = useState(""); 
   const [tab3, setTab3] = useState("");
 
   useEffect(() => {
-    if (mode === 'edit') fetchDatabaseData();
-  }, [mode, queryId]);
+    if (mode === 'edit') {
+      fetchDatabaseData();
+    } else if (mode === 'migrate') {
+      handleMigration();
+    }
+  }, [mode, queryId, migrateId]);
 
   async function fetchDatabaseData() {
-    setFetching(true);
     try {
       const { data, error } = await supabase.from(type).select('*').eq('id', queryId).single();
       if (data && !error) {
         setTitle(data.title);
         setDiscipline(data.discipline || data.folder || "");
+        setPubmedId(data.pubmed_id || "");
         if (type === 'journal_club' || type === 'protocols') {
           setContent(data.content || "");
         } else if (type === 'blocks') {
@@ -76,12 +89,49 @@ export default function AdminEditor() {
     } catch (e) { console.error(e); } finally { setFetching(false); }
   }
 
+  function handleMigration() {
+    const source = type === 'blocks' ? allBlocks : type === 'pocus' ? allPocus : type === 'protocols' ? allProtocols : allJournals;
+    const fileKey = Object.keys(source).find(k => k.toLowerCase().endsWith(`/${migrateId?.toLowerCase()}.md`));
+    const raw = fileKey ? String((source[fileKey] as any)?.default || source[fileKey] || "") : "";
+
+    if (raw) {
+      // 1. Titel & Meta
+      const titleMatch = raw.match(/title: "(.*)"/);
+      setTitle(titleMatch ? titleMatch[1] : migrateId?.replace(/-/g, ' ') || "");
+
+      if (type === 'protocols') {
+        const pathParts = fileKey?.split('/') || [];
+        const disc = pathParts[pathParts.length - 2];
+        setDiscipline(disc.toLowerCase() === 'protocols' ? 'Algemeen' : disc.charAt(0).toUpperCase() + disc.slice(1));
+      } else if (type === 'journal_club') {
+        const discMatch = raw.match(/disciplines: \[(.*)\]/);
+        const firstDisc = discMatch ? discMatch[1].replace(/"/g, '').split(',')[0].trim() : "Anesthesie";
+        setDiscipline(firstDisc.charAt(0).toUpperCase() + firstDisc.slice(1));
+        const pmId = raw.match(/pubmedId: "(.*)"/)?.[1] || raw.match(/pubmed: "(.*)"/)?.[1];
+        if (pmId) setPubmedId(pmId);
+      }
+
+      // 2. Content (strip frontmatter)
+      const cleanBody = raw.replace(/---[\s\S]*?---/, '').trim();
+
+      if (type === 'blocks' || type === 'pocus') {
+        const sections = cleanBody.split(/\n## /);
+        setTab1(sections[0].replace(/^# .*\n/, '').trim());
+        setTab2(sections.find((s: string) => /anatomie|scan/i.test(s))?.replace(/.*anatomie.*\n|.*anatomy.*\n/i, "").trim() || "");
+        setTab3(sections.find((s: string) => /techniek|interpretatie/i.test(s))?.replace(/.*techniek.*\n|.*interpretatie.*\n/i, "").trim() || "");
+      } else {
+        setContent(cleanBody);
+      }
+    }
+    setFetching(false);
+  }
+
   const handleSave = async () => {
     if (!title) return toast({ title: "Titel is verplicht", variant: "destructive" });
     setLoading(true);
 
     const payload: any = { title };
-    if (type === 'journal_club') Object.assign(payload, { content, disciplines: [discipline] });
+    if (type === 'journal_club') Object.assign(payload, { content, disciplines: [discipline], pubmed_id: pubmedId });
     else if (type === 'protocols') Object.assign(payload, { content, discipline });
     else if (type === 'blocks') Object.assign(payload, { content_general: tab1, content_anatomy: tab2, content_technique: tab3 });
     else if (type === 'pocus') Object.assign(payload, { content_indicaties: tab1, content_techniek: tab2, content_interpretatie: tab3 });
@@ -108,17 +158,17 @@ export default function AdminEditor() {
           <Button variant="ghost" onClick={() => window.history.back()} className="font-black uppercase text-[10px] tracking-widest text-slate-400">
             <ArrowLeft className="mr-2 h-4 w-4" /> Annuleren
           </Button>
-          <h2 className="text-sm font-black uppercase tracking-widest text-slate-900 italic">Editor — {type}</h2>
+          <div className="px-4 py-1.5 bg-teal-100 text-teal-700 rounded-full text-[10px] font-black uppercase tracking-widest">
+            {mode} mode: {type}
+          </div>
         </header>
 
         <Card className="border-none shadow-2xl rounded-[40px] overflow-hidden bg-white">
           <CardContent className="p-8 md:p-12 space-y-8">
-            
-            {/* RIJ 1: TYPE EN DISCIPLINE */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Content Type</label>
-                <Select value={type} onValueChange={setType} disabled={mode === 'edit'}>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type</label>
+                <Select value={type} onValueChange={setType} disabled={mode !== 'new'}>
                   <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="journal_club">Journal Club</SelectItem>
@@ -131,9 +181,7 @@ export default function AdminEditor() {
 
               {(type === 'journal_club' || type === 'protocols') && (
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">
-                    {type === 'journal_club' ? 'Discipline' : 'Map'}
-                  </label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Discipline / Map</label>
                   <Select value={discipline} onValueChange={setDiscipline}>
                     <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold"><SelectValue placeholder="Kies..." /></SelectTrigger>
                     <SelectContent>
@@ -146,19 +194,24 @@ export default function AdminEditor() {
               )}
             </div>
 
-            {/* TITEL */}
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Titel</label>
-              <Input placeholder="Bijv: Interscalenaire blok..." value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-2xl border-slate-200 h-14 text-xl font-black uppercase italic" />
+              <Input placeholder="Titel..." value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-2xl border-slate-200 h-14 text-xl font-black uppercase italic" />
             </div>
 
-            {/* EDITORS */}
+            {type === 'journal_club' && (
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">PubMed ID</label>
+                <Input placeholder="PMID..." value={pubmedId} onChange={(e) => setPubmedId(e.target.value)} className="rounded-2xl border-slate-200 h-12 font-bold text-teal-600" />
+              </div>
+            )}
+
             {(type === "journal_club" || type === "protocols") ? (
               <div className="space-y-2">
                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Inhoud</label>
-                 <div className="rounded-2xl border border-slate-200 overflow-hidden">
-                  {/* @ts-ignore */}
-                    <ReactQuill theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} style={{ height: '450px', marginBottom: '40px' }} />
+                 <div className="rounded-2xl border border-slate-200 overflow-hidden min-h-[400px]">
+                    {/* @ts-ignore */}
+                    <ReactQuill theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} style={{ height: '350px', marginBottom: '40px' }} />
                  </div>
               </div>
             ) : (
