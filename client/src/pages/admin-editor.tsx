@@ -12,7 +12,6 @@ import { Loader2, Save, ArrowLeft, FileText, Video, Quote } from "lucide-react";
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
-// Fix voor de TypeScript JSX errors: we casten het component naar 'any'
 const QuillEditor = ReactQuill as any;
 
 const DISCIPLINE_OPTIONS = {
@@ -33,8 +32,7 @@ export default function AdminEditor() {
   const [, setLocation] = useLocation();
   const searchParams = new URLSearchParams(useSearch());
   const { toast } = useToast();
-  const quillRef = useRef<any>(null);
-
+  
   const queryType = searchParams.get('type') || 'journal_club';
   const queryId = searchParams.get('id');
   
@@ -83,41 +81,39 @@ export default function AdminEditor() {
   }
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fileType: 'pdf' | 'video') => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  setLoading(true);
-  const fileName = `${Date.now()}_${file.name.replace(/\s/g, '_')}`;
-  const filePath = `${fileType}s/${fileName}`;
+    setLoading(true);
+    const fileName = `${Date.now()}_${file.name.replace(/\s/g, '_')}`;
+    const filePath = `${fileType}s/${fileName}`;
 
-  try {
-    const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
-    if (uploadError) throw uploadError;
+    try {
+      const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
+      if (uploadError) throw uploadError;
 
-    const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
-    
-    // Pak de editor instance
-    const quill = quillRef.current.getEditor();
-    const range = quill.getSelection();
-    const position = range ? range.index : quill.getLength();
+      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
+      
+      const htmlToInsert = fileType === 'pdf' 
+        ? `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer">📄 DOCUMENT: ${file.name}</a></p>`
+        : `<p><video controls class="w-full rounded-3xl my-4"><source src="${publicUrl}" type="video/mp4"></video></p>`;
 
-    if (fileType === 'pdf') {
-      // PDF invoegen als link op de cursor positie
-      quill.insertText(position, `📄 DOCUMENT: ${file.name}`, 'link', publicUrl);
-      quill.insertText(position + `📄 DOCUMENT: ${file.name}`.length, '\n');
-    } else {
-      // Video invoegen als HTML op de cursor positie
-      const videoHtml = `<video controls src="${publicUrl}" class="w-full rounded-3xl my-4"></video><p><br></p>`;
-      quill.clipboard.dangerouslyPasteHTML(position, videoHtml);
+      // Oplossing voor de 'getEditor' null error: we voegen het direct toe aan de state.
+      // Bij Pocus/Blocks voegen we het toe aan het eerste tabblad.
+      if (type === 'pocus' || type === 'blocks') {
+        setTab1(prev => prev + htmlToInsert);
+        toast({ title: "Toegevoegd aan Tab 1", description: "Je kunt het nu knippen/plakken naar een andere tab." });
+      } else {
+        setContent(prev => prev + htmlToInsert);
+      }
+      
+      toast({ title: "Upload geslaagd" });
+    } catch (error: any) {
+      toast({ title: "Upload fout", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-    
-    toast({ title: "Media ingevoegd op cursor positie" });
-  } catch (error: any) {
-    toast({ title: "Fout", description: error.message, variant: "destructive" });
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleSave = async () => {
     if (!title) return toast({ title: "Titel is verplicht", variant: "destructive" });
@@ -174,7 +170,7 @@ export default function AdminEditor() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type</label>
-                <Select value={type} onValueChange={(v: string) => setType(v)} disabled={!!queryId}>
+                <Select value={type} onValueChange={(v: string) => setType(v as any)} disabled={!!queryId}>
                   <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold focus:ring-blue-600 text-slate-900"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="protocols">Protocol</SelectItem>
@@ -187,7 +183,7 @@ export default function AdminEditor() {
               {(type === 'protocols' || type === 'journal_club') && (
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Discipline</label>
-                  <Select value={discipline} onValueChange={setDiscipline}>
+                  <Select value={discipline} onValueChange={(v: string) => setDiscipline(v)}>
                     <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 font-bold focus:ring-blue-600 text-slate-900"><SelectValue placeholder="Kies..." /></SelectTrigger>
                     <SelectContent>
                       {DISCIPLINE_OPTIONS[type === 'protocols' ? 'protocols' : 'journal_club'].map(d => (
@@ -217,7 +213,7 @@ export default function AdminEditor() {
                    <Quote size={12}/> Gebruik de quote knop voor Tips (Groen), Waarschuwing (Rood) of Info (Blauw)
                  </label>
                  <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
-                    <QuillEditor ref={quillRef} theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} className="min-h-[400px]" />
+                    <QuillEditor theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} className="min-h-[400px]" />
                  </div>
               </div>
             ) : (
