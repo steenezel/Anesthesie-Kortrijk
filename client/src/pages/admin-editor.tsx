@@ -93,7 +93,7 @@ export default function AdminEditor() {
       
       const htmlToInsert = fileType === 'pdf' 
         ? `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer">📄 DOCUMENT: ${file.name}</a></p>`
-        : `<p><video controls class="w-full rounded-3xl my-4"><source src="${publicUrl}" type="video/mp4"></video></p>`;
+        : `<p><video controls src="${publicUrl}" class="w-full rounded-3xl my-4"></video></p>`;
 
       if (type === 'pocus' || type === 'blocks') {
         setTab1(prev => prev + htmlToInsert);
@@ -134,33 +134,38 @@ export default function AdminEditor() {
   if (fetching) return <div className="flex h-screen items-center justify-center text-blue-600"><Loader2 className="animate-spin" /></div>;
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20 p-4 lg:p-12">
-      <div className="max-w-[1600px] mx-auto">
-        <header className="flex items-center justify-between mb-10">
-          <Button variant="ghost" onClick={() => window.history.back()} className="font-black uppercase text-[10px] tracking-widest text-slate-400">
+    <div className="min-h-screen bg-slate-50 pb-20 p-2 md:p-6 lg:p-10">
+      {/* VOLLEDIGE BREEDTE CONTAINER */}
+      <div className="max-w-[1800px] mx-auto w-full">
+        
+        <header className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
+          <Button variant="ghost" onClick={() => window.history.back()} className="font-black uppercase text-[10px] tracking-widest text-slate-400 p-0">
             <ArrowLeft className="mr-2 h-4 w-4" /> Terug
           </Button>
-          <div className="flex gap-4">
-            <Button variant="outline" className="relative h-12 px-8 rounded-2xl border-slate-200 bg-white font-black uppercase text-[10px] tracking-widest shadow-sm">
+          <div className="flex gap-2 w-full md:w-auto">
+            <Button variant="outline" className="flex-1 md:flex-none relative h-10 px-4 rounded-xl border-slate-200 bg-white font-black uppercase text-[9px] tracking-widest shadow-sm">
               <FileText className="mr-2 h-4 w-4 text-blue-600" /> PDF Upload
               <input type="file" accept=".pdf" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFileUpload(e, 'pdf')} />
             </Button>
-            <Button variant="outline" className="relative h-12 px-8 rounded-2xl border-slate-200 bg-white font-black uppercase text-[10px] tracking-widest shadow-sm">
+            <Button variant="outline" className="flex-1 md:flex-none relative h-10 px-4 rounded-xl border-slate-200 bg-white font-black uppercase text-[9px] tracking-widest shadow-sm">
               <Video className="mr-2 h-4 w-4 text-purple-600" /> Video Upload
               <input type="file" accept="video/mp4" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFileUpload(e, 'video')} />
             </Button>
           </div>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 items-start">
-          <div className="lg:col-span-3 space-y-10">
-            <Card className="border-none shadow-2xl rounded-[48px] overflow-hidden bg-white">
-              <CardContent className="p-10 lg:p-16 space-y-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* EDITOR (Neemt 9 van de 12 kolommen op desktop = 75%) */}
+          <div className="lg:col-span-9 space-y-6 w-full">
+            <Card className="border-none shadow-xl rounded-[32px] md:rounded-[48px] overflow-hidden bg-white">
+              <CardContent className="p-4 md:p-10 lg:p-14 space-y-8">
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                  <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type Content</label>
                     <Select value={type} onValueChange={(v: string) => setType(v)} disabled={!!queryId}>
-                      <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-14 font-bold text-slate-700 shadow-inner"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 md:h-14 font-bold"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="protocols">Protocol</SelectItem>
                         <SelectItem value="pocus">POCUS</SelectItem>
@@ -170,10 +175,10 @@ export default function AdminEditor() {
                     </Select>
                   </div>
                   {(type === 'protocols' || type === 'journal_club') && (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Discipline</label>
                       <Select value={discipline} onValueChange={(v: string) => setDiscipline(v)}>
-                        <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-14 font-bold text-slate-700 shadow-inner"><SelectValue placeholder="Kies discipline..." /></SelectTrigger>
+                        <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 md:h-14 font-bold"><SelectValue placeholder="Kies discipline..." /></SelectTrigger>
                         <SelectContent>
                           {DISCIPLINE_OPTIONS[type === 'protocols' ? 'protocols' : 'journal_club'].map(d => (
                             <SelectItem key={d} value={d}>{d}</SelectItem>
@@ -184,47 +189,52 @@ export default function AdminEditor() {
                   )}
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Titel van het artikel</label>
-                  <Input value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-3xl border-slate-200 h-20 text-3xl font-black uppercase italic px-8" />
+                  <Input value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-2xl md:rounded-3xl border-slate-200 h-14 md:h-20 text-lg md:text-3xl font-black uppercase italic px-4 md:px-8" />
                 </div>
 
                 {(type === "protocols" || type === "journal_club") ? (
                   <div className="space-y-3">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 italic">Hoofdinhoud</label>
-                    <div className="rounded-[32px] border border-slate-200 overflow-hidden bg-white shadow-inner">
-                      <QuillEditor theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} className="min-h-[700px]" />
+                    <div className="rounded-2xl md:rounded-[32px] border border-slate-200 overflow-hidden bg-white">
+                      <QuillEditor theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} className="min-h-[500px] md:min-h-[700px]" />
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-12">
+                  <div className="space-y-8 md:space-y-12">
                     {[
                       { label: type === 'pocus' ? "1. Indicaties / Algemeen" : "1. Algemeen", val: tab1, set: setTab1 },
                       { label: type === 'pocus' ? "2. Acquisitie / Techniek" : "2. Anatomie", val: tab2, set: setTab2 },
                       { label: type === 'pocus' ? "3. Interpretatie / Beslisboom" : "3. Techniek", val: tab3, set: setTab3 }
                     ].map((t, i) => (
-                      <div key={i} className="space-y-3">
+                      <div key={i} className="space-y-2">
                         <label className="text-[11px] font-black uppercase tracking-widest text-blue-600 ml-1">{t.label}</label>
-                        <div className="rounded-[32px] border border-slate-200 overflow-hidden bg-white shadow-sm">
-                          <QuillEditor theme="snow" modules={QUILL_MODULES} value={t.val} onChange={t.set} className="min-h-[500px]" />
+                        <div className="rounded-2xl md:rounded-[32px] border border-slate-200 overflow-hidden bg-white shadow-sm">
+                          <QuillEditor theme="snow" modules={QUILL_MODULES} value={t.val} onChange={t.set} className="min-h-[300px] md:min-h-[400px]" />
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
 
-                <Button onClick={handleSave} className="w-full h-24 bg-slate-900 hover:bg-blue-600 text-white font-black uppercase tracking-[0.3em] text-sm rounded-[32px] transition-all shadow-2xl">
-                  {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-3 h-6 w-6" />}
+                <Button onClick={handleSave} className="w-full h-16 md:h-24 bg-slate-900 hover:bg-blue-600 text-white font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm rounded-2xl md:rounded-[32px] transition-all shadow-2xl">
+                  {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-3 h-5 w-5 md:h-6 md:w-6" />}
                   Publiceren naar App
                 </Button>
               </CardContent>
             </Card>
           </div>
 
-          <div className="hidden lg:block space-y-6 sticky top-12">
-            <div className="bg-white p-8 rounded-[40px] shadow-xl border border-slate-100">
+          {/* ZIJBALK (Neemt 3 van de 12 kolommen op desktop = 25%) */}
+          <div className="hidden lg:block lg:col-span-3 space-y-6 sticky top-10">
+            <div className="bg-white p-6 md:p-8 rounded-[32px] md:rounded-[40px] shadow-xl border border-slate-100 max-h-[85vh] overflow-y-auto">
               <h3 className="text-blue-600 font-black uppercase text-[11px] tracking-widest italic mb-6">Styling Handleiding</h3>
-              <div className="space-y-8 text-[11px] leading-relaxed text-slate-500">
+              <div className="space-y-6 text-[11px] leading-relaxed text-slate-500">
+                <section>
+                  <p className="font-black text-slate-900 uppercase mb-1">Sub-kopjes</p>
+                  <p>Typ een titel en kies <b>Koptekst 2 (H2)</b> voor de blauwe lijn.</p>
+                </section>
                 <section className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 text-emerald-900">
                   <p className="font-black uppercase mb-1 underline">Groen Kader</p>
                   <p className="italic">Druk op Quote (") en begin direct met typen.</p>
@@ -233,13 +243,18 @@ export default function AdminEditor() {
                   <p className="font-black uppercase mb-1 underline">Rood Kader</p>
                   <p className="italic">Druk op Quote (") en start met "WAARSCHUWING:".</p>
                 </section>
+                <section className="p-4 bg-blue-50 rounded-2xl border border-blue-100 text-blue-900">
+                  <p className="font-black uppercase mb-1 underline">Blauw Kader</p>
+                  <p className="italic">Druk op Quote (") en start met "INFO:".</p>
+                </section>
+                <section className="bg-slate-900 p-6 rounded-2xl text-white">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 italic">Video Tip</p>
+                  <p className="opacity-80">Video's verschijnen onderaan. Knip en plak naar de juiste plek.</p>
+                </section>
               </div>
             </div>
-            <div className="bg-slate-900 p-8 rounded-[40px] text-white shadow-2xl">
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 italic">Video Tip</p>
-              <p className="text-[11px] font-medium leading-relaxed opacity-80">Video's verschijnen automatisch onderaan. Je kunt ze knippen en plakken naar de gewenste plek.</p>
-            </div>
           </div>
+
         </div>
       </div>
     </div>
