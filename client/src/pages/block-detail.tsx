@@ -14,66 +14,68 @@ export default function BlockDetail() {
   const id = params?.id;
   const queryParams = new URLSearchParams(window.location.search);
   const backUrl = queryParams.get('from') || '/blocks';
-  const isFromProtocol = queryParams.has('from');
 
-
-  const fileKey = Object.keys(allBlocks).find(key => key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`));
-  const fileData = fileKey ? (allBlocks[fileKey] as any) : null;
-  const rawContent = fileData?.default || fileData;
+  // 1. Check of ID een Cloud-UUID is
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || "");
 
   const { data: dbBlock, isLoading } = useQuery({
     queryKey: ['block', id],
     queryFn: async () => {
-      if (!id || !id.includes("-")) return null; // UUID check
+      if (!id || !isUuid) return null;
       const { data } = await supabase.from('blocks').select('*').eq('id', id).single();
       return data;
     },
-    enabled: !!id
+    enabled: !!id && isUuid
   });
 
-  if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin" /></div>;
+  // 2. Lokale fallback data
+  const fileKey = Object.keys(allBlocks).find(key => key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`));
+  const fileData = fileKey ? (allBlocks[fileKey] as any) : null;
+  const rawContent = fileData?.default || fileData;
 
-  // Render logica voor de tabs (versimpeld voor database)
-  const renderTab = (content: string, id: string) => (
-    <TabsContent value={id} className="mt-6 prose prose-slate max-w-none">
-      <MarkdownRenderer content={content} />
-      {/* Check of er een calculator moet worden getoond */}
-      {id === 'algemeen' && content.includes('[CAUDAL_CALC]') && <CaudalCalculator />}
-    </TabsContent>
-  );
+  const parseLocal = (content: string) => {
+    if (!content) return { title: id?.replace(/-/g, ' '), general: "", anatomy: "", technique: "" };
+    const sections = content.split(/\n## /);
+    return {
+      title: content.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' '),
+      general: sections[0].replace(/^# .*\n/, '').replace(/title:.*\n/, '').replace(/---.*\n/g, ''),
+      anatomy: sections.find(s => /anatomie|scan/i.test(s))?.replace(/.*anatomy.*\n|.*anatomie.*\n/, '') || "",
+      technique: sections.find(s => /techniek|technique/i.test(s))?.replace(/.*techniek.*\n|.*technique.*\n/, '') || ""
+    };
+  };
 
-        return (
-  <div className="min-h-screen bg-white pb-20 px-4">
-    <div className="flex items-center justify-between py-4 sticky top-0 bg-white/80 backdrop-blur-md z-10">
-      <Link href={backUrl}>
-        <div className="flex items-center text-purple-600 font-black uppercase text-[10px] tracking-widest cursor-pointer group">
-          <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
-          {isFromProtocol ? "Terug naar Protocol" : "Terug naar Blocks"}
+  const local = useMemo(() => parseLocal(rawContent), [rawContent]);
+
+  if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-teal-600" /></div>;
+
+  return (
+    <div className="min-h-screen bg-white pb-20 px-4">
+      <div className="flex items-center justify-between py-4 sticky top-0 bg-white/80 backdrop-blur-md z-10 max-w-3xl mx-auto">
+        <Link href={backUrl}>
+          <div className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-widest cursor-pointer group">
+            <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Terug
+          </div>
+        </Link>
+        <div className="flex gap-2">
+          {dbBlock ? (
+            <Link href={`/admin?type=blocks&id=${dbBlock.id}`}>
+              <div className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-teal-600 cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest">
+                <Pencil size={14} /> Edit
+              </div>
+            </Link>
+          ) : rawContent && (
+            <Link href={`/admin?migrate=${id}&type=blocks`}>
+              <div className="p-2 bg-amber-50 text-amber-600 rounded-xl cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border border-amber-100">
+                <CloudDownload size={14} /> Migreer
+              </div>
+            </Link>
+          )}
         </div>
-      </Link>
-
-      <div className="flex items-center gap-2">
-        {dbBlock && (
-          <Link href={`/admin?type=blocks&id=${dbBlock.id}`}>
-            <a className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-purple-600 transition-all flex items-center gap-2 font-black text-[9px] uppercase tracking-widest">
-              <Pencil size={14} /> Edit
-            </a>
-          </Link>
-        )}
-
-        {!dbBlock && rawContent && (
-          <Link href={`/admin?migrate=${id}&type=blocks`}>
-            <a className="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-all flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border border-amber-100">
-              <CloudDownload size={14} /> Migreer naar Cloud
-            </a>
-          </Link>
-        )}
       </div>
-    </div>
-    
+
       <div className="p-6 max-w-3xl mx-auto">
         <h1 className="text-3xl font-black uppercase tracking-tighter mb-8 italic text-slate-900">
-          {dbBlock?.title || id?.replace(/-/g, ' ')}
+          {dbBlock?.title || local.title}
         </h1>
 
         <Tabs defaultValue="algemeen" className="w-full">
@@ -83,9 +85,16 @@ export default function BlockDetail() {
             <TabsTrigger value="techniek" className="rounded-xl font-black text-[10px] uppercase">Techniek</TabsTrigger>
           </TabsList>
           
-          {renderTab(dbBlock?.content_general || "", "algemeen")}
-          {renderTab(dbBlock?.content_anatomy || "", "anatomie")}
-          {renderTab(dbBlock?.content_technique || "", "techniek")}
+          <TabsContent value="algemeen" className="mt-6 prose prose-slate max-w-none">
+            <MarkdownRenderer content={dbBlock?.content_general || local.general} />
+            {id === "caudaal-blok" && <CaudalCalculator />}
+          </TabsContent>
+          <TabsContent value="anatomie" className="mt-6 prose prose-slate max-w-none">
+            <MarkdownRenderer content={dbBlock?.content_anatomy || local.anatomy} />
+          </TabsContent>
+          <TabsContent value="techniek" className="mt-6 prose prose-slate max-w-none">
+            <MarkdownRenderer content={dbBlock?.content_technique || local.technique} />
+          </TabsContent>
         </Tabs>
       </div>
     </div>

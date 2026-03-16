@@ -12,35 +12,27 @@ const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: '
 export default function ProtocolDetail() {
   const [, params] = useRoute("/protocols/:id");
   const id = params?.id;
-  const queryParams = new URLSearchParams(window.location.search);
-  const fromDiscipline = queryParams.get('fromDiscipline');
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || "");
 
   const { data: dbProtocol, isLoading } = useQuery({
     queryKey: ['protocol', id],
     queryFn: async () => {
-      if (!id || !id.includes("-")) return null;
+      if (!id || !isUuid) return null;
       const { data } = await supabase.from('protocols').select('*').eq('id', id).single();
       return data;
     },
-    enabled: !!id
+    enabled: !!id && isUuid
   });
 
-  let content = "";
-  let title = "";
+  const fileKey = Object.keys(allProtocols).find(key => key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`));
+  const fileData = fileKey ? (allProtocols[fileKey] as any) : null;
+  const localContent = fileData?.default || fileData || "";
 
-  if (dbProtocol) {
-    content = dbProtocol.content;
-    title = dbProtocol.title;
-  } else {
-    const fileKey = Object.keys(allProtocols).find(key => key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`));
-    const fileData = fileKey ? (allProtocols[fileKey] as any) : null;
-    content = String(fileData?.default || fileData || "").trim();
-    title = content.split('\n')[0].replace('# ', '') || id?.replace(/-/g, ' ') || "";
-  }
+  const title = dbProtocol?.title || localContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' ');
+  const content = dbProtocol?.content || localContent.replace(/---[\s\S]*?---/, '');
 
   if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-teal-600" /></div>;
-  if (!content) return <div className="p-10 text-center"><FileWarning className="mx-auto mb-4 text-slate-300" /><p className="font-black uppercase text-slate-500">Protocol niet gevonden</p></div>;
-
+  
 return (
   <div className="min-h-screen bg-white pb-20 px-4">
     {/* Header balk met Terug-knop links en Edit/Migreer rechts */}

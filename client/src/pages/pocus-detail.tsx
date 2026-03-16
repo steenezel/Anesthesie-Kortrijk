@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, FileWarning, Loader2, Pencil, CloudDownload } from "lucide-react";
+import { ChevronLeft, Loader2, Pencil, CloudDownload } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -14,73 +14,68 @@ export default function PocusDetail() {
 
   const queryParams = new URLSearchParams(window.location.search);
   const backUrl = queryParams.get('from') || '/pocus';
-  const isFromProtocol = queryParams.has('from');
 
-  const fileKey = Object.keys(allPocus).find(key => key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`));
-  const fileData = fileKey ? (allPocus[fileKey] as any) : null;
-  const rawContent = fileData?.default || fileData;
+  // 1. Check of ID een Cloud-UUID is (voorkomt 400 error bij Supabase)
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || "");
 
   const { data: dbPocus, isLoading } = useQuery({
     queryKey: ['pocus', id],
     queryFn: async () => {
-      if (!id || !id.includes("-")) return null;
+      if (!id || !isUuid) return null;
       const { data } = await supabase.from('pocus').select('*').eq('id', id).single();
       return data;
     },
-    enabled: !!id
+    enabled: !!id && isUuid
   });
 
-  // Hulpfunctie om lokale bestanden te parsen naar de 3 secties (zoals in je origineel)
-  const getLocalData = () => {
-    const fileKey = Object.keys(allPocus).find(key => key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`));
-    const fileData = fileKey ? (allPocus[fileKey] as any) : null;
-    const raw = String(fileData?.default || fileData || "");
-    
-    // Simpele split logica op basis van je huidige titels
-    const sections = raw.split(/## /);
+  // 2. Lokale fallback data voor MD bestanden
+  const fileKey = Object.keys(allPocus).find(key => key.toLowerCase().endsWith(`/${id?.toLowerCase()}.md`));
+  const fileData = fileKey ? (allPocus[fileKey] as any) : null;
+  const rawContent = fileData?.default || fileData || "";
+
+  const local = useMemo(() => {
+    if (!rawContent || isUuid) return null;
+    const sections = rawContent.split(/\n## /);
     return {
-      title: raw.split('\n')[0].replace('# ', '') || id?.replace(/-/g, ' '),
-      indicaties: sections.find(s => s.toLowerCase().startsWith('indicaties')) || "",
-      techniek: sections.find(s => s.toLowerCase().startsWith('techniek')) || "",
-      interpretatie: sections.find(s => s.toLowerCase().startsWith('interpretatie')) || ""
+      title: rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' '),
+      indicaties: sections[0].replace(/^# .*\n/, '').replace(/---[\s\S]*?---/, '').trim(),
+      techniek: sections.find(s => /techniek/i.test(s))?.replace(/.*techniek.*\n/, "") || "",
+      interpretatie: sections.find(s => /interpretatie/i.test(s))?.replace(/.*interpretatie.*\n/, "") || ""
     };
-  };
+  }, [rawContent, id, isUuid]);
 
-  const local = !dbPocus ? getLocalData() : null;
-  const title = dbPocus?.title || local?.title;
+  if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-blue-600" /></div>;
 
-  if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin text-teal-600" /></div>;
+  const title = dbPocus?.title || local?.title || id?.replace(/-/g, ' ');
 
   return (
-  <div className="min-h-screen bg-white pb-20 px-4">
-    <div className="flex items-center justify-between py-4 sticky top-0 bg-white/80 backdrop-blur-md z-10">
-      <Link href={backUrl}>
-        <div className="flex items-center text-blue-600 font-black uppercase text-[10px] tracking-widest cursor-pointer group">
-          <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> 
-          {isFromProtocol ? "Terug naar Protocol" : "Terug naar Pocus"}
+    <div className="min-h-screen bg-white pb-20 px-4">
+      {/* HEADER BALK */}
+      <div className="flex items-center justify-between py-4 sticky top-0 bg-white/80 backdrop-blur-md z-10 max-w-3xl mx-auto w-full">
+        <Link href={backUrl}>
+          <div className="flex items-center text-blue-600 font-black uppercase text-[10px] tracking-widest cursor-pointer group">
+            <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Terug
+          </div>
+        </Link>
+        <div className="flex gap-2">
+          {dbPocus ? (
+            <Link href={`/admin?type=pocus&id=${dbPocus.id}`}>
+              <div className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-blue-600 cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest">
+                <Pencil size={14} /> Edit
+              </div>
+            </Link>
+          ) : rawContent && (
+            <Link href={`/admin?migrate=${id}&type=pocus`}>
+              <div className="p-2 bg-amber-50 text-amber-600 rounded-xl cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border border-amber-100">
+                <CloudDownload size={14} /> Migreer naar Cloud
+              </div>
+            </Link>
+          )}
         </div>
-      </Link>
-
-      <div className="flex items-center gap-2">
-        {dbPocus && (
-          <Link href={`/admin?type=pocus&id=${dbPocus.id}`}>
-            <a className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-blue-600 transition-all flex items-center gap-2 font-black text-[9px] uppercase tracking-widest">
-              <Pencil size={14} /> Edit
-            </a>
-          </Link>
-        )}
-
-        {!dbPocus && rawContent && (
-          <Link href={`/admin?migrate=${id}&type=pocus`}>
-            <a className="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-all flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border border-amber-100">
-              <CloudDownload size={14} /> Migreer naar Cloud
-            </a>
-          </Link>
-        )}
       </div>
-    </div>
+
       <div className="p-6 max-w-3xl mx-auto">
-        <h1 className="text-3xl font-black uppercase tracking-tighter mb-8 italic text-slate-900">
+        <h1 className="text-3xl font-black uppercase tracking-tighter mb-8 italic text-slate-900 leading-[0.9]">
           {title}
         </h1>
 
@@ -94,11 +89,9 @@ export default function PocusDetail() {
           <TabsContent value="indicaties" className="mt-6 prose prose-slate max-w-none">
             <MarkdownRenderer content={dbPocus?.content_indicaties || local?.indicaties || ""} />
           </TabsContent>
-          
           <TabsContent value="techniek" className="mt-6 prose prose-slate max-w-none">
             <MarkdownRenderer content={dbPocus?.content_techniek || local?.techniek || ""} />
           </TabsContent>
-          
           <TabsContent value="interpretatie" className="mt-6 prose prose-slate max-w-none">
             <MarkdownRenderer content={dbPocus?.content_interpretatie || local?.interpretatie || ""} />
           </TabsContent>
