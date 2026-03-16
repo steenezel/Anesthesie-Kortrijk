@@ -35,12 +35,26 @@ export default function PocusDetail() {
 
   const local = useMemo(() => {
     if (!rawContent || isUuid) return null;
+    
+    // Frontmatter extractie
+    const titleMatch = rawContent.match(/title: "(.*)"/);
+    const indicationMatch = rawContent.match(/indication: "(.*)"/);
+    
     const sections = rawContent.split(/\n## /);
+    
+    // Bepaal de inhoud van de eerste tab
+    const indicatieContent = indicationMatch 
+      ? indicationMatch[1] 
+      : sections[0].replace(/^# .*\n/, '').replace(/---[\s\S]*?---/, '').trim();
+
     return {
-      title: rawContent.match(/title: "(.*)"/)?.[1] || id?.replace(/-/g, ' '),
-      indicaties: sections[0].replace(/^# .*\n/, '').replace(/---[\s\S]*?---/, '').trim(),
-      techniek: sections.find((s: string) => /techniek/i.test(s))?.replace(/.*techniek.*\n/, "") || "",
-      interpretatie: sections.find((s: string) => /interpretatie/i.test(s))?.replace(/.*interpretatie.*\n/, "") || ""
+      title: titleMatch ? titleMatch[1] : id?.replace(/-/g, ' '),
+      indicaties: indicatieContent,
+      // Flexibele zoekterm voor de tweede tab (Techniek/Acquisitie/Scan)
+      techniek: sections.find((s: string) => /techniek|acquisitie|scan/i.test(s))
+        ?.replace(/.*(techniek|acquisitie|scan).*\n/i, "") || "",
+      interpretatie: sections.find((s: string) => /interpretatie/i.test(s))
+        ?.replace(/.*interpretatie.*\n/i, "") || ""
     };
   }, [rawContent, id, isUuid]);
 
@@ -74,7 +88,7 @@ export default function PocusDetail() {
         </div>
       </div>
 
-      <div className="p-6 max-w-3xl mx-auto">
+      <div className="p-6 max-w-3xl mx-auto w-full">
         <h1 className="text-3xl font-black uppercase tracking-tighter mb-8 italic text-slate-900 leading-[0.9]">
           {title}
         </h1>
@@ -86,13 +100,13 @@ export default function PocusDetail() {
             <TabsTrigger value="interpretatie" className="rounded-xl font-black text-[10px] uppercase">Interpretatie</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="indicaties" className="mt-6 prose prose-slate max-w-none">
+          <TabsContent value="indicaties" className="mt-6 prose prose-slate max-w-none break-words overflow-hidden">
             <MarkdownRenderer content={dbPocus?.content_indicaties || local?.indicaties || ""} />
           </TabsContent>
-          <TabsContent value="techniek" className="mt-6 prose prose-slate max-w-none">
+          <TabsContent value="techniek" className="mt-6 prose prose-slate max-w-none break-words overflow-hidden">
             <MarkdownRenderer content={dbPocus?.content_techniek || local?.techniek || ""} />
           </TabsContent>
-          <TabsContent value="interpretatie" className="mt-6 prose prose-slate max-w-none">
+          <TabsContent value="interpretatie" className="mt-6 prose prose-slate max-w-none break-words overflow-hidden">
             <MarkdownRenderer content={dbPocus?.content_interpretatie || local?.interpretatie || ""} />
           </TabsContent>
         </Tabs>
