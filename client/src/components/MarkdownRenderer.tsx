@@ -83,21 +83,28 @@ export function MarkdownRenderer({ content }: { content: string }) {
             );
           }
 
-        if (domNode.name === 'video') {
-            return (
-              <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video">
-                <video 
-                  controls 
-                  className="w-full h-full"
-                  // Zorg dat de src uit de attributen van de editor komt
-                  src={domNode.attribs.src}
-                >
-                  {/* Fallback voor oudere versies met source tags */}
-                  {domNode.children && domToReact(domNode.children as any)}
-                </video>
-              </div>
-            );
-          }
+       // 1. VIDEO FIX (Voor Cloud/Database content)
+    if (domNode.name === 'video') {
+      // Haal de URL uit de video-tag zelf OF uit een bron-tag eronder
+      const videoSrc = domNode.attribs.src || 
+                       (domNode.children?.find((c: any) => c.name === 'source') as any)?.attribs?.src;
+
+      if (!videoSrc) return null;
+
+      return (
+        <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
+          <video 
+            controls 
+            playsInline
+            preload="metadata"
+            className="w-full h-full object-contain"
+            src={videoSrc}
+          >
+            <source src={videoSrc} type="video/mp4" />
+          </video>
+        </div>
+      );
+    }
       }
     };
 
