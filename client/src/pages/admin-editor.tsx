@@ -77,36 +77,43 @@ export default function AdminEditor() {
     }
   }
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fileType: 'pdf' | 'video') => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+// Zoek in admin-editor.tsx naar de handleFileUpload functie en vervang deze:
+const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fileType: 'img' | 'video' | 'pdf') => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    setLoading(true);
-    const fileName = `${Date.now()}_${file.name.replace(/\s/g, '_')}`;
-    const filePath = `${fileType}s/${fileName}`;
+  setLoading(true);
+  try {
+    const fileExt = file.name.split('.').pop();
+    const filePath = `${type}/${Date.now()}.${fileExt}`;
 
-    try {
-      const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
-      if (uploadError) throw uploadError;
+    const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
+    if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
-      
-      const htmlToInsert = fileType === 'pdf' 
-        ? `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer">📄 DOCUMENT: ${file.name}</a></p>`
-        : `<p><video controls src="${publicUrl}" class="w-full rounded-3xl my-4"></video></p>`;
-
-      if (type === 'pocus' || type === 'blocks') {
-        setTab1(prev => prev + htmlToInsert);
-      } else {
-        setContent(prev => prev + htmlToInsert);
-      }
-      toast({ title: "Upload geslaagd" });
-    } catch (error: any) {
-      toast({ title: "Fout", description: error.message, variant: "destructive" });
-    } finally {
-      setLoading(false);
+    const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
+    
+    let htmlToInsert = "";
+    if (fileType === 'pdf') {
+      htmlToInsert = `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: bold; text-decoration: underline;">📄 DOCUMENT: ${file.name}</a></p>`;
+    } else if (fileType === 'video') {
+      // 1. Video tussen tekst als tag; 2. Met controls
+      htmlToInsert = `<video controls playsinline src="${publicUrl}" class="w-full rounded-3xl my-6 bg-black aspect-video"></video>`;
+    } else {
+      htmlToInsert = `<p><img src="${publicUrl}" alt="afbeelding" /></p>`;
     }
-  };
+
+    if (type === 'pocus' || type === 'blocks') {
+      setTab1(prev => prev + htmlToInsert);
+    } else {
+      setContent(prev => prev + htmlToInsert);
+    }
+    toast({ title: "Upload geslaagd" });
+  } catch (error: any) {
+    toast({ title: "Fout", description: error.message, variant: "destructive" });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleSave = async () => {
     if (!title) return toast({ title: "Titel is verplicht", variant: "destructive" });

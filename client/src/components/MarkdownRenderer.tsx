@@ -84,27 +84,28 @@ export function MarkdownRenderer({ content }: { content: string }) {
           }
 
        // 1. VIDEO FIX (Voor Cloud/Database content)
-    if (domNode.name === 'video') {
-      // Haal de URL uit de video-tag zelf OF uit een bron-tag eronder
-      const videoSrc = domNode.attribs.src || 
-                       (domNode.children?.find((c: any) => c.name === 'source') as any)?.attribs?.src;
+if (domNode.name === 'video') {
+          // Haal de URL uit de video-tag zelf OF uit een bron-tag eronder
+          const videoSrc = domNode.attribs.src || 
+                           (domNode.children?.find((c: any) => c.name === 'source') as any)?.attribs?.src;
 
-      if (!videoSrc) return null;
+          if (!videoSrc) return null;
 
-      return (
-        <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
-          <video 
-            controls 
-            playsInline
-            preload="metadata"
-            className="w-full h-full object-contain"
-            src={videoSrc}
-          >
-            <source src={videoSrc} type="video/mp4" />
-          </video>
-        </div>
-      );
-    }
+          return (
+            <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
+              <video 
+                controls 
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-contain"
+                src={videoSrc}
+              >
+                <source src={videoSrc} type="video/mp4" />
+                Je browser ondersteunt geen video-tags.
+              </video>
+            </div>
+          );
+        }
       }
     };
 
@@ -161,18 +162,20 @@ export function MarkdownRenderer({ content }: { content: string }) {
             {props.alt && <p className="text-center text-[10px] font-bold uppercase text-slate-400 mt-3 tracking-widest">{props.alt}</p>}
           </div>
         ),
-        p: ({ children }: any) => {
-          const text = flattenText(children);
-          if (text.startsWith("video://")) {
-            const url = text.replace("video://", "").trim();
-            return (
-              <video controls className="w-full rounded-3xl shadow-lg my-6 bg-black aspect-video" preload="metadata">
-                <source src={url} type="video/mp4" />
-              </video>
-            );
-          }
-          return <p className="mb-4 last:mb-0 leading-relaxed">{children}</p>;
-        }
+      p: ({ children }: { children: React.ReactNode }) => {
+  const text = flattenText(children);
+  // Behoud ondersteuning voor oude video:// syntax
+  if (text.startsWith("video://")) {
+    const url = text.replace("video://", "").trim();
+    return (
+      <video controls className="w-full rounded-3xl shadow-lg my-6 bg-black aspect-video" preload="metadata">
+        <source src={url} type="video/mp4" />
+      </video>
+    );
+  }
+  // Gebruik de parser voor de nieuwe <video> tags uit de database
+  return <div className="mb-4 leading-relaxed text-slate-700">{parse(content, Option)}</div>;
+}
       }}
     >
       {content}
