@@ -41,13 +41,9 @@ export function MarkdownRenderer({ content }: { content: string }) {
       if (domNode instanceof Element && domNode.name === 'video') {
         const { src } = domNode.attribs;
         return (
-          <video 
-            controls 
-            playsInline 
-            src={src} 
-            className="w-full rounded-3xl shadow-lg my-6 bg-black aspect-video"
-            preload="metadata"
-          />
+          <div className="my-8 rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video">
+            <video controls playsInline src={src} className="w-full h-full" preload="metadata" />
+          </div>
         );
       }
     }
@@ -67,17 +63,9 @@ export function MarkdownRenderer({ content }: { content: string }) {
           ),
           blockquote: ({ children }: { children: React.ReactNode }) => {
             const text = flattenText(children);
-            let config = {
-              styles: "bg-emerald-50 border-emerald-200",
-              color: "text-emerald-600",
-              title: "💡 TIP"
-            };
-
-            if (text.includes("WAARSCHUWING:")) {
-              config = { styles: "bg-red-50 border-red-200", color: "text-red-600", title: "⚠️ WAARSCHUWING" };
-            } else if (text.includes("INFO:")) {
-              config = { styles: "bg-blue-50 border-blue-200", color: "text-blue-600", title: "ℹ️ INFO" };
-            }
+            let config = { styles: "bg-emerald-50 border-emerald-200", color: "text-emerald-600", title: "💡 TIP" };
+            if (text.includes("WAARSCHUWING:")) config = { styles: "bg-red-50 border-red-200", color: "text-red-600", title: "⚠️ WAARSCHUWING" };
+            if (text.includes("INFO:")) config = { styles: "bg-blue-50 border-blue-200", color: "text-blue-600", title: "ℹ️ INFO" };
 
             const cleanNode = (node: any): any => {
               if (typeof node === 'string') return node.replace(/WAARSCHUWING:|INFO:/g, '').trim();
@@ -104,9 +92,9 @@ export function MarkdownRenderer({ content }: { content: string }) {
             if (text.startsWith("video://")) {
               const url = text.replace("video://", "").trim();
               return (
-                <video controls className="w-full rounded-3xl shadow-lg my-6 bg-black aspect-video" preload="metadata">
-                  <source src={url} type="video/mp4" />
-                </video>
+                <div className="my-8 rounded-3xl overflow-hidden shadow-2xl bg-black aspect-video">
+                  <video controls className="w-full h-full" preload="metadata"><source src={url} type="video/mp4" /></video>
+                </div>
               );
             }
             return <div className="mb-4 leading-relaxed text-slate-700">{parse(content, parseOptions)}</div>;
