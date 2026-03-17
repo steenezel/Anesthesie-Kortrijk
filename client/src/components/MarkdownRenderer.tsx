@@ -9,7 +9,6 @@ import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 // @ts-ignore
 import renderMathInElement from 'katex/dist/contrib/auto-render';
-// We gebruiken @ts-ignore hier mochten de types in de cloud omgeving nog niet direct geladen zijn
 // @ts-ignore
 import parse, { domToReact, HTMLReactParserOptions, Element } from 'html-react-parser';
 
@@ -37,78 +36,75 @@ export function MarkdownRenderer({ content }: { content: string }) {
 
   if (!content) return null;
 
+  // --- 1. DEFINIEER OPTIONS HIER (BUITEN DE IF-BLOKKEN) ---
+  const options: HTMLReactParserOptions = {
+    replace: (domNode: any) => {
+      if (!(domNode instanceof Element)) return;
+
+      if (domNode.name === 'img') {
+        return (
+          <div className="my-8">
+            <Zoom>
+              <img 
+                {...domNode.attribs} 
+                className="rounded-3xl shadow-xl border border-slate-100 w-full h-auto" 
+                alt={domNode.attribs.alt || ""}
+              />
+            </Zoom>
+          </div>
+        );
+      }
+
+      if (domNode.name === 'blockquote') {
+        const childrenReact = domToReact(domNode.children as any);
+        const fullText = flattenText({ props: { children: childrenReact } });
+        
+        const isWarning = /WAARSCHUWING|LET OP|CAUTION/i.test(fullText);
+        const isInfo = /INFO|NOTE/i.test(fullText);
+        
+        const config = isWarning
+          ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
+          : isInfo
+          ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
+          : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
+
+        return (
+          <div className={`my-8 border-l-4 rounded-r-2xl p-6 ${config.styles}`}>
+            <div className={`text-[10px] font-black tracking-widest mb-2 ${config.color}`}>{config.title}</div>
+            <div className="text-slate-700 italic font-medium prose-p:my-0">
+              {childrenReact}
+            </div>
+          </div>
+        );
+      }
+
+      if (domNode.name === 'video') {
+        const videoSrc = domNode.attribs.src || 
+                         (domNode.children?.find((c: any) => c.name === 'source') as any)?.attribs?.src;
+
+        if (!videoSrc) return null;
+
+        return (
+          <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
+            <video 
+              controls 
+              playsInline
+              preload="metadata"
+              className="w-full h-full object-contain"
+              src={videoSrc}
+            >
+              <source src={videoSrc} type="video/mp4" />
+            </video>
+          </div>
+        );
+      }
+    }
+  };
+
   const isHtml = /<[a-z][\s\S]*>/i.test(content);
 
+  // --- 2. GEBRUIK IN HET HTML BLOK ---
   if (isHtml) {
-    const options: HTMLReactParserOptions = {
-      // Hier definiëren we domNode expliciet om de TS7006 error te voorkomen
-      replace: (domNode: any) => {
-        if (!(domNode instanceof Element)) return;
-
-        if (domNode.name === 'img') {
-          return (
-            <div className="my-8">
-              <Zoom>
-                <img 
-                  {...domNode.attribs} 
-                  className="rounded-3xl shadow-xl border border-slate-100 w-full h-auto" 
-                  alt={domNode.attribs.alt || ""}
-                />
-              </Zoom>
-            </div>
-          );
-        }
-
-        if (domNode.name === 'blockquote') {
-            const childrenReact = domToReact(domNode.children as any);
-            // Gebruik flattenText om te checken op triggerwoorden
-            const fullText = flattenText({ props: { children: childrenReact } });
-            
-            const isWarning = /WAARSCHUWING|LET OP|CAUTION/i.test(fullText);
-            const isInfo = /INFO|NOTE/i.test(fullText);
-            
-            const config = isWarning
-              ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
-              : isInfo
-              ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
-              : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
-
-            return (
-              <div className={`my-8 border-l-4 rounded-r-2xl p-6 ${config.styles}`}>
-                <div className={`text-[10px] font-black tracking-widest mb-2 ${config.color}`}>{config.title}</div>
-                <div className="text-slate-700 italic font-medium prose-p:my-0">
-                  {childrenReact}
-                </div>
-              </div>
-            );
-          }
-
-       // 1. VIDEO FIX (Voor Cloud/Database content)
-if (domNode.name === 'video') {
-          // Haal de URL uit de video-tag zelf OF uit een bron-tag eronder
-          const videoSrc = domNode.attribs.src || 
-                           (domNode.children?.find((c: any) => c.name === 'source') as any)?.attribs?.src;
-
-          if (!videoSrc) return null;
-
-          return (
-            <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
-              <video 
-                controls 
-                playsInline
-                preload="metadata"
-                className="w-full h-full object-contain"
-                src={videoSrc}
-              >
-                <source src={videoSrc} type="video/mp4" />
-                Je browser ondersteunt geen video-tags.
-              </video>
-            </div>
-          );
-        }
-      }
-    };
-
     return (
       <div 
         ref={htmlContainerRef}
@@ -121,6 +117,7 @@ if (domNode.name === 'video') {
     );
   }
 
+  // --- 3. GEBRUIK IN HET MARKDOWN BLOK ---
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkMath]}
@@ -162,20 +159,34 @@ if (domNode.name === 'video') {
             {props.alt && <p className="text-center text-[10px] font-bold uppercase text-slate-400 mt-3 tracking-widest">{props.alt}</p>}
           </div>
         ),
-      p: ({ children }: { children: React.ReactNode }) => {
-  const text = flattenText(children);
-  // Behoud ondersteuning voor oude video:// syntax
-  if (text.startsWith("video://")) {
-    const url = text.replace("video://", "").trim();
-    return (
-      <video controls className="w-full rounded-3xl shadow-lg my-6 bg-black aspect-video" preload="metadata">
-        <source src={url} type="video/mp4" />
-      </video>
-    );
-  }
-  // Gebruik de parser voor de nieuwe <video> tags uit de database
-  return <div className="mb-4 leading-relaxed text-slate-700">{parse(content, Option)}</div>;
-}
+        p: ({ children }: any) => {
+          const text = flattenText(children);
+
+          if (text.includes("[VIDEO:")) {
+            const videoUrl = text.match(/\[VIDEO:(.*?)\]/)?.[1];
+            if (videoUrl) {
+              return (
+                <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
+                  <video controls playsInline className="w-full h-full object-contain" src={videoUrl} />
+                </div>
+              );
+            }
+          }
+
+          if (text.startsWith("video://")) {
+            const url = text.replace("video://", "").trim();
+            return (
+              <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
+                <video controls className="w-full h-full" preload="metadata">
+                  <source src={url} type="video/mp4" />
+                </video>
+              </div>
+            );
+          }
+          
+          // options is nu hier beschikbaar!
+          return <div className="mb-4 last:mb-0 leading-relaxed text-slate-700">{parse(content, options)}</div>;
+        }
       }}
     >
       {content}
