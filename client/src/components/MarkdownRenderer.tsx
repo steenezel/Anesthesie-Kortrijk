@@ -22,21 +22,7 @@ const flattenText = (node: any): string => {
 export function MarkdownRenderer({ content }: { content: string }) {
   const htmlContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (htmlContainerRef.current) {
-      renderMathInElement(htmlContainerRef.current, {
-        delimiters: [
-          { left: "$$", right: "$$", display: true },
-          { left: "$", right: "$", display: false },
-        ],
-        throwOnError: false,
-      });
-    }
-  }, [content]);
-
-  if (!content) return null;
-
-  // --- 1. DEFINIEER OPTIONS HIER (BUITEN DE IF-BLOKKEN) ---
+  // --- 1. DEFINIEER OPTIONS HIER BOVENAAN (Scope Fix) ---
   const options: HTMLReactParserOptions = {
     replace: (domNode: any) => {
       if (!(domNode instanceof Element)) return;
@@ -58,10 +44,8 @@ export function MarkdownRenderer({ content }: { content: string }) {
       if (domNode.name === 'blockquote') {
         const childrenReact = domToReact(domNode.children as any);
         const fullText = flattenText({ props: { children: childrenReact } });
-        
         const isWarning = /WAARSCHUWING|LET OP|CAUTION/i.test(fullText);
         const isInfo = /INFO|NOTE/i.test(fullText);
-        
         const config = isWarning
           ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
           : isInfo
@@ -81,29 +65,32 @@ export function MarkdownRenderer({ content }: { content: string }) {
       if (domNode.name === 'video') {
         const videoSrc = domNode.attribs.src || 
                          (domNode.children?.find((c: any) => c.name === 'source') as any)?.attribs?.src;
-
         if (!videoSrc) return null;
-
         return (
           <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
-            <video 
-              controls 
-              playsInline
-              preload="metadata"
-              className="w-full h-full object-contain"
-              src={videoSrc}
-            >
-              <source src={videoSrc} type="video/mp4" />
-            </video>
+            <video controls playsInline preload="metadata" className="w-full h-full object-contain" src={videoSrc} />
           </div>
         );
       }
     }
   };
 
+  useEffect(() => {
+    if (htmlContainerRef.current) {
+      renderMathInElement(htmlContainerRef.current, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+        ],
+        throwOnError: false,
+      });
+    }
+  }, [content]);
+
+  if (!content) return null;
+
   const isHtml = /<[a-z][\s\S]*>/i.test(content);
 
-  // --- 2. GEBRUIK IN HET HTML BLOK ---
   if (isHtml) {
     return (
       <div 
@@ -117,7 +104,6 @@ export function MarkdownRenderer({ content }: { content: string }) {
     );
   }
 
-  // --- 3. GEBRUIK IN HET MARKDOWN BLOK ---
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm, remarkMath]}
@@ -128,7 +114,6 @@ export function MarkdownRenderer({ content }: { content: string }) {
           const isWarning = /\[!(WARNING|CAUTION)\]/i.test(fullText);
           const isInfo = /\[!INFO\]/i.test(fullText);
           const isTip = /\[!TIP\]/i.test(fullText);
-
           const config = isWarning
             ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
             : isInfo
@@ -162,12 +147,13 @@ export function MarkdownRenderer({ content }: { content: string }) {
         p: ({ children }: any) => {
           const text = flattenText(children);
 
+          // SHORTCODE DETECTIE [VIDEO:url]
           if (text.includes("[VIDEO:")) {
             const videoUrl = text.match(/\[VIDEO:(.*?)\]/)?.[1];
             if (videoUrl) {
               return (
                 <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
-                  <video controls playsInline className="w-full h-full object-contain" src={videoUrl} />
+                  <video controls playsInline preload="metadata" className="w-full h-full object-contain" src={videoUrl} />
                 </div>
               );
             }
@@ -177,14 +163,11 @@ export function MarkdownRenderer({ content }: { content: string }) {
             const url = text.replace("video://", "").trim();
             return (
               <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
-                <video controls className="w-full h-full" preload="metadata">
-                  <source src={url} type="video/mp4" />
-                </video>
+                <video controls className="w-full h-full" preload="metadata"><source src={url} type="video/mp4" /></video>
               </div>
             );
           }
           
-          // options is nu hier beschikbaar!
           return <div className="mb-4 last:mb-0 leading-relaxed text-slate-700">{parse(content, options)}</div>;
         }
       }}
