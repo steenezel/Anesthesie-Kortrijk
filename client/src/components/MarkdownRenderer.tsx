@@ -19,6 +19,20 @@ const flattenText = (node: any): string => {
   return '';
 };
 
+const renderVideoShortcode = (text: string) => {
+  const match = text.match(/\[VIDEO:(.*?)\]/);
+  if (match && match[1]) {
+    return (
+      <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
+        <video controls playsInline preload="metadata" className="w-full h-full object-contain" src={match[1]}>
+          <source src={match[1]} type="video/mp4" />
+        </video>
+      </div>
+    );
+  }
+  return null;
+};
+
 export function MarkdownRenderer({ content }: { content: string }) {
   const htmlContainerRef = useRef<HTMLDivElement>(null);
 
@@ -145,31 +159,20 @@ export function MarkdownRenderer({ content }: { content: string }) {
           </div>
         ),
         p: ({ children }: any) => {
-          const text = flattenText(children);
+  const text = flattenText(children);
+  
+  // Check voor de shortcode
+  const video = renderVideoShortcode(text);
+  if (video) return video;
 
-          // SHORTCODE DETECTIE [VIDEO:url]
-          if (text.includes("[VIDEO:")) {
-            const videoUrl = text.match(/\[VIDEO:(.*?)\]/)?.[1];
-            if (videoUrl) {
-              return (
-                <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
-                  <video controls playsInline preload="metadata" className="w-full h-full object-contain" src={videoUrl} />
-                </div>
-              );
-            }
-          }
+  // Oude video:// syntax
+  if (text.startsWith("video://")) {
+    const url = text.replace("video://", "").trim();
+    return renderVideoShortcode(`[VIDEO:${url}]`);
+  }
 
-          if (text.startsWith("video://")) {
-            const url = text.replace("video://", "").trim();
-            return (
-              <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
-                <video controls className="w-full h-full" preload="metadata"><source src={url} type="video/mp4" /></video>
-              </div>
-            );
-          }
-          
-          return <div className="mb-4 last:mb-0 leading-relaxed text-slate-700">{parse(content, options)}</div>;
-        }
+  return <p className="mb-4 last:mb-0 leading-relaxed text-slate-700">{children}</p>;
+}
       }}
     >
       {content}

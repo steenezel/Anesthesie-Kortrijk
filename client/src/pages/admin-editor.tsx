@@ -92,16 +92,12 @@ const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fileType
 
     const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
     
-  let htmlToInsert = "";
-if (fileType === 'pdf') {
-  htmlToInsert = `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: bold; text-decoration: underline;">📄 DOCUMENT: ${file.name}</a></p>`;
-} else if (fileType === 'video') {
-  // We gebruiken een Shortcode die Quill NIET kan verwijderen
-  htmlToInsert = `<p><strong>[VIDEO:${publicUrl}]</strong></p>`;
-} else {
-  htmlToInsert = `<p><img src="${publicUrl}" alt="afbeelding" /></p>`;
-}
-
+const htmlToInsert = fileType === 'pdf' 
+  ? `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: bold; text-decoration: underline;">📄 DOCUMENT: ${file.name}</a></p>`
+  : fileType === 'video'
+  ? `<p><strong>[VIDEO:${publicUrl}]</strong></p>` // De shortcode die niet gestript wordt
+  : `<p><img src="${publicUrl}" alt="afbeelding" /></p>`; // Forceer URL ipv Base64
+  
     if (type === 'pocus' || type === 'blocks') {
       setTab1(prev => prev + htmlToInsert);
     } else {
