@@ -19,24 +19,10 @@ const flattenText = (node: any): string => {
   return '';
 };
 
-const renderVideoShortcode = (text: string) => {
-  const match = text.match(/\[VIDEO:(.*?)\]/);
-  if (match && match[1]) {
-    return (
-      <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
-        <video controls playsInline preload="metadata" className="w-full h-full object-contain" src={match[1]}>
-          <source src={match[1]} type="video/mp4" />
-        </video>
-      </div>
-    );
-  }
-  return null;
-};
-
 export function MarkdownRenderer({ content }: { content: string }) {
   const htmlContainerRef = useRef<HTMLDivElement>(null);
 
-  // --- 1. DEFINIEER OPTIONS HIER BOVENAAN (Scope Fix) ---
+  // --- 1. DEFINIEER OPTIONS BOVENAAN (Scope Fix) ---
   const options: HTMLReactParserOptions = {
     replace: (domNode: any) => {
       if (!(domNode instanceof Element)) return;
@@ -82,7 +68,7 @@ export function MarkdownRenderer({ content }: { content: string }) {
         if (!videoSrc) return null;
         return (
           <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
-            <video controls playsInline preload="metadata" className="w-full h-full object-contain" src={videoSrc} />
+            <video controls playsInline className="w-full h-full object-contain" src={videoSrc} />
           </div>
         );
       }
@@ -107,12 +93,7 @@ export function MarkdownRenderer({ content }: { content: string }) {
 
   if (isHtml) {
     return (
-      <div 
-        ref={htmlContainerRef}
-        className="prose prose-slate max-w-none [hyphens:auto] break-words
-          prose-h2:text-[10px] prose-h2:font-black prose-h2:uppercase prose-h2:tracking-[0.2em] prose-h2:text-blue-600 prose-h2:mb-2 prose-h2:mt-8 prose-h2:border-b prose-h2:border-blue-100 prose-h2:pb-1
-          prose-a:text-blue-600 prose-a:font-bold prose-a:no-underline hover:prose-a:underline"
-      >
+      <div ref={htmlContainerRef} className="prose prose-slate max-w-none">
         {parse(content, options)}
       </div>
     );
@@ -127,16 +108,13 @@ export function MarkdownRenderer({ content }: { content: string }) {
           const fullText = flattenText(children);
           const isWarning = /\[!(WARNING|CAUTION)\]/i.test(fullText);
           const isInfo = /\[!INFO\]/i.test(fullText);
-          const isTip = /\[!TIP\]/i.test(fullText);
           const config = isWarning
             ? { styles: "border-red-500 bg-red-50", title: "⚠️ WAARSCHUWING", color: "text-red-600" }
             : isInfo
             ? { styles: "border-blue-500 bg-blue-50", title: "ℹ️ INFORMATIE", color: "text-blue-600" }
             : { styles: "border-emerald-500 bg-emerald-50", title: "💡 TIP", color: "text-emerald-600" };
 
-          if (!isWarning && !isInfo && !isTip) {
-            return <blockquote className="border-l-4 border-slate-200 pl-4 italic my-6 text-slate-600">{children}</blockquote>;
-          }
+          if (!isWarning && !isInfo) return <blockquote className="border-l-4 border-slate-200 pl-4 italic my-6">{children}</blockquote>;
 
           const cleanNode = (node: any): any => {
             if (typeof node === 'string') return node.replace(/\[!(TIP|INFO|WARNING|CAUTION)\]/gi, "").trim();
@@ -148,31 +126,38 @@ export function MarkdownRenderer({ content }: { content: string }) {
           return (
             <div className={`my-8 border-l-4 rounded-r-2xl p-6 ${config.styles}`}>
               <div className={`text-[10px] font-black tracking-widest mb-2 ${config.color}`}>{config.title}</div>
-              <div className="text-slate-700 leading-relaxed font-medium italic">{cleanNode(children)}</div>
+              <div className="text-slate-700 font-medium italic">{cleanNode(children)}</div>
             </div>
           );
         },
         img: ({ node, ...props }: any) => (
           <div className="my-8">
             <Zoom><img {...props} className="rounded-3xl shadow-xl border border-slate-100 w-full h-auto" /></Zoom>
-            {props.alt && <p className="text-center text-[10px] font-bold uppercase text-slate-400 mt-3 tracking-widest">{props.alt}</p>}
           </div>
         ),
         p: ({ children }: any) => {
-  const text = flattenText(children);
-  
-  // Check voor de shortcode
-  const video = renderVideoShortcode(text);
-  if (video) return video;
-
-  // Oude video:// syntax
-  if (text.startsWith("video://")) {
-    const url = text.replace("video://", "").trim();
-    return renderVideoShortcode(`[VIDEO:${url}]`);
-  }
-
-  return <p className="mb-4 last:mb-0 leading-relaxed text-slate-700">{children}</p>;
-}
+          const text = flattenText(children);
+          // SHORTCODE DETECTIE
+          if (text.includes("[VIDEO:")) {
+            const videoUrl = text.match(/\[VIDEO:(.*?)\]/)?.[1];
+            if (videoUrl) {
+              return (
+                <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
+                  <video controls playsInline className="w-full h-full object-contain" src={videoUrl} />
+                </div>
+              );
+            }
+          }
+          if (text.startsWith("video://")) {
+            const url = text.replace("video://", "").trim();
+            return (
+              <div className="my-8 overflow-hidden rounded-3xl shadow-xl bg-black aspect-video w-full border border-slate-100">
+                <video controls className="w-full h-full"><source src={url} type="video/mp4" /></video>
+              </div>
+            );
+          }
+          return <div className="mb-4 leading-relaxed text-slate-700">{parse(content, options)}</div>;
+        }
       }}
     >
       {content}

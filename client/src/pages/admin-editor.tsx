@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useLocation, useSearch } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, FileText, Video, Quote, HelpCircle } from "lucide-react";
+import { Loader2, Save, ArrowLeft, FileText, Video, ImageIcon, HelpCircle } from "lucide-react";
 
 // @ts-ignore
 import ReactQuill from 'react-quill-new';
@@ -24,240 +24,188 @@ const QUILL_MODULES = {
     [{ 'header': [2, 3, false] }],
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    ['link', 'image', 'clean'],
+    ['clean']
   ],
 };
 
 export default function AdminEditor() {
-  const [, setLocation] = useLocation();
-  const searchParams = new URLSearchParams(useSearch());
-  const { toast } = useToast();
-  
-  const queryType = searchParams.get('type') || 'journal_club';
-  const queryId = searchParams.get('id');
-  
-  const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(!!queryId);
-  const [type, setType] = useState(queryType);
+  const [location, setLocation] = useLocation();
+  const search = useSearch();
+  const queryParams = new URLSearchParams(search);
+  const editId = queryParams.get('id');
+  const editType = queryParams.get('type') || 'pocus';
 
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [type, setType] = useState(editType);
   const [title, setTitle] = useState("");
   const [discipline, setDiscipline] = useState("");
-  const [pubmedId, setPubmedId] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(""); 
   const [tab1, setTab1] = useState("");
   const [tab2, setTab2] = useState("");
   const [tab3, setTab3] = useState("");
 
   useEffect(() => {
-    if (queryId) fetchDatabaseData();
-  }, [queryId, type]);
-
-  async function fetchDatabaseData() {
-    try {
-      const { data, error } = await supabase.from(type).select('*').eq('id', queryId).single();
-      if (data && !error) {
-        setTitle(data.title);
-        setDiscipline(data.discipline || data.folder || (type === 'journal_club' ? data.disciplines?.[0] : ""));
-        setPubmedId(data.pubmed_id || "");
-        
-        if (type === 'pocus') {
-          setTab1(data.content_indicaties || "");
-          setTab2(data.content_techniek || "");
-          setTab3(data.content_interpretatie || "");
-        } else if (type === 'blocks') {
-          setTab1(data.content_general || "");
-          setTab2(data.content_anatomy || "");
-          setTab3(data.content_technique || "");
-        } else {
-          setContent(data.content || "");
+    if (editId) {
+      const fetchData = async () => {
+        const { data, error } = await supabase.from(type).select('*').eq('id', editId).single();
+        if (data && !error) {
+          setTitle(data.title);
+          if (type === 'pocus' || type === 'blocks') {
+            setTab1(data.content_indicaties || "");
+            setTab2(data.content_techniek || "");
+            setTab3(data.content_interpretatie || "");
+          } else {
+            setContent(data.content || "");
+            setDiscipline(data.discipline || "");
+          }
         }
-      }
-    } finally {
-      setFetching(false);
+      };
+      fetchData();
     }
-  }
+  }, [editId, type]);
 
-// Zoek in admin-editor.tsx naar de handleFileUpload functie en vervang deze:
-const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fileType: 'img' | 'video' | 'pdf') => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, fileType: 'img' | 'video' | 'pdf') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  setLoading(true);
-  try {
-    const fileExt = file.name.split('.').pop();
-    const filePath = `${type}/${Date.now()}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
-    if (uploadError) throw uploadError;
-
-    const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
-    
-const htmlToInsert = fileType === 'pdf' 
-  ? `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: bold; text-decoration: underline;">📄 DOCUMENT: ${file.name}</a></p>`
-  : fileType === 'video'
-  ? `<p><strong>[VIDEO:${publicUrl}]</strong></p>` // De shortcode die niet gestript wordt
-  : `<p><img src="${publicUrl}" alt="afbeelding" /></p>`; // Forceer URL ipv Base64
-  
-    if (type === 'pocus' || type === 'blocks') {
-      setTab1(prev => prev + htmlToInsert);
-    } else {
-      setContent(prev => prev + htmlToInsert);
-    }
-    toast({ title: "Upload geslaagd" });
-  } catch (error: any) {
-    toast({ title: "Fout", description: error.message, variant: "destructive" });
-  } finally {
-    setLoading(false);
-  }
-};
-
-  const handleSave = async () => {
-    if (!title) return toast({ title: "Titel is verplicht", variant: "destructive" });
     setLoading(true);
+    try {
+      const filePath = `${type}/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
+      if (uploadError) throw uploadError;
 
-    let payload: any = { title };
-    if (type === 'protocols') payload = { ...payload, content, discipline };
-    else if (type === 'journal_club') payload = { ...payload, content, disciplines: [discipline], pubmed_id: pubmedId };
-    else if (type === 'pocus') payload = { ...payload, content_indicaties: tab1, content_techniek: tab2, content_interpretatie: tab3 };
-    else if (type === 'blocks') payload = { ...payload, content_general: tab1, content_anatomy: tab2, content_technique: tab3 };
+      const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
+      
+      let htmlToInsert = "";
+      if (fileType === 'pdf') {
+        htmlToInsert = `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: bold; text-decoration: underline;">📄 DOCUMENT: ${file.name}</a></p>`;
+      } else if (fileType === 'video') {
+        // Gebruik Shortcode om strippen door Quill te voorkomen
+        htmlToInsert = `<p><strong>[VIDEO:${publicUrl}]</strong></p>`;
+      } else {
+        // Gebruik URL om Base64 te voorkomen
+        htmlToInsert = `<p><img src="${publicUrl}" alt="afbeelding" /></p>`;
+      }
 
-    const { error } = queryId 
-      ? await supabase.from(type).update(payload).eq('id', queryId)
-      : await supabase.from(type).insert([payload]);
-
-    if (!error) {
-      toast({ title: "Succesvol opgeslagen!" });
-      window.history.back();
-    } else {
+      if (type === 'pocus' || type === 'blocks') setTab1(prev => prev + htmlToInsert);
+      else setContent(prev => prev + htmlToInsert);
+      
+      toast({ title: "Upload geslaagd" });
+    } catch (error: any) {
       toast({ title: "Fout", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  if (fetching) return <div className="flex h-screen items-center justify-center text-blue-600"><Loader2 className="animate-spin" /></div>;
+  const handleSave = async () => {
+    if (!title) return toast({ title: "Titel verplicht", variant: "destructive" });
+    setLoading(true);
+    try {
+      const payload: any = { title, updated_at: new Date() };
+      if (type === 'pocus' || type === 'blocks') {
+        payload.content_indicaties = tab1;
+        payload.content_techniek = tab2;
+        payload.content_interpretatie = tab3;
+      } else {
+        payload.content = content;
+        payload.discipline = discipline;
+      }
+
+      const { error } = editId 
+        ? await supabase.from(type).update(payload).eq('id', editId)
+        : await supabase.from(type).insert([payload]);
+
+      if (error) throw error;
+      toast({ title: "Succesvol opgeslagen!" });
+      setLocation(`/${type}`);
+    } catch (error: any) {
+      toast({ title: "Fout", description: error.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-20 p-2 md:p-6 lg:p-10">
-      {/* VOLLEDIGE BREEDTE CONTAINER */}
-      <div className="max-w-[1800px] mx-auto w-full">
-        
-        <header className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
-          <Button variant="ghost" onClick={() => window.history.back()} className="font-black uppercase text-[10px] tracking-widest text-slate-400 p-0">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Terug
-          </Button>
-          <div className="flex gap-2 w-full md:w-auto">
-            <Button variant="outline" className="flex-1 md:flex-none relative h-10 px-4 rounded-xl border-slate-200 bg-white font-black uppercase text-[9px] tracking-widest shadow-sm">
-              <FileText className="mr-2 h-4 w-4 text-blue-600" /> PDF Upload
-              <input type="file" accept=".pdf" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFileUpload(e, 'pdf')} />
-            </Button>
-            <Button variant="outline" className="flex-1 md:flex-none relative h-10 px-4 rounded-xl border-slate-200 bg-white font-black uppercase text-[9px] tracking-widest shadow-sm">
-              <Video className="mr-2 h-4 w-4 text-purple-600" /> Video Upload
-              <input type="file" accept="video/mp4" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => handleFileUpload(e, 'video')} />
-            </Button>
-          </div>
-        </header>
+    <div className="min-h-screen bg-slate-50 pb-20 text-slate-900">
+      <div className="bg-white border-b p-4 sticky top-0 z-50 flex items-center justify-between">
+        <Button variant="ghost" size="sm" onClick={() => window.history.back()} className="rounded-xl">
+          <ArrowLeft className="h-4 w-4 mr-2" /> Terug
+        </Button>
+        <h1 className="font-black uppercase tracking-tighter">Content Editor</h1>
+        <Button onClick={handleSave} disabled={loading} className="bg-teal-600 hover:bg-teal-700 rounded-xl px-6 font-bold text-white">
+          {loading ? <Loader2 className="animate-spin h-4 w-4" /> : <Save className="h-4 w-4 mr-2" />} OPSLAAN
+        </Button>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
-          {/* EDITOR (Neemt 9 van de 12 kolommen op desktop = 75%) */}
-          <div className="lg:col-span-9 space-y-6 w-full">
-            <Card className="border-none shadow-xl rounded-[32px] md:rounded-[48px] overflow-hidden bg-white">
-              <CardContent className="p-4 md:p-10 lg:p-14 space-y-8">
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Type Content</label>
-                    <Select value={type} onValueChange={(v: string) => setType(v)} disabled={!!queryId}>
-                      <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 md:h-14 font-bold"><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="protocols">Protocol</SelectItem>
-                        <SelectItem value="pocus">POCUS</SelectItem>
-                        <SelectItem value="journal_club">Journal Club</SelectItem>
-                        <SelectItem value="blocks">LRA Block</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {(type === 'protocols' || type === 'journal_club') && (
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Discipline</label>
-                      <Select value={discipline} onValueChange={(v: string) => setDiscipline(v)}>
-                        <SelectTrigger className="rounded-2xl border-slate-100 bg-slate-50 h-12 md:h-14 font-bold"><SelectValue placeholder="Kies discipline..." /></SelectTrigger>
-                        <SelectContent>
-                          {DISCIPLINE_OPTIONS[type === 'protocols' ? 'protocols' : 'journal_club'].map(d => (
-                            <SelectItem key={d} value={d}>{d}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                </div>
-
+      <div className="max-w-5xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-6">
+          <Card className="rounded-[2rem] border-slate-200 overflow-hidden shadow-sm">
+            <CardContent className="p-8 space-y-6">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Titel van het artikel</label>
-                  <Input value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-2xl md:rounded-3xl border-slate-200 h-14 md:h-20 text-lg md:text-3xl font-black uppercase italic px-4 md:px-8" />
+                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Module</label>
+                  <Select value={type} onValueChange={setType}>
+                    <SelectTrigger className="rounded-2xl border-slate-200 h-12 text-slate-900">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pocus">POCUS</SelectItem>
+                      <SelectItem value="blocks">Blocks (LRA)</SelectItem>
+                      <SelectItem value="protocols">Protocollen</SelectItem>
+                      <SelectItem value="journal_club">Journal Club</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
+              </div>
 
-                {(type === "protocols" || type === "journal_club") ? (
-                  <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 italic">Hoofdinhoud</label>
-                    <div className="rounded-2xl md:rounded-[32px] border border-slate-200 overflow-hidden bg-white">
-                      <QuillEditor theme="snow" modules={QUILL_MODULES} value={content} onChange={setContent} className="min-h-[500px] md:min-h-[700px]" />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-8 md:space-y-12">
-                    {[
-                      { label: type === 'pocus' ? "1. Indicaties / Algemeen" : "1. Algemeen", val: tab1, set: setTab1 },
-                      { label: type === 'pocus' ? "2. Acquisitie / Techniek" : "2. Anatomie", val: tab2, set: setTab2 },
-                      { label: type === 'pocus' ? "3. Interpretatie / Beslisboom" : "3. Techniek", val: tab3, set: setTab3 }
-                    ].map((t, i) => (
-                      <div key={i} className="space-y-2">
-                        <label className="text-[11px] font-black uppercase tracking-widest text-blue-600 ml-1">{t.label}</label>
-                        <div className="rounded-2xl md:rounded-[32px] border border-slate-200 overflow-hidden bg-white shadow-sm">
-                          <QuillEditor theme="snow" modules={QUILL_MODULES} value={t.val} onChange={t.set} className="min-h-[300px] md:min-h-[400px]" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Titel</label>
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-2xl border-slate-200 h-12 font-bold text-slate-900" />
+              </div>
 
-                <Button onClick={handleSave} className="w-full h-16 md:h-24 bg-slate-900 hover:bg-blue-600 text-white font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm rounded-2xl md:rounded-[32px] transition-all shadow-2xl">
-                  {loading ? <Loader2 className="animate-spin mr-2" /> : <Save className="mr-3 h-5 w-5 md:h-6 md:w-6" />}
-                  Publiceren naar App
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+              <div className="flex gap-2 p-2 bg-slate-100 rounded-2xl text-slate-900">
+                 <label className="flex-1 flex items-center justify-center gap-2 py-3 bg-white rounded-xl shadow-sm cursor-pointer hover:bg-slate-50 transition-colors text-[10px] font-black uppercase tracking-widest">
+                    <Video className="h-4 w-4 text-teal-600" /> Video
+                    <input type="file" accept="video/*" className="hidden" onChange={(e) => handleFileUpload(e, 'video')} />
+                 </label>
+                 <label className="flex-1 flex items-center justify-center gap-2 py-3 bg-white rounded-xl shadow-sm cursor-pointer hover:bg-slate-50 transition-colors text-[10px] font-black uppercase tracking-widest">
+                    <ImageIcon className="h-4 w-4 text-purple-600" /> Afbeelding
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, 'img')} />
+                 </label>
+              </div>
 
-          {/* ZIJBALK (Neemt 3 van de 12 kolommen op desktop = 25%) */}
-          <div className="hidden lg:block lg:col-span-3 space-y-6 sticky top-10">
-            <div className="bg-white p-6 md:p-8 rounded-[32px] md:rounded-[40px] shadow-xl border border-slate-100 max-h-[85vh] overflow-y-auto">
-              <h3 className="text-blue-600 font-black uppercase text-[11px] tracking-widest italic mb-6">Styling Handleiding</h3>
-              <div className="space-y-6 text-[11px] leading-relaxed text-slate-500">
-                <section>
-                  <p className="font-black text-slate-900 uppercase mb-1">Sub-kopjes</p>
-                  <p>Typ een titel en kies <b>Koptekst 2 (H2)</b> voor de blauwe lijn.</p>
+              <div className="min-h-[400px] text-slate-900">
+                <QuillEditor 
+                  value={type === 'pocus' || type === 'blocks' ? tab1 : content} 
+                  onChange={type === 'pocus' || type === 'blocks' ? setTab1 : setContent}
+                  className="h-[350px]"
+                  theme="snow"
+                  modules={QUILL_MODULES}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-4">
+          <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-6">
+            <div className="flex items-center gap-2 text-slate-900 border-b pb-4">
+              <HelpCircle className="h-5 w-5 text-teal-600" />
+              <h3 className="font-black uppercase tracking-tight text-sm text-slate-900">Design Gids</h3>
+            </div>
+            <div className="space-y-4 text-[11px] font-medium leading-relaxed text-slate-600">
+                <section className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-slate-900">
+                  <p className="font-black uppercase mb-1 underline">Blauwe Lijn</p>
+                  <p>Typ een titel en kies <b>Koptekst 2 (H2)</b>.</p>
                 </section>
                 <section className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 text-emerald-900">
                   <p className="font-black uppercase mb-1 underline">Groen Kader</p>
-                  <p className="italic">Druk op Quote (") en begin direct met typen.</p>
+                  <p className="italic">Druk op Quote (") en typ je tekst.</p>
                 </section>
-                <section className="p-4 bg-red-50 rounded-2xl border border-red-100 text-red-900">
-                  <p className="font-black uppercase mb-1 underline">Rood Kader</p>
-                  <p className="italic">Druk op Quote (") en start met "WAARSCHUWING:".</p>
-                </section>
-                <section className="p-4 bg-blue-50 rounded-2xl border border-blue-100 text-blue-900">
-                  <p className="font-black uppercase mb-1 underline">Blauw Kader</p>
-                  <p className="italic">Druk op Quote (") en start met "INFO:".</p>
-                </section>
-                <section className="bg-slate-900 p-6 rounded-2xl text-white">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 italic">Video Tip</p>
-                  <p className="opacity-80">Video's verschijnen onderaan. Knip en plak naar de juiste plek.</p>
-                </section>
-              </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
