@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { useLocation, useSearch } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, ArrowLeft, FileText, Video, ImageIcon, HelpCircle } from "lucide-react";
 
@@ -28,6 +29,9 @@ const QUILL_MODULES = {
   ],
 };
 
+const stripBase64Images = (html: string): string =>
+  html.replace(/<img[^>]+src="data:[^">]+"[^>]*>/gi, "");
+
 export default function AdminEditor() {
   const [location, setLocation] = useLocation();
   const search = useSearch();
@@ -44,6 +48,11 @@ export default function AdminEditor() {
   const [tab1, setTab1] = useState("");
   const [tab2, setTab2] = useState("");
   const [tab3, setTab3] = useState("");
+  const [activePocusTab, setActivePocusTab] = useState<"indicaties" | "techniek" | "interpretatie">("indicaties");
+  const pocusIndicatiesRef = useRef<any>(null);
+  const pocusTechniekRef = useRef<any>(null);
+  const pocusInterpretatieRef = useRef<any>(null);
+  const genericContentRef = useRef<any>(null);
 
   useEffect(() => {
     if (editId) {
@@ -79,17 +88,70 @@ export default function AdminEditor() {
       
       let htmlToInsert = "";
       if (fileType === 'pdf') {
-        htmlToInsert = `<p><a href="${publicUrl}" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: bold; text-decoration: underline;">📄 DOCUMENT: ${file.name}</a></p>`;
+        htmlToInsert = `<a href="${publicUrl}" target="_blank" rel="noopener noreferrer" style="color: #0284c7; font-weight: bold; text-decoration: underline;">📄 DOCUMENT: ${file.name}</a>`;
       } else if (fileType === 'video') {
         // Gebruik Shortcode om strippen door Quill te voorkomen
-        htmlToInsert = `<p><strong>[VIDEO:${publicUrl}]</strong></p>`;
+        htmlToInsert = `[VIDEO:${publicUrl}]`;
       } else {
         // Gebruik URL om Base64 te voorkomen
-        htmlToInsert = `<p><img src="${publicUrl}" alt="afbeelding" /></p>`;
+        htmlToInsert = `<img src="${publicUrl}" alt="afbeelding" />`;
       }
 
-      if (type === 'pocus' || type === 'blocks') setTab1(prev => prev + htmlToInsert);
-      else setContent(prev => prev + htmlToInsert);
+      const insertVideoAtCursor = (editorRef: React.RefObject<any>, shortcode: string) => {
+        const instance = editorRef.current;
+        if (!instance) return false;
+        const quill = instance.getEditor ? instance.getEditor() : instance;
+        if (!quill) return false;
+
+        quill.focus?.();
+        const range = quill.getSelection() || quill.getSelection(true) || null;
+        const index = range ? range.index : quill.getLength();
+
+        // Insert als pure tekst zodat Quill geen HTML-structuur bewaart.
+        quill.insertText(index, shortcode, "user");
+        quill.insertText(index + shortcode.length, "\n", "user");
+        quill.setSelection(index + shortcode.length + 1, 0, "user");
+        return true;
+      };
+
+      const insertAtCursor = (editorRef: React.RefObject<any>) => {
+        const instance = editorRef.current;
+        if (!instance) return false;
+        const quill = instance.getEditor ? instance.getEditor() : instance;
+        if (!quill) return false;
+        // Bij klikken op de upload-knop kan de Quill selectie wegvallen.
+        // Gebruik daarom de laatst bekende selection (getSelection()) als eerste keuze.
+        quill.focus?.();
+        const range =
+          quill.getSelection() || quill.getSelection(true) || null;
+        const index = range ? range.index : quill.getLength();
+        quill.clipboard.dangerouslyPasteHTML(index, htmlToInsert);
+        return true;
+      };
+
+      if (type === 'pocus' || type === 'blocks') {
+        if (activePocusTab === "indicaties") {
+          const ok = fileType === "video"
+            ? insertVideoAtCursor(pocusIndicatiesRef, htmlToInsert)
+            : insertAtCursor(pocusIndicatiesRef);
+          if (!ok) setTab1((prev) => prev + htmlToInsert);
+        } else if (activePocusTab === "techniek") {
+          const ok = fileType === "video"
+            ? insertVideoAtCursor(pocusTechniekRef, htmlToInsert)
+            : insertAtCursor(pocusTechniekRef);
+          if (!ok) setTab2((prev) => prev + htmlToInsert);
+        } else {
+          const ok = fileType === "video"
+            ? insertVideoAtCursor(pocusInterpretatieRef, htmlToInsert)
+            : insertAtCursor(pocusInterpretatieRef);
+          if (!ok) setTab3((prev) => prev + htmlToInsert);
+        }
+      } else {
+        const ok = fileType === "video"
+          ? insertVideoAtCursor(genericContentRef, htmlToInsert)
+          : insertAtCursor(genericContentRef);
+        if (!ok) setContent((prev) => prev + htmlToInsert);
+      }
       
       toast({ title: "Upload geslaagd" });
     } catch (error: any) {
@@ -103,7 +165,7 @@ export default function AdminEditor() {
     if (!title) return toast({ title: "Titel verplicht", variant: "destructive" });
     setLoading(true);
     try {
-      const payload: any = { title, updated_at: new Date() };
+      const payload: Record<string, unknown> = { title };
       if (type === 'pocus' || type === 'blocks') {
         payload.content_indicaties = tab1;
         payload.content_techniek = tab2;
@@ -177,13 +239,66 @@ export default function AdminEditor() {
               </div>
 
               <div className="min-h-[400px] text-slate-900">
-                <QuillEditor 
-                  value={type === 'pocus' || type === 'blocks' ? tab1 : content} 
-                  onChange={type === 'pocus' || type === 'blocks' ? setTab1 : setContent}
-                  className="h-[350px]"
-                  theme="snow"
-                  modules={QUILL_MODULES}
-                />
+                {type === 'pocus' || type === 'blocks' ? (
+                  <Tabs
+                    value={activePocusTab}
+                    onValueChange={(val) =>
+                      setActivePocusTab(val as "indicaties" | "techniek" | "interpretatie")
+                    }
+                    className="w-full"
+                  >
+                    <TabsList className="grid w-full grid-cols-3 bg-slate-100 p-1.5 rounded-2xl h-12 mb-4">
+                      <TabsTrigger value="indicaties" className="rounded-xl text-[10px] font-black uppercase">
+                        Indicaties
+                      </TabsTrigger>
+                      <TabsTrigger value="techniek" className="rounded-xl text-[10px] font-black uppercase">
+                        Techniek
+                      </TabsTrigger>
+                      <TabsTrigger value="interpretatie" className="rounded-xl text-[10px] font-black uppercase">
+                        Interpretatie
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="indicaties" className="outline-none">
+                      <QuillEditor
+                        ref={pocusIndicatiesRef}
+                        value={tab1}
+                        onChange={(value: string) => setTab1(stripBase64Images(value))}
+                        className="h-[350px]"
+                        theme="snow"
+                        modules={QUILL_MODULES}
+                      />
+                    </TabsContent>
+                    <TabsContent value="techniek" className="outline-none">
+                      <QuillEditor
+                        ref={pocusTechniekRef}
+                        value={tab2}
+                        onChange={(value: string) => setTab2(stripBase64Images(value))}
+                        className="h-[350px]"
+                        theme="snow"
+                        modules={QUILL_MODULES}
+                      />
+                    </TabsContent>
+                    <TabsContent value="interpretatie" className="outline-none">
+                      <QuillEditor
+                        ref={pocusInterpretatieRef}
+                        value={tab3}
+                        onChange={(value: string) => setTab3(stripBase64Images(value))}
+                        className="h-[350px]"
+                        theme="snow"
+                        modules={QUILL_MODULES}
+                      />
+                    </TabsContent>
+                  </Tabs>
+                ) : (
+                  <QuillEditor
+                    ref={genericContentRef}
+                    value={content}
+                    onChange={(value: string) => setContent(stripBase64Images(value))}
+                    className="h-[350px]"
+                    theme="snow"
+                    modules={QUILL_MODULES}
+                  />
+                )}
               </div>
             </CardContent>
           </Card>
