@@ -74,7 +74,7 @@ const htmlParserOptions: HTMLReactParserOptions = {
       const childrenReact = domToReact(
         domNode.children as unknown as React.ReactNode[]
       );
-      const fullText = flattenText({ props: { children: childrenReact } });
+      const fullText = flattenText(childrenReact);
       const isWarning = /WAARSCHUWING|LET OP|CAUTION/i.test(fullText);
       const isInfo = /INFO|NOTE/i.test(fullText);
       const config = isWarning
@@ -122,7 +122,7 @@ const htmlParserOptions: HTMLReactParserOptions = {
       const childrenReact = domToReact(
         domNode.children as unknown as React.ReactNode[]
       );
-      const fullText = flattenText({ props: { children: childrenReact } });
+      const fullText = flattenText(childrenReact);
       if (!fullText.includes("[VIDEO:")) return;
       const { urls, parts } = splitByVideoShortcodes(fullText);
       if (urls.length === 0) return;
