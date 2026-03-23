@@ -29,10 +29,10 @@ interface DbJournalArticle {
 const allArticles = import.meta.glob('../content/journal-club/*.md', { query: 'raw', eager: true });
 
 const DISCIPLINES = [
-  { id: "Anesthesie", icon: Stethoscope, color: "text-blue-500", bg: "bg-blue-50" },
-  { id: "ICU", icon: Activity, color: "text-purple-500", bg: "bg-purple-50" },
-  { id: "Urgentie", icon: Siren, color: "text-orange-500", bg: "bg-orange-50" },
-  { id: "Pijn", icon: Zap, color: "text-cyan-500", bg: "bg-cyan-50" }
+  { id: "Anesthesie", icon: Stethoscope, color: "text-blue-500",   bg: "bg-blue-50"   },
+  { id: "Intensieve", icon: Activity,    color: "text-purple-500", bg: "bg-purple-50" },
+  { id: "Urgentie",   icon: Siren,       color: "text-orange-500", bg: "bg-orange-50" },
+  { id: "Pijn",       icon: Zap,         color: "text-cyan-500",   bg: "bg-cyan-50"   },
 ];
 
 export default function Journalclub() {
@@ -70,8 +70,13 @@ export default function Journalclub() {
       const matchedDisciplines: string[] = [];
       DISCIPLINES.forEach(official => {
         const officialLower = official.id.toLowerCase();
-        const hasMatch = rawDisciplines.some(input => 
-          input.length >= 3 && (officialLower.startsWith(input) || input === "icu")
+        const hasMatch = rawDisciplines.some(input =>
+          input.length >= 3 && (
+            officialLower.startsWith(input) ||
+            input.startsWith(officialLower.substring(0, 3)) ||
+            // legacy aliases
+            (officialLower === "intensieve" && input === "icu")
+          )
         );
         if (hasMatch) matchedDisciplines.push(official.id);
       });
@@ -86,13 +91,17 @@ export default function Journalclub() {
     });
 
   // B. Transformeer Cloud items naar zelfde formaat
-const cloud = (dbArticles || []).map((art: DbJournalArticle) => ({
-  id: art.id, 
-  title: art.title,
-  date: new Date(art.created_at),
-  disciplines: art.disciplines || ["Varia"],
-  isCloud: true
-}));
+  const cloud = (dbArticles || []).map((art: DbJournalArticle) => ({
+    id: art.id,
+    title: art.title,
+    // Gebruik huidige tijd als fallback zodat nieuwe artikels bovenaan sorteren
+    date: art.created_at ? new Date(art.created_at) : new Date(),
+    // Lege array [] is truthy → gebruik expliciete length-check
+    disciplines: (Array.isArray(art.disciplines) && art.disciplines.length > 0)
+      ? art.disciplines
+      : ["Varia"],
+    isCloud: true,
+  }));
 
     // C. Samenvoegen en Sorteren
     return [...cloud, ...local].sort((a, b) => b.date.getTime() - a.date.getTime());
