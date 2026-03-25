@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, ArrowLeft, Video, ImageIcon, HelpCircle, ExternalLink } from "lucide-react";
 
-// @ts-ignore
+
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 

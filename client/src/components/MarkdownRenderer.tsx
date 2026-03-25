@@ -7,9 +7,8 @@ import "react-medium-image-zoom/dist/styles.css";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
-// @ts-ignore
+// @ts-expect-error - KaTeX contrib doesn't have official types, but we need the JS
 import renderMathInElement from "katex/dist/contrib/auto-render";
-// @ts-ignore
 import parse, { domToReact, HTMLReactParserOptions, Element } from "html-react-parser";
 
 // Verbeterde flattenText voor TS compatibiliteit
