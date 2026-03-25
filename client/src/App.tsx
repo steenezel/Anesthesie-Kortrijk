@@ -33,6 +33,7 @@ import PocusDetail from "@/pages/pocus-detail";
 import Marketplace from "@/pages/marketplace";
 import PainPumpPage from "@/pages/painpump";
 import CapriniCalculator from "@/pages/caprini";
+import AdminEditor from "@/pages/admin-editor";
 
 // --- DE BEWAKER (AuthGuard) ---
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -41,72 +42,72 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState(false);
 
   // STEL HIER DE PINCODE IN
-  const CORRECT_PIN = import.meta.env.VITE_APP_PIN; // Code is ingesteld in Vercel/Settings/Environment Variables VITE_APP_PIN 
+    const CORRECT_PIN = import.meta.env.VITE_APP_PIN; // Code is ingesteld in Vercel/Settings/Environment Variables VITE_APP_PIN 
 
-  useEffect(() => {
-    // Kijken of we al ingelogd zijn in deze browser
-    const authStatus = localStorage.getItem("ane_kortrijk_auth");
-    if (authStatus === "true") setIsAuthenticated(true);
-  }, []);
+      useEffect(() => {
+          // Kijken of we al ingelogd zijn in deze browser
+              const authStatus = localStorage.getItem("ane_kortrijk_auth");
+               if (authStatus === "true") setIsAuthenticated(true);
+                }, []);
+                      const [location] = useLocation();
+                      const handleLogin = (e?: React.FormEvent) => {
+          e?.preventDefault(); // Voorkom dat de pagina herlaadt
+              if (pin === CORRECT_PIN) {
+                    localStorage.setItem("ane_kortrijk_auth", "true");
+                          setIsAuthenticated(true);
+                                setError(false);
+                                    } else {
+setError(true);
+setPin("");
+// Vibratie op mobiel bij foutieve code (indien ondersteund)
+if (navigator.vibrate) navigator.vibrate(200);
+}
+};
 
-  const handleLogin = (e?: React.FormEvent) => {
-    e?.preventDefault(); // Voorkom dat de pagina herlaadt
-    if (pin === CORRECT_PIN) {
-      localStorage.setItem("ane_kortrijk_auth", "true");
-      setIsAuthenticated(true);
-      setError(false);
-    } else {
-      setError(true);
-      setPin("");
-      // Vibratie op mobiel bij foutieve code (indien ondersteund)
-      if (navigator.vibrate) navigator.vibrate(200);
-    }
-  };
+if (!isAuthenticated) {
+return (
+<div className="fixed inset-0 bg-slate-950 flex flex-col justify-center items-center z-[9999] px-6 pt-[env(safe-area-inset-top)]">
+<div className="w-full max-w-sm space-y-10 mx-auto">
+<div className="text-center space-y-4">
+<div className="mx-auto w-16 h-16 bg-teal-500/10 rounded-3xl flex items-center justify-center mb-6 border border-teal-500/20">
+<Lock className="h-8 w-8 text-teal-500" />
+</div>
+<h1 className="text-4xl font-black text-white uppercase tracking-tighter">
+ANE <span className="text-teal-500">Kortrijk</span>
+</h1>
+<p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">Medical Access Only</p>
+</div>
 
-  if (!isAuthenticated) {
-    return (
-        <div className="fixed inset-0 bg-slate-950 flex flex-col justify-center items-center z-[9999] px-6 pt-[env(safe-area-inset-top)]">
-        <div className="w-full max-w-sm space-y-10 mx-auto">
-          <div className="text-center space-y-4">
-            <div className="mx-auto w-16 h-16 bg-teal-500/10 rounded-3xl flex items-center justify-center mb-6 border border-teal-500/20">
-              <Lock className="h-8 w-8 text-teal-500" />
-            </div>
-            <h1 className="text-4xl font-black text-white uppercase tracking-tighter">
-              ANE <span className="text-teal-500">Kortrijk</span>
-            </h1>
-            <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">Medical Access Only</p>
-          </div>
-          
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="relative">
-              <input
-                type="password"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                placeholder="PINCODE"
-                className={`w-full h-20 text-center text-4xl font-mono tracking-[0.5em] rounded-3xl bg-slate-900 border-2 transition-all ${
-                  error ? 'border-red-500 text-red-500 animate-shake' : 'border-slate-800 text-white focus:border-teal-500'
-                } focus:outline-none shadow-2xl`}
-                autoFocus
-              />
-            </div>
-            
-            <button 
-              type="submit"
-              className="w-full h-16 bg-teal-600 hover:bg-teal-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2"
-            >
-              <ShieldCheck className="h-5 w-5" /> Inloggen
-            </button>
-            
-            {error && (
-              <p className="text-red-500 text-[10px] font-black uppercase text-center tracking-widest animate-in fade-in slide-in-from-top-1">
-                Toegang geweigerd
-              </p>
-            )}
-          </form>
-          
+<form onSubmit={handleLogin} className="space-y-4">
+<div className="relative">
+<input
+type="password"
+inputMode="numeric"
+pattern="[0-9]*"
+value={pin}
+onChange={(e) => setPin(e.target.value)}
+placeholder="PINCODE"
+className={`w-full h-20 text-center text-4xl font-mono tracking-[0.5em] rounded-3xl bg-slate-900 border-2 transition-all ${
+error ? 'border-red-500 text-red-500 animate-shake' : 'border-slate-800 text-white focus:border-teal-500'
+} focus:outline-none shadow-2xl`}
+autoFocus
+/>
+</div>
+
+<button 
+type="submit"
+className="w-full h-16 bg-teal-600 hover:bg-teal-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2"
+>
+<ShieldCheck className="h-5 w-5" /> Inloggen
+</button>
+
+{error && (
+<p className="text-red-500 text-[10px] font-black uppercase text-center tracking-widest animate-in fade-in slide-in-from-top-1">
+Toegang geweigerd
+          </p>
+                      )}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </form>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
           <p className="text-center text-slate-600 text-[9px] uppercase font-medium tracking-widest">
             AZ Groeninge • Anesthesie & Reanimatie
           </p>
@@ -138,22 +139,27 @@ function ScrollToTop() {
   return null; // Deze component toont niets op het scherm
 }
 
-// --- DE ROUTER ---
+// --- ROUTER ---
 function Router() {
+  const [location] = useLocation();
+  const isAdmin = location.startsWith('/admin');
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-1 px-4 pb-6 sm:px-6 lg:px-8 max-w-2xl mx-auto w-full pt-[max(20px,env(safe-area-inset-top))]">
-        <ScrollToTop /> {/* Zorgt voor de reset bij elke paginawissel */}
+    <div className="flex flex-col min-h-screen bg-background">
+      <main className={`
+        container mx-auto px-4 pt-4 pb-24 transition-all duration-300
+        ${isAdmin ? 'max-w-none w-full lg:px-12' : 'max-w-screen-md'}
+      `}>
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/protocols" component={ProtocolList} />
           <Route path="/protocols/:id" component={ProtocolDetail} />
           <Route path="/blocks" component={Blocks} />
           <Route path="/blocks/:id" component={BlockDetail} />
-          <Route path="/calculator" component={CalculatorList} />
+          <Route path="/calculators" component={CalculatorList} />
           <Route path="/calculator/last" component={CalculatorPage} />
           <Route path="/calculator/apfel" component={ApfelCalculator} />
-          <Route path="/calculator/peds-calculator" component={PedsCalculator} />
+          <Route path="/calculator/peds" component={PedsCalculator} />
           <Route path="/calculator/dantroleen" component={DantroleenPage} />
           <Route path="/calculator/painpump" component={PainPumpPage} />
           <Route path="/contacts" component={ContactsPage} />
@@ -171,6 +177,7 @@ function Router() {
           <Route path="/pocus/:id" component={PocusDetail} />
           <Route path="/marketplace" component={Marketplace} />
           <Route path="/calculator/caprini" component={CapriniCalculator} />
+          <Route path="/admin" component={AdminEditor} />
           <Route component={NotFound} />
         </Switch>
       </main>
@@ -179,15 +186,11 @@ function Router() {
   );
 }
 
-
-
-// --- DE HOOFD APP ---
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster />
       <Analytics />
-      {/* We wikkelen de Router in de AuthGuard */}
       <AuthGuard>
         <Router />
       </AuthGuard>
