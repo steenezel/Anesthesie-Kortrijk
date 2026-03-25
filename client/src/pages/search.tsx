@@ -1,156 +1,157 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
-import { Search as SearchIcon, ChevronRight, BookOpen, Syringe, X, Activity } from "lucide-react";
+import { 
+  Search as SearchIcon, 
+  ChevronRight, 
+  BookOpen, 
+  Syringe, 
+  X, 
+  Activity, 
+  Loader2, 
+  GraduationCap 
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/lib/supabase";
 
-// We laden alle content in
-const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
-const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
-const allPocus = import.meta.glob('../content/pocus/**/*.md', { query: 'raw', eager: true });
+interface SearchResult {
+  id: string;
+  title: string;
+  type: 'pocus' | 'blocks' | 'protocols' | 'journal_club';
+  discipline: string;
+  snippet: string;
+}
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  // We maken een index van alle pagina's
-  const searchIndex = useMemo(() => {
-    const items: any[] = [];
+  useEffect(() => {
+    // Stop de timer als de gebruiker verder typt
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
 
-    // 1. Verwerk protocollen
-    Object.entries(allProtocols).forEach(([path, file]: [string, any]) => {
-      const content = file.default || file;
-      const pathParts = path.split('/');
-      const fileName = pathParts[pathParts.length - 1].replace('.md', '');
-      
-      let discipline = pathParts[pathParts.length - 2];
-      if (discipline.toLowerCase() === 'protocols') {
-        discipline = 'Algemeen';
+    if (query.length < 2) {
+      setResults([]);
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Debounce: wacht 300ms voordat we Supabase aanroepen
+    searchTimeout.current = setTimeout(async () => {
+      try {
+        const { data, error } = await supabase.rpc('global_search', { 
+          search_term: query 
+        });
+
+        if (error) throw error;
+        setResults(data || []);
+      } catch (err) {
+        console.error("Search error:", err);
+      } finally {
+        setIsLoading(false);
       }
+    }, 300);
 
-      const titleMatch = typeof content === 'string' ? content.match(/title: "(.*)"/) : null;
-      const indicationMatch = typeof content === 'string' ? content.match(/indication: "(.*)"/) : null;
+    return () => {
+      if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    };
+  }, [query]);
 
-      items.push({
-        title: titleMatch ? titleMatch[1] : fileName.replace(/-/g, ' '),
-        description: indicationMatch ? indicationMatch[1] : `Discipline: ${discipline}`,
-        href: `/protocols/${fileName}`, 
-        type: "Protocol",
-        icon: BookOpen,
-        color: "bg-blue-500",
-        content: typeof content === 'string' ? content.toLowerCase() : ""
-      });
-    });
-
-    // 2. Verwerk blocks
-    Object.entries(allBlocks).forEach(([path, file]: [string, any]) => {
-      const content = file.default || file;
-      const titleMatch = content.match(/title: "(.*)"/);
-      const indicationMatch = content.match(/indication: "(.*)"/);
-
-      items.push({
-        title: titleMatch ? titleMatch[1] : path.split('/').pop()?.replace('.md', ''),
-        description: indicationMatch ? indicationMatch[1] : "LRA Techniek",
-        href: `/blocks/${path.split('/').pop()?.replace('.md', '')}`,
-        type: "Block",
-        icon: Syringe,
-        color: "bg-purple-500",
-        content: content.toLowerCase()
-      });
-    });
-
-    // 3. Verwerk POCUS (Point of Care Ultrasound)
-    Object.entries(allPocus).forEach(([path, file]: [string, any]) => {
-      const content = file.default || file;
-      const fileName = path.split('/').pop()?.replace('.md', '') || "";
-      
-      const titleMatch = typeof content === 'string' ? content.match(/title: "(.*)"/) : null;
-      const categoryMatch = typeof content === 'string' ? content.match(/category: "(.*)"/) : null;
-
-      items.push({
-        title: titleMatch ? titleMatch[1] : fileName.replace(/-/g, ' '),
-        description: categoryMatch ? categoryMatch[1] : "POCUS Procedure",
-        href: `/pocus/${fileName}`,
-        type: "POCUS",
-        icon: Activity,
-        color: "bg-emerald-500", // Groen voor POCUS
-        content: typeof content === 'string' ? content.toLowerCase() : ""
-      });
-    });
-
-    return items;
-  }, []);
-
-  // Filter de resultaten op basis van de zoekterm
-  const results = useMemo(() => {
-    if (!query.trim()) return [];
-    const q = query.toLowerCase();
-    return searchIndex.filter(item => 
-      item.title.toLowerCase().includes(q) || 
-      item.description.toLowerCase().includes(q) ||
-      item.content.includes(q)
-    ).slice(0, 10); 
-  }, [query, searchIndex]);
+  // Helper om het juiste icoon en kleur te bepalen per type
+  const getIconConfig = (type: string) => {
+    switch (type) {
+      case 'pocus':
+        return { icon: Activity, color: "bg-blue-500", path: "/pocus" };
+      case 'blocks':
+        return { icon: Syringe, color: "bg-purple-500", path: "/blocks" };
+      case 'protocols':
+        return { icon: BookOpen, color: "bg-teal-500", path: "/protocols" };
+      case 'journal_club':
+        return { icon: GraduationCap, color: "bg-orange-500", path: "/journalclub" };
+      default:
+        return { icon: BookOpen, color: "bg-slate-500", path: "/protocols" };
+    }
+  };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 pb-24">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-black tracking-tighter uppercase text-slate-900 leading-none">
-          Zoeken
-        </h1>
-        <Link href="/">
-          <div className="p-2 bg-slate-100 rounded-full cursor-pointer hover:bg-slate-200 transition-colors">
-            <X className="h-5 w-5 text-slate-500" />
+    <div className="min-h-screen bg-slate-50 pb-20">
+      {/* SEARCH HEADER */}
+      <div className="bg-white border-b sticky top-0 z-50 px-4 py-4 shadow-sm">
+        <div className="relative max-w-xl mx-auto">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+            {isLoading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <SearchIcon className="h-5 w-5" />
+            )}
           </div>
-        </Link>
-      </div>
-
-      <div className="relative group">
-        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-          <SearchIcon className="h-5 w-5 text-teal-600" />
+          <Input
+            autoFocus
+            placeholder="Zoek in alle protocollen & POCUS..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full h-14 pl-12 pr-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-teal-500/20 transition-all text-base font-medium"
+          />
+          {query && (
+            <button 
+              onClick={() => setQuery("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-200 rounded-full transition-colors"
+            >
+              <X className="h-4 w-4 text-slate-500" />
+            </button>
+          )}
         </div>
-        <Input 
-          autoFocus
-          placeholder="Zoek op titel, techniek of echo-term..." 
-          className="h-14 pl-12 pr-4 bg-white border-2 border-slate-100 rounded-2xl text-lg font-medium focus-visible:ring-teal-500 focus-visible:border-teal-500 shadow-sm"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
       </div>
 
-      <div className="space-y-3">
+      {/* RESULTS LIST */}
+      <div className="max-w-xl mx-auto p-4 space-y-3">
         {results.length > 0 ? (
-          results.map((result, i) => (
-            <Link key={i} href={result.href}>
-              <Card className="group cursor-pointer hover:shadow-md transition-all border-slate-100 overflow-hidden">
-                <CardContent className="p-0 flex items-stretch">
-                  <div className={`${result.color} w-1.5`} />
-                  <div className="flex-1 p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-white transition-colors">
-                        <result.icon className={`h-5 w-5 ${result.color.replace('bg-', 'text-')}`} />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                           <h3 className="font-black text-slate-900 uppercase text-xs tracking-tight">{result.title}</h3>
-                           <span className="text-[8px] font-bold bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded uppercase">{result.type}</span>
+          results.map((result) => {
+            const config = getIconConfig(result.type);
+            const Icon = config.icon;
+
+            return (
+              <Link key={`${result.type}-${result.id}`} href={`${config.path}/${result.id}`}>
+                <Card className="group cursor-pointer border-none shadow-sm hover:shadow-md active:scale-[0.98] transition-all rounded-[2rem] overflow-hidden">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className={`p-3 rounded-2xl ${config.color} text-white shadow-lg shadow-current/10 group-hover:scale-110 transition-transform`}>
+                          <Icon className="h-5 w-5" />
                         </div>
-                        <p className="text-[10px] text-slate-500 italic line-clamp-1">{result.description}</p>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <h3 className="font-black text-slate-900 uppercase text-xs tracking-tight truncate">
+                              {result.title}
+                            </h3>
+                            <span className="text-[8px] font-black bg-slate-100 text-slate-400 px-2 py-0.5 rounded-full uppercase tracking-widest">
+                              {result.discipline || result.type}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-slate-500 italic line-clamp-1 opacity-70">
+                            {result.snippet ? `${result.snippet.replace(/<[^>]*>/g, '')}...` : 'Bekijk details'}
+                          </p>
+                        </div>
                       </div>
+                      <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-teal-500 transition-colors shrink-0" />
                     </div>
-                    <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-teal-500 transition-colors" />
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))
-        ) : query.length > 1 ? (
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })
+        ) : query.length > 1 && !isLoading ? (
           <div className="p-12 text-center text-slate-400">
             <SearchIcon className="h-12 w-12 mx-auto mb-4 opacity-10" />
-            <p className="text-sm font-medium">Geen resultaten voor "{query}"</p>
+            <p className="text-sm font-black uppercase tracking-widest opacity-50">Geen resultaten voor "{query}"</p>
           </div>
-        ) : (
+        ) : !isLoading && (
           <div className="p-12 text-center text-slate-300">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em]">Typ om te zoeken in alle content</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.3em]">Typ minstens 2 letters...</p>
           </div>
         )}
       </div>

@@ -270,7 +270,7 @@ export default function AdminEditor() {
               {/* Module selector */}
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Module</label>
-                <Select value={type} onValueChange={(v) => { setType(v); setActiveTab("tab1"); }}>
+                <Select value={type} onValueChange={(v: any) => { setType(v); setActiveTab("tab1"); }}>
                   <SelectTrigger className="rounded-2xl border-slate-200 h-12 text-slate-900">
                     <SelectValue />
                   </SelectTrigger>
@@ -414,7 +414,7 @@ export default function AdminEditor() {
                   <div className="min-h-[440px]">
                     <Tabs
                       value={activeTab}
-                      onValueChange={(v) => setActiveTab(v as "tab1" | "tab2" | "tab3")}
+                      onValueChange={(v: string) => setActiveTab(v as "tab1" | "tab2" | "tab3")}
                       className="w-full"
                     >
                       <TabsList className="grid w-full grid-cols-3 bg-slate-100 p-1.5 rounded-2xl h-12 mb-4">
