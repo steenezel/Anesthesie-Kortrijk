@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, ArrowLeft, Video, ImageIcon, HelpCircle, ExternalLink } from "lucide-react";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 
 
 import ReactQuill from "react-quill-new";
@@ -57,7 +58,7 @@ export default function AdminEditor() {
   const search = useSearch();
   const queryParams = new URLSearchParams(search);
   const editId   = queryParams.get("id");
-  const editType = queryParams.get("type") || "pocus";
+  const editType = queryParams.get("type") || "protocols";
 
   const { toast } = useToast();
   const [loading,    setLoading]    = useState(false);
@@ -198,26 +199,43 @@ export default function AdminEditor() {
     if (!title) return toast({ title: "Titel verplicht", variant: "destructive" });
     setLoading(true);
     try {
-      const payload: Record<string, unknown> = { title };
+      let error: any = null;
 
-      if (isMultiTab(type)) {
-        const cfg = TAB_CONFIG[type];
-        payload[cfg[0].field] = tab1;
-        payload[cfg[1].field] = tab2;
-        payload[cfg[2].field] = tab3;
-      } else if (type === "journal_club") {
-        payload.content    = content;
-        payload.disciplines = discipline ? [discipline] : [];
-        if (pubmedId.trim()) payload.pubmed_id = pubmedId.trim();
+      if (type === "protocols") {
+        const protocolPayload = {
+          title,
+          discipline,
+          content,
+        };
+
+        const result = editId
+          ? await supabase.from("protocols").update(protocolPayload).eq("id", editId)
+          : await supabase.from("protocols").insert([protocolPayload]);
+
+        error = result.error;
       } else {
-        // protocols
-        payload.content    = content;
-        payload.discipline = discipline;
-      }
+        const payload: Record<string, unknown> = { title };
 
-      const { error } = editId
-        ? await supabase.from(type).update(payload).eq("id", editId)
-        : await supabase.from(type).insert([payload]);
+        if (isMultiTab(type)) {
+          const cfg = TAB_CONFIG[type];
+          payload[cfg[0].field] = tab1;
+          payload[cfg[1].field] = tab2;
+          payload[cfg[2].field] = tab3;
+        } else if (type === "journal_club") {
+          payload.content = content;
+          payload.disciplines = discipline ? [discipline] : [];
+          if (pubmedId.trim()) payload.pubmed_id = pubmedId.trim();
+        } else {
+          payload.content = content;
+          payload.discipline = discipline;
+        }
+
+        const result = editId
+          ? await supabase.from(type).update(payload).eq("id", editId)
+          : await supabase.from(type).insert([payload]);
+
+        error = result.error;
+      }
 
       if (error) throw error;
       toast({ title: "Succesvol opgeslagen!" });
@@ -381,17 +399,28 @@ export default function AdminEditor() {
                     />
                   </div>
 
-                  <UploadBar />
+                  <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-slate-400 ml-1">
+                        Markdown (ruw)
+                      </label>
+                      <textarea
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder={"# Titel\n\nSchrijf hier je protocol in pure Markdown..."}
+                        spellCheck={false}
+                        className="h-[420px] w-full resize-y rounded-2xl border border-slate-200 bg-white p-4 font-mono text-sm leading-relaxed text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
 
-                  <div className="min-h-[400px]">
-                    <QuillEditor
-                      ref={genericContentRef}
-                      value={content}
-                      onChange={(val: string) => setContent(stripBase64Images(val))}
-                      className="h-[350px]"
-                      theme="snow"
-                      modules={QUILL_MODULES}
-                    />
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase text-slate-400 ml-1">
+                        Live preview
+                      </label>
+                      <div className="h-[420px] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4">
+                        <MarkdownRenderer content={content} />
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
