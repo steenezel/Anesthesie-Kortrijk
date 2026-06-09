@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, ArrowLeft, Video, ImageIcon, HelpCircle, ExternalLink } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Video, ImageIcon, HelpCircle, ExternalLink, CloudDownload } from "lucide-react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 
 
@@ -52,6 +52,47 @@ const QUILL_MODULES = {
 const stripBase64Images = (html: string): string =>
   html.replace(/<img[^>]+src="data:[^">]+"[^>]*>/gi, "");
 
+const localProtocolFiles = import.meta.glob("../content/protocols/**/*.md", { query: "raw", eager: true });
+
+const parseFrontmatter = (rawMarkdown: string): { frontmatter: Record<string, string>; body: string } => {
+  const frontmatterMatch = rawMarkdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  if (!frontmatterMatch) {
+    return { frontmatter: {}, body: rawMarkdown };
+  }
+
+  const frontmatterRaw = frontmatterMatch[1];
+  const body = rawMarkdown.slice(frontmatterMatch[0].length);
+  const frontmatter: Record<string, string> = {};
+
+  for (const line of frontmatterRaw.split(/\r?\n/)) {
+    const separatorIndex = line.indexOf(":");
+    if (separatorIndex < 0) continue;
+
+    const key = line.slice(0, separatorIndex).trim().toLowerCase();
+    if (!key) continue;
+
+    const value = line
+      .slice(separatorIndex + 1)
+      .trim()
+      .replace(/^["']|["']$/g, "");
+
+    frontmatter[key] = value;
+  }
+
+  return { frontmatter, body };
+};
+
+const inferDisciplineFromProtocolPath = (path: string): string => {
+  const pathParts = path.split("/");
+  const rawDiscipline = pathParts[pathParts.length - 2] || "algemeen";
+  if (rawDiscipline.toLowerCase() === "protocols") return "Algemeen";
+
+  return rawDiscipline
+    .split("-")
+    .map((part) => (part ? `${part.charAt(0).toUpperCase()}${part.slice(1)}` : part))
+    .join("-");
+};
+
 // ─── Component ─────────────────────────────────────────────────────────────────
 export default function AdminEditor() {
   const [, setLocation] = useLocation();
@@ -59,6 +100,7 @@ export default function AdminEditor() {
   const queryParams = new URLSearchParams(search);
   const editId   = queryParams.get("id");
   const editType = queryParams.get("type") || "protocols";
+  const migrateSlug = queryParams.get("migrate");
 
   const { toast } = useToast();
   const [loading,    setLoading]    = useState(false);
@@ -70,12 +112,36 @@ export default function AdminEditor() {
   const [tab1, setTab1] = useState("");
   const [tab2, setTab2] = useState("");
   const [tab3, setTab3] = useState("");
+  const [isMigratingProtocol, setIsMigratingProtocol] = useState(false);
   const [activeTab, setActiveTab] = useState<"tab1" | "tab2" | "tab3">("tab1");
 
   const tabRef1          = useRef<any>(null);
   const tabRef2          = useRef<any>(null);
   const tabRef3          = useRef<any>(null);
   const genericContentRef = useRef<any>(null);
+
+  const protocolDraftToMigrate = React.useMemo(() => {
+    if (type !== "protocols" || !migrateSlug) return null;
+
+    const fileKey = Object.keys(localProtocolFiles).find((key) =>
+      key.toLowerCase().endsWith(`/${migrateSlug.toLowerCase()}.md`)
+    );
+
+    if (!fileKey) return null;
+
+    const fileData = localProtocolFiles[fileKey] as any;
+    const rawMarkdown = String(fileData?.default || fileData || "");
+    const { frontmatter, body } = parseFrontmatter(rawMarkdown);
+    const titleFromFrontmatter = frontmatter.title;
+    const disciplineFromFrontmatter = frontmatter.discipline || inferDisciplineFromProtocolPath(fileKey);
+
+    return {
+      slug: migrateSlug,
+      title: titleFromFrontmatter || migrateSlug.replace(/-/g, " "),
+      discipline: disciplineFromFrontmatter,
+      content: body,
+    };
+  }, [migrateSlug, type]);
 
   // ─── Load existing record ──────────────────────────────────────────────────
   useEffect(() => {
@@ -101,6 +167,13 @@ export default function AdminEditor() {
     };
     fetchData();
   }, [editId, type]);
+
+  useEffect(() => {
+    if (editId || type !== "protocols" || !protocolDraftToMigrate) return;
+    setTitle(protocolDraftToMigrate.title);
+    setDiscipline(protocolDraftToMigrate.discipline);
+    setContent(protocolDraftToMigrate.content);
+  }, [editId, protocolDraftToMigrate, type]);
 
   // ─── Ref helper ───────────────────────────────────────────────────────────
   const getActiveRef = () => {
@@ -247,6 +320,32 @@ export default function AdminEditor() {
     }
   };
 
+  const handleMigrateProtocolFile = async () => {
+    if (!protocolDraftToMigrate) {
+      toast({ title: "Bestand niet gevonden", description: "Controleer de migrate slug.", variant: "destructive" });
+      return;
+    }
+
+    setIsMigratingProtocol(true);
+    try {
+      const payload = {
+        title: protocolDraftToMigrate.title,
+        discipline: protocolDraftToMigrate.discipline,
+        content: protocolDraftToMigrate.content,
+      };
+
+      const { data, error } = await supabase.from("protocols").insert([payload]).select("id").single();
+      if (error) throw error;
+
+      toast({ title: "Migratie geslaagd", description: `${protocolDraftToMigrate.slug}.md staat nu in Supabase.` });
+      setLocation(`/protocols/${data.id}`);
+    } catch (err: any) {
+      toast({ title: "Migratie mislukt", description: err.message, variant: "destructive" });
+    } finally {
+      setIsMigratingProtocol(false);
+    }
+  };
+
   // ─── Upload toolbar (shared) ───────────────────────────────────────────────
   const UploadBar = () => (
     <div className="flex gap-2 p-2 bg-slate-100 rounded-2xl">
@@ -375,6 +474,41 @@ export default function AdminEditor() {
               {/* ── PROTOCOLS ───────────────────────────────────────────────── */}
               {type === "protocols" && (
                 <>
+                  {migrateSlug && (
+                    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 space-y-3">
+                      <div className="text-[10px] font-black uppercase tracking-widest text-amber-700">
+                        Lokale migratie
+                      </div>
+                      {protocolDraftToMigrate ? (
+                        <>
+                          <p className="text-xs text-amber-900">
+                            Bestand <span className="font-bold">{protocolDraftToMigrate.slug}.md</span> is geladen via
+                            {" "}
+                            <code>import.meta.glob</code>. Klik hieronder om frontmatter + markdown body direct naar
+                            Supabase te inserten.
+                          </p>
+                          <Button
+                            type="button"
+                            onClick={handleMigrateProtocolFile}
+                            disabled={isMigratingProtocol}
+                            className="bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold"
+                          >
+                            {isMigratingProtocol ? (
+                              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                              <CloudDownload className="h-4 w-4 mr-2" />
+                            )}
+                            MIGREER LOKAAL BESTAND
+                          </Button>
+                        </>
+                      ) : (
+                        <p className="text-xs text-red-700">
+                          Geen lokaal protocolbestand gevonden voor slug: <b>{migrateSlug}</b>.
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Discipline</label>
                     <Select value={discipline} onValueChange={setDiscipline}>
