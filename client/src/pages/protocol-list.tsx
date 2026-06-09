@@ -47,15 +47,25 @@ const KNOWN_DISCIPLINES = [
   "Pediatrie",
   "Algemeen",
 ];
+const DISCIPLINE_ALIASES: Record<string, string> = {
+  obstetrie: "Obstetrie-epidurale",
+  "obstetrie epidurale": "Obstetrie-epidurale",
+  obstetrie_epidurale: "Obstetrie-epidurale",
+};
 
 const normalizeDiscipline = (discipline?: string) => {
   if (!discipline) return "Algemeen";
-  const cleaned = discipline.trim().replace(/_/g, "-");
+  const cleaned = discipline.trim().replace(/_/g, " ");
   const lower = cleaned.toLowerCase();
-  const known = KNOWN_DISCIPLINES.find((candidate) => candidate.toLowerCase() === lower);
+  if (DISCIPLINE_ALIASES[lower]) return DISCIPLINE_ALIASES[lower];
+  if (lower.startsWith("obstetrie")) return "Obstetrie-epidurale";
+
+  const known = KNOWN_DISCIPLINES.find(
+    (candidate) => candidate.toLowerCase() === lower || candidate.toLowerCase() === lower.replace(/\s+/g, "-")
+  );
   if (known) return known;
   return cleaned
-    .split("-")
+    .split(/[-\s]+/)
     .map((part) => (part ? `${part.charAt(0).toUpperCase()}${part.slice(1)}` : part))
     .join("-");
 };

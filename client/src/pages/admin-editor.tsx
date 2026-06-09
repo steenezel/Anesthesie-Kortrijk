@@ -51,6 +51,11 @@ const PROTOCOL_DISCIPLINES = [
 ];
 
 const JOURNAL_DISCIPLINES = ["Anesthesie", "Intensieve", "Urgentie", "Pijn"];
+const PROTOCOL_DISCIPLINE_ALIASES: Record<string, string> = {
+  obstetrie: "Obstetrie-epidurale",
+  "obstetrie epidurale": "Obstetrie-epidurale",
+  obstetrie_epidurale: "Obstetrie-epidurale",
+};
 
 const QUILL_MODULES = {
   toolbar: [
@@ -100,6 +105,23 @@ const inferDisciplineFromProtocolPath = (path: string): string => {
     .split("-")
     .map((part) => (part ? `${part.charAt(0).toUpperCase()}${part.slice(1)}` : part))
     .join("-");
+};
+
+const normalizeProtocolDiscipline = (discipline?: string): string => {
+  const raw = (discipline || "").trim();
+  if (!raw) return "Algemeen";
+
+  const lowered = raw.replace(/_/g, " ").trim().toLowerCase();
+  if (PROTOCOL_DISCIPLINE_ALIASES[lowered]) {
+    return PROTOCOL_DISCIPLINE_ALIASES[lowered];
+  }
+
+  const known = PROTOCOL_DISCIPLINES.find((candidate) => candidate.toLowerCase() === lowered.replace(/\s+/g, "-"));
+  if (known) return known;
+
+  if (lowered.startsWith("obstetrie")) return "Obstetrie-epidurale";
+
+  return raw;
 };
 
 type TextSetter = React.Dispatch<React.SetStateAction<string>>;
@@ -182,7 +204,7 @@ export default function AdminEditor() {
     return {
       slug: migrateSlug,
       title: frontmatter.title || migrateSlug.replace(/-/g, " "),
-      discipline: frontmatter.discipline || inferDisciplineFromProtocolPath(fileKey),
+      discipline: normalizeProtocolDiscipline(frontmatter.discipline || inferDisciplineFromProtocolPath(fileKey)),
       content: body,
     };
   }, [migrateSlug, type]);
@@ -213,7 +235,7 @@ export default function AdminEditor() {
       }
 
       setContent(data.content || "");
-      setDiscipline(data.discipline || "");
+      setDiscipline(normalizeProtocolDiscipline(data.discipline || ""));
     };
 
     fetchData();
@@ -335,7 +357,7 @@ export default function AdminEditor() {
       if (type === "protocols") {
         const payload = {
           title: title.trim(),
-          discipline: discipline || "Algemeen",
+          discipline: normalizeProtocolDiscipline(discipline || "Algemeen"),
           content,
         };
         const result = editId
@@ -387,7 +409,7 @@ export default function AdminEditor() {
     try {
       const payload = {
         title: protocolDraftToMigrate.title,
-        discipline: protocolDraftToMigrate.discipline,
+        discipline: normalizeProtocolDiscipline(protocolDraftToMigrate.discipline),
         content: protocolDraftToMigrate.content,
       };
 
@@ -717,8 +739,13 @@ export default function AdminEditor() {
             </div>
             <div className="space-y-4 text-[11px] font-medium leading-relaxed text-slate-600">
               <section className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-slate-900">
-                <p className="mb-1 font-black uppercase underline">Markdown editor</p>
-                <p>Schrijf direct in Markdown. Rechts zie je onmiddellijk de live preview.</p>
+                <p className="mb-2 font-black uppercase underline">Markdown basics</p>
+                <ul className="space-y-1 text-[11px]">
+                  <li><code>**vet**</code> = <b>vet</b></li>
+                  <li><code>*cursief*</code> = <i>cursief</i></li>
+                  <li><code>onderlijnd</code> = niet standaard in pure Markdown</li>
+                  <li><code>## Kop 2</code> / <code>### Kop 3</code></li>
+                </ul>
               </section>
               <section className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-emerald-900">
                 <p className="mb-1 font-black uppercase underline">Callouts</p>
