@@ -22,6 +22,14 @@ alter table public.protocols
   add column if not exists discipline text,
   add column if not exists updated_at timestamptz;
 
+-- 2b) Backfill existing NULL/empty values before NOT NULL constraints.
+update public.protocols
+set
+  title = coalesce(nullif(trim(title), ''), 'Onbekend protocol'),
+  content = coalesce(content, ''),
+  discipline = coalesce(nullif(trim(discipline), ''), 'Algemeen'),
+  updated_at = coalesce(updated_at, now());
+
 alter table public.protocols
   alter column title set not null,
   alter column content set not null,
