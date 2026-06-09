@@ -29,7 +29,8 @@ interface DbProtocol {
   title: string;
   discipline: string;
   content: string;
-  created_at: string;
+  updated_at?: string;
+  created_at?: string;
 }
 
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });

@@ -71,7 +71,9 @@ export default function ProtocolDetail() {
         </h1>
         <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-400 mb-8">
           <Clock className="h-3 w-3 mr-1" /> 
-          {dbProtocol ? `Laatste update: ${new Date(dbProtocol.created_at).toLocaleDateString('nl-BE')}` : "Lokaal bestand"}
+          {dbProtocol
+            ? `Laatste update: ${new Date(dbProtocol.updated_at || dbProtocol.created_at).toLocaleDateString('nl-BE')}`
+            : "Lokaal bestand"}
         </div>
 
         <div className="prose prose-slate max-w-none">
