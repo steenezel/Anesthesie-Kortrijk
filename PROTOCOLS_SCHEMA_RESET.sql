@@ -58,4 +58,10 @@ where content ~* '<\\/?[a-z][^>]*>';
 -- Optional hard reset (use only if you want to wipe ALL rows):
 -- truncate table public.protocols;
 
+-- Optional discipline cleanup for legacy obstetrics labels:
+-- update public.protocols
+-- set discipline = 'Obstetrie-epidurale'
+-- where lower(trim(discipline)) in ('obstetrie', 'obstetrie epidurale', 'obstetrie_epidurale')
+--    or lower(trim(discipline)) like 'obstetrie%';
+
 commit;
