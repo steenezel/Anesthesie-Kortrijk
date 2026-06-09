@@ -28,7 +28,6 @@ const cleanCalloutTokens = (node: any): any => {
 
   if (React.isValidElement(node)) {
     return React.cloneElement(node, {
-      ...node.props,
       children: cleanCalloutTokens((node.props as any).children),
     } as any);
   }
