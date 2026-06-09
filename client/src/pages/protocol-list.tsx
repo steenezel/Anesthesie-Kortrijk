@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { Link } from "wouter";
+import { useState, useMemo, useEffect } from "react";
+import { Link, useSearch } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -11,7 +11,6 @@ import {
   Activity, 
   Bone, 
   Baby, 
-  HeartPulse, 
   GlassWater,
   Hamburger,
   Brain,
@@ -34,8 +33,36 @@ interface DbProtocol {
 }
 
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
+const KNOWN_DISCIPLINES = [
+  "Abdominale",
+  "Buitendiensten",
+  "Neurochirurgie",
+  "NKO",
+  "Obstetrie-epidurale",
+  "Orthopedie",
+  "Pijnkliniek",
+  "Reanimatie",
+  "Thorax-vaat",
+  "Urologie",
+  "Pediatrie",
+  "Algemeen",
+];
+
+const normalizeDiscipline = (discipline?: string) => {
+  if (!discipline) return "Algemeen";
+  const cleaned = discipline.trim().replace(/_/g, "-");
+  const lower = cleaned.toLowerCase();
+  const known = KNOWN_DISCIPLINES.find((candidate) => candidate.toLowerCase() === lower);
+  if (known) return known;
+  return cleaned
+    .split("-")
+    .map((part) => (part ? `${part.charAt(0).toUpperCase()}${part.slice(1)}` : part))
+    .join("-");
+};
 
 export default function ProtocolList() {
+  const search = useSearch();
+  const queryDiscipline = new URLSearchParams(search).get("discipline");
   const [activeDiscipline, setActiveDiscipline] = useState<string | null>(null);
 
   // 1. Haal Cloud data op
@@ -80,7 +107,7 @@ export default function ProtocolList() {
       return {
         id: fileName,
         title: titleMatch ? titleMatch[1] : fileName.replace(/-/g, ' '),
-        discipline,
+        discipline: normalizeDiscipline(discipline),
         isCloud: false
       };
     });
@@ -88,12 +115,26 @@ export default function ProtocolList() {
     const cloud = (dbProtocols || []).map((p: DbProtocol) => ({
       id: p.id,
       title: p.title,
-      discipline: p.discipline || 'Algemeen',
+      discipline: normalizeDiscipline(p.discipline || 'Algemeen'),
       isCloud: true
     }));
 
-    return [...local, ...cloud].sort((a, b) => a.title.localeCompare(b.title));
+    const merged = [...local, ...cloud];
+    const byTitleAndDiscipline = new Map<string, typeof merged[number]>();
+
+    for (const item of merged) {
+      const key = `${item.discipline.toLowerCase()}::${item.title.trim().toLowerCase()}`;
+      const existing = byTitleAndDiscipline.get(key);
+      if (!existing || item.isCloud) byTitleAndDiscipline.set(key, item);
+    }
+
+    return Array.from(byTitleAndDiscipline.values()).sort((a, b) => a.title.localeCompare(b.title));
   }, [dbProtocols]);
+
+  useEffect(() => {
+    if (!queryDiscipline) return;
+    setActiveDiscipline(normalizeDiscipline(queryDiscipline));
+  }, [queryDiscipline]);
 
   const disciplines = useMemo(() => {
     const set = new Set(protocols.map(p => p.discipline));
@@ -104,6 +145,13 @@ export default function ProtocolList() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-24 px-4 pt-8">
+      {!activeDiscipline && (
+        <Link href="/">
+          <div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-2 mb-4 hover:text-teal-600 transition-colors">
+            <ChevronLeft className="h-4 w-4 mr-1" /> Home
+          </div>
+        </Link>
+      )}
       
       <div className="mb-8">
         <h1 className="text-4xl font-black tracking-tightest uppercase text-slate-900 leading-none mb-2">
