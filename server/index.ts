@@ -2,10 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import { registerRoutes } from "./routes.js";
 import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { existsSync } from "fs";
 
 const app = express();
 app.use(express.json());
@@ -36,10 +33,12 @@ async function startServer() {
     await viteModule.setupVite(app, httpServer);
     log("Vite dev server gestart");
   } else {
-    const publicPath = path.resolve(__dirname, "..", "public");
+    const distPublicPath = path.resolve(process.cwd(), "dist", "public");
+    const fallbackPublicPath = path.resolve(process.cwd(), "public");
+    const publicPath = existsSync(distPublicPath) ? distPublicPath : fallbackPublicPath;
     app.use(express.static(publicPath));
     
-    app.get("*", (req: any, res: any, next: any) => {
+    app.get(/.*/, (req: any, res: any, next: any) => {
       if (req.path.startsWith("/api")) return next();
       res.sendFile(path.resolve(publicPath, "index.html"));
     });
