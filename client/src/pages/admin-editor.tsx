@@ -104,6 +104,40 @@ const inferDisciplineFromProtocolPath = (path: string): string => {
 
 type TextSetter = React.Dispatch<React.SetStateAction<string>>;
 
+function MarkdownSplitPane({
+  value,
+  onChange,
+  textareaRef,
+  placeholder,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  textareaRef: React.RefObject<HTMLTextAreaElement>;
+  placeholder: string;
+}) {
+  return (
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <div className="space-y-2">
+        <label className="ml-1 text-[10px] font-black uppercase text-slate-400">Markdown (ruw)</label>
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          spellCheck={false}
+          className="h-[420px] w-full resize-y rounded-2xl border border-slate-200 bg-white p-4 font-mono text-sm leading-relaxed text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="ml-1 text-[10px] font-black uppercase text-slate-400">Live preview</label>
+        <div className="h-[420px] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4">
+          <MarkdownRenderer content={value} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminEditor() {
   const [, setLocation] = useLocation();
   const search = useSearch();
@@ -385,38 +419,6 @@ export default function AdminEditor() {
           <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleFileUpload(e, "pdf")} />
         </label>
       )}
-    </div>
-  );
-
-  const MarkdownSplitPane = ({
-    value,
-    onChange,
-    textareaRef,
-    placeholder,
-  }: {
-    value: string;
-    onChange: (value: string) => void;
-    textareaRef: React.RefObject<HTMLTextAreaElement>;
-    placeholder: string;
-  }) => (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <div className="space-y-2">
-        <label className="ml-1 text-[10px] font-black uppercase text-slate-400">Markdown (ruw)</label>
-        <textarea
-          ref={textareaRef}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          spellCheck={false}
-          className="h-[420px] w-full resize-y rounded-2xl border border-slate-200 bg-white p-4 font-mono text-sm leading-relaxed text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="ml-1 text-[10px] font-black uppercase text-slate-400">Live preview</label>
-        <div className="h-[420px] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-4">
-          <MarkdownRenderer content={value} />
-        </div>
-      </div>
     </div>
   );
 
