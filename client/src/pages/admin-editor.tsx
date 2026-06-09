@@ -134,7 +134,7 @@ function MarkdownSplitPane({
 }: {
   value: string;
   onChange: (value: string) => void;
-  textareaRef: React.RefObject<HTMLTextAreaElement>;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   placeholder: string;
 }) {
   return (
@@ -255,7 +255,7 @@ export default function AdminEditor() {
     return setTab3;
   };
 
-  const getActiveTextareaRef = (): React.RefObject<HTMLTextAreaElement> | null => {
+  const getActiveTextareaRef = (): React.RefObject<HTMLTextAreaElement | null> | null => {
     if (type === "protocols" || type === "journal_club") return singleTextareaRef;
     if (type !== "blocks") return null;
     if (activeTab === "tab1") return blockTextareaRef1;
@@ -271,7 +271,7 @@ export default function AdminEditor() {
   };
 
   const insertTextAtCursorInTextarea = (
-    ref: React.RefObject<HTMLTextAreaElement>,
+    ref: React.RefObject<HTMLTextAreaElement | null>,
     valueToInsert: string,
     setter: TextSetter
   ): boolean => {
