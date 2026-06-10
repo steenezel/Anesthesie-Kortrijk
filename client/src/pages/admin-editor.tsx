@@ -19,6 +19,7 @@ import {
   Video,
 } from "lucide-react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { compressImageForUpload, formatCompressionSummary } from "@/lib/compress-image";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 
@@ -170,6 +171,8 @@ export default function AdminEditor() {
 
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [type, setType] = useState(editType);
   const [title, setTitle] = useState("");
   const [discipline, setDiscipline] = useState("");
@@ -316,10 +319,22 @@ export default function AdminEditor() {
     if (!file) return;
     e.target.value = "";
 
-    setLoading(true);
+    setUploading(true);
     try {
-      const filePath = `${type}/${Date.now()}_${file.name}`;
-      const { error: uploadError } = await supabase.storage.from("media").upload(filePath, file);
+      let uploadFile = file;
+      let imageCompressResult: Awaited<ReturnType<typeof compressImageForUpload>> | null = null;
+
+      if (fileType === "img") {
+        setUploadStatus("Afbeelding comprimeren…");
+        imageCompressResult = await compressImageForUpload(file);
+        uploadFile = imageCompressResult.file;
+        setUploadStatus("Uploaden naar Supabase…");
+      } else {
+        setUploadStatus("Uploaden naar Supabase…");
+      }
+
+      const filePath = `${type}/${Date.now()}_${uploadFile.name}`;
+      const { error: uploadError } = await supabase.storage.from("media").upload(filePath, uploadFile);
       if (uploadError) throw uploadError;
 
       const {
@@ -329,18 +344,27 @@ export default function AdminEditor() {
       const setter = getActiveSetter();
       const textareaRef = getActiveTextareaRef();
       const quillRef = getActivePocusRef();
-      const snippet = buildUploadSnippet(fileType, publicUrl, file.name);
+      const snippet = buildUploadSnippet(fileType, publicUrl, uploadFile.name);
 
       let inserted = false;
       if (textareaRef) inserted = insertTextAtCursorInTextarea(textareaRef, snippet, setter);
       if (!inserted && quillRef) inserted = insertTextAtCursorInQuill(quillRef, snippet);
       if (!inserted) setter((prev) => `${prev}${snippet}`);
 
-      toast({ title: "Upload geslaagd" });
+      if (fileType === "img" && imageCompressResult) {
+        const summary = formatCompressionSummary(imageCompressResult);
+        toast({
+          title: "Upload geslaagd",
+          description: summary ? `Gecomprimeerd: ${summary}` : undefined,
+        });
+      } else {
+        toast({ title: "Upload geslaagd" });
+      }
     } catch (err: any) {
       toast({ title: "Fout", description: err.message, variant: "destructive" });
     } finally {
-      setLoading(false);
+      setUploading(false);
+      setUploadStatus(null);
     }
   };
 
@@ -426,20 +450,40 @@ export default function AdminEditor() {
   };
 
   const UploadBar = ({ showPdf = false }: { showPdf?: boolean }) => (
-    <div className="flex flex-wrap gap-2 rounded-2xl bg-slate-100 p-2">
-      <label className="flex flex-1 min-w-[140px] items-center justify-center gap-2 rounded-xl bg-white py-3 text-[10px] font-black uppercase tracking-widest shadow-sm cursor-pointer hover:bg-slate-50 transition-colors">
-        <Video className="h-4 w-4 text-teal-600" /> Video
-        <input type="file" accept="video/*" className="hidden" onChange={(e) => handleFileUpload(e, "video")} />
-      </label>
-      <label className="flex flex-1 min-w-[140px] items-center justify-center gap-2 rounded-xl bg-white py-3 text-[10px] font-black uppercase tracking-widest shadow-sm cursor-pointer hover:bg-slate-50 transition-colors">
-        <ImageIcon className="h-4 w-4 text-purple-600" /> Afbeelding
-        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, "img")} />
-      </label>
-      {showPdf && (
-        <label className="flex flex-1 min-w-[140px] items-center justify-center gap-2 rounded-xl bg-white py-3 text-[10px] font-black uppercase tracking-widest shadow-sm cursor-pointer hover:bg-slate-50 transition-colors">
-          <FileText className="h-4 w-4 text-slate-600" /> PDF
-          <input type="file" accept="application/pdf" className="hidden" onChange={(e) => handleFileUpload(e, "pdf")} />
+    <div className="space-y-2">
+      <div className="flex flex-wrap gap-2 rounded-2xl bg-slate-100 p-2">
+        <label
+          className={`flex flex-1 min-w-[140px] items-center justify-center gap-2 rounded-xl bg-white py-3 text-[10px] font-black uppercase tracking-widest shadow-sm transition-colors ${
+            uploading ? "pointer-events-none opacity-50" : "cursor-pointer hover:bg-slate-50"
+          }`}
+        >
+          <Video className="h-4 w-4 text-teal-600" /> Video
+          <input type="file" accept="video/*" className="hidden" disabled={uploading} onChange={(e) => handleFileUpload(e, "video")} />
         </label>
+        <label
+          className={`flex flex-1 min-w-[140px] items-center justify-center gap-2 rounded-xl bg-white py-3 text-[10px] font-black uppercase tracking-widest shadow-sm transition-colors ${
+            uploading ? "pointer-events-none opacity-50" : "cursor-pointer hover:bg-slate-50"
+          }`}
+        >
+          <ImageIcon className="h-4 w-4 text-purple-600" /> Afbeelding
+          <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={(e) => handleFileUpload(e, "img")} />
+        </label>
+        {showPdf && (
+          <label
+            className={`flex flex-1 min-w-[140px] items-center justify-center gap-2 rounded-xl bg-white py-3 text-[10px] font-black uppercase tracking-widest shadow-sm transition-colors ${
+              uploading ? "pointer-events-none opacity-50" : "cursor-pointer hover:bg-slate-50"
+            }`}
+          >
+            <FileText className="h-4 w-4 text-slate-600" /> PDF
+            <input type="file" accept="application/pdf" className="hidden" disabled={uploading} onChange={(e) => handleFileUpload(e, "pdf")} />
+          </label>
+        )}
+      </div>
+      {uploadStatus && (
+        <p className="flex items-center gap-2 px-1 text-xs text-slate-500">
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          {uploadStatus}
+        </p>
       )}
     </div>
   );
