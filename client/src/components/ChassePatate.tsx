@@ -50,7 +50,7 @@ export default function ChassePatate() {
     startNewGame();
   }, [startNewGame]);
 
-  const wrongLetters = [...guessedLetters].filter((l) => !solution.includes(l)).sort();
+  const wrongLetters = Array.from(guessedLetters).filter((l) => !solution.includes(l)).sort();
 
   const handleLetter = useCallback(
     (key: string) => {
