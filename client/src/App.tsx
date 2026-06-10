@@ -156,10 +156,12 @@ function Router() {
           <Route path="/protocols/:id" component={ProtocolDetail} />
           <Route path="/blocks" component={Blocks} />
           <Route path="/blocks/:id" component={BlockDetail} />
+          <Route path="/calculator" component={CalculatorList} />
           <Route path="/calculators" component={CalculatorList} />
           <Route path="/calculator/last" component={CalculatorPage} />
           <Route path="/calculator/apfel" component={ApfelCalculator} />
           <Route path="/calculator/peds" component={PedsCalculator} />
+          <Route path="/calculator/peds-calculator" component={PedsCalculator} />
           <Route path="/calculator/dantroleen" component={DantroleenPage} />
           <Route path="/calculator/painpump" component={PainPumpPage} />
           <Route path="/contacts" component={ContactsPage} />

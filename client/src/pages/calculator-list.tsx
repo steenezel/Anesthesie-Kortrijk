@@ -54,7 +54,7 @@ const calculators = [
     id: "peds",
     title: "Pediatrische doses",
     description: "Tubes, noodmedicatie,...",
-    path: "/calculator/peds-calculator",
+    path: "/calculator/peds",
     icon: <Baby className="h-5 w-5 text-pink-600" />,
     color: "bg-pink-50/50",
     iconBg: "bg-pink-100"
