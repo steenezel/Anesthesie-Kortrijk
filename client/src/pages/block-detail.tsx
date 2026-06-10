@@ -9,6 +9,20 @@ import CaudalCalculator from "@/components/CaudalCalculator";
 
 const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
 
+const CAUDAL_CALC_SHORTCODE = "[CAUDAL_CALC]";
+
+function BlockTabContent({ content }: { content: string }) {
+  const showCaudalCalc = content.includes(CAUDAL_CALC_SHORTCODE);
+  const markdown = content.replaceAll(CAUDAL_CALC_SHORTCODE, "").trim();
+
+  return (
+    <>
+      <MarkdownRenderer content={markdown} />
+      {showCaudalCalc && <CaudalCalculator />}
+    </>
+  );
+}
+
 export default function BlockDetail() {
   const [, params] = useRoute("/blocks/:id");
   const id = params?.id;
@@ -82,14 +96,13 @@ export default function BlockDetail() {
           </TabsList>
           
           <TabsContent value="algemeen" className="mt-6 prose prose-slate max-w-none">
-            <MarkdownRenderer content={dbBlock?.content_general || local.general} />
-            {id === "caudaal-blok" && <CaudalCalculator />}
+            <BlockTabContent content={dbBlock?.content_general || local.general} />
           </TabsContent>
           <TabsContent value="anatomie" className="mt-6 prose prose-slate max-w-none">
-            <MarkdownRenderer content={dbBlock?.content_anatomy || local.anatomy} />
+            <BlockTabContent content={dbBlock?.content_anatomy || local.anatomy} />
           </TabsContent>
           <TabsContent value="techniek" className="mt-6 prose prose-slate max-w-none">
-            <MarkdownRenderer content={dbBlock?.content_technique || local.technique} />
+            <BlockTabContent content={dbBlock?.content_technique || local.technique} />
           </TabsContent>
         </Tabs>
       </div>
