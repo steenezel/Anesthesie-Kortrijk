@@ -197,8 +197,8 @@ export default function Home() {
         </p>
       </div>
 
-      {/* GRID VOOR DE SPELLEN: Naast elkaar op desktop, onder elkaar op mobiel */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      {/* GRID VOOR DE SPELLEN */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         
         {/* ANESTHESIEDLE - Nu met Emerald accenten voor meer kleurkracht */}
         <Link href="/wordle">
@@ -221,6 +221,27 @@ export default function Home() {
                 </h3>
                 <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
                   Zoek het azg-woord
+                </p>
+              </div>
+            </div>
+          </div>
+        </Link>
+
+        {/* CHASSE PATATE */}
+        <Link href="/chasse-patate">
+          <div
+            className="group relative h-full overflow-hidden rounded-3xl border-2 p-6 cursor-pointer shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
+            style={{ background: "linear-gradient(135deg, #F5E6C4 0%, #87CEEB 100%)", borderColor: "#D4840A" }}
+            onClick={() => setShowEgg(false)}
+          >
+            <div className="flex flex-col h-full justify-between">
+              <div className="text-3xl mb-2">🚴</div>
+              <div>
+                <h3 className="text-lg font-black uppercase tracking-tighter leading-none text-slate-900">
+                  Chasse <span className="italic font-normal" style={{ color: "#C44B2B" }}>Patate</span>
+                </h3>
+                <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">
+                  Wieler-hangman
                 </p>
               </div>
             </div>
