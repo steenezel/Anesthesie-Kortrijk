@@ -755,6 +755,15 @@ export default function AdminEditor() {
                 <p className="mb-1 font-black uppercase underline">Media invoegen</p>
                 <p>Klik eerst op je cursorpositie en gebruik dan de Video/Afbeelding/PDF knop.</p>
               </section>
+              {type === "blocks" && (
+                <section className="rounded-2xl border border-orange-100 bg-orange-50 p-4 text-orange-900">
+                  <p className="mb-1 font-black uppercase underline">Calculators</p>
+                  <p>
+                    Plaats <code>[CAUDAL_CALC]</code> op een nieuwe regel in Algemeen, Anatomie of Techniek om de
+                    Caudaal Volume Calculator te tonen.
+                  </p>
+                </section>
+              )}
               {type === "journal_club" && (
                 <section className="rounded-2xl border border-blue-100 bg-blue-50 p-4 text-blue-900">
                   <p className="mb-1 font-black uppercase underline">PubMed</p>
