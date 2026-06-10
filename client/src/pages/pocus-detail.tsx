@@ -55,8 +55,8 @@ export default function PocusDetail() {
 
         <Tabs defaultValue="indicaties" className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-slate-100 rounded-2xl p-1 mb-8">
-            <TabsTrigger value="indicaties" className="rounded-xl font-black text-[10px] uppercase">Algemeen</TabsTrigger>
-            <TabsTrigger value="techniek" className="rounded-xl font-black text-[10px] uppercase">Acquisitie</TabsTrigger>
+            <TabsTrigger value="indicaties" className="rounded-xl font-black text-[10px] uppercase">Indicaties</TabsTrigger>
+            <TabsTrigger value="techniek" className="rounded-xl font-black text-[10px] uppercase">Techniek</TabsTrigger>
             <TabsTrigger value="interpretatie" className="rounded-xl font-black text-[10px] uppercase">Interpretatie</TabsTrigger>
           </TabsList>
           

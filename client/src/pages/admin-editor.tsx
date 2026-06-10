@@ -20,10 +20,6 @@ import {
 } from "lucide-react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { compressImageForUpload, formatCompressionSummary } from "@/lib/compress-image";
-import ReactQuill from "react-quill-new";
-import "react-quill-new/dist/quill.snow.css";
-
-const QuillEditor = ReactQuill as any;
 
 const TAB_CONFIG: Record<string, { label: string; field: string }[]> = {
   pocus: [
@@ -57,17 +53,6 @@ const PROTOCOL_DISCIPLINE_ALIASES: Record<string, string> = {
   "obstetrie epidurale": "Obstetrie-epidurale",
   obstetrie_epidurale: "Obstetrie-epidurale",
 };
-
-const QUILL_MODULES = {
-  toolbar: [
-    [{ header: [2, 3, false] }],
-    ["bold", "italic", "underline", "strike", "blockquote"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["clean"],
-  ],
-};
-
-const stripBase64Images = (html: string): string => html.replace(/<img[^>]+src="data:[^">]+"[^>]*>/gi, "");
 
 const localProtocolFiles = import.meta.glob("../content/protocols/**/*.md", { query: "raw", eager: true });
 
@@ -184,13 +169,13 @@ export default function AdminEditor() {
   const [isMigratingProtocol, setIsMigratingProtocol] = useState(false);
   const [activeTab, setActiveTab] = useState<"tab1" | "tab2" | "tab3">("tab1");
 
-  const pocusRef1 = useRef<any>(null);
-  const pocusRef2 = useRef<any>(null);
-  const pocusRef3 = useRef<any>(null);
   const singleTextareaRef = useRef<HTMLTextAreaElement>(null);
   const blockTextareaRef1 = useRef<HTMLTextAreaElement>(null);
   const blockTextareaRef2 = useRef<HTMLTextAreaElement>(null);
   const blockTextareaRef3 = useRef<HTMLTextAreaElement>(null);
+  const pocusTextareaRef1 = useRef<HTMLTextAreaElement>(null);
+  const pocusTextareaRef2 = useRef<HTMLTextAreaElement>(null);
+  const pocusTextareaRef3 = useRef<HTMLTextAreaElement>(null);
 
   const protocolDraftToMigrate = useMemo(() => {
     if (type !== "protocols" || !migrateSlug) return null;
@@ -260,17 +245,16 @@ export default function AdminEditor() {
 
   const getActiveTextareaRef = (): React.RefObject<HTMLTextAreaElement | null> | null => {
     if (type === "protocols" || type === "journal_club") return singleTextareaRef;
-    if (type !== "blocks") return null;
-    if (activeTab === "tab1") return blockTextareaRef1;
-    if (activeTab === "tab2") return blockTextareaRef2;
-    return blockTextareaRef3;
-  };
-
-  const getActivePocusRef = (): React.RefObject<any> | null => {
-    if (type !== "pocus") return null;
-    if (activeTab === "tab1") return pocusRef1;
-    if (activeTab === "tab2") return pocusRef2;
-    return pocusRef3;
+    if (type === "blocks" || type === "pocus") {
+      const refs =
+        type === "blocks"
+          ? [blockTextareaRef1, blockTextareaRef2, blockTextareaRef3]
+          : [pocusTextareaRef1, pocusTextareaRef2, pocusTextareaRef3];
+      if (activeTab === "tab1") return refs[0];
+      if (activeTab === "tab2") return refs[1];
+      return refs[2];
+    }
+    return null;
   };
 
   const insertTextAtCursorInTextarea = (
@@ -291,20 +275,6 @@ export default function AdminEditor() {
       ref.current.focus();
       ref.current.setSelectionRange(cursor, cursor);
     });
-    return true;
-  };
-
-  const insertTextAtCursorInQuill = (ref: React.RefObject<any>, valueToInsert: string): boolean => {
-    const instance = ref.current;
-    if (!instance) return false;
-    const quill = instance.getEditor ? instance.getEditor() : instance;
-    if (!quill) return false;
-
-    quill.focus?.();
-    const range = quill.getSelection() || quill.getSelection(true) || null;
-    const index = range ? range.index : quill.getLength();
-    quill.insertText(index, valueToInsert, "user");
-    quill.setSelection(index + valueToInsert.length, 0, "user");
     return true;
   };
 
@@ -343,12 +313,10 @@ export default function AdminEditor() {
 
       const setter = getActiveSetter();
       const textareaRef = getActiveTextareaRef();
-      const quillRef = getActivePocusRef();
       const snippet = buildUploadSnippet(fileType, publicUrl, uploadFile.name);
 
       let inserted = false;
       if (textareaRef) inserted = insertTextAtCursorInTextarea(textareaRef, snippet, setter);
-      if (!inserted && quillRef) inserted = insertTextAtCursorInQuill(quillRef, snippet);
       if (!inserted) setter((prev) => `${prev}${snippet}`);
 
       if (fileType === "img" && imageCompressResult) {
@@ -721,54 +689,46 @@ export default function AdminEditor() {
                     />
                   </div>
 
-                  <UploadBar />
+                  <UploadBar showPdf />
 
-                  <div className="min-h-[440px]">
-                    <Tabs value={activeTab} onValueChange={(v: string) => setActiveTab(v as "tab1" | "tab2" | "tab3")} className="w-full">
-                      <TabsList className="mb-4 grid h-12 w-full grid-cols-3 rounded-2xl bg-slate-100 p-1.5">
-                        {TAB_CONFIG.pocus.map((cfg, i) => (
-                          <TabsTrigger
-                            key={cfg.field}
-                            value={`tab${i + 1}` as "tab1" | "tab2" | "tab3"}
-                            className="rounded-xl text-[10px] font-black uppercase"
-                          >
-                            {cfg.label}
-                          </TabsTrigger>
-                        ))}
-                      </TabsList>
+                  <Tabs value={activeTab} onValueChange={(v: string) => setActiveTab(v as "tab1" | "tab2" | "tab3")} className="w-full">
+                    <TabsList className="mb-4 grid h-12 w-full grid-cols-3 rounded-2xl bg-slate-100 p-1.5">
+                      {TAB_CONFIG.pocus.map((cfg, i) => (
+                        <TabsTrigger
+                          key={cfg.field}
+                          value={`tab${i + 1}` as "tab1" | "tab2" | "tab3"}
+                          className="rounded-xl text-[10px] font-black uppercase"
+                        >
+                          {cfg.label}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
 
-                      <TabsContent value="tab1" className="outline-none">
-                        <QuillEditor
-                          ref={pocusRef1}
-                          value={tab1}
-                          onChange={(val: string) => setTab1(stripBase64Images(val))}
-                          className="h-[350px]"
-                          theme="snow"
-                          modules={QUILL_MODULES}
-                        />
-                      </TabsContent>
-                      <TabsContent value="tab2" className="outline-none">
-                        <QuillEditor
-                          ref={pocusRef2}
-                          value={tab2}
-                          onChange={(val: string) => setTab2(stripBase64Images(val))}
-                          className="h-[350px]"
-                          theme="snow"
-                          modules={QUILL_MODULES}
-                        />
-                      </TabsContent>
-                      <TabsContent value="tab3" className="outline-none">
-                        <QuillEditor
-                          ref={pocusRef3}
-                          value={tab3}
-                          onChange={(val: string) => setTab3(stripBase64Images(val))}
-                          className="h-[350px]"
-                          theme="snow"
-                          modules={QUILL_MODULES}
-                        />
-                      </TabsContent>
-                    </Tabs>
-                  </div>
+                    <TabsContent value="tab1" className="outline-none">
+                      <MarkdownSplitPane
+                        value={tab1}
+                        onChange={setTab1}
+                        textareaRef={pocusTextareaRef1}
+                        placeholder={"# Indicaties\n\nWanneer en waarom deze scan uitvoeren..."}
+                      />
+                    </TabsContent>
+                    <TabsContent value="tab2" className="outline-none">
+                      <MarkdownSplitPane
+                        value={tab2}
+                        onChange={setTab2}
+                        textareaRef={pocusTextareaRef2}
+                        placeholder={"# Techniek\n\nProbe-positionering, acquisitie en video's..."}
+                      />
+                    </TabsContent>
+                    <TabsContent value="tab3" className="outline-none">
+                      <MarkdownSplitPane
+                        value={tab3}
+                        onChange={setTab3}
+                        textareaRef={pocusTextareaRef3}
+                        placeholder={"# Interpretatie\n\nBevindingen en algoritmes..."}
+                      />
+                    </TabsContent>
+                  </Tabs>
                 </>
               )}
             </CardContent>
