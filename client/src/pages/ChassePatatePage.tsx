@@ -24,7 +24,7 @@ export default function ChassePatatePage() {
         className="text-center text-[9px] font-bold uppercase tracking-[0.3em] mt-8 px-8"
         style={{ color: "#D4840A" }}
       >
-        Rad het wielerwoord — of de fiets rijdt weg
+        Raad het woord — of kom aan buiten de tijd...
       </p>
     </div>
   );
