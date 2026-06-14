@@ -1,10 +1,14 @@
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, ChevronRight, ChevronLeft, Crosshair, BookOpen, Plus, Loader2 } from "lucide-react";
+import { Search, ChevronRight, ChevronLeft, Crosshair, BookOpen, Plus, Loader2, Map, List } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { InteractiveBodyMap } from "@/components/blocks/InteractiveBodyMap";
+import { cn } from "@/lib/utils";
+
+type BlocksViewMode = "atlas" | "list";
 
 // 1. Definieer hoe een Block uit de database eruit ziet
 interface DbBlock {
@@ -19,6 +23,7 @@ const allBlockFiles = import.meta.glob('../content/blocks/*.md', { query: 'raw',
 
 export default function Blocks() {
   const [search, setSearch] = useState("");
+  const [viewMode, setViewMode] = useState<BlocksViewMode>("atlas");
 
   // 2. Haal de Cloud data op uit Supabase
   const { data: dbBlocks, isLoading: dbLoading } = useQuery<DbBlock[]>({
@@ -87,18 +92,54 @@ export default function Blocks() {
           </div>
         </div>
 
-        <div className="relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-teal-600 transition-colors" size={20} />
-          <Input 
-            className="w-full pl-12 h-14 bg-slate-50 border-none rounded-2xl font-bold text-slate-600 placeholder:text-slate-300 focus-visible:ring-2 focus-visible:ring-teal-500/20 transition-all"
-            placeholder="Zoek een techniek..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="mb-4 flex rounded-2xl bg-slate-100 p-1">
+          <button
+            type="button"
+            onClick={() => setViewMode("atlas")}
+            className={cn(
+              "flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all",
+              viewMode === "atlas"
+                ? "bg-white text-teal-700 shadow-sm"
+                : "text-slate-400"
+            )}
+          >
+            <Map size={14} />
+            Atlas
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("list")}
+            className={cn(
+              "flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all",
+              viewMode === "list"
+                ? "bg-white text-teal-700 shadow-sm"
+                : "text-slate-400"
+            )}
+          >
+            <List size={14} />
+            Lijst
+          </button>
         </div>
+
+        {viewMode === "list" && (
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-teal-600 transition-colors" size={20} />
+            <Input 
+              className="w-full pl-12 h-14 bg-slate-50 border-none rounded-2xl font-bold text-slate-600 placeholder:text-slate-300 focus-visible:ring-2 focus-visible:ring-teal-500/20 transition-all"
+              placeholder="Zoek een techniek..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        )}
       </div>
 
-      {/* LIJST */}
+      {viewMode === "atlas" ? (
+        <div className="px-6 py-6 max-w-2xl mx-auto">
+          <InteractiveBodyMap />
+        </div>
+      ) : (
+      /* LIJST */
       <div className="px-6 py-8 grid gap-3 max-w-2xl mx-auto">
         {filteredBlocks.length > 0 ? (
           filteredBlocks.map((block) => (
@@ -130,6 +171,7 @@ export default function Blocks() {
           </div>
         )}
       </div>
+      )}
 
       {/* PLUS KNOP */}
       <Link href="/admin?type=blocks">
