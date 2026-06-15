@@ -9,6 +9,8 @@ export type BodyRegionId =
 export interface BodyRegionConfig {
   id: BodyRegionId;
   label: string;
+  /** Short code shown inside marker when no block count */
+  shortLabel: string;
   /** Position on combined front/back image (percentages) */
   x: number;
   y: number;
@@ -34,6 +36,7 @@ export const BODY_REGION_CONFIGS: Record<BodyRegionId, BodyRegionConfig> = {
   "head-neck": {
     id: "head-neck",
     label: "Head & Neck",
+    shortLabel: "HN",
     x: 29,
     y: 21,
     color: "rgba(13, 148, 136, 0.45)",
@@ -42,6 +45,7 @@ export const BODY_REGION_CONFIGS: Record<BodyRegionId, BodyRegionConfig> = {
   "upper-extremity": {
     id: "upper-extremity",
     label: "Upper Extremity",
+    shortLabel: "UE",
     x: 19,
     y: 40,
     color: "rgba(124, 58, 237, 0.45)",
@@ -50,6 +54,7 @@ export const BODY_REGION_CONFIGS: Record<BodyRegionId, BodyRegionConfig> = {
   thorax: {
     id: "thorax",
     label: "Thorax",
+    shortLabel: "TX",
     x: 35,
     y: 30,
     color: "rgba(37, 99, 235, 0.45)",
@@ -58,6 +63,7 @@ export const BODY_REGION_CONFIGS: Record<BodyRegionId, BodyRegionConfig> = {
   abdomen: {
     id: "abdomen",
     label: "Abdomen",
+    shortLabel: "AB",
     x: 31,
     y: 42,
     color: "rgba(234, 88, 12, 0.45)",
@@ -66,6 +72,7 @@ export const BODY_REGION_CONFIGS: Record<BodyRegionId, BodyRegionConfig> = {
   back: {
     id: "back",
     label: "Back",
+    shortLabel: "BK",
     x: 68,
     y: 34,
     color: "rgba(79, 70, 229, 0.45)",
@@ -74,6 +81,7 @@ export const BODY_REGION_CONFIGS: Record<BodyRegionId, BodyRegionConfig> = {
   "lower-extremity": {
     id: "lower-extremity",
     label: "Lower Extremity",
+    shortLabel: "LE",
     x: 27,
     y: 72,
     color: "rgba(5, 150, 105, 0.45)",

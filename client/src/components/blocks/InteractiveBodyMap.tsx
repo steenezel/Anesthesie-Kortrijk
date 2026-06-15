@@ -42,7 +42,7 @@ export function InteractiveBodyMap({ blocks, isLoading, className }: Interactive
     <section className={cn("space-y-4", className)}>
       <div className="rounded-[32px] border border-slate-100 bg-white px-3 py-5 shadow-sm sm:px-4">
         <p className="mb-4 text-center text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">
-          Tap een lichaamsdeel
+          Tap op de kaart of kies een regio
         </p>
 
         {isLoading ? (
