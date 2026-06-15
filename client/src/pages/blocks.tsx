@@ -90,19 +90,23 @@ export default function Blocks() {
           </button>
         </Link>
         
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-4xl font-black tracking-tightest uppercase text-slate-900 leading-none">
-              LRA <span className="text-teal-600">Blocks</span>
-            </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">Regionale Technieken</p>
-              {dbLoading && <Loader2 className="h-3 w-3 animate-spin text-teal-600" />}
-            </div>
+        <div className="mb-6">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight uppercase text-slate-900 leading-tight">
+            Kortrijk Academy for{" "}
+            <span className="text-teal-600">Regional Anesthesia</span>
+          </h1>
+          <div className="flex items-center gap-2 mt-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">KARA</p>
+            {dbLoading && <Loader2 className="h-3 w-3 animate-spin text-teal-600" />}
           </div>
-          <div className="p-4 bg-teal-50 text-teal-600 rounded-3xl">
-            <Crosshair size={32} />
-          </div>
+        </div>
+
+        <div className="mb-6 aspect-[5/1] w-full overflow-hidden rounded-2xl shadow-sm sm:aspect-[6/1]">
+          <img
+            src="/images/blocks/kara-banner.png"
+            alt="KARA — Kortrijk Academy for Regional Anesthesia"
+            className="h-full w-full object-cover object-center"
+          />
         </div>
 
         <div className="mb-4 flex rounded-2xl bg-slate-100 p-1">
