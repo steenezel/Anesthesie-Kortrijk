@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { InteractiveBodyMap } from "@/components/blocks/InteractiveBodyMap";
+import { parseBodyRegions } from "@/data/body-map-regions";
 import { cn } from "@/lib/utils";
 
 type BlocksViewMode = "atlas" | "list";
@@ -15,6 +16,7 @@ interface DbBlock {
   id: string;
   title: string;
   content_general: string;
+  body_regions?: string[] | null;
   created_at: string;
 }
 
@@ -62,7 +64,18 @@ export default function Blocks() {
     return [...local, ...cloud].sort((a, b) => a.title.localeCompare(b.title));
   }, [dbBlocks]);
 
-  // 4. Filteren op zoekopdracht
+  // 4. Atlas: alleen Supabase-blocks met toegewezen lichaamsdelen
+  const atlasBlocks = useMemo(
+    () =>
+      (dbBlocks || []).map((block) => ({
+        id: block.id,
+        title: block.title,
+        body_regions: parseBodyRegions(block.body_regions),
+      })),
+    [dbBlocks]
+  );
+
+  // 5. Filteren op zoekopdracht
   const filteredBlocks = blocksList.filter(block => 
     block.title.toLowerCase().includes(search.toLowerCase())
   );
@@ -136,7 +149,7 @@ export default function Blocks() {
 
       {viewMode === "atlas" ? (
         <div className="px-6 py-6 max-w-2xl mx-auto">
-          <InteractiveBodyMap />
+          <InteractiveBodyMap blocks={atlasBlocks} isLoading={dbLoading} />
         </div>
       ) : (
       /* LIJST */

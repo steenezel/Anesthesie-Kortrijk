@@ -1,105 +1,108 @@
-export type BodyViewSide = "front" | "back";
-
 export type BodyRegionId =
-  | "neck"
-  | "upper-limb"
-  | "thorax-anterior"
-  | "thorax-lateral"
-  | "thorax-posterior"
+  | "head-neck"
+  | "upper-extremity"
+  | "thorax"
   | "abdomen"
-  | "lower-limb";
+  | "back"
+  | "lower-extremity";
 
-export interface BodyRegionBlock {
-  /** Route slug, e.g. `/blocks/isb` */
-  id: string;
-  label: string;
-}
-
-export interface BodyRegion {
+export interface BodyRegionConfig {
   id: BodyRegionId;
   label: string;
-  /** Which body views expose this region */
-  views: BodyViewSide[];
-  blocks: BodyRegionBlock[];
+  /** Position on combined front/back image (percentages) */
+  x: number;
+  y: number;
+  /** Semi-transparent fill + border */
+  color: string;
+  borderColor: string;
 }
 
-export const BODY_REGIONS: Record<BodyRegionId, BodyRegion> = {
-  neck: {
-    id: "neck",
-    label: "Neck",
-    views: ["front"],
-    blocks: [
-      { id: "cervical-plexus", label: "Cervical plexus" },
-      { id: "isb", label: "ISB" },
-      { id: "supraclavicular", label: "Supraclavicular" },
-      { id: "suprascapular", label: "Suprascapular" },
-      { id: "clavipectoral", label: "Clavipectoral" },
-    ],
+export interface AtlasBlock {
+  id: string;
+  title: string;
+  body_regions: BodyRegionId[];
+}
+
+export interface RegionWithBlocks {
+  config: BodyRegionConfig;
+  blocks: { id: string; label: string }[];
+}
+
+export const BODY_MAP_IMAGE = "/images/blocks/body-map-front-back.png";
+
+export const BODY_REGION_CONFIGS: Record<BodyRegionId, BodyRegionConfig> = {
+  "head-neck": {
+    id: "head-neck",
+    label: "Head & Neck",
+    x: 27,
+    y: 14,
+    color: "rgba(13, 148, 136, 0.45)",
+    borderColor: "rgb(13, 148, 136)",
   },
-  "upper-limb": {
-    id: "upper-limb",
-    label: "Upper Limb",
-    views: ["front", "back"],
-    blocks: [
-      { id: "isb", label: "Interscalene (ISB)" },
-      { id: "supraclavicular", label: "Supraclavicular" },
-      { id: "infraclavicular", label: "Infraclavicular" },
-      { id: "axillary", label: "Axillary" },
-      { id: "suprascapular", label: "Suprascapular" },
-    ],
+  "upper-extremity": {
+    id: "upper-extremity",
+    label: "Upper Extremity",
+    x: 13,
+    y: 30,
+    color: "rgba(124, 58, 237, 0.45)",
+    borderColor: "rgb(124, 58, 237)",
   },
-  "thorax-anterior": {
-    id: "thorax-anterior",
-    label: "Thorax (Anterior)",
-    views: ["front"],
-    blocks: [
-      { id: "tpvb", label: "TPVB" },
-      { id: "pecs", label: "PECS I / II" },
-      { id: "serratus", label: "Serratus anterior" },
-    ],
-  },
-  "thorax-lateral": {
-    id: "thorax-lateral",
-    label: "Thorax (Lateral)",
-    views: ["front"],
-    blocks: [
-      { id: "tpvb", label: "TPVB" },
-      { id: "serratus", label: "Serratus anterior" },
-    ],
-  },
-  "thorax-posterior": {
-    id: "thorax-posterior",
-    label: "Thorax (Posterior)",
-    views: ["back"],
-    blocks: [
-      { id: "tpvb", label: "TPVB" },
-      { id: "esp", label: "ESP block" },
-    ],
+  thorax: {
+    id: "thorax",
+    label: "Thorax",
+    x: 27,
+    y: 32,
+    color: "rgba(37, 99, 235, 0.45)",
+    borderColor: "rgb(37, 99, 235)",
   },
   abdomen: {
     id: "abdomen",
     label: "Abdomen",
-    views: ["front"],
-    blocks: [
-      { id: "tap", label: "TAP block" },
-      { id: "rectus-sheath", label: "Rectus sheath" },
-      { id: "quadratus-lumborum", label: "Quadratus lumborum" },
-    ],
+    x: 27,
+    y: 48,
+    color: "rgba(234, 88, 12, 0.45)",
+    borderColor: "rgb(234, 88, 12)",
   },
-  "lower-limb": {
-    id: "lower-limb",
-    label: "Lower Limb",
-    views: ["front", "back"],
-    blocks: [
-      { id: "femoral", label: "Femoral" },
-      { id: "adductor-canal", label: "Adductor canal (ACB)" },
-      { id: "sciatic", label: "Sciatic" },
-      { id: "popliteal", label: "Popliteal" },
-      { id: "ankle", label: "Ankle block" },
-    ],
+  back: {
+    id: "back",
+    label: "Back",
+    x: 73,
+    y: 34,
+    color: "rgba(79, 70, 229, 0.45)",
+    borderColor: "rgb(79, 70, 229)",
+  },
+  "lower-extremity": {
+    id: "lower-extremity",
+    label: "Lower Extremity",
+    x: 27,
+    y: 72,
+    color: "rgba(5, 150, 105, 0.45)",
+    borderColor: "rgb(5, 150, 105)",
   },
 };
 
-export function getRegionsForView(view: BodyViewSide): BodyRegion[] {
-  return Object.values(BODY_REGIONS).filter((region) => region.views.includes(view));
+export const BODY_REGION_OPTIONS = Object.values(BODY_REGION_CONFIGS);
+
+const VALID_REGION_IDS = new Set<string>(Object.keys(BODY_REGION_CONFIGS));
+
+export function parseBodyRegions(raw: unknown): BodyRegionId[] {
+  if (!raw) return [];
+
+  const values = Array.isArray(raw)
+    ? raw
+    : typeof raw === "string"
+      ? raw.split(/[,;]/).map((part) => part.trim())
+      : [];
+
+  return values.filter((value): value is BodyRegionId => VALID_REGION_IDS.has(value));
+}
+
+export function buildRegionsWithBlocks(blocks: AtlasBlock[]): RegionWithBlocks[] {
+  return BODY_REGION_OPTIONS.map((config) => ({
+    config,
+    blocks: blocks
+      .filter((block) => block.body_regions.includes(config.id))
+      .map((block) => ({ id: block.id, label: block.title }))
+      .sort((a, b) => a.label.localeCompare(b.label)),
+  }));
 }

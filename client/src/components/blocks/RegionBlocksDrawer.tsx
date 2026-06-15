@@ -7,12 +7,12 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import type { BodyRegion } from "@/data/body-map-regions";
+import type { RegionWithBlocks } from "@/data/body-map-regions";
 
 interface RegionBlocksDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  region: BodyRegion | null;
+  region: RegionWithBlocks | null;
 }
 
 export function RegionBlocksDrawer({ open, onOpenChange, region }: RegionBlocksDrawerProps) {
@@ -21,7 +21,7 @@ export function RegionBlocksDrawer({ open, onOpenChange, region }: RegionBlocksD
       <DrawerContent className="rounded-t-[28px] border-slate-100 pb-8">
         <DrawerHeader className="border-b border-slate-100 px-6 pb-4 text-left">
           <DrawerTitle className="text-xl font-black uppercase tracking-tight text-slate-900">
-            {region?.label ?? "Select a region"}
+            {region?.config.label ?? "Select a region"}
           </DrawerTitle>
           <DrawerDescription className="text-[10px] font-black uppercase tracking-[0.25em] text-teal-600">
             Beschikbare LRA technieken
@@ -30,27 +30,38 @@ export function RegionBlocksDrawer({ open, onOpenChange, region }: RegionBlocksD
 
         {region && (
           <ul className="max-h-[50vh] overflow-y-auto px-4 pt-2">
-            {region.blocks.map((block) => (
-              <li key={block.id}>
-                <Link
-                  href={`/blocks/${block.id}?from=/blocks`}
-                  onClick={() => onOpenChange(false)}
-                >
-                  <button
-                    type="button"
-                    className="flex w-full items-center gap-3 rounded-2xl px-3 py-4 text-left transition-colors active:bg-teal-50 hover:bg-slate-50"
+            {region.blocks.length > 0 ? (
+              region.blocks.map((block) => (
+                <li key={block.id}>
+                  <Link
+                    href={`/blocks/${block.id}?from=/blocks`}
+                    onClick={() => onOpenChange(false)}
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
-                      <Crosshair size={18} />
-                    </span>
-                    <span className="flex-1 font-black uppercase tracking-tight text-slate-800 text-sm">
-                      {block.label}
-                    </span>
-                    <ChevronRight className="shrink-0 text-slate-300" size={20} />
-                  </button>
-                </Link>
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-3 rounded-2xl px-3 py-4 text-left transition-colors active:bg-teal-50 hover:bg-slate-50"
+                    >
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
+                        <Crosshair size={18} />
+                      </span>
+                      <span className="flex-1 font-black uppercase tracking-tight text-slate-800 text-sm">
+                        {block.label}
+                      </span>
+                      <ChevronRight className="shrink-0 text-slate-300" size={20} />
+                    </button>
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <li className="px-3 py-8 text-center">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                  Nog geen technieken gekoppeld aan dit lichaamsdeel.
+                </p>
+                <p className="mt-2 text-xs text-slate-500">
+                  Wijs lichaamsdelen toe in de block-editor (CMS).
+                </p>
               </li>
-            ))}
+            )}
           </ul>
         )}
       </DrawerContent>

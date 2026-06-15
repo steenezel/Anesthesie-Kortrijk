@@ -1,91 +1,62 @@
-import { useCallback, useState } from "react";
-import { motion } from "framer-motion";
-import { BodyMapSvg } from "@/components/blocks/BodyMapSvg";
+import { useCallback, useMemo, useState } from "react";
+import { Loader2 } from "lucide-react";
+import { BodyMapOverlay } from "@/components/blocks/BodyMapOverlay";
 import { RegionBlocksDrawer } from "@/components/blocks/RegionBlocksDrawer";
 import {
-  BODY_REGIONS,
+  BODY_REGION_OPTIONS,
+  buildRegionsWithBlocks,
+  type AtlasBlock,
   type BodyRegionId,
-  type BodyViewSide,
 } from "@/data/body-map-regions";
 import { cn } from "@/lib/utils";
 
 interface InteractiveBodyMapProps {
+  blocks: AtlasBlock[];
+  isLoading?: boolean;
   className?: string;
 }
 
-function ViewToggle({
-  view,
-  onViewChange,
-}: {
-  view: BodyViewSide;
-  onViewChange: (view: BodyViewSide) => void;
-}) {
-  return (
-    <div
-      className="relative flex rounded-2xl bg-slate-100 p-1"
-      role="tablist"
-      aria-label="Body view"
-    >
-      {(["front", "back"] as const).map((side) => {
-        const isActive = view === side;
-        return (
-          <button
-            key={side}
-            type="button"
-            role="tab"
-            aria-selected={isActive}
-            onClick={() => onViewChange(side)}
-            className={cn(
-              "relative z-10 flex-1 rounded-xl py-2.5 text-[10px] font-black uppercase tracking-[0.2em] transition-colors",
-              isActive ? "text-teal-700" : "text-slate-400"
-            )}
-          >
-            {isActive && (
-              <motion.span
-                layoutId="body-map-view-pill"
-                className="absolute inset-0 rounded-xl bg-white shadow-sm"
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              />
-            )}
-            <span className="relative">{side === "front" ? "Front" : "Back"}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-export function InteractiveBodyMap({ className }: InteractiveBodyMapProps) {
-  const [view, setView] = useState<BodyViewSide>("front");
+export function InteractiveBodyMap({ blocks, isLoading, className }: InteractiveBodyMapProps) {
   const [selectedRegion, setSelectedRegion] = useState<BodyRegionId | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const regionsWithBlocks = useMemo(() => buildRegionsWithBlocks(blocks), [blocks]);
+
+  const blockCounts = useMemo(() => {
+    const counts: Partial<Record<BodyRegionId, number>> = {};
+    for (const region of regionsWithBlocks) {
+      counts[region.config.id] = region.blocks.length;
+    }
+    return counts;
+  }, [regionsWithBlocks]);
 
   const handleRegionClick = useCallback((regionId: BodyRegionId) => {
     setSelectedRegion(regionId);
     setDrawerOpen(true);
   }, []);
 
-  const handleViewChange = useCallback((nextView: BodyViewSide) => {
-    setView(nextView);
-    setSelectedRegion(null);
-    setDrawerOpen(false);
-  }, []);
-
-  const activeRegion = selectedRegion ? BODY_REGIONS[selectedRegion] : null;
+  const activeRegion =
+    regionsWithBlocks.find((region) => region.config.id === selectedRegion) ?? null;
 
   return (
     <section className={cn("space-y-4", className)}>
-      <ViewToggle view={view} onViewChange={handleViewChange} />
-
-      <div className="rounded-[32px] border border-slate-100 bg-white px-4 py-6 shadow-sm">
+      <div className="rounded-[32px] border border-slate-100 bg-white px-3 py-5 shadow-sm sm:px-4">
         <p className="mb-4 text-center text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">
-          Tap a region
+          Tap een lichaamsdeel
         </p>
-        <BodyMapSvg
-          view={view}
-          selectedRegion={selectedRegion}
-          onRegionClick={handleRegionClick}
-        />
+
+        {isLoading ? (
+          <div className="flex h-64 items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-teal-600" />
+          </div>
+        ) : (
+          <BodyMapOverlay
+            regions={BODY_REGION_OPTIONS}
+            selectedRegion={selectedRegion}
+            blockCounts={blockCounts}
+            onRegionClick={handleRegionClick}
+          />
+        )}
       </div>
 
       <RegionBlocksDrawer
