@@ -10,6 +10,10 @@ import ProtocolDetail from "@/pages/protocol-detail";
 import ProtocolList from "./pages/protocol-list";
 import Blocks from "@/pages/blocks";
 import BlockDetail from "@/pages/block-detail";
+import ReferenceHubPage from "@/pages/reference-hub";
+import ReferenceDermatomesPage from "@/pages/reference-dermatomes";
+import ReferencePlexusListPage from "@/pages/reference-plexus-list";
+import ReferencePlexusDetailPage from "@/pages/reference-plexus-detail";
 import CalculatorPage from "@/pages/last";
 import CalculatorList from "@/pages/calculator-list";
 import ApfelCalculator from "@/pages/apfel";
@@ -155,8 +159,12 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/protocols" component={ProtocolList} />
           <Route path="/protocols/:id" component={ProtocolDetail} />
-          <Route path="/blocks" component={Blocks} />
+          <Route path="/blocks/referentie/dermatomen" component={ReferenceDermatomesPage} />
+          <Route path="/blocks/referentie/plexus/:id" component={ReferencePlexusDetailPage} />
+          <Route path="/blocks/referentie/plexus" component={ReferencePlexusListPage} />
+          <Route path="/blocks/referentie" component={ReferenceHubPage} />
           <Route path="/blocks/:id" component={BlockDetail} />
+          <Route path="/blocks" component={Blocks} />
           <Route path="/calculator" component={CalculatorList} />
           <Route path="/calculators" component={CalculatorList} />
           <Route path="/calculator/last" component={CalculatorPage} />
