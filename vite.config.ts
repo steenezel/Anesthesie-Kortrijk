@@ -28,7 +28,8 @@ export default defineConfig({
     }),
     // PWA CONFIGURATIE
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: "autoUpdate",
+      injectRegister: false,
       workbox: {
         cleanupOutdatedCaches: true,
         skipWaiting: true,

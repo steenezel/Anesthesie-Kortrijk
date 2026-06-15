@@ -31,32 +31,19 @@
     <link rel="apple-touch-startup-image" href="/favicon.png">
 
    <script>
-  // 1. VOORKOM RELOAD LOOPS: 
-  // We checken of we al herladen zijn in de laatste 5 seconden.
+  // Herlaad één keer bij kapotte asset na deploy (voorkomt wit scherm na update).
   const lastReload = sessionStorage.getItem('last-pwa-reload');
   const now = Date.now();
 
   window.addEventListener('error', function(e) {
-    // Alleen ingrijpen bij kritieke script/link fouten
     if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') {
-      // Als we minder dan 5 sec geleden al herladen hebben, stop dan (voorkom loop)
       if (lastReload && (now - parseInt(lastReload) < 5000)) {
-        console.error('Kritieke fout, maar reload loop gedetecteerd. Stop herladen.');
         return;
       }
-      
       sessionStorage.setItem('last-pwa-reload', now.toString());
       window.location.reload();
     }
   }, true);
-
-  // 2. SERVICE WORKER REGISTRATIE
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      // Laat de Vite PWA plugin zijn werk doen via de standaard sw.js
-      navigator.serviceWorker.register('/sw.js', { scope: '/' });
-    });
-  }
 </script>
   </head>
   <body>
