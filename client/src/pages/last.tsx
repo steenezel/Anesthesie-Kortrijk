@@ -141,7 +141,7 @@ export default function LastCalculator() {
                   <ShieldAlert className="h-3.5 w-3.5" /> Lipid Protocol
                 </button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md border-t-8 border-t-destructive">
+              <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg border-t-8 border-t-destructive">
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-black text-destructive flex items-center gap-2 uppercase tracking-tighter">
                     <ShieldAlert className="h-8 w-8" /> INTRALIPID 20%
@@ -154,27 +154,75 @@ export default function LastCalculator() {
                       <div className="text-3xl font-mono font-black text-destructive">{intralipid.bolus.toFixed(1)} <span className="text-sm">mL</span></div>
                     </div>
                     <div className="bg-destructive/5 p-4 rounded-2xl border-2 border-destructive/10 text-center">
-                      <div className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Infusion (0.25 mL/kg/min)</div>
+                      <div className="text-[10px] uppercase font-bold text-muted-foreground mb-1">Infuus (0.25 mL/kg/min)</div>
                       <div className="text-3xl font-mono font-black text-foreground">{intralipid.infusion.toFixed(1)} <span className="text-sm">mL/min</span></div>
                     </div>
                   </div>
 
-                  <div className="mt-4 border-t border-slate-100 pt-6 space-y-4">
+                  <div className="space-y-3 border-t border-slate-100 pt-5">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                      Opvolgdosissen
+                    </h3>
+
+                    <div className="space-y-3">
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <p className="text-[10px] font-black uppercase tracking-tight text-slate-700 mb-1">
+                          1. Herhalen van de bolus
+                        </p>
+                        <p className="text-[11px] leading-snug text-slate-600">
+                          Herhaal de initiële bolus van{" "}
+                          <span className="font-mono font-bold text-destructive">{intralipid.bolus.toFixed(1)} mL</span>{" "}
+                          (1,5 mL/kg) maximaal <span className="font-bold">2 keer</span> (dus totaal max.{" "}
+                          <span className="font-bold">{intralipid.maxBolusCount} bolussen</span>), met telkens{" "}
+                          <span className="font-bold">3–5 minuten</span> interval indien de circulatie niet herstelt.
+                        </p>
+                      </div>
+
+                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <p className="text-[10px] font-black uppercase tracking-tight text-slate-700 mb-1">
+                          2. Verhogen van het infuus
+                        </p>
+                        <p className="text-[11px] leading-snug text-slate-600">
+                          Bij aanhoudende hemodynamische instabiliteit: verdubbel de infuussnelheid naar{" "}
+                          <span className="font-bold">0,5 mL/kg/min</span> (
+                          <span className="font-mono font-bold text-foreground">{intralipid.infusionHigh.toFixed(1)} mL/min</span>
+                          ).
+                        </p>
+                      </div>
+
+                      <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-4">
+                        <p className="text-[10px] font-black uppercase tracking-tight text-amber-900 mb-1">
+                          3. Maximale dosislimiet
+                        </p>
+                        <p className="text-[11px] leading-snug text-amber-900">
+                          Totale dosis Intralipid 20% mag in de eerste{" "}
+                          <span className="font-bold">30 minuten</span>{" "}
+                          <span className="font-bold">12 mL/kg</span> niet overschrijden (
+                          <span className="font-mono font-bold">{intralipid.maxDose30Min.toFixed(0)} mL</span> bij {weight} kg).
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-slate-100 pt-5 space-y-4">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-amber-500" /> ACLS Modificaties
+                      <AlertTriangle className="h-4 w-4 text-amber-500" /> Reanimatie bij LAST
                     </h3>
                     <div className="grid grid-cols-1 gap-3">
                       <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl text-[11px] leading-snug">
-                        <p className="font-bold text-blue-900 uppercase tracking-tighter mb-1">Adrenaline</p>
-                        <p className="text-blue-800 font-medium italic">
-                          Reduceer doses tot {"< "} {(weight * 1).toFixed(0)} µg ({"< "} 1 µg/kg). 
-                          Vermijd standaard 1 mg bolussen.
+                        <p className="font-bold text-blue-900 uppercase tracking-tighter mb-1">Hartstilstand — pas ALS aan</p>
+                        <p className="text-blue-800 font-medium">
+                          Gebruik lage doses adrenaline (stapjes van{" "}
+                          <span className="font-bold">{"< 1 µg/kg"}</span>; max. ca.{" "}
+                          <span className="font-mono font-bold">{(weight * 1).toFixed(0)} µg</span> bij {weight} kg).
+                          Hoge doses adrenaline kunnen lipidemulgie tegenwerken en ritmestoornissen verergeren.
                         </p>
                       </div>
                       <div className="p-4 bg-amber-50/50 border border-amber-100 rounded-2xl text-[11px] leading-snug">
-                        <p className="font-bold text-amber-900 uppercase tracking-tighter mb-1">Aritmie Management</p>
-                        <p className="text-amber-800 font-medium italic">
-                          Vermijd vasopressine en calciumblokkers. Lidocaïne is gecontra-indiceerd.
+                        <p className="font-bold text-amber-900 uppercase tracking-tighter mb-1">Strikt vermijden</p>
+                        <p className="text-amber-800 font-medium">
+                          Vasopressine, calciumkanaalblokkers en bètablokkers. Bij aritmieën: bij voorkeur amiodaron;
+                          lidocaïne is gecontra-indiceerd.
                         </p>
                       </div>
                     </div>

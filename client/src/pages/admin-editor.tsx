@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { compressImageForUpload, formatCompressionSummary } from "@/lib/compress-image";
+import { BodyRegionSelector } from "@/components/blocks/BodyRegionSelector";
+import { parseBodyRegions, type BodyRegionId } from "@/data/body-map-regions";
 
 const TAB_CONFIG: Record<string, { label: string; field: string }[]> = {
   pocus: [
@@ -166,6 +168,7 @@ export default function AdminEditor() {
   const [tab1, setTab1] = useState("");
   const [tab2, setTab2] = useState("");
   const [tab3, setTab3] = useState("");
+  const [bodyRegions, setBodyRegions] = useState<BodyRegionId[]>([]);
   const [isMigratingProtocol, setIsMigratingProtocol] = useState(false);
   const [activeTab, setActiveTab] = useState<"tab1" | "tab2" | "tab3">("tab1");
 
@@ -211,6 +214,9 @@ export default function AdminEditor() {
         setTab1(data[cfg[0].field] || "");
         setTab2(data[cfg[1].field] || "");
         setTab3(data[cfg[2].field] || "");
+        if (type === "blocks") {
+          setBodyRegions(parseBodyRegions(data.body_regions));
+        }
         return;
       }
 
@@ -369,12 +375,15 @@ export default function AdminEditor() {
         error = result.error;
       } else if (type === "blocks" || type === "pocus") {
         const cfg = TAB_CONFIG[type];
-        const payload = {
+        const payload: Record<string, unknown> = {
           title: title.trim(),
           [cfg[0].field]: tab1,
           [cfg[1].field]: tab2,
           [cfg[2].field]: tab3,
         };
+        if (type === "blocks") {
+          payload.body_regions = bodyRegions;
+        }
         const result = editId
           ? await supabase.from(type).update(payload).eq("id", editId)
           : await supabase.from(type).insert([payload]);
@@ -634,6 +643,8 @@ export default function AdminEditor() {
                     />
                   </div>
 
+                  <BodyRegionSelector value={bodyRegions} onChange={setBodyRegions} />
+
                   <UploadBar />
 
                   <Tabs value={activeTab} onValueChange={(v: string) => setActiveTab(v as "tab1" | "tab2" | "tab3")} className="w-full">
@@ -759,6 +770,15 @@ export default function AdminEditor() {
                 <p className="mb-1 font-black uppercase underline">Media invoegen</p>
                 <p>Klik eerst op je cursorpositie en gebruik dan de Video/Afbeelding/PDF knop.</p>
               </section>
+              {type === "blocks" && (
+                <section className="rounded-2xl border border-teal-100 bg-teal-50 p-4 text-teal-900">
+                  <p className="mb-1 font-black uppercase underline">Anatomie-atlas</p>
+                  <p>
+                    Selecteer één of meerdere lichaamsdelen zodat deze techniek op de interactieve
+                    body map verschijnt (bv. ISB → Head &amp; Neck + Upper Extremity).
+                  </p>
+                </section>
+              )}
               {type === "blocks" && (
                 <section className="rounded-2xl border border-orange-100 bg-orange-50 p-4 text-orange-900">
                   <p className="mb-1 font-black uppercase underline">Calculators</p>

@@ -40,14 +40,32 @@ const categories = [
     isExternal: false
   },
   {
-    title: "Blocks",
-    description: "LRA tips",
+    title: "Regional Anesthesia",
+    description: "Kortrijk Academy of Regional Anesthesia",
     icon: Syringe,
     href: "/blocks",
     color: "bg-purple-500",
     lightColor: "bg-purple-50",
     borderColor: "border-purple-200",
     isExternal: false
+  },
+  {
+    title: "POCUS",
+    description: "Focus!",
+    icon: Waves,
+    href: "/pocus",
+    color: "bg-fuchsia-700",
+    lightColor: "bg-fuchsia-50",
+    borderColor: "border-fuchsia-200"
+  },
+  {
+    title: "Journal Club",
+    description: "Recente studies en literatuur",
+    icon: BookOpenCheck,
+    href: "/journalclub",
+    color: "bg-cyan-700",
+    lightColor: "bg-cyan-50",
+    borderColor: "border-cyan-200"
   },
   {
     title: "Calculators",
@@ -70,13 +88,14 @@ const categories = [
     isExternal: false
   },
   {
-    title: "POCUS",
-    description: "Focus!",
-    icon: Waves,
-    href: "/pocus",
-    color: "bg-fuchsia-700",
-    lightColor: "bg-fuchsia-50",
-    borderColor: "border-fuchsia-200"
+    title: "E17 Bridginglink",
+    description: "Beleid bloedverdunners.",
+    icon: Tablets,
+    href: "https://e17bridginglinkbloedverdunners.be/",
+    color: "bg-red-500",
+    lightColor: "bg-red-50",
+    borderColor: "border-red-200",
+    isExternal: true
   },
   {
     title: "Onboarding",
@@ -88,28 +107,9 @@ const categories = [
     borderColor: "border-slate-200"
   },
   {
-    title: "E17 Bridginglink",
-    description: "Beleid bloedverdunners.",
-    icon: Tablets,
-    href: "https://e17bridginglinkbloedverdunners.be/",
-    color: "bg-red-500",
-    lightColor: "bg-red-50",
-    borderColor: "border-red-200",
-    isExternal: true
-  },
-    {
-    title: "Journal Club",
-    description: "Evidence, schmevidence.",
-    icon: BookOpenCheck,
-    href: "/journalclub",
-    color: "bg-cyan-700",
-    lightColor: "bg-cyan-50",
-    borderColor: "border-cyan-200"
-  },
-    {
     title: "Marktplaats",
     description: "Verlof aanbieden of overnemen",
-    icon: ShoppingBag, // Importeer deze uit lucide-react bovenaan
+    icon: ShoppingBag,
     href: "/marketplace",
     color: "bg-amber-400",
     lightColor: "bg-amber-50",
@@ -241,7 +241,7 @@ export default function Home() {
                   Chasse <span className="italic font-normal" style={{ color: "#C44B2B" }}>Patate</span>
                 </h3>
                 <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">
-                  Wieler-hangman
+                  Wieler-galgje
                 </p>
               </div>
             </div>
@@ -309,7 +309,7 @@ export default function Home() {
                           </div>
                           <div>
                             <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{category.title}</h2>
-                            <p className="text-sm text-slate-500 line-clamp-1 italic">{category.description}</p>
+                            <p className="text-sm text-slate-500 line-clamp-2 italic">{category.description}</p>
                           </div>
                         </div>
                         <ChevronRight className="h-6 w-6 text-slate-300 group-hover:text-slate-500 transition-all" />
@@ -331,7 +331,7 @@ export default function Home() {
                           </div>
                           <div>
                             <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{category.title}</h2>
-                            <p className="text-sm text-slate-500 line-clamp-1 italic">{category.description}</p>
+                            <p className="text-sm text-slate-500 line-clamp-2 italic">{category.description}</p>
                           </div>
                         </div>
                         <ChevronRight className="h-6 w-6 text-slate-300 group-hover:text-slate-500 transition-all" />

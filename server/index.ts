@@ -30,7 +30,7 @@ async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     // We laden Vite op een manier die TSC niet kan checken tijdens build
     const viteModule: any = await import("./vite.js");
-    await viteModule.setupVite(app, httpServer);
+    await viteModule.setupVite(httpServer, app);
     log("Vite dev server gestart");
   } else {
     const distPublicPath = path.resolve(process.cwd(), "dist", "public");

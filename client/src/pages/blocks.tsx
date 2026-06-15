@@ -1,16 +1,22 @@
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, ChevronRight, ChevronLeft, Crosshair, BookOpen, Plus, Loader2 } from "lucide-react";
+import { Search, ChevronRight, ChevronLeft, Crosshair, BookOpen, Plus, Loader2, Map, List } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { InteractiveBodyMap } from "@/components/blocks/InteractiveBodyMap";
+import { parseBodyRegions } from "@/data/body-map-regions";
+import { cn } from "@/lib/utils";
+
+type BlocksViewMode = "atlas" | "list";
 
 // 1. Definieer hoe een Block uit de database eruit ziet
 interface DbBlock {
   id: string;
   title: string;
   content_general: string;
+  body_regions?: string[] | null;
   created_at: string;
 }
 
@@ -19,6 +25,7 @@ const allBlockFiles = import.meta.glob('../content/blocks/*.md', { query: 'raw',
 
 export default function Blocks() {
   const [search, setSearch] = useState("");
+  const [viewMode, setViewMode] = useState<BlocksViewMode>("atlas");
 
   // 2. Haal de Cloud data op uit Supabase
   const { data: dbBlocks, isLoading: dbLoading } = useQuery<DbBlock[]>({
@@ -57,7 +64,18 @@ export default function Blocks() {
     return [...local, ...cloud].sort((a, b) => a.title.localeCompare(b.title));
   }, [dbBlocks]);
 
-  // 4. Filteren op zoekopdracht
+  // 4. Atlas: alleen Supabase-blocks met toegewezen lichaamsdelen
+  const atlasBlocks = useMemo(
+    () =>
+      (dbBlocks || []).map((block) => ({
+        id: block.id,
+        title: block.title,
+        body_regions: parseBodyRegions(block.body_regions),
+      })),
+    [dbBlocks]
+  );
+
+  // 5. Filteren op zoekopdracht
   const filteredBlocks = blocksList.filter(block => 
     block.title.toLowerCase().includes(search.toLowerCase())
   );
@@ -72,33 +90,73 @@ export default function Blocks() {
           </button>
         </Link>
         
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-4xl font-black tracking-tightest uppercase text-slate-900 leading-none">
-              LRA <span className="text-teal-600">Blocks</span>
-            </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">Regionale Technieken</p>
-              {dbLoading && <Loader2 className="h-3 w-3 animate-spin text-teal-600" />}
-            </div>
-          </div>
-          <div className="p-4 bg-teal-50 text-teal-600 rounded-3xl">
-            <Crosshair size={32} />
+        <div className="mb-6">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight uppercase text-slate-900 leading-tight">
+            Kortrijk Academy for{" "}
+            <span className="text-teal-600">Regional Anesthesia</span>
+          </h1>
+          <div className="flex items-center gap-2 mt-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">KARA</p>
+            {dbLoading && <Loader2 className="h-3 w-3 animate-spin text-teal-600" />}
           </div>
         </div>
 
-        <div className="relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-teal-600 transition-colors" size={20} />
-          <Input 
-            className="w-full pl-12 h-14 bg-slate-50 border-none rounded-2xl font-bold text-slate-600 placeholder:text-slate-300 focus-visible:ring-2 focus-visible:ring-teal-500/20 transition-all"
-            placeholder="Zoek een techniek..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+        <div className="mb-6 aspect-[5/1] w-full overflow-hidden rounded-2xl shadow-sm sm:aspect-[6/1]">
+          <img
+            src="/images/blocks/kara-banner.png"
+            alt="KARA — Kortrijk Academy for Regional Anesthesia"
+            className="h-full w-full object-cover object-center"
           />
         </div>
+
+        <div className="mb-4 flex rounded-2xl bg-slate-100 p-1">
+          <button
+            type="button"
+            onClick={() => setViewMode("atlas")}
+            className={cn(
+              "flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all",
+              viewMode === "atlas"
+                ? "bg-white text-teal-700 shadow-sm"
+                : "text-slate-400"
+            )}
+          >
+            <Map size={14} />
+            Atlas
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode("list")}
+            className={cn(
+              "flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all",
+              viewMode === "list"
+                ? "bg-white text-teal-700 shadow-sm"
+                : "text-slate-400"
+            )}
+          >
+            <List size={14} />
+            Lijst
+          </button>
+        </div>
+
+        {viewMode === "list" && (
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-teal-600 transition-colors" size={20} />
+            <Input 
+              className="w-full pl-12 h-14 bg-slate-50 border-none rounded-2xl font-bold text-slate-600 placeholder:text-slate-300 focus-visible:ring-2 focus-visible:ring-teal-500/20 transition-all"
+              placeholder="Zoek een techniek..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        )}
       </div>
 
-      {/* LIJST */}
+      {viewMode === "atlas" ? (
+        <div className="px-6 py-6 max-w-2xl mx-auto">
+          <InteractiveBodyMap blocks={atlasBlocks} isLoading={dbLoading} />
+        </div>
+      ) : (
+      /* LIJST */
       <div className="px-6 py-8 grid gap-3 max-w-2xl mx-auto">
         {filteredBlocks.length > 0 ? (
           filteredBlocks.map((block) => (
@@ -130,6 +188,7 @@ export default function Blocks() {
           </div>
         )}
       </div>
+      )}
 
       {/* PLUS KNOP */}
       <Link href="/admin?type=blocks">
