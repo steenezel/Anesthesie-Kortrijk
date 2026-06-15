@@ -38,8 +38,13 @@ export function calculateMaxDose(weight: number, drugId: string, isHypervascular
 }
 
 export function calculateIntralipid(weight: number) {
+  const bolus = weight * 1.5; // 1.5 mL/kg
+  const infusion = weight * 0.25; // 0.25 mL/kg/min
   return {
-    bolus: weight * 1.5, // 1.5 mL/kg
-    infusion: weight * 0.25, // 0.25 mL/kg/min
+    bolus,
+    infusion,
+    infusionHigh: weight * 0.5, // 0.5 mL/kg/min bij persistente instabiliteit
+    maxDose30Min: weight * 12, // harde bovengrens eerste 30 min
+    maxBolusCount: 3,
   };
 }

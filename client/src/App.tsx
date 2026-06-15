@@ -26,6 +26,7 @@ import OnboardingSelection from "@/pages/onboarding-selection";
 import Journalclub from "@/pages/journal-list";
 import JournalDetail from "@/pages/journal-detail";
 import WordlePage from "./pages/WordlePage";
+import ChassePatatePage from "./pages/ChassePatatePage";
 import { BottomNav } from "@/components/bottom-nav";
 import SedationCalculatorPage from "@/pages/sedation-peds";
 import PocusList from "@/pages/pocus-list";
@@ -170,6 +171,7 @@ function Router() {
           <Route path="/checklist" component={ChecklistPage} />
           <Route path="/info" component={InfoPage} />
           <Route path="/wordle" component={WordlePage} />
+          <Route path="/chasse-patate" component={ChassePatatePage} />
           <Route path="/onboarding" component={OnboardingSelection} /> 
           <Route path="/onboarding/:type" component={OnboardingPage} />
           <Route path="/journalclub" component={Journalclub} />
