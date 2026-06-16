@@ -20,6 +20,7 @@ const contacts = [
 { name: "Francis Desmet", role: "Staf", phone: "3067", category: "staf" },
 { name: "Matthias Desmet", role: "Staf", phone: "3050", category: "staf" },
 { name: "Hans Detienne", role: "Staf", phone: "3074", category: "staf" },
+{ name: "Levin Garip", role: "Staf", phone: "3088", category: "staf" },
 { name: "Pieter-Jan Germonpré", role: "Staf", phone: "3065", category: "staf" },
 { name: "Frederik Hooft", role: "Staf", phone: "3052", category: "staf" },
 { name: "Sander Janssens", role: "Staf", phone: "3082", category: "staf" },
@@ -27,6 +28,7 @@ const contacts = [
 { name: "Matthias Lapere", role: "Staf", phone: "3054", category: "staf" },
 { name: "Anouk Lesenne", role: "Staf", phone: "3051", category: "staf" },
 { name: "Carlo Missant", role: "Staf", phone: "3060", category: "staf" },
+{ name: "Vahè Papinyan", role: "Staf", phone: "3081", category: "staf" },
 { name: "Pieter Jan Steelant", role: "Staf", phone: "3056", category: "staf" },
 { name: "Valerie Sterckx", role: "Staf", phone: "3043", category: "staf" },
 { name: "Theo Sykora", role: "Staf", phone: "3057", category: "staf" },
@@ -48,8 +50,8 @@ const contacts = [
 { name: "Secretariaat ANE Izegem", role: "Support", phone: "4646", category: "staf" },
 
 { name: "Emma Collin", role: "ASO", phone: "4805", category: "extra" },
-{ name: "Margaux Vervenne", role: "ASO", phone: "4808", category: "extra" },
 { name: "Sanne Decorte", role: "ASO", phone: "4809", category: "extra" },
+{ name: "Ionut Bojor", role: "ASO", phone: "3089", category: "extra" },
 
 { name: "Frauke Beyls", role: "Staf", phone: "4510", category: "staf" },
 { name: "An Bostyn", role: "Staf", phone: "4513", category: "staf" },
