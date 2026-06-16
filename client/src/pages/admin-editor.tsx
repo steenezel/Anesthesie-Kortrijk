@@ -620,7 +620,7 @@ export default function AdminEditor() {
                     />
                   </div>
 
-                  <UploadBar />
+                  <UploadBar showPdf />
 
                   <MarkdownSplitPane
                     value={content}
@@ -645,7 +645,7 @@ export default function AdminEditor() {
 
                   <BodyRegionSelector value={bodyRegions} onChange={setBodyRegions} />
 
-                  <UploadBar />
+                  <UploadBar showPdf />
 
                   <Tabs value={activeTab} onValueChange={(v: string) => setActiveTab(v as "tab1" | "tab2" | "tab3")} className="w-full">
                     <TabsList className="mb-4 grid h-12 w-full grid-cols-3 rounded-2xl bg-slate-100 p-1.5">
