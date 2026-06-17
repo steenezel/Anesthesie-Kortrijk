@@ -5,6 +5,34 @@ export const DERMATOME_MAP_IMAGE = "/images/reference/dermatome-map.png";
 export const DERMATOME_OVERLAP_NOTE =
   "Schematische afbakening van dermatomen als afzonderlijke segmenten. Er is in werkelijkheid aanzienlijke overlap tussen twee aangrenzende dermatomen.";
 
+export interface DermatomeDetailImage {
+  id: "hand" | "foot";
+  title: string;
+  subtitle: string;
+  src: string;
+  alt: string;
+  attribution?: string;
+}
+
+export const DERMATOME_DETAIL_IMAGES: DermatomeDetailImage[] = [
+  {
+    id: "hand",
+    title: "Hand",
+    subtitle: "Palmaire en dorsale zenuwgebieden — medianus, ulnaris, radialis",
+    src: "/images/reference/dermatome-hand.png",
+    alt: "Dermatomes of the hand — palmar and dorsal nerve territories",
+    attribution: "Bron: EBM Consult",
+  },
+  {
+    id: "foot",
+    title: "Voet",
+    subtitle: "Dorsaal, plantair, mediaal en lateraal — peroneaal, suraal, saphenus",
+    src: "/images/reference/dermatome-foot.png",
+    alt: "Sensory nerve distribution of the foot — dorsal, plantar, medial and lateral views",
+    attribution: "Bron: NYSORA",
+  },
+];
+
 export interface DermatomeLandmarkRow {
   levels: string;
   landmark: string;
