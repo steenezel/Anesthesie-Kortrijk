@@ -12,6 +12,7 @@ import Blocks from "@/pages/blocks";
 import BlockDetail from "@/pages/block-detail";
 import ReferenceHubPage from "@/pages/reference-hub";
 import ReferenceDermatomesPage from "@/pages/reference-dermatomes";
+import ReferenceOsteotomesPage from "@/pages/reference-osteotomes";
 import ReferencePlexusListPage from "@/pages/reference-plexus-list";
 import ReferencePlexusDetailPage from "@/pages/reference-plexus-detail";
 import CalculatorPage from "@/pages/last";
@@ -160,6 +161,7 @@ function Router() {
           <Route path="/protocols" component={ProtocolList} />
           <Route path="/protocols/:id" component={ProtocolDetail} />
           <Route path="/blocks/referentie/dermatomen" component={ReferenceDermatomesPage} />
+          <Route path="/blocks/referentie/osteotomen" component={ReferenceOsteotomesPage} />
           <Route path="/blocks/referentie/plexus/:id" component={ReferencePlexusDetailPage} />
           <Route path="/blocks/referentie/plexus" component={ReferencePlexusListPage} />
           <Route path="/blocks/referentie" component={ReferenceHubPage} />

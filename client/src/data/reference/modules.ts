@@ -9,6 +9,13 @@ export const REFERENCE_MODULES: ReferenceModuleCard[] = [
     status: "available",
   },
   {
+    id: "osteotomes",
+    title: "Osteotomen",
+    description: "Sensorische innervatie van bot — arm en been.",
+    href: "/blocks/referentie/osteotomen",
+    status: "available",
+  },
+  {
     id: "plexus",
     title: "Plexus-anatomie",
     description: "Brachiaal, cervicaal, lumbaal en sacraal plexus.",
