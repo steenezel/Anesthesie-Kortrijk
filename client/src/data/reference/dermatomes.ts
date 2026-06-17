@@ -6,7 +6,7 @@ export const DERMATOME_OVERLAP_NOTE =
   "Schematische afbakening van dermatomen als afzonderlijke segmenten. Er is in werkelijkheid aanzienlijke overlap tussen twee aangrenzende dermatomen.";
 
 export interface DermatomeDetailImage {
-  id: "hand" | "foot";
+  id: "hand" | "foot" | "lower-limb";
   title: string;
   subtitle: string;
   src: string;
@@ -30,6 +30,15 @@ export const DERMATOME_DETAIL_IMAGES: DermatomeDetailImage[] = [
     src: "/images/reference/dermatome-foot.png",
     alt: "Sensory nerve distribution of the foot — dorsal, plantar, medial and lateral views",
     attribution: "Bron: NYSORA",
+  },
+  {
+    id: "lower-limb",
+    title: "Onderste extremiteit",
+    subtitle:
+      "Cutane zenuwgebieden (linker paneel). Osseuze verdeling rechts — zie ook Osteotomen.",
+    src: "/images/reference/lower-limb-cutaneous-osseous.png",
+    alt: "Cutane zenuwverdeling onderste extremiteit — anterior en posterior",
+    attribution: "Bron: J Gentry, ASRA",
   },
 ];
 

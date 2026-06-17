@@ -45,6 +45,13 @@ export const PLEXUS_REFERENCES: PlexusReference[] = [
     imageSrc: "/images/reference/plexus/lumbaal.png",
     description:
       "Vorming van o.a. n. femoralis, n. obturatorius, n. cutaneus femoris lateralis en truncus lumbosacralis.",
+    extraImages: [
+      {
+        src: "/images/reference/lower-limb-nerves-branches.png",
+        title: "Onderste ledemaat — cutane en motorische takken",
+        attribution: "Bron: clinicalgate.com",
+      },
+    ],
   },
   {
     id: "sacraal",
@@ -54,6 +61,13 @@ export const PLEXUS_REFERENCES: PlexusReference[] = [
     attribution: "Craig Hacking 2015, CC-BY-SA-NC — Radiopaedia.org",
     description:
       "Vorming van o.a. n. ischiadicus, nervi glutei, n. pudendus en takken naar het bekken.",
+    extraImages: [
+      {
+        src: "/images/reference/lower-limb-nerves-branches.png",
+        title: "Onderste ledemaat — ischiadicus en distale takken",
+        attribution: "Bron: clinicalgate.com",
+      },
+    ],
   },
 ];
 

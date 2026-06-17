@@ -24,10 +24,10 @@ export const REFERENCE_MODULES: ReferenceModuleCard[] = [
   },
   {
     id: "motor",
-    title: "Motorische innervatie",
-    description: "Myotomen, klinische testen en uitvalbeelden.",
+    title: "Zenuwfunctietesten",
+    description: "Motor-, sensibel- en vasculaire testen per perifere zenuw.",
     href: "/blocks/referentie/innervatie",
-    status: "coming_soon",
+    status: "available",
   },
   {
     id: "nerve-atlas",

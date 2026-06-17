@@ -1,9 +1,10 @@
 export interface OsteotomeImage {
-  id: "upper-limb" | "lower-limb";
+  id: "upper-limb" | "lower-limb" | "lower-limb-detail";
   title: string;
   subtitle: string;
   src: string;
   alt: string;
+  attribution?: string;
 }
 
 export const OSTEOTOME_INTRO =
@@ -23,5 +24,14 @@ export const OSTEOTOME_IMAGES: OsteotomeImage[] = [
     subtitle: "Anterior (A) en posterior (B) — obturator, femoralis, peroneus, tibialis, sciaticus",
     src: "/images/reference/osteotome-lower-limb.png",
     alt: "Osteotomen onderste extremiteit — anterior en posterior zenuwgebieden per bot",
+  },
+  {
+    id: "lower-limb-detail",
+    title: "Onderste extremiteit — detail",
+    subtitle:
+      "Osseuze zenuwgebieden (rechter paneel). Cutane verdeling links — zie ook Dermatomen.",
+    src: "/images/reference/lower-limb-cutaneous-osseous.png",
+    alt: "Osseuze zenuwverdeling onderste extremiteit — anterior en posterior",
+    attribution: "Bron: J Gentry, ASRA",
   },
 ];
