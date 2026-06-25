@@ -41,6 +41,7 @@ import Marketplace from "@/pages/marketplace";
 import PainPumpPage from "@/pages/painpump";
 import CapriniCalculator from "@/pages/caprini";
 import AdminEditor from "@/pages/admin-editor";
+import { PwaUpdateListener } from "@/components/PwaUpdateListener";
 
 // --- DE BEWAKER (AuthGuard) ---
 function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -206,6 +207,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster />
+      <PwaUpdateListener />
       <Analytics />
       <AuthGuard>
         <Router />

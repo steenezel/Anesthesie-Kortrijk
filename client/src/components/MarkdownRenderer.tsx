@@ -19,7 +19,7 @@ const flattenText = (node: any): string => {
 
 const cleanCalloutTokens = (node: any): any => {
   if (typeof node === "string") {
-    return node.replace(/\[!(TIP|INFO|WARNING|CAUTION)\]/gi, "").trimStart();
+    return node.replace(/\[!(TIP|INFO|WARNING|CAUTION|NOTA)\]/gi, "").trimStart();
   }
 
   if (Array.isArray(node)) {
@@ -67,7 +67,8 @@ export function MarkdownRenderer({ content }: { content: string }) {
   return (
     <div
       className="prose prose-slate max-w-none [hyphens:auto] break-words
-        prose-h2:text-[10px] prose-h2:font-black prose-h2:uppercase prose-h2:tracking-[0.2em] prose-h2:text-blue-600 prose-h2:mb-2 prose-h2:mt-8 prose-h2:border-b prose-h2:border-blue-100 prose-h2:pb-1
+        prose-h2:text-xs lg:prose-h2:text-sm prose-h2:font-black prose-h2:uppercase prose-h2:tracking-[0.2em] prose-h2:text-blue-600 prose-h2:mb-2 prose-h2:mt-8 prose-h2:border-b prose-h2:border-blue-100 prose-h2:pb-1
+        prose-h3:text-[11px] lg:prose-h3:text-xs prose-h3:font-bold prose-h3:normal-case prose-h3:tracking-normal prose-h3:text-slate-800 prose-h3:mt-6 prose-h3:mb-2
         prose-a:text-blue-600 prose-a:font-bold prose-a:no-underline hover:prose-a:underline"
     >
       <ReactMarkdown
@@ -80,8 +81,9 @@ export function MarkdownRenderer({ content }: { content: string }) {
             const isWarning = /\[!(WARNING|CAUTION)\]/i.test(fullText);
             const isInfo = /\[!INFO\]/i.test(fullText);
             const isTip = /\[!TIP\]/i.test(fullText);
+            const isNota = /\[!NOTA\]/i.test(fullText);
 
-            if (!isWarning && !isInfo && !isTip) {
+            if (!isWarning && !isInfo && !isTip && !isNota) {
               return <blockquote className="my-8 border-l-4 border-slate-200 pl-6 text-slate-600">{children}</blockquote>;
             }
 
@@ -89,7 +91,9 @@ export function MarkdownRenderer({ content }: { content: string }) {
               ? { styles: "border-red-500 bg-red-50", title: "WAARSCHUWING", color: "text-red-600" }
               : isInfo
                 ? { styles: "border-blue-500 bg-blue-50", title: "INFO", color: "text-blue-600" }
-                : { styles: "border-emerald-500 bg-emerald-50", title: "TIP", color: "text-emerald-600" };
+                : isNota
+                  ? { styles: "border-slate-400 bg-slate-50", title: "NOTA", color: "text-slate-600" }
+                  : { styles: "border-emerald-500 bg-emerald-50", title: "TIP", color: "text-emerald-600" };
 
             return (
               <div className={`my-4 rounded-r-3xl border-l-8 p-5 shadow-sm ${config.styles}`}>

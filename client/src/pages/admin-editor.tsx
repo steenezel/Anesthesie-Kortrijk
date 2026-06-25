@@ -758,13 +758,31 @@ export default function AdminEditor() {
                 <ul className="space-y-1 text-[11px]">
                   <li><code>**vet**</code> = <b>vet</b></li>
                   <li><code>*cursief*</code> = <i>cursief</i></li>
-                  <li><code>onderlijnd</code> = niet standaard in pure Markdown</li>
-                  <li><code>## Kop 2</code> / <code>### Kop 3</code></li>
+                  <li>
+                    <code>## Kop 2</code> of tekst + <code>---</code> op volgende regel → blauwe sectietitel
+                  </li>
+                  <li><code>### Kop 3</code> → subsectie (kleiner, donkergrijs)</li>
                 </ul>
+              </section>
+              <section className="rounded-2xl border border-slate-200 bg-white p-4 text-slate-800">
+                <p className="mb-2 font-black uppercase underline">Blockquote</p>
+                <p className="mb-2">Gewone citeerregel zonder label:</p>
+                <pre className="overflow-x-auto rounded-xl bg-slate-50 p-3 text-[10px] leading-relaxed">{`> Dit is een algemene opmerking of citaat.`}</pre>
+              </section>
+              <section className="rounded-2xl border border-slate-200 bg-white p-4 text-slate-800">
+                <p className="mb-2 font-black uppercase underline">Tabellen</p>
+                <pre className="overflow-x-auto rounded-xl bg-slate-50 p-3 text-[10px] leading-relaxed">{`| Kolom A | Kolom B |
+| :--- | :--- |
+| Rij 1 | Waarde |`}</pre>
               </section>
               <section className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-emerald-900">
                 <p className="mb-1 font-black uppercase underline">Callouts</p>
-                <p>Gebruik <code>&gt; [!INFO]</code>, <code>&gt; [!TIP]</code> en <code>&gt; [!WARNING]</code>.</p>
+                <p className="mb-2">
+                  Gebruik <code>&gt; [!INFO]</code>, <code>&gt; [!TIP]</code>, <code>&gt; [!NOTA]</code> en{" "}
+                  <code>&gt; [!WARNING]</code> op de eerste regel van een blockquote.
+                </p>
+                <pre className="overflow-x-auto rounded-xl bg-white/60 p-3 text-[10px] leading-relaxed text-emerald-950">{`> [!TIP]
+> Controleer altijd de neurovasculaire status vóór het block.`}</pre>
               </section>
               <section className="rounded-2xl border border-amber-100 bg-amber-50 p-4 text-amber-900">
                 <p className="mb-1 font-black uppercase underline">Media invoegen</p>
@@ -776,15 +794,6 @@ export default function AdminEditor() {
                   <p>
                     Selecteer één of meerdere lichaamsdelen zodat deze techniek op de interactieve
                     body map verschijnt (bv. ISB → Head &amp; Neck + Upper Extremity).
-                  </p>
-                </section>
-              )}
-              {type === "blocks" && (
-                <section className="rounded-2xl border border-orange-100 bg-orange-50 p-4 text-orange-900">
-                  <p className="mb-1 font-black uppercase underline">Calculators</p>
-                  <p>
-                    Plaats <code>[CAUDAL_CALC]</code> op een nieuwe regel in Algemeen, Anatomie of Techniek om de
-                    Caudaal Volume Calculator te tonen.
                   </p>
                 </section>
               )}
