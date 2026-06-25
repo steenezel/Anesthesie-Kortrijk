@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, ChevronRight, ChevronLeft, Scan, Plus, Loader2 } from "lucide-react";
+import { Search, ChevronRight, ChevronLeft, Scan, Loader2 } from "lucide-react";
+import { AdminAddButton } from "@/components/AdminAddButton";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -47,7 +48,10 @@ export default function PocusList() {
               <ChevronLeft className="h-4 w-4 mr-1" /> Dashboard
             </div>
           </Link>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase italic leading-none mb-6">POCUS</h1>
+          <div className="flex items-start justify-between gap-4 mb-6">
+            <h1 className="text-4xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">POCUS</h1>
+            <AdminAddButton mode="header" href="/admin?type=pocus" label="Nieuwe scan" color="blue" />
+          </div>
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 h-5 w-5" />
             <Input 
@@ -88,11 +92,7 @@ export default function PocusList() {
         )}
       </div>
 
-      <Link href="/admin?type=pocus">
-        <button className="fixed bottom-24 right-6 p-4 bg-blue-600 text-white rounded-full shadow-2xl hover:scale-110 active:scale-90 transition-all z-30">
-          <Plus size={28} />
-        </button>
-      </Link>
+      <AdminAddButton mode="fab" href="/admin?type=pocus" label="Nieuwe scan" color="blue" />
     </div>
   );
 }

@@ -18,9 +18,9 @@ import {
   Ear,
   Zap,
   TreePalm,
-  Plus,
   Loader2
 } from "lucide-react";
+import { AdminAddButton } from "@/components/AdminAddButton";
 
 // Interface voor TypeScript
 interface DbProtocol {
@@ -163,16 +163,19 @@ export default function ProtocolList() {
         </Link>
       )}
       
-      <div className="mb-8">
-        <h1 className="text-4xl font-black tracking-tightest uppercase text-slate-900 leading-none mb-2">
-          Protocollen
-        </h1>
-        <div className="flex items-center gap-2">
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">
-            Klinische Richtlijnen
-          </p>
-          {dbLoading && <Loader2 className="h-3 w-3 animate-spin text-teal-600" />}
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-4xl font-black tracking-tightest uppercase text-slate-900 leading-none mb-2">
+            Protocollen
+          </h1>
+          <div className="flex items-center gap-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">
+              Klinische Richtlijnen
+            </p>
+            {dbLoading && <Loader2 className="h-3 w-3 animate-spin text-teal-600" />}
+          </div>
         </div>
+        <AdminAddButton mode="header" href="/admin?type=protocols" label="Nieuw protocol" />
       </div>
 
       {!activeDiscipline && (
@@ -198,12 +201,6 @@ export default function ProtocolList() {
               </Card>
             ))}
           </div>
-
-          <Link href="/admin?type=protocols">
-            <button className="fixed bottom-24 right-6 p-4 bg-teal-600 text-white rounded-full shadow-2xl z-50 hover:scale-110 active:scale-95 transition-all flex items-center justify-center">
-              <Plus size={28} />
-            </button>
-          </Link>
         </>
       )}
 
@@ -249,6 +246,8 @@ export default function ProtocolList() {
           </div>
         </div>
       )}
+
+      <AdminAddButton mode="fab" href="/admin?type=protocols" label="Nieuw protocol" />
     </div>
   );
 }

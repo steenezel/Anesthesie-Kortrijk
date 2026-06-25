@@ -13,9 +13,9 @@ import {
   Zap, 
   FolderOpen, 
   Siren,
-  Plus,
   Loader2
 } from "lucide-react";
+import { AdminAddButton } from "@/components/AdminAddButton";
 
 interface DbJournalArticle {
   id: string;
@@ -118,16 +118,20 @@ export default function Journalclub() {
         <button onClick={() => setActiveFolder(null)} className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest py-4 group">
           <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Terug
         </button>
-        <header className="flex items-center gap-4 mb-8">
-          <div className="p-4 bg-teal-600 text-white rounded-3xl shadow-lg"><FolderOpen size={32} /></div>
-          <div>
-            <h1 className="text-4xl font-black tracking-tighter uppercase text-slate-900 leading-none">{activeFolder}</h1>
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-600 mt-1">{filteredArticles.length} publicaties</p>
+        <header className="flex items-start justify-between gap-4 mb-8">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="p-4 bg-teal-600 text-white rounded-3xl shadow-lg shrink-0"><FolderOpen size={32} /></div>
+            <div className="min-w-0">
+              <h1 className="text-4xl font-black tracking-tighter uppercase text-slate-900 leading-none">{activeFolder}</h1>
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-600 mt-1">{filteredArticles.length} publicaties</p>
+            </div>
           </div>
+          <AdminAddButton mode="header" href="/admin?type=journal_club" label="Nieuw artikel" />
         </header>
         <div className="grid grid-cols-1 w-full gap-2">
           {filteredArticles.map(article => <ArticleCard key={article.id} article={article} />)}
         </div>
+        <AdminAddButton mode="fab" href="/admin?type=journal_club" label="Nieuw artikel" />
       </div>
     );
   }
@@ -136,23 +140,19 @@ export default function Journalclub() {
     <div className="space-y-10 pb-24 animate-in fade-in duration-500 max-w-2xl mx-auto px-4">
       <Link href="/"><div className="flex items-center text-slate-400 font-black uppercase text-[10px] tracking-widest cursor-pointer py-4"><ChevronLeft className="h-4 w-4 mr-1" /> Home</div></Link>
       
-      <section>
-        <h1 className="text-3xl font-black tracking-tightest uppercase text-slate-900 mb-2">Journal <span className="text-teal-600">Club</span></h1>
-        <div className="flex items-center gap-2">
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">Evidence Based Medicine</p>
-          {dbLoading && <Loader2 className="h-3 w-3 animate-spin text-slate-300" />}
+      <section className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-black tracking-tightest uppercase text-slate-900 mb-2">Journal <span className="text-teal-600">Club</span></h1>
+          <div className="flex items-center gap-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">Evidence Based Medicine</p>
+            {dbLoading && <Loader2 className="h-3 w-3 animate-spin text-slate-300" />}
+          </div>
         </div>
+        <AdminAddButton mode="header" href="/admin?type=journal_club" label="Nieuw artikel" />
       </section>
 
       <section className="space-y-4">
         <h2 className="text-[11px] font-black uppercase tracking-widest text-slate-400">Disciplines</h2>
-        
-        {/* Floating Action Button voor Admin */}
-        <Link href="/admin?type=journal_club">
-          <button className="fixed bottom-24 right-6 p-4 bg-teal-600 text-white rounded-full shadow-2xl z-50 hover:scale-110 active:scale-95 transition-all flex items-center justify-center">
-            <Plus size={24} />
-          </button>
-        </Link>
 
         <div className="grid grid-cols-1 gap-2">
           {DISCIPLINES.map((disc) => (
@@ -173,6 +173,8 @@ export default function Journalclub() {
           {recentArticles.map(a => <ArticleCard key={a.id} article={a} />)}
         </div>
       </section>
+
+      <AdminAddButton mode="fab" href="/admin?type=journal_club" label="Nieuw artikel" />
     </div>
   );
 }
