@@ -41,6 +41,7 @@ import Marketplace from "@/pages/marketplace";
 import PainPumpPage from "@/pages/painpump";
 import CapriniCalculator from "@/pages/caprini";
 import AdminEditor from "@/pages/admin-editor";
+import LogbookPage from "@/pages/logbook";
 import { PwaUpdateListener } from "@/components/PwaUpdateListener";
 
 // --- DE BEWAKER (AuthGuard) ---
@@ -193,6 +194,7 @@ function Router() {
           <Route path="/pocus" component={PocusList} />
           <Route path="/pocus/:id" component={PocusDetail} />
           <Route path="/marketplace" component={Marketplace} />
+          <Route path="/logbook" component={LogbookPage} />
           <Route path="/calculator/caprini" component={CapriniCalculator} />
           <Route path="/admin" component={AdminEditor} />
           <Route component={NotFound} />

@@ -11,7 +11,8 @@ import {
   Calculator,
   BookOpenCheck,
   Waves,
-  ShoppingBag
+  ShoppingBag,
+  ClipboardList
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
@@ -47,6 +48,16 @@ const categories = [
     color: "bg-purple-500",
     lightColor: "bg-purple-50",
     borderColor: "border-purple-200",
+    isExternal: false
+  },
+  {
+    title: "ASO Logboek",
+    description: "Registratie LRA & invasieve lijnen",
+    icon: ClipboardList,
+    href: "/logbook",
+    color: "bg-teal-600",
+    lightColor: "bg-teal-50",
+    borderColor: "border-teal-200",
     isExternal: false
   },
   {
