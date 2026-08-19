@@ -14,7 +14,7 @@ import { sql, eq, and, desc, gte, lte, isNotNull, type SQL } from "drizzle-orm";
 
 const DEFAULT_LOGBOOK_USERS = [
   { username: "emma", name: "Emma Collin", role: "aso" as const, pin: "5758" },
-  { username: "sanne", name: "Sanne Decorte", role: "aso" as const, pin: "6140" },
+  { username: "sanned", name: "Sanne Decorte", role: "aso" as const, pin: "6140" },
   { username: "magnus", name: "Magnus Van Kerckhove", role: "aso" as const, pin: "2277" },
   { username: "test", name: "Test Gebruiker", role: "aso" as const, pin: "1111" },
   { username: "staf", name: "Supervisor Staf", role: "supervisor" as const, pin: "6666" },
