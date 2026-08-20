@@ -10,21 +10,31 @@ import {
   insertLogbookEntrySchema,
   type UserRole,
 } from "../shared/schema.js";
-import { sql, eq, and, desc, gte, lte, isNotNull, type SQL } from "drizzle-orm";
+import { sql, eq, and, desc, gte, lte, isNotNull, inArray, type SQL } from "drizzle-orm";
 
+/** Bron van waarheid voor de zichtbare ASO-/supervisorlijst.
+ *  Alleen deze usernames verschijnen in de app. Verwijder hier = verdwijnt uit de lijst.
+ *  Zet `hidden: true` voor testaccounts (onderaan, gedempt). */
 const DEFAULT_LOGBOOK_USERS = [
   { username: "emma", name: "Emma Collin", role: "aso" as const, pin: "5758" },
-  { username: "sanne", name: "Sanne De Corte", role: "aso" as const, pin: "6140" },
+  { username: "sanne", name: "Sanne Decorte", role: "aso" as const, pin: "6140" },
   { username: "magnus", name: "Magnus Van Kerckhove", role: "aso" as const, pin: "2277" },
   { username: "staf", name: "Supervisor Staf", role: "supervisor" as const, pin: "6666" },
-];
+  { username: "test", name: "Test Gebruiker", role: "aso" as const, pin: "0000", hidden: true },
+] as const;
 
-function toPublicUser(user: { id: string; username: string; name: string | null; role: UserRole | null | undefined }) {
+type SeedUser = (typeof DEFAULT_LOGBOOK_USERS)[number];
+
+function toPublicUser(
+  user: { id: string; username: string; name: string | null; role: UserRole | null | undefined },
+  seed?: SeedUser,
+) {
   return {
     id: user.id,
     username: user.username,
     name: user.name ?? user.username,
     role: (user.role ?? "aso") as UserRole,
+    hidden: Boolean(seed && "hidden" in seed && seed.hidden),
   };
 }
 
@@ -52,6 +62,16 @@ async function ensureLogbookUsers() {
           pin: seed.pin,
           password: seed.pin,
         });
+      } else {
+        await db
+          .update(users)
+          .set({
+            name: seed.name,
+            role: seed.role,
+            pin: seed.pin,
+            password: seed.pin,
+          })
+          .where(eq(users.username, seed.username));
       }
     } catch (error) {
       console.error(`Logbook seed failed for ${seed.username}:`, error);
@@ -231,23 +251,36 @@ app.delete("/api/marketplace/:id", async (req, res) => {
       await ensureLogbookUsers();
       const role = req.query.role ? String(req.query.role) : "";
 
-      const baseQuery = db
+      // Alleen accounts uit DEFAULT_LOGBOOK_USERS (niet elke oude rij in de DB)
+      const seedByUsername = new Map<string, SeedUser>(
+        DEFAULT_LOGBOOK_USERS.map((seed) => [seed.username, seed]),
+      );
+      const allowedUsernames: string[] = DEFAULT_LOGBOOK_USERS.map((seed) => seed.username);
+
+      const filters: SQL[] = [
+        isNotNull(users.name),
+        inArray(users.username, allowedUsernames),
+      ];
+      if (role === "aso" || role === "supervisor") {
+        filters.push(eq(users.role, role as UserRole));
+      }
+
+      const rows = await db
         .select({
           id: users.id,
           username: users.username,
           name: users.name,
           role: users.role,
         })
-        .from(users);
+        .from(users)
+        .where(and(...filters))
+        .orderBy(users.name);
 
-      const rows =
-        role === "aso" || role === "supervisor"
-          ? await baseQuery
-              .where(and(isNotNull(users.name), eq(users.role, role as UserRole)))
-              .orderBy(users.name)
-          : await baseQuery.where(isNotNull(users.name)).orderBy(users.name);
+      const published = rows
+        .map((row) => toPublicUser(row, seedByUsername.get(row.username)))
+        .sort((a, b) => Number(a.hidden) - Number(b.hidden) || a.name.localeCompare(b.name, "nl"));
 
-      res.json(rows.map(toPublicUser));
+      res.json(published);
     } catch (error) {
       console.error("Logbook users error:", error);
       res.status(500).json({ error: "Kon gebruikers niet ophalen" });
