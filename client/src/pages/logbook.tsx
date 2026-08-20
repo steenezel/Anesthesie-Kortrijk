@@ -52,6 +52,7 @@ type LogbookUser = {
   username: string;
   name: string;
   role: UserRole;
+  hidden?: boolean;
 };
 
 type LogbookEntry = {
@@ -300,12 +301,34 @@ function LogbookLogin({ onLogin }: { onLogin: (user: LogbookUser) => void }) {
                   key={user.id}
                   type="button"
                   onClick={() => setSelectedUser(user)}
-                  className="w-full rounded-2xl border-2 border-slate-100 bg-white p-4 flex items-center gap-3 active:scale-[0.98] transition-all"
+                  className={cn(
+                    "w-full rounded-2xl border-2 p-4 flex items-center gap-3 active:scale-[0.98] transition-all",
+                    user.hidden
+                      ? "border-transparent bg-transparent opacity-40 hover:opacity-70"
+                      : "border-slate-100 bg-white",
+                  )}
                 >
-                  <div className="h-10 w-10 rounded-xl bg-teal-50 flex items-center justify-center">
-                    <UserRound className="h-5 w-5 text-teal-600" />
+                  <div
+                    className={cn(
+                      "h-10 w-10 rounded-xl flex items-center justify-center",
+                      user.hidden ? "bg-slate-100" : "bg-teal-50",
+                    )}
+                  >
+                    <UserRound
+                      className={cn(
+                        "h-5 w-5",
+                        user.hidden ? "text-slate-300" : "text-teal-600",
+                      )}
+                    />
                   </div>
-                  <span className="font-black uppercase text-sm tracking-tight text-slate-900">
+                  <span
+                    className={cn(
+                      "uppercase tracking-tight",
+                      user.hidden
+                        ? "text-xs font-medium text-slate-400 normal-case"
+                        : "text-sm font-black text-slate-900",
+                    )}
+                  >
                     {user.name}
                   </span>
                 </button>
@@ -812,7 +835,7 @@ function SupervisorOverview() {
     const rows = entries.map((entry) => [
       entry.date,
       entry.asoName || entry.asoUsername || entry.userId,
-      entry.category,
+      entry.category === "Centraal" ? "CVC" : entry.category,
       entry.subCategory,
       entry.technique,
       entry.status.toUpperCase(),
@@ -955,7 +978,11 @@ function buildSupervisorStats(entries: LogbookEntry[]) {
     };
     current.total += 1;
     if (entry.status === "pass") current.pass += 1;
-    current.techniques[entry.technique] = (current.techniques[entry.technique] || 0) + 1;
+    const statKey =
+      entry.category === "Arterieel" || entry.category === "Centraal"
+        ? `${formatEntryTitle(entry)} · ${entry.subCategory} · ${entry.technique}`
+        : entry.technique;
+    current.techniques[statKey] = (current.techniques[statKey] || 0) + 1;
     byAso.set(key, current);
   }
 
@@ -1017,17 +1044,32 @@ function SummaryBadge({ label, value }: { label: string; value: string | number 
   );
 }
 
+function formatEntryTitle(entry: LogbookEntry) {
+  if (entry.category === "Arterieel") return "Arterieel";
+  if (entry.category === "Centraal") return "CVC";
+  return entry.technique;
+}
+
+function formatEntryDetails(entry: LogbookEntry) {
+  if (entry.category === "Arterieel" || entry.category === "Centraal") {
+    return [entry.subCategory, entry.technique].filter(Boolean).join(" · ");
+  }
+  return entry.subCategory;
+}
+
 function EntryRow({ entry, showAso = false }: { entry: LogbookEntry; showAso?: boolean }) {
   const pass = entry.status === "pass";
+  const details = formatEntryDetails(entry);
   return (
     <div className="rounded-2xl bg-white border border-slate-100 p-3 flex items-center gap-3">
       <div className="min-w-0 flex-1">
         <p className="font-black uppercase text-sm tracking-tight text-slate-900 truncate">
-          {entry.technique}
+          {formatEntryTitle(entry)}
         </p>
         <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-          {formatNlDate(entry.date)} · {entry.category}
-          {showAso ? ` · ${entry.asoName || entry.asoUsername || ""}` : ` · ${entry.subCategory}`}
+          {formatNlDate(entry.date)}
+          {details ? ` · ${details}` : ""}
+          {showAso ? ` · ${entry.asoName || entry.asoUsername || ""}` : ""}
           {entry.supervisionLevel ? ` · ${entry.supervisionLevel}` : ""}
         </p>
         {entry.notes && (
