@@ -98,8 +98,24 @@ export const insertMarketplaceSchema = createInsertSchema(marketplace).pick({
 export type InsertMarketplace = z.infer<typeof insertMarketplaceSchema>;
 export type Marketplace = typeof marketplace.$inferSelect;
 
-export const spinalAgents = ["Scandicaine", "Hyperbare Marcaine"] as const;
+export const spinalAgents = ["Scandicaine", "Isobare Marcaine"] as const;
 export type SpinalAgent = (typeof spinalAgents)[number];
+
+/** Accepts "2,5" or "2.5" and validates 1–5 ml. */
+export const doseMlSchema = z.preprocess((val) => {
+  if (typeof val === "string") {
+    const normalized = val.trim().replace(",", ".");
+    if (normalized === "") return undefined;
+    return Number(normalized);
+  }
+  return val;
+}, z
+  .number({
+    required_error: "Vul de dosis in ml in",
+    invalid_type_error: "Vul de dosis in ml in",
+  })
+  .min(1, "Dosis moet tussen 1 en 5 ml liggen")
+  .max(5, "Dosis moet tussen 1 en 5 ml liggen"));
 
 export const spinalLogs = pgTable("spinal_logs", {
   id: serial("id").primaryKey(),
@@ -107,10 +123,15 @@ export const spinalLogs = pgTable("spinal_logs", {
   patientIdentifier: text("patient_identifier").notNull(),
   agentUsed: text("agent_used").$type<SpinalAgent>().notNull().default("Scandicaine"),
   doseAdministered: real("dose_administered").notNull(),
+  timeToSurgeryStart: integer("time_to_surgery_start").notNull(),
   surgicalSuccess: boolean("surgical_success").notNull(),
-  durationOfAction: integer("duration_of_action").notNull(),
+  failureInsufficientDuration: boolean("failure_insufficient_duration").notNull().default(false),
+  failureInsufficientMotor: boolean("failure_insufficient_motor").notNull().default(false),
+  failureInsufficientSensory: boolean("failure_insufficient_sensory").notNull().default(false),
   pacuStayDuration: integer("pacu_stay_duration").notNull(),
   urinaryRetention: boolean("urinary_retention").notNull(),
+  opioidsNeededPacu: boolean("opioids_needed_pacu").notNull(),
+  notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -123,11 +144,34 @@ export const insertSpinalLogSchema = createInsertSchema(spinalLogs)
     aslOrAnesthetistName: z.string().trim().min(2, "Naam of initialen verplicht"),
     patientIdentifier: z.string().trim().min(1, "Initialen patiënt verplicht"),
     agentUsed: z.enum(spinalAgents),
-    doseAdministered: z.coerce.number().positive("Dosis moet groter dan 0 ml zijn"),
+    doseAdministered: doseMlSchema,
+    timeToSurgeryStart: z.coerce
+      .number()
+      .int()
+      .min(0, "Tijd tot start chirurgie kan niet negatief zijn"),
     surgicalSuccess: z.boolean(),
-    durationOfAction: z.coerce.number().int().min(0, "Werkingsduur kan niet negatief zijn"),
+    failureInsufficientDuration: z.boolean().default(false),
+    failureInsufficientMotor: z.boolean().default(false),
+    failureInsufficientSensory: z.boolean().default(false),
     pacuStayDuration: z.coerce.number().int().min(0, "PACU-duur kan niet negatief zijn"),
     urinaryRetention: z.boolean(),
+    opioidsNeededPacu: z.boolean(),
+    notes: z.string().trim().optional().nullable(),
+  })
+  .transform((data) => {
+    if (data.surgicalSuccess) {
+      return {
+        ...data,
+        failureInsufficientDuration: false,
+        failureInsufficientMotor: false,
+        failureInsufficientSensory: false,
+        notes: data.notes?.trim() ? data.notes.trim() : null,
+      };
+    }
+    return {
+      ...data,
+      notes: data.notes?.trim() ? data.notes.trim() : null,
+    };
   });
 
 export const selectSpinalLogSchema = createSelectSchema(spinalLogs);

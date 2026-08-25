@@ -17,6 +17,8 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -35,26 +37,66 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const SPINAL_AGENTS = ["Scandicaine", "Hyperbare Marcaine"] as const;
+const SPINAL_AGENTS = ["Scandicaine", "Isobare Marcaine"] as const;
 type SpinalAgent = (typeof SPINAL_AGENTS)[number];
+
+const FAILURE_REASONS = [
+  {
+    name: "failureInsufficientDuration" as const,
+    label: "Onvoldoende lange werkingsduur",
+  },
+  {
+    name: "failureInsufficientMotor" as const,
+    label: "Onvoldoende motorblock",
+  },
+  {
+    name: "failureInsufficientSensory" as const,
+    label: "Onvoldoende sensorisch block",
+  },
+];
+
+function parseDoseMl(value: unknown): number | undefined {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : undefined;
+  }
+  if (typeof value !== "string") return undefined;
+  const normalized = value.trim().replace(",", ".");
+  if (normalized === "") return undefined;
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+const doseMlFormSchema = z.preprocess(
+  parseDoseMl,
+  z
+    .number({
+      required_error: "Vul de dosis in ml in",
+      invalid_type_error: "Vul de dosis in ml in",
+    })
+    .min(1, "Dosis moet tussen 1 en 5 ml liggen")
+    .max(5, "Dosis moet tussen 1 en 5 ml liggen"),
+);
 
 const spinalLogFormSchema = z.object({
   aslOrAnesthetistName: z.string().trim().min(2, "Naam of initialen verplicht"),
   patientIdentifier: z.string().trim().min(1, "Initialen patiënt verplicht"),
   agentUsed: z.enum(SPINAL_AGENTS),
-  doseAdministered: z.coerce
-    .number({ invalid_type_error: "Vul de dosis in ml in" })
-    .positive("Dosis moet groter dan 0 ml zijn"),
-  surgicalSuccess: z.boolean(),
-  durationOfAction: z.coerce
-    .number({ invalid_type_error: "Vul de werkingsduur in minuten in" })
+  doseAdministered: doseMlFormSchema,
+  timeToSurgeryStart: z.coerce
+    .number({ invalid_type_error: "Vul de tijd in minuten in" })
     .int()
-    .min(0, "Werkingsduur kan niet negatief zijn"),
+    .min(0, "Tijd tot start chirurgie kan niet negatief zijn"),
+  surgicalSuccess: z.boolean(),
+  failureInsufficientDuration: z.boolean(),
+  failureInsufficientMotor: z.boolean(),
+  failureInsufficientSensory: z.boolean(),
   pacuStayDuration: z.coerce
     .number({ invalid_type_error: "Vul de PACU-duur in minuten in" })
     .int()
     .min(0, "PACU-duur kan niet negatief zijn"),
   urinaryRetention: z.boolean(),
+  opioidsNeededPacu: z.boolean(),
+  notes: z.string().optional(),
 });
 
 type SpinalLogFormValues = z.infer<typeof spinalLogFormSchema>;
@@ -78,12 +120,33 @@ type SpinalLog = {
   patientIdentifier: string;
   agentUsed: SpinalAgent;
   doseAdministered: number;
+  timeToSurgeryStart: number;
   surgicalSuccess: boolean;
-  durationOfAction: number;
+  failureInsufficientDuration: boolean;
+  failureInsufficientMotor: boolean;
+  failureInsufficientSensory: boolean;
   pacuStayDuration: number;
   urinaryRetention: boolean;
+  opioidsNeededPacu: boolean;
+  notes?: string | null;
   createdAt?: string | Date | null;
 };
+
+const emptyFormValues = (name: string) => ({
+  aslOrAnesthetistName: name,
+  patientIdentifier: "",
+  agentUsed: "Scandicaine" as const,
+  doseAdministered: undefined,
+  timeToSurgeryStart: undefined,
+  surgicalSuccess: true,
+  failureInsufficientDuration: false,
+  failureInsufficientMotor: false,
+  failureInsufficientSensory: false,
+  pacuStayDuration: undefined,
+  urinaryRetention: false,
+  opioidsNeededPacu: false,
+  notes: "",
+});
 
 const SESSION_KEY = "ane_spinal_log_session";
 
@@ -414,20 +477,25 @@ function SpinalLogForm({
   const { toast } = useToast();
   const form = useForm<SpinalLogFormValues>({
     resolver: zodResolver(spinalLogFormSchema),
-    defaultValues: {
-      aslOrAnesthetistName: session.user.name,
-      patientIdentifier: "",
-      agentUsed: "Scandicaine",
-      doseAdministered: undefined,
-      surgicalSuccess: true,
-      durationOfAction: undefined,
-      pacuStayDuration: undefined,
-      urinaryRetention: false,
-    },
+    defaultValues: emptyFormValues(session.user.name),
   });
+  const surgicalSuccess = form.watch("surgicalSuccess");
 
   const mutation = useMutation({
     mutationFn: async (values: SpinalLogFormValues) => {
+      const payload = {
+        ...values,
+        failureInsufficientDuration: values.surgicalSuccess
+          ? false
+          : values.failureInsufficientDuration,
+        failureInsufficientMotor: values.surgicalSuccess
+          ? false
+          : values.failureInsufficientMotor,
+        failureInsufficientSensory: values.surgicalSuccess
+          ? false
+          : values.failureInsufficientSensory,
+        notes: values.notes?.trim() || null,
+      };
       const res = await fetch("/api/spinal-logs", {
         method: "POST",
         credentials: "include",
@@ -435,14 +503,18 @@ function SpinalLogForm({
           "Content-Type": "application/json",
           ...authHeaders(session),
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(payload),
       });
       if (res.status === 401) {
         onUnauthorized();
         throw new Error("Sessie verlopen");
       }
       if (!res.ok) {
-        throw new Error("Opslaan mislukt");
+        const payload = await res.json().catch(() => null) as
+          | { error?: string; details?: string[] }
+          | null;
+        const detail = payload?.details?.join("; ");
+        throw new Error(detail || payload?.error || "Opslaan mislukt");
       }
       return res.json();
     },
@@ -453,16 +525,7 @@ function SpinalLogForm({
         description: "SMASH-invoer is opgeslagen.",
       });
       if (navigator.vibrate) navigator.vibrate(40);
-      form.reset({
-        aslOrAnesthetistName: session.user.name,
-        patientIdentifier: "",
-        agentUsed: "Scandicaine",
-        doseAdministered: undefined,
-        surgicalSuccess: true,
-        durationOfAction: undefined,
-        pacuStayDuration: undefined,
-        urinaryRetention: false,
-      });
+      form.reset(emptyFormValues(session.user.name));
     },
     onError: (error: Error) => {
       toast({
@@ -481,7 +544,7 @@ function SpinalLogForm({
         </p>
         <p className="text-sm text-slate-600 mt-1">
           Scandicaine versus Marcaine: Anesthesia Spinal Hip — registreer na THP of
-          scandicaine een valabel alternatief is voor hyperbare marcaine.
+          scandicaine een valabel alternatief is voor isobare marcaine.
         </p>
       </div>
 
@@ -562,15 +625,51 @@ function SpinalLogForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  Dosis (ml)
+                  Dosis (ml) · 1–5
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="bv. 2,5"
+                    className="h-12 rounded-xl bg-white"
+                    value={
+                      field.value === undefined || field.value === null
+                        ? ""
+                        : String(field.value)
+                    }
+                    onChange={(event) => {
+                      const raw = event.target.value;
+                      // Allow typing digits, comma/dot while editing
+                      if (raw === "" || /^[0-9]*([.,][0-9]*)?$/.test(raw)) {
+                        field.onChange(raw === "" ? undefined : raw);
+                      }
+                    }}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="timeToSurgeryStart"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  Tijd prik → start chirurgie (min)
                 </FormLabel>
                 <FormControl>
                   <Input
                     type="number"
-                    inputMode="decimal"
+                    inputMode="numeric"
                     min={0}
-                    step={0.1}
-                    placeholder="bv. 3"
+                    step={1}
+                    placeholder="min"
                     className="h-12 rounded-xl bg-white"
                     value={field.value ?? ""}
                     onChange={(event) =>
@@ -594,72 +693,80 @@ function SpinalLogForm({
                 <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                   Chirurgisch succes zonder conversie
                 </FormLabel>
-                <YesNoToggle value={field.value} onChange={field.onChange} />
+                <YesNoToggle
+                  value={field.value}
+                  onChange={(value) => {
+                    field.onChange(value);
+                    if (value) {
+                      form.setValue("failureInsufficientDuration", false);
+                      form.setValue("failureInsufficientMotor", false);
+                      form.setValue("failureInsufficientSensory", false);
+                    }
+                  }}
+                />
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <div className="grid grid-cols-2 gap-3">
-            <FormField
-              control={form.control}
-              name="durationOfAction"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    Werkingsduur (min)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      inputMode="numeric"
-                      min={0}
-                      step={1}
-                      placeholder="min"
-                      className="h-12 rounded-xl bg-white"
-                      value={field.value ?? ""}
-                      onChange={(event) =>
-                        field.onChange(event.target.value === "" ? undefined : event.target.value)
-                      }
-                      onBlur={field.onBlur}
-                      name={field.name}
-                      ref={field.ref}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="pacuStayDuration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    PACU-verblijf (min)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      inputMode="numeric"
-                      min={0}
-                      step={1}
-                      placeholder="min"
-                      className="h-12 rounded-xl bg-white"
-                      value={field.value ?? ""}
-                      onChange={(event) =>
-                        field.onChange(event.target.value === "" ? undefined : event.target.value)
-                      }
-                      onBlur={field.onBlur}
-                      name={field.name}
-                      ref={field.ref}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          {!surgicalSuccess && (
+            <div className="rounded-2xl border-2 border-rose-100 bg-rose-50/60 p-4 space-y-3">
+              <p className="text-[10px] font-black uppercase tracking-widest text-rose-700">
+                Reden van falen (optioneel, meerdere mogelijk)
+              </p>
+              {FAILURE_REASONS.map((reason) => (
+                <FormField
+                  key={reason.name}
+                  control={form.control}
+                  name={reason.name}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start gap-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={(checked) => field.onChange(checked === true)}
+                          className="mt-0.5 h-5 w-5 rounded-md"
+                        />
+                      </FormControl>
+                      <FormLabel className="text-sm font-bold text-slate-800 leading-snug cursor-pointer">
+                        {reason.label}
+                      </FormLabel>
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
+          )}
+
+          <FormField
+            control={form.control}
+            name="pacuStayDuration"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  PACU-verblijf (min)
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    step={1}
+                    placeholder="min"
+                    className="h-12 rounded-xl bg-white"
+                    value={field.value ?? ""}
+                    onChange={(event) =>
+                      field.onChange(event.target.value === "" ? undefined : event.target.value)
+                    }
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    ref={field.ref}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
@@ -670,6 +777,40 @@ function SpinalLogForm({
                   Urineretentie
                 </FormLabel>
                 <YesNoToggle value={field.value} onChange={field.onChange} invertColors />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="opioidsNeededPacu"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  Opiaten nodig op PAZA
+                </FormLabel>
+                <YesNoToggle value={field.value} onChange={field.onChange} invertColors />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  Opmerkingen <span className="text-slate-300">(vrij)</span>
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    placeholder="Optionele toelichting…"
+                    className="min-h-[88px] rounded-xl bg-white resize-none"
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -731,14 +872,15 @@ function SpinalLogOverview({
     const summarize = (rows: SpinalLog[]) => ({
       n: rows.length,
       success: percent(rows.filter((row) => row.surgicalSuccess).length, rows.length),
-      duration: mean(rows.map((row) => row.durationOfAction)),
+      toSurgery: mean(rows.map((row) => row.timeToSurgeryStart)),
       pacu: mean(rows.map((row) => row.pacuStayDuration)),
       retention: percent(rows.filter((row) => row.urinaryRetention).length, rows.length),
+      opioids: percent(rows.filter((row) => row.opioidsNeededPacu).length, rows.length),
     });
     return {
       all: summarize(logs),
       scandicaine: summarize(byAgent("Scandicaine")),
-      marcaine: summarize(byAgent("Hyperbare Marcaine")),
+      marcaine: summarize(byAgent("Isobare Marcaine")),
     };
   }, [logs]);
 
@@ -761,11 +903,12 @@ function SpinalLogOverview({
         />
       </div>
 
-      <div className="grid grid-cols-4 gap-1.5">
+      <div className="grid grid-cols-5 gap-1.5">
         <SummaryBadge label="N" value={stats.all.n} />
         <SummaryBadge label="Succes" value={`${stats.all.success}%`} />
+        <SummaryBadge label="→ Chir." value={`${stats.all.toSurgery}m`} />
         <SummaryBadge label="PACU" value={`${stats.all.pacu}m`} />
-        <SummaryBadge label="Retentie" value={`${stats.all.retention}%`} />
+        <SummaryBadge label="Opiaten" value={`${stats.all.opioids}%`} />
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-1">
@@ -781,7 +924,7 @@ function SpinalLogOverview({
                 : "bg-white text-slate-400 border-slate-200",
             )}
           >
-            {item === "all" ? "Alles" : item}
+            {item === "all" ? "Alles" : item === "Isobare Marcaine" ? "Marcaine" : item}
           </button>
         ))}
       </div>
@@ -808,10 +951,11 @@ function SpinalLogOverview({
                 <TableHead className="text-[9px] font-black uppercase tracking-widest">Initialen</TableHead>
                 <TableHead className="text-[9px] font-black uppercase tracking-widest">Agent</TableHead>
                 <TableHead className="text-[9px] font-black uppercase tracking-widest text-right">ml</TableHead>
+                <TableHead className="text-[9px] font-black uppercase tracking-widest text-right">→Chir</TableHead>
                 <TableHead className="text-[9px] font-black uppercase tracking-widest">Succes</TableHead>
-                <TableHead className="text-[9px] font-black uppercase tracking-widest text-right">Duur</TableHead>
                 <TableHead className="text-[9px] font-black uppercase tracking-widest text-right">PACU</TableHead>
                 <TableHead className="text-[9px] font-black uppercase tracking-widest">Ret.</TableHead>
+                <TableHead className="text-[9px] font-black uppercase tracking-widest">Opi.</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -827,16 +971,26 @@ function SpinalLogOverview({
                     {log.patientIdentifier}
                   </TableCell>
                   <TableCell className="text-[10px] font-black uppercase tracking-tight text-slate-700 whitespace-nowrap">
-                    {log.agentUsed === "Hyperbare Marcaine" ? "Marcaine" : "Scandicaine"}
+                    {log.agentUsed === "Isobare Marcaine" ? "Marcaine" : "Scandicaine"}
                   </TableCell>
                   <TableCell className="text-xs text-right font-mono">{log.doseAdministered}</TableCell>
+                  <TableCell className="text-xs text-right font-mono">{log.timeToSurgeryStart}</TableCell>
                   <TableCell>
-                    <BooleanPill value={log.surgicalSuccess} />
+                    <div className="space-y-1">
+                      <BooleanPill value={log.surgicalSuccess} />
+                      {!log.surgicalSuccess && (
+                        <p className="text-[9px] text-slate-500 leading-tight max-w-[120px]">
+                          {formatFailureReasons(log)}
+                        </p>
+                      )}
+                    </div>
                   </TableCell>
-                  <TableCell className="text-xs text-right font-mono">{log.durationOfAction}</TableCell>
                   <TableCell className="text-xs text-right font-mono">{log.pacuStayDuration}</TableCell>
                   <TableCell>
                     <BooleanPill value={log.urinaryRetention} invert />
+                  </TableCell>
+                  <TableCell>
+                    <BooleanPill value={log.opioidsNeededPacu} invert />
                   </TableCell>
                 </TableRow>
               ))}
@@ -846,6 +1000,14 @@ function SpinalLogOverview({
       )}
     </div>
   );
+}
+
+function formatFailureReasons(log: SpinalLog) {
+  const parts: string[] = [];
+  if (log.failureInsufficientDuration) parts.push("duur");
+  if (log.failureInsufficientMotor) parts.push("motor");
+  if (log.failureInsufficientSensory) parts.push("sensorisch");
+  return parts.length ? parts.join(" · ") : "";
 }
 
 function YesNoToggle({
