@@ -358,6 +358,13 @@ app.delete("/api/marketplace/:id", async (req, res) => {
       res.json(result[0]);
     } catch (error) {
       console.error("Spinal log insert error:", error);
+      if (error && typeof error === "object" && "issues" in error) {
+        const issues = (error as { issues: { path: (string | number)[]; message: string }[] }).issues;
+        return res.status(400).json({
+          error: "Ongeldige data",
+          details: issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`),
+        });
+      }
       res.status(400).json({ error: "Ongeldige data" });
     }
   });
