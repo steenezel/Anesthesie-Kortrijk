@@ -12,7 +12,8 @@ import {
   BookOpenCheck,
   Waves,
   ShoppingBag,
-  ClipboardList
+  ClipboardList,
+  Bone
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
@@ -125,6 +126,16 @@ const categories = [
     color: "bg-amber-400",
     lightColor: "bg-amber-50",
     borderColor: "border-amber-200",
+    isExternal: false
+  },
+  {
+    title: "SMASH",
+    description: "Scandicaine versus Marcaine: Anesthesia Spinal Hip",
+    icon: Bone,
+    href: "/smash",
+    color: "bg-cyan-700",
+    lightColor: "bg-cyan-50",
+    borderColor: "border-cyan-200",
     isExternal: false
   },
 ];

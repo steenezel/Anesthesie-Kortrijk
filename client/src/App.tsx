@@ -42,6 +42,7 @@ import PainPumpPage from "@/pages/painpump";
 import CapriniCalculator from "@/pages/caprini";
 import AdminEditor from "@/pages/admin-editor";
 import LogbookPage from "@/pages/logbook";
+import SpinalLogbookPage from "@/pages/SpinalLogbookPage";
 import { PwaUpdateListener } from "@/components/PwaUpdateListener";
 
 // --- DE BEWAKER (AuthGuard) ---
@@ -172,6 +173,9 @@ function Router() {
           <Route path="/blocks/:id" component={BlockDetail} />
           <Route path="/blocks" component={Blocks} />
           <Route path="/calculator" component={CalculatorList} />
+          <Route path="/smash" component={SpinalLogbookPage} />
+          <Route path="/calculators/spinal-logbook" component={SpinalLogbookPage} />
+          <Route path="/calculator/spinal-logbook" component={SpinalLogbookPage} />
           <Route path="/calculators" component={CalculatorList} />
           <Route path="/calculator/last" component={CalculatorPage} />
           <Route path="/calculator/apfel" component={ApfelCalculator} />
