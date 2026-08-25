@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, serial, boolean, integer, real } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -97,3 +97,39 @@ export const insertMarketplaceSchema = createInsertSchema(marketplace).pick({
 
 export type InsertMarketplace = z.infer<typeof insertMarketplaceSchema>;
 export type Marketplace = typeof marketplace.$inferSelect;
+
+export const spinalAgents = ["Scandicaine", "Hyperbare Marcaine"] as const;
+export type SpinalAgent = (typeof spinalAgents)[number];
+
+export const spinalLogs = pgTable("spinal_logs", {
+  id: serial("id").primaryKey(),
+  aslOrAnesthetistName: text("asl_or_anesthetist_name").notNull(),
+  patientIdentifier: text("patient_identifier").notNull(),
+  agentUsed: text("agent_used").$type<SpinalAgent>().notNull().default("Scandicaine"),
+  doseAdministered: real("dose_administered").notNull(),
+  surgicalSuccess: boolean("surgical_success").notNull(),
+  durationOfAction: integer("duration_of_action").notNull(),
+  pacuStayDuration: integer("pacu_stay_duration").notNull(),
+  urinaryRetention: boolean("urinary_retention").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertSpinalLogSchema = createInsertSchema(spinalLogs)
+  .omit({
+    id: true,
+    createdAt: true,
+  })
+  .extend({
+    aslOrAnesthetistName: z.string().trim().min(2, "Naam of initialen verplicht"),
+    patientIdentifier: z.string().trim().min(1, "Initialen patiënt verplicht"),
+    agentUsed: z.enum(spinalAgents),
+    doseAdministered: z.coerce.number().positive("Dosis moet groter dan 0 ml zijn"),
+    surgicalSuccess: z.boolean(),
+    durationOfAction: z.coerce.number().int().min(0, "Werkingsduur kan niet negatief zijn"),
+    pacuStayDuration: z.coerce.number().int().min(0, "PACU-duur kan niet negatief zijn"),
+    urinaryRetention: z.boolean(),
+  });
+
+export const selectSpinalLogSchema = createSelectSchema(spinalLogs);
+export type InsertSpinalLog = z.infer<typeof insertSpinalLogSchema>;
+export type SpinalLog = typeof spinalLogs.$inferSelect;

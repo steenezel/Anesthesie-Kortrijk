@@ -8,6 +8,8 @@ import {
   users,
   logbookEntries,
   insertLogbookEntrySchema,
+  spinalLogs,
+  insertSpinalLogSchema,
   type UserRole,
 } from "../shared/schema.js";
 import { sql, eq, and, desc, gte, lte, isNotNull, inArray, type SQL } from "drizzle-orm";
@@ -43,6 +45,36 @@ function todayIsoDate() {
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
   return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function headerValue(value: string | string[] | undefined) {
+  if (Array.isArray(value)) return String(value[0] || "");
+  return String(value || "");
+}
+
+function credentialsFromRequest(req: {
+  headers: Record<string, string | string[] | undefined>;
+  body?: { userId?: string; pin?: string };
+  query?: { userId?: string; pin?: string };
+}) {
+  const userId =
+    headerValue(req.headers["x-logbook-user-id"]) ||
+    String(req.body?.userId || req.query?.userId || "");
+  const pin =
+    headerValue(req.headers["x-logbook-pin"]) ||
+    String(req.body?.pin || req.query?.pin || "");
+  return { userId, pin };
+}
+
+async function authenticateLogbookUser(userId: string, pin: string) {
+  if (!userId || !pin) return null;
+
+  const found = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  const user = found[0];
+  const expectedPin = user?.pin || user?.password;
+  if (!user || expectedPin !== pin) return null;
+
+  return toPublicUser(user);
 }
 
 async function ensureLogbookUsers() {
@@ -288,6 +320,49 @@ app.delete("/api/marketplace/:id", async (req, res) => {
   });
 
   // --- EINDE ASO LOGBOEK ---
+
+  // --- SCANDICAINE SPINALE LOGBOEK ---
+  app.get("/api/spinal-logs", async (req, res) => {
+    try {
+      const { userId, pin } = credentialsFromRequest(req);
+      const user = await authenticateLogbookUser(userId, pin);
+      if (!user) {
+        return res.status(401).json({ error: "Authenticatie vereist" });
+      }
+
+      const rows = await db
+        .select()
+        .from(spinalLogs)
+        .orderBy(desc(spinalLogs.createdAt));
+
+      res.json(rows);
+    } catch (error) {
+      console.error("Spinal logs fetch error:", error);
+      res.status(500).json({ error: "Kon logboek niet ophalen" });
+    }
+  });
+
+  app.post("/api/spinal-logs", async (req, res) => {
+    try {
+      const { userId, pin } = credentialsFromRequest(req);
+      const user = await authenticateLogbookUser(userId, pin);
+      if (!user) {
+        return res.status(401).json({ error: "Authenticatie vereist" });
+      }
+
+      const body = { ...(req.body ?? {}) } as Record<string, unknown>;
+      delete body.userId;
+      delete body.pin;
+      const validated = insertSpinalLogSchema.parse(body);
+      const result = await db.insert(spinalLogs).values(validated).returning();
+      res.json(result[0]);
+    } catch (error) {
+      console.error("Spinal log insert error:", error);
+      res.status(400).json({ error: "Ongeldige data" });
+    }
+  });
+
+  // --- EINDE SCANDICAINE SPINALE LOGBOEK ---
 
  // 2. SCORE OPSLAAN
 app.post("/api/highscores", async (req, res) => {
