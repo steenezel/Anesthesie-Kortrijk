@@ -1,6 +1,6 @@
 import React from "react";
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, Loader2, Pencil, Info } from "lucide-react";
+import { ChevronLeft, Loader2, Pencil } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -61,13 +61,6 @@ export default function PocusDetail() {
           </TabsList>
           
           <TabsContent value="indicaties" className="outline-none">
-            <div className="bg-blue-50/50 p-5 rounded-[2rem] mb-10 border border-blue-100 flex gap-4 items-start">
-              <div className="bg-blue-600 p-2 rounded-xl text-white shrink-0"><Info size={18}/></div>
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 mb-1">Status</p>
-                <p className="text-sm font-bold text-slate-700 leading-tight">Geverifieerde Cloud Content</p>
-              </div>
-            </div>
             <MarkdownRenderer content={dbPocus.content_indicaties || ""} />
           </TabsContent>
           

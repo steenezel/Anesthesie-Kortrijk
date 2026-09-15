@@ -22,7 +22,6 @@ import ApfelCalculator from "@/pages/apfel";
 import PedsCalculator from "@/pages/peds-calculator";
 import DantroleenPage from "@/pages/dantroleen.js";
 import ChecklistPage from "@/pages/checklist";
-import InfoPage from "@/pages/info";
 import NotFound from "@/pages/not-found";
 import ContactsPage from "@/pages/contacts";
 import GamePage from "@/pages/game";
@@ -43,83 +42,87 @@ import CapriniCalculator from "@/pages/caprini";
 import AdminEditor from "@/pages/admin-editor";
 import LogbookPage from "@/pages/logbook";
 import SpinalLogbookPage from "@/pages/SpinalLogbookPage";
+import SettingsPage from "@/pages/settings";
 import { PwaUpdateListener } from "@/components/PwaUpdateListener";
+import { SiteProvider, useSite } from "@/hooks/use-site";
 
 // --- DE BEWAKER (AuthGuard) ---
 function AuthGuard({ children }: { children: React.ReactNode }) {
+  const { site } = useSite();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
 
-  // STEL HIER DE PINCODE IN
-    const CORRECT_PIN = import.meta.env.VITE_APP_PIN; // Code is ingesteld in Vercel/Settings/Environment Variables VITE_APP_PIN 
+  const CORRECT_PIN = import.meta.env.VITE_APP_PIN;
 
-      useEffect(() => {
-          // Kijken of we al ingelogd zijn in deze browser
-              const authStatus = localStorage.getItem("ane_kortrijk_auth");
-               if (authStatus === "true") setIsAuthenticated(true);
-                }, []);
-                      const [location] = useLocation();
-                      const handleLogin = (e?: React.FormEvent) => {
-          e?.preventDefault(); // Voorkom dat de pagina herlaadt
-              if (pin === CORRECT_PIN) {
-                    localStorage.setItem("ane_kortrijk_auth", "true");
-                          setIsAuthenticated(true);
-                                setError(false);
-                                    } else {
-setError(true);
-setPin("");
-// Vibratie op mobiel bij foutieve code (indien ondersteund)
-if (navigator.vibrate) navigator.vibrate(200);
-}
-};
+  useEffect(() => {
+    if (!CORRECT_PIN) {
+      setIsAuthenticated(true);
+      return;
+    }
+    const authStatus = localStorage.getItem(site.authStorageKey);
+    if (authStatus === "true") setIsAuthenticated(true);
+  }, [CORRECT_PIN, site.authStorageKey]);
 
-if (!isAuthenticated) {
-return (
-<div className="fixed inset-0 bg-slate-950 flex flex-col justify-center items-center z-[9999] px-6 pt-[env(safe-area-inset-top)]">
-<div className="w-full max-w-sm space-y-10 mx-auto">
-<div className="text-center space-y-4">
-<div className="mx-auto w-16 h-16 bg-teal-500/10 rounded-3xl flex items-center justify-center mb-6 border border-teal-500/20">
-<Lock className="h-8 w-8 text-teal-500" />
-</div>
-<h1 className="text-4xl font-black text-white uppercase tracking-tighter">
-ANE <span className="text-teal-500">Kortrijk</span>
-</h1>
-<p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">Medical Access Only</p>
-</div>
+  const handleLogin = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (pin === CORRECT_PIN) {
+      localStorage.setItem(site.authStorageKey, "true");
+      setIsAuthenticated(true);
+      setError(false);
+    } else {
+      setError(true);
+      setPin("");
+      if (navigator.vibrate) navigator.vibrate(200);
+    }
+  };
 
-<form onSubmit={handleLogin} className="space-y-4">
-<div className="relative">
-<input
-type="password"
-inputMode="numeric"
-pattern="[0-9]*"
-value={pin}
-onChange={(e) => setPin(e.target.value)}
-placeholder="PINCODE"
-className={`w-full h-20 text-center text-4xl font-mono tracking-[0.5em] rounded-3xl bg-slate-900 border-2 transition-all ${
-error ? 'border-red-500 text-red-500 animate-shake' : 'border-slate-800 text-white focus:border-teal-500'
-} focus:outline-none shadow-2xl`}
-autoFocus
-/>
-</div>
+  if (CORRECT_PIN && !isAuthenticated) {
+    return (
+      <div className="fixed inset-0 bg-slate-950 flex flex-col justify-center items-center z-[9999] px-6 pt-[env(safe-area-inset-top)]">
+        <div className="w-full max-w-sm space-y-10 mx-auto">
+          <div className="text-center space-y-4">
+            <div className="mx-auto w-16 h-16 bg-teal-500/10 rounded-3xl flex items-center justify-center mb-6 border border-teal-500/20">
+              <Lock className="h-8 w-8 text-teal-500" />
+            </div>
+            <h1 className="text-4xl font-black text-white uppercase tracking-tighter">
+              {site.shortName} <span className="text-teal-500">{site.highlightName}</span>
+            </h1>
+            <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">Medical Access Only</p>
+          </div>
 
-<button 
-type="submit"
-className="w-full h-16 bg-teal-600 hover:bg-teal-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2"
->
-<ShieldCheck className="h-5 w-5" /> Inloggen
-</button>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="relative">
+              <input
+                type="password"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+                placeholder="PINCODE"
+                className={`w-full h-20 text-center text-4xl font-mono tracking-[0.5em] rounded-3xl bg-slate-900 border-2 transition-all ${
+                  error ? "border-red-500 text-red-500 animate-shake" : "border-slate-800 text-white focus:border-teal-500"
+                } focus:outline-none shadow-2xl`}
+                autoFocus
+              />
+            </div>
 
-{error && (
-<p className="text-red-500 text-[10px] font-black uppercase text-center tracking-widest animate-in fade-in slide-in-from-top-1">
-Toegang geweigerd
-          </p>
-                      )}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </form>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+            <button
+              type="submit"
+              className="w-full h-16 bg-teal-600 hover:bg-teal-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2"
+            >
+              <ShieldCheck className="h-5 w-5" /> Inloggen
+            </button>
+
+            {error && (
+              <p className="text-red-500 text-[10px] font-black uppercase text-center tracking-widest animate-in fade-in slide-in-from-top-1">
+                Toegang geweigerd
+              </p>
+            )}
+          </form>
+
           <p className="text-center text-slate-600 text-[9px] uppercase font-medium tracking-widest">
-            AZ Groeninge • Anesthesie & Reanimatie
+            {site.hospitalName} • {site.department}
           </p>
         </div>
       </div>
@@ -187,7 +190,7 @@ function Router() {
           <Route path="/game" component={GamePage} />
           <Route path="/search" component={SearchPage} />
           <Route path="/checklist" component={ChecklistPage} />
-          <Route path="/info" component={InfoPage} />
+          <Route path="/settings" component={SettingsPage} />
           <Route path="/wordle" component={WordlePage} />
           <Route path="/chasse-patate" component={ChassePatatePage} />
           <Route path="/onboarding" component={OnboardingSelection} /> 
@@ -212,12 +215,14 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster />
-      <PwaUpdateListener />
-      <Analytics />
-      <AuthGuard>
-        <Router />
-      </AuthGuard>
+      <SiteProvider>
+        <Toaster />
+        <PwaUpdateListener />
+        <Analytics />
+        <AuthGuard>
+          <Router />
+        </AuthGuard>
+      </SiteProvider>
     </QueryClientProvider>
   );
 }

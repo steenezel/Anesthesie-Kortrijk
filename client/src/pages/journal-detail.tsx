@@ -1,6 +1,6 @@
 import React from "react";
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, Clock, Loader2, Stethoscope, Activity, Siren, Zap, Pencil, CloudDownload, ExternalLink } from "lucide-react";
+import { ChevronLeft, Clock, Loader2, Stethoscope, Activity, Siren, Zap, Pencil, ExternalLink } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
@@ -54,16 +54,10 @@ export default function JournalDetail() {
           </div>
         </Link>
         <div className="flex gap-2">
-          {dbArticle ? (
+          {dbArticle && (
             <Link href={`/admin?type=journal_club&id=${dbArticle.id}`}>
               <div className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-teal-600 cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest">
                 <Pencil size={14} /> Edit
-              </div>
-            </Link>
-          ) : rawContent && (
-            <Link href={`/admin?migrate=${id}&type=journal_club`}>
-              <div className="p-2 bg-amber-50 text-amber-600 rounded-xl cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border border-amber-100">
-                <CloudDownload size={14} /> Migreer
               </div>
             </Link>
           )}

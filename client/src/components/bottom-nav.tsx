@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Home, Phone, Search } from "lucide-react";
+import { Home, Phone, Search, Settings2 } from "lucide-react";
 
 export function BottomNav() {
   const [location] = useLocation();
@@ -8,19 +8,27 @@ export function BottomNav() {
     { href: "/", icon: Home, label: "Home" },
     { href: "/contacts", icon: Phone, label: "Lijst" },
     { href: "/search", icon: Search, label: "Zoeken" },
+    { href: "/settings", icon: Settings2, label: "Meer" },
   ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-slate-200 pb-safe z-50">
       <div className="max-w-2xl mx-auto flex justify-around items-center h-16 px-1">
         {navItems.map((item) => {
-          const isActive = location === item.href;
+          const isActive =
+            item.href === "/"
+              ? location === "/"
+              : location === item.href || location.startsWith(`${item.href}/`);
           const Icon = item.icon;
 
           return (
             <Link key={item.href} href={item.href}>
-              <div className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${isActive ? 'text-teal-600' : 'text-slate-400'}`}>
-                <Icon className={`h-5 w-5 ${isActive ? 'fill-teal-50' : ''}`} />
+              <div
+                className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
+                  isActive ? "text-primary" : "text-slate-400"
+                }`}
+              >
+                <Icon className="h-5 w-5" />
                 <span className="text-[9px] font-black uppercase tracking-tighter whitespace-nowrap">
                   {item.label}
                 </span>
