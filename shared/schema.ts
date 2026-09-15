@@ -177,3 +177,16 @@ export const insertSpinalLogSchema = createInsertSchema(spinalLogs)
 export const selectSpinalLogSchema = createSelectSchema(spinalLogs);
 export type InsertSpinalLog = z.infer<typeof insertSpinalLogSchema>;
 export type SpinalLog = typeof spinalLogs.$inferSelect;
+
+/** Flappy highscores (was Redis sorted set). */
+export const gameHighscores = pgTable("game_highscores", {
+  name: text("name").primaryKey(),
+  score: integer("score").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+/** Simple counters (was Redis INCR), e.g. global_bird_attempts. */
+export const gameStats = pgTable("game_stats", {
+  key: text("key").primaryKey(),
+  value: integer("value").notNull().default(0),
+});

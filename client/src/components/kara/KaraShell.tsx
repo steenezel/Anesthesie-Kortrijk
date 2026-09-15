@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { ChevronLeft, Loader2, Map, List, GraduationCap } from "lucide-react";
 import { AdminAddButton } from "@/components/AdminAddButton";
 import { cn } from "@/lib/utils";
+import { useSite } from "@/hooks/use-site";
 
 export type KaraTab = "atlas" | "list" | "referentie";
 
@@ -22,12 +23,13 @@ export function KaraShell({
   isLoading,
   showAdminButton = true,
 }: KaraShellProps) {
+  const { site } = useSite();
   const [location] = useLocation();
 
   const tabClass = (tab: KaraTab) =>
     cn(
       "flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-[11px] font-black uppercase tracking-[0.12em] transition-all sm:py-4 sm:text-xs sm:tracking-[0.15em]",
-      activeTab === tab ? "bg-white text-teal-700 shadow-sm" : "text-slate-400"
+      activeTab === tab ? "bg-white text-primary shadow-sm" : "text-slate-400"
     );
 
   const tabLinkClass = "flex flex-1 min-w-0";
@@ -48,12 +50,11 @@ export function KaraShell({
         <div className="mb-6 flex items-start justify-between gap-4">
           <div className="min-w-0">
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight uppercase text-slate-900 leading-tight">
-              Kortrijk Academy for{" "}
-              <span className="text-teal-600">Regional Anesthesia</span>
+              {site.academy.name}
             </h1>
             <div className="flex items-center gap-2 mt-2">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-teal-600">KARA</p>
-              {isLoading && <Loader2 className="h-3 w-3 animate-spin text-teal-600" />}
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">{site.academy.acronym}</p>
+              {isLoading && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
             </div>
           </div>
           {showAdminButton && !location.startsWith("/blocks/referentie") && (
@@ -67,8 +68,8 @@ export function KaraShell({
 
         <div className="mb-6 aspect-[5/1] w-full overflow-hidden rounded-2xl shadow-sm sm:aspect-[6/1]">
           <img
-            src="/images/blocks/kara-banner.png"
-            alt="KARA — Kortrijk Academy for Regional Anesthesia"
+            src={site.academy.bannerSrc}
+            alt={`${site.academy.acronym} — ${site.academy.name}`}
             className="h-full w-full object-cover object-center"
           />
         </div>

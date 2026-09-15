@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { type Server } from "http";
-import Redis from "ioredis";
-import { db } from "./db.js"; // Dit verwijst naar je database connectie bestand
+import { db } from "./db.js";
+import { DEFAULT_LOGBOOK_USERS, type SeedUser } from "./logbook-users.js";
 import {
   marketplace,
   insertMarketplaceSchema,
@@ -10,22 +10,22 @@ import {
   insertLogbookEntrySchema,
   spinalLogs,
   insertSpinalLogSchema,
+  gameHighscores,
+  gameStats,
   type UserRole,
 } from "../shared/schema.js";
 import { sql, eq, and, desc, gte, lte, isNotNull, inArray, type SQL } from "drizzle-orm";
 
-/** Bron van waarheid voor de zichtbare ASO-/supervisorlijst.
- *  Alleen deze usernames verschijnen in de app. Verwijder hier = verdwijnt uit de lijst.
- *  Zet `hidden: true` voor testaccounts (onderaan, gedempt). */
-const DEFAULT_LOGBOOK_USERS = [
-  { username: "emma", name: "Emma Collin", role: "aso" as const, pin: "5758" },
-  { username: "sanne", name: "Sanne Decorte", role: "aso" as const, pin: "6140" },
-  { username: "magnus", name: "Magnus Van Kerckhove", role: "aso" as const, pin: "2277" },
-  { username: "staf", name: "Supervisor Staf", role: "supervisor" as const, pin: "6666" },
-  { username: "test", name: "Test Gebruiker", role: "aso" as const, pin: "0000", hidden: true },
-] as const;
-
-type SeedUser = (typeof DEFAULT_LOGBOOK_USERS)[number];
+function useDb() {
+  if (!db) {
+    const err: Error & { status?: number } = new Error(
+      "DATABASE_URL is niet ingesteld. Zie HANDLEIDING.md.",
+    );
+    err.status = 503;
+    throw err;
+  }
+  return db;
+}
 
 function toPublicUser(
   user: { id: string; username: string; name: string | null; role: UserRole | null | undefined },
@@ -69,7 +69,7 @@ function credentialsFromRequest(req: {
 async function authenticateLogbookUser(userId: string, pin: string) {
   if (!userId || !pin) return null;
 
-  const found = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  const found = await useDb().select().from(users).where(eq(users.id, userId)).limit(1);
   const user = found[0];
   const expectedPin = user?.pin || user?.password;
   if (!user || expectedPin !== pin) return null;
@@ -80,14 +80,14 @@ async function authenticateLogbookUser(userId: string, pin: string) {
 async function ensureLogbookUsers() {
   for (const seed of DEFAULT_LOGBOOK_USERS) {
     try {
-      const existing = await db
+      const existing = await useDb()
         .select({ id: users.id })
         .from(users)
         .where(eq(users.username, seed.username))
         .limit(1);
 
       if (existing.length === 0) {
-        await db.insert(users).values({
+        await useDb().insert(users).values({
           username: seed.username,
           name: seed.name,
           role: seed.role,
@@ -95,7 +95,7 @@ async function ensureLogbookUsers() {
           password: seed.pin,
         });
       } else {
-        await db
+        await useDb()
           .update(users)
           .set({
             name: seed.name,
@@ -115,17 +115,11 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  
-  const redis = new Redis(process.env.REDIS_URL || "");
-  redis.on("error", (err) => {
-    console.error("Redis Runtime Error:", err);
-  });
-
   // --- NIEUW: MARKTPLAATS ROUTES ---
 app.get("/api/marketplace", async (_req, res) => {
   try {
     // Haal voor nu even ALLES op om te zien of de verbinding werkt
-    const results = await db.select().from(marketplace).orderBy(marketplace.date);
+    const results = await useDb().select().from(marketplace).orderBy(marketplace.date);
     console.log("API Verzending naar client:", results);
     res.json(results || []);
   } catch (error) {
@@ -137,7 +131,7 @@ app.get("/api/marketplace", async (_req, res) => {
   app.post("/api/marketplace", async (req, res) => {
     try {
       const validatedData = insertMarketplaceSchema.parse(req.body);
-      const result = await db.insert(marketplace).values(validatedData).returning();
+      const result = await useDb().insert(marketplace).values(validatedData).returning();
       res.json(result[0]);
     } catch (error) {
       res.status(400).send("Ongeldige data");
@@ -147,7 +141,7 @@ app.get("/api/marketplace", async (_req, res) => {
 app.delete("/api/marketplace/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await db.delete(marketplace).where(sql`${marketplace.id} = ${id}`);
+    await useDb().delete(marketplace).where(sql`${marketplace.id} = ${id}`);
     res.json({ success: true });
   } catch (error) {
     res.status(500).send("Kon niet verwijderen");
@@ -171,8 +165,8 @@ app.delete("/api/marketplace/:id", async (req, res) => {
       }
 
       const found = userId
-        ? await db.select().from(users).where(eq(users.id, userId)).limit(1)
-        : await db.select().from(users).where(eq(users.username, username!)).limit(1);
+        ? await useDb().select().from(users).where(eq(users.id, userId)).limit(1)
+        : await useDb().select().from(users).where(eq(users.username, username!)).limit(1);
 
       const user = found[0];
       const expectedPin = user?.pin || user?.password;
@@ -190,7 +184,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
   app.post("/api/logbook/entries", async (req, res) => {
     try {
       const validated = insertLogbookEntrySchema.parse(req.body);
-      const result = await db
+      const result = await useDb()
         .insert(logbookEntries)
         .values({
           userId: validated.userId,
@@ -218,7 +212,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
         return res.status(400).json({ error: "userId vereist" });
       }
 
-      const entries = await db
+      const entries = await useDb()
         .select()
         .from(logbookEntries)
         .where(eq(logbookEntries.userId, userId))
@@ -248,7 +242,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
       if (startDate) filters.push(gte(logbookEntries.date, startDate));
       if (endDate) filters.push(lte(logbookEntries.date, endDate));
 
-      const query = db
+      const query = useDb()
         .select({
           id: logbookEntries.id,
           userId: logbookEntries.userId,
@@ -297,7 +291,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
         filters.push(eq(users.role, role as UserRole));
       }
 
-      const rows = await db
+      const rows = await useDb()
         .select({
           id: users.id,
           username: users.username,
@@ -330,7 +324,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
         return res.status(401).json({ error: "Authenticatie vereist" });
       }
 
-      const rows = await db
+      const rows = await useDb()
         .select()
         .from(spinalLogs)
         .orderBy(desc(spinalLogs.createdAt));
@@ -354,7 +348,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
       delete body.userId;
       delete body.pin;
       const validated = insertSpinalLogSchema.parse(body);
-      const result = await db.insert(spinalLogs).values(validated).returning();
+      const result = await useDb().insert(spinalLogs).values(validated).returning();
       res.json(result[0]);
     } catch (error) {
       console.error("Spinal log insert error:", error);
@@ -371,71 +365,88 @@ app.delete("/api/marketplace/:id", async (req, res) => {
 
   // --- EINDE SCANDICAINE SPINALE LOGBOEK ---
 
- // 2. SCORE OPSLAAN
-app.post("/api/highscores", async (req, res) => {
-  try {
-    const { name, score } = req.body;
-    const numericScore = Number(score);
+  // --- FLAPPY HIGHSCORES (Postgres / Supabase) ---
+  app.post("/api/highscores", async (req, res) => {
+    try {
+      const { name, score } = req.body;
+      const numericScore = Number(score);
 
-    if (!name || isNaN(numericScore)) {
-      return res.status(400).send("Ongeldige data");
+      if (!name || isNaN(numericScore)) {
+        return res.status(400).send("Ongeldige data");
+      }
+
+      const cleanName = name.trim().toUpperCase();
+      const database = useDb();
+      const existing = await database
+        .select()
+        .from(gameHighscores)
+        .where(eq(gameHighscores.name, cleanName))
+        .limit(1);
+      const existingScore = existing[0]?.score ?? -1;
+
+      if (numericScore > existingScore) {
+        await database
+          .insert(gameHighscores)
+          .values({ name: cleanName, score: numericScore, updatedAt: new Date() })
+          .onConflictDoUpdate({
+            target: gameHighscores.name,
+            set: { score: numericScore, updatedAt: new Date() },
+          });
+        res.json({ success: true, updated: true });
+      } else {
+        res.json({ success: true, updated: false });
+      }
+    } catch (error) {
+      console.error("Fout bij opslaan score:", error);
+      const status = (error as { status?: number })?.status || 500;
+      res.status(status).send(status === 503 ? "Database niet geconfigureerd" : "Database fout");
     }
+  });
 
-    const cleanName = name.trim().toUpperCase();
-    
-    // 1. Haal eerst de bestaande score op van deze persoon
-    const existingScoreRaw = await redis.zscore("flappy_anesthetist", cleanName);
-    const existingScore = existingScoreRaw ? parseInt(existingScoreRaw, 10) : -1;
-
-    // 2. Alleen opslaan als de nieuwe score ECHT hoger is (of als er nog geen score was)
-    if (numericScore > existingScore) {
-      await redis.zadd("flappy_anesthetist", numericScore, cleanName);
-      res.json({ success: true, updated: true });
-    } else {
-      res.json({ success: true, updated: false });
-    }
-
-  } catch (error) {
-    console.error("Fout bij opslaan score:", error);
-    res.status(500).send("Database fout");
-  }
-});
-
-  // 3. TOP 10 OPHALEN
   app.get("/api/highscores", async (_req, res) => {
     try {
-      // 'REV' voor hoogste eerst, 'WITHSCORES' om ook de punten te krijgen
-      const rawData = await redis.zrevrange("flappy_anesthetist", 0, 9, "WITHSCORES");
-      
-      // ioredis geeft een vlakke array [name1, score1, name2, score2] terug
-      // We vormen dit om naar het formaat dat onze frontend verwacht
-      const scores = [];
-      for (let i = 0; i < rawData.length; i += 2) {
-        scores.push({ member: rawData[i], score: parseInt(rawData[i+1], 10) });
-      }
-      res.json(scores);
+      const rows = await useDb()
+        .select()
+        .from(gameHighscores)
+        .orderBy(desc(gameHighscores.score))
+        .limit(10);
+      res.json(rows.map((row) => ({ member: row.name, score: row.score })));
     } catch (error) {
-      res.status(500).send("Database onbereikbaar");
+      const status = (error as { status?: number })?.status || 500;
+      res.status(status).send(status === 503 ? "Database niet geconfigureerd" : "Database onbereikbaar");
     }
   });
 
-  // 4. GLOBAL COUNTER: OPHOGEN
   app.post("/api/game-stats/increment", async (_req, res) => {
     try {
-      const totalAttempts = await redis.incr("global_bird_attempts");
-      res.json({ totalAttempts });
+      const key = "global_bird_attempts";
+      const database = useDb();
+      await database
+        .insert(gameStats)
+        .values({ key, value: 1 })
+        .onConflictDoUpdate({
+          target: gameStats.key,
+          set: { value: sql`${gameStats.value} + 1` },
+        });
+      const rows = await database.select().from(gameStats).where(eq(gameStats.key, key)).limit(1);
+      res.json({ totalAttempts: rows[0]?.value ?? 1 });
     } catch (error) {
-      res.status(500).send("Counter error");
+      const status = (error as { status?: number })?.status || 500;
+      res.status(status).send("Counter error");
     }
   });
 
-  // 5. GLOBAL COUNTER: OPHALEN
   app.get("/api/game-stats", async (_req, res) => {
     try {
-      const totalAttempts = await redis.get("global_bird_attempts");
-      res.json({ totalAttempts: parseInt(totalAttempts || "0") });
+      const rows = await useDb()
+        .select()
+        .from(gameStats)
+        .where(eq(gameStats.key, "global_bird_attempts"))
+        .limit(1);
+      res.json({ totalAttempts: rows[0]?.value ?? 0 });
     } catch (error) {
-      res.status(500).send("Counter error");
+      const status = (error as { status?: number })?.status || 500;
+      res.status(status).send("Counter error");
     }
   });
 
