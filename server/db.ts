@@ -1,6 +1,6 @@
 import { existsSync } from "fs";
 import { resolve } from "path";
-import { drizzle } from "drizzle-orm/postgres-js";
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "../shared/schema.js";
 
@@ -9,10 +9,14 @@ if (!process.env.DATABASE_URL && existsSync(envPath) && typeof process.loadEnvFi
   process.loadEnvFile(envPath);
 }
 
+/**
+ * Server-side Postgres — gebruik de **Supabase** connection string
+ * (Project Settings → Database → URI, bij voorkeur pooled / Transaction mode).
+ * Zelfde project als VITE_SUPABASE_* voor CMS.
+ */
 const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  throw new Error("DATABASE_URL ontbreekt. Zet deze in .env of in de Vercel-omgeving.");
-}
+export const isDatabaseConfigured = Boolean(connectionString);
 
-const client = postgres(connectionString);
-export const db = drizzle(client, { schema });
+export const db: PostgresJsDatabase<typeof schema> | null = connectionString
+  ? drizzle(postgres(connectionString, { prepare: false }), { schema })
+  : null;

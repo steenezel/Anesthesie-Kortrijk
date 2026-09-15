@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useLocation, useSearch } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft,
-  CloudDownload,
   ExternalLink,
   FileText,
   HelpCircle,
@@ -54,45 +53,6 @@ const PROTOCOL_DISCIPLINE_ALIASES: Record<string, string> = {
   obstetrie: "Obstetrie-epidurale",
   "obstetrie epidurale": "Obstetrie-epidurale",
   obstetrie_epidurale: "Obstetrie-epidurale",
-};
-
-const localProtocolFiles = import.meta.glob("../content/protocols/**/*.md", { query: "raw", eager: true });
-
-const parseFrontmatter = (rawMarkdown: string): { frontmatter: Record<string, string>; body: string } => {
-  const frontmatterMatch = rawMarkdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
-  if (!frontmatterMatch) return { frontmatter: {}, body: rawMarkdown };
-
-  const frontmatterRaw = frontmatterMatch[1];
-  const body = rawMarkdown.slice(frontmatterMatch[0].length);
-  const frontmatter: Record<string, string> = {};
-
-  for (const line of frontmatterRaw.split(/\r?\n/)) {
-    const separatorIndex = line.indexOf(":");
-    if (separatorIndex < 0) continue;
-
-    const key = line.slice(0, separatorIndex).trim().toLowerCase();
-    if (!key) continue;
-
-    const value = line
-      .slice(separatorIndex + 1)
-      .trim()
-      .replace(/^["']|["']$/g, "");
-
-    frontmatter[key] = value;
-  }
-
-  return { frontmatter, body };
-};
-
-const inferDisciplineFromProtocolPath = (path: string): string => {
-  const pathParts = path.split("/");
-  const rawDiscipline = pathParts[pathParts.length - 2] || "algemeen";
-  if (rawDiscipline.toLowerCase() === "protocols") return "Algemeen";
-
-  return rawDiscipline
-    .split("-")
-    .map((part) => (part ? `${part.charAt(0).toUpperCase()}${part.slice(1)}` : part))
-    .join("-");
 };
 
 const normalizeProtocolDiscipline = (discipline?: string): string => {
@@ -154,7 +114,6 @@ export default function AdminEditor() {
   const queryParams = new URLSearchParams(search);
   const editId = queryParams.get("id");
   const editType = queryParams.get("type") || "protocols";
-  const migrateSlug = queryParams.get("migrate");
 
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -169,7 +128,6 @@ export default function AdminEditor() {
   const [tab2, setTab2] = useState("");
   const [tab3, setTab3] = useState("");
   const [bodyRegions, setBodyRegions] = useState<BodyRegionId[]>([]);
-  const [isMigratingProtocol, setIsMigratingProtocol] = useState(false);
   const [activeTab, setActiveTab] = useState<"tab1" | "tab2" | "tab3">("tab1");
 
   const singleTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -179,26 +137,6 @@ export default function AdminEditor() {
   const pocusTextareaRef1 = useRef<HTMLTextAreaElement>(null);
   const pocusTextareaRef2 = useRef<HTMLTextAreaElement>(null);
   const pocusTextareaRef3 = useRef<HTMLTextAreaElement>(null);
-
-  const protocolDraftToMigrate = useMemo(() => {
-    if (type !== "protocols" || !migrateSlug) return null;
-
-    const fileKey = Object.keys(localProtocolFiles).find((key) =>
-      key.toLowerCase().endsWith(`/${migrateSlug.toLowerCase()}.md`)
-    );
-    if (!fileKey) return null;
-
-    const fileData = localProtocolFiles[fileKey] as any;
-    const rawMarkdown = String(fileData?.default || fileData || "");
-    const { frontmatter, body } = parseFrontmatter(rawMarkdown);
-
-    return {
-      slug: migrateSlug,
-      title: frontmatter.title || migrateSlug.replace(/-/g, " "),
-      discipline: normalizeProtocolDiscipline(frontmatter.discipline || inferDisciplineFromProtocolPath(fileKey)),
-      content: body,
-    };
-  }, [migrateSlug, type]);
 
   useEffect(() => {
     if (!editId) return;
@@ -234,13 +172,6 @@ export default function AdminEditor() {
 
     fetchData();
   }, [editId, type]);
-
-  useEffect(() => {
-    if (editId || type !== "protocols" || !protocolDraftToMigrate) return;
-    setTitle(protocolDraftToMigrate.title);
-    setDiscipline(protocolDraftToMigrate.discipline);
-    setContent(protocolDraftToMigrate.content);
-  }, [editId, protocolDraftToMigrate, type]);
 
   const getActiveSetter = (): TextSetter => {
     if (type === "protocols" || type === "journal_club") return setContent;
@@ -400,32 +331,6 @@ export default function AdminEditor() {
     }
   };
 
-  const handleMigrateProtocolFile = async () => {
-    if (!protocolDraftToMigrate) {
-      toast({ title: "Bestand niet gevonden", description: "Controleer de migrate slug.", variant: "destructive" });
-      return;
-    }
-
-    setIsMigratingProtocol(true);
-    try {
-      const payload = {
-        title: protocolDraftToMigrate.title,
-        discipline: normalizeProtocolDiscipline(protocolDraftToMigrate.discipline),
-        content: protocolDraftToMigrate.content,
-      };
-
-      const { data, error } = await supabase.from("protocols").insert([payload]).select("id").single();
-      if (error) throw error;
-
-      toast({ title: "Migratie geslaagd", description: `${protocolDraftToMigrate.slug}.md staat nu in Supabase.` });
-      setLocation(`/protocols/${data.id}`);
-    } catch (err: any) {
-      toast({ title: "Migratie mislukt", description: err.message, variant: "destructive" });
-    } finally {
-      setIsMigratingProtocol(false);
-    }
-  };
-
   const UploadBar = ({ showPdf = false }: { showPdf?: boolean }) => (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-2 rounded-2xl bg-slate-100 p-2">
@@ -563,37 +468,6 @@ export default function AdminEditor() {
 
               {type === "protocols" && (
                 <>
-                  {migrateSlug && (
-                    <div className="space-y-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-                      <div className="text-[10px] font-black uppercase tracking-widest text-amber-700">Lokale migratie</div>
-                      {protocolDraftToMigrate ? (
-                        <>
-                          <p className="text-xs text-amber-900">
-                            Bestand <span className="font-bold">{protocolDraftToMigrate.slug}.md</span> is geladen via{" "}
-                            <code>import.meta.glob</code>. Klik hieronder om frontmatter + markdown body direct naar Supabase te inserten.
-                          </p>
-                          <Button
-                            type="button"
-                            onClick={handleMigrateProtocolFile}
-                            disabled={isMigratingProtocol}
-                            className="rounded-xl bg-amber-600 font-bold text-white hover:bg-amber-700"
-                          >
-                            {isMigratingProtocol ? (
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                              <CloudDownload className="mr-2 h-4 w-4" />
-                            )}
-                            MIGREER LOKAAL BESTAND
-                          </Button>
-                        </>
-                      ) : (
-                        <p className="text-xs text-red-700">
-                          Geen lokaal protocolbestand gevonden voor slug: <b>{migrateSlug}</b>.
-                        </p>
-                      )}
-                    </div>
-                  )}
-
                   <div className="space-y-2">
                     <label className="ml-1 text-[10px] font-black uppercase text-slate-400">Discipline</label>
                     <Select value={discipline} onValueChange={setDiscipline}>

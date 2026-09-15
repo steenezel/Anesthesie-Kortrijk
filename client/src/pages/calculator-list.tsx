@@ -12,6 +12,7 @@ import {
   BadgeCheck,
   Calculator
 } from "lucide-react";
+import { useSite } from "@/hooks/use-site";
 
 const calculators = [
   {
@@ -80,6 +81,7 @@ const calculators = [
 ];
 
 export default function CalculatorList() {
+  const { site } = useSite();
   return (
     <div className="max-w-md mx-auto pb-24">
       {/* Mini Header */}
@@ -102,7 +104,7 @@ export default function CalculatorList() {
             Beslissingssteun
           </h1>
           <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 italic">
-            AZ Groeninge Kortrijk
+            {site.hospitalName}
           </p>
         </header>
 

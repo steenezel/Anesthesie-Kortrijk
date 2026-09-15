@@ -1,6 +1,6 @@
 import React, { useMemo } from "react"; // <--- useMemo toegevoegd
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, Loader2, Pencil, CloudDownload } from "lucide-react";
+import { ChevronLeft, Loader2, Pencil } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
@@ -67,16 +67,10 @@ export default function BlockDetail() {
           </div>
         </Link>
         <div className="flex gap-2">
-          {dbBlock ? (
+          {dbBlock && (
             <Link href={`/admin?type=blocks&id=${dbBlock.id}`}>
               <div className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-teal-600 cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest">
                 <Pencil size={14} /> Edit
-              </div>
-            </Link>
-          ) : rawContent && (
-            <Link href={`/admin?migrate=${id}&type=blocks`}>
-              <div className="p-2 bg-amber-50 text-amber-600 rounded-xl cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border border-amber-100">
-                <CloudDownload size={14} /> Migreer
               </div>
             </Link>
           )}
