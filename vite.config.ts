@@ -34,6 +34,8 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
+        // Main + quiz chunk can exceed the 2 MiB default after adding the EDRA bank.
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       },
       manifest: {
         name: 'Anesthesie Kortrijk',
