@@ -16,6 +16,7 @@ import ReferenceOsteotomesPage from "@/pages/reference-osteotomes";
 import ReferenceInnervatiePage from "@/pages/reference-innervatie";
 import ReferencePlexusListPage from "@/pages/reference-plexus-list";
 import ReferencePlexusDetailPage from "@/pages/reference-plexus-detail";
+import KaraQuizPage from "@/pages/kara-quiz";
 import CalculatorPage from "@/pages/last";
 import CalculatorList from "@/pages/calculator-list";
 import ApfelCalculator from "@/pages/apfel";
@@ -173,6 +174,7 @@ function Router() {
           <Route path="/blocks/referentie/plexus/:id" component={ReferencePlexusDetailPage} />
           <Route path="/blocks/referentie/plexus" component={ReferencePlexusListPage} />
           <Route path="/blocks/referentie" component={ReferenceHubPage} />
+          <Route path="/blocks/quiz" component={KaraQuizPage} />
           <Route path="/blocks/:id" component={BlockDetail} />
           <Route path="/blocks" component={Blocks} />
           <Route path="/calculator" component={CalculatorList} />

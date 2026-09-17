@@ -2,6 +2,13 @@ import type { ReferenceModuleCard } from "@/data/reference/types";
 
 export const REFERENCE_MODULES: ReferenceModuleCard[] = [
   {
+    id: "edra-quiz",
+    title: "EDRA-oefenquiz",
+    description: "Vijf SBA-vragen per ronde — anatomie, fysica, blocks en farmacologie.",
+    href: "/blocks/quiz",
+    status: "available",
+  },
+  {
     id: "dermatomes",
     title: "Dermatomen",
     description: "Dermatoomverloop en klinische landmarks (C2–S5).",
