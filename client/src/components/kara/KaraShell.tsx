@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
-import { ChevronLeft, Loader2, Map, List, GraduationCap } from "lucide-react";
+import { ChevronLeft, Loader2, Map, List, GraduationCap, Brain } from "lucide-react";
 import { AdminAddButton } from "@/components/AdminAddButton";
 import { cn } from "@/lib/utils";
 import { useSite } from "@/hooks/use-site";
 
-export type KaraTab = "atlas" | "list" | "referentie";
+export type KaraTab = "atlas" | "list" | "referentie" | "quiz";
 
 interface KaraShellProps {
   activeTab: KaraTab;
@@ -25,6 +25,8 @@ export function KaraShell({
 }: KaraShellProps) {
   const { site } = useSite();
   const [location] = useLocation();
+
+  const hideAdmin = location.startsWith("/blocks/referentie") || location.startsWith("/blocks/quiz");
 
   const tabClass = (tab: KaraTab) =>
     cn(
@@ -57,7 +59,7 @@ export function KaraShell({
               {isLoading && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
             </div>
           </div>
-          {showAdminButton && !location.startsWith("/blocks/referentie") && (
+          {showAdminButton && !hideAdmin && (
             <AdminAddButton
               mode="header"
               href="/admin?type=blocks"
@@ -93,6 +95,12 @@ export function KaraShell({
               Referentie
             </button>
           </Link>
+          <Link href="/blocks/quiz" className={tabLinkClass}>
+            <button type="button" className={tabClass("quiz")}>
+              <Brain size={16} className="shrink-0" />
+              Quiz
+            </button>
+          </Link>
         </div>
 
         {headerExtra}
@@ -100,7 +108,7 @@ export function KaraShell({
 
       {children}
 
-      {showAdminButton && !location.startsWith("/blocks/referentie") && (
+      {showAdminButton && !hideAdmin && (
         <AdminAddButton mode="fab" href="/admin?type=blocks" label="Nieuw block" />
       )}
     </div>
