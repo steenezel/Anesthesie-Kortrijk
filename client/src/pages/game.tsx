@@ -45,7 +45,7 @@ export default function GamePage() {
     }
   };
 
-  const playAtmosphere = () => {
+  const playAtmosphere = useCallback(() => {
     if (isMuted || !audioCtxRef.current) return;
     
     // Stop eventuele oude atmosfeer
@@ -64,8 +64,9 @@ export default function GamePage() {
     gain.connect(audioCtxRef.current.destination);
     osc.start();
     atmosphereRef.current = osc;
-  };
-  const playPointSound = () => {
+  }, [isMuted]);
+
+  const playPointSound = useCallback(() => {
     if (isMuted || !audioCtxRef.current) return;
     
     // Verhoog de spanning in de achtergronddrone
@@ -88,9 +89,9 @@ export default function GamePage() {
     gain.connect(audioCtxRef.current.destination);
     osc.start();
     osc.stop(audioCtxRef.current.currentTime + 0.2);
-  };
+  }, [isMuted, score]);
 
-  const playDeathSound = () => {
+  const playDeathSound = useCallback(() => {
     if (isMuted || !audioCtxRef.current) return;
     const osc = audioCtxRef.current.createOscillator();
     const gain = audioCtxRef.current.createGain();
@@ -106,7 +107,7 @@ export default function GamePage() {
     gain.connect(audioCtxRef.current.destination);
     osc.start();
     osc.stop(audioCtxRef.current.currentTime + 0.5);
-  };
+  }, [isMuted]);
 
   const fetchLeaderboard = useCallback(async () => {
     try {
@@ -165,7 +166,7 @@ export default function GamePage() {
       localStorage.setItem('flappy_ane_highscore', score.toString());
     }
     fetch('/api/game-stats/increment', { method: 'POST' }).then(() => fetchLeaderboard());
-  }, [score, fetchLeaderboard, isMuted]);
+  }, [score, fetchLeaderboard, playDeathSound]);
 
   const jump = useCallback(() => {
     initAudio();
@@ -177,7 +178,7 @@ export default function GamePage() {
       setBirdVelocity(JUMP_STRENGTH);
       setHasSubmitted(false);
     }
-  }, [gameState, isMuted]);
+  }, [gameState, playAtmosphere]);
 
   const resetGame = () => {
     setBirdPos(GAME_HEIGHT / 2);
@@ -225,7 +226,7 @@ export default function GamePage() {
       }, 24);
     }
     return () => clearInterval(timeId);
-  }, [gameState, birdVelocity, score, isMuted]);
+  }, [gameState, birdVelocity, score, playPointSound]);
 
   useEffect(() => {
     if (gameState !== 'playing') return;

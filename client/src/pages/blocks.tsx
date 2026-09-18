@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link, useSearch } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, ChevronRight, Crosshair, BookOpen, Loader2 } from "lucide-react";
+import { Search, ChevronRight, Crosshair, BookOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";

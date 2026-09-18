@@ -1,11 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
 import { DRUG_DATA, calculateMaxDose, calculateIntralipid } from "@/lib/drugs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { 
   Plus, 
   Trash2, 
@@ -14,16 +13,12 @@ import {
   Calculator as CalcIcon, 
   ShieldCheck, 
   Activity,
-  Share2,
-  BookOpen
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
 
 export default function LastCalculator() {
-  const { toast } = useToast();
   const [weight, setWeight] = useState<number>(70);
   const [isHypervascular, setIsHypervascular] = useState(false);
   const [patientRisk, setPatientRisk] = useState<string>("1.0");

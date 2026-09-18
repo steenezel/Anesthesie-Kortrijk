@@ -1,5 +1,4 @@
 import { Link } from "wouter";
-import { Card, CardContent } from "@/components/ui/card";
 import { 
   ShieldAlert, 
   Apple, 

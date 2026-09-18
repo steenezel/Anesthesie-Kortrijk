@@ -21,7 +21,9 @@ async function startServer() {
   // We gebruiken de breedste types mogelijk om TSC stil te krijgen
   await registerRoutes(httpServer as any, app as any);
 
-  app.use((err: any, _req: any, res: any, _next: any) => {
+  // 4-arg signature required so Express treats this as error middleware
+  app.use((err: any, _req: any, res: any, next: any) => {
+    void next;
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
     res.status(status).json({ message });

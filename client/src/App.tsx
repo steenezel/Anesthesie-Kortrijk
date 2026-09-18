@@ -162,6 +162,7 @@ function Router() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
+      <ScrollToTop />
       <main className={`
         container mx-auto px-4 pt-4 pb-24 transition-all duration-300
         ${isAdmin ? 'max-w-none w-full lg:px-12' : 'max-w-screen-md'}
