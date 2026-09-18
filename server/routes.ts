@@ -16,7 +16,7 @@ import {
 } from "../shared/schema.js";
 import { sql, eq, and, desc, gte, lte, isNotNull, inArray, type SQL } from "drizzle-orm";
 
-function useDb() {
+function getDb() {
   if (!db) {
     const err: Error & { status?: number } = new Error(
       "DATABASE_URL is niet ingesteld. Zie HANDLEIDING.md.",
@@ -69,7 +69,7 @@ function credentialsFromRequest(req: {
 async function authenticateLogbookUser(userId: string, pin: string) {
   if (!userId || !pin) return null;
 
-  const found = await useDb().select().from(users).where(eq(users.id, userId)).limit(1);
+  const found = await getDb().select().from(users).where(eq(users.id, userId)).limit(1);
   const user = found[0];
   const expectedPin = user?.pin || user?.password;
   if (!user || expectedPin !== pin) return null;
@@ -80,14 +80,14 @@ async function authenticateLogbookUser(userId: string, pin: string) {
 async function ensureLogbookUsers() {
   for (const seed of DEFAULT_LOGBOOK_USERS) {
     try {
-      const existing = await useDb()
+      const existing = await getDb()
         .select({ id: users.id })
         .from(users)
         .where(eq(users.username, seed.username))
         .limit(1);
 
       if (existing.length === 0) {
-        await useDb().insert(users).values({
+        await getDb().insert(users).values({
           username: seed.username,
           name: seed.name,
           role: seed.role,
@@ -95,7 +95,7 @@ async function ensureLogbookUsers() {
           password: seed.pin,
         });
       } else {
-        await useDb()
+        await getDb()
           .update(users)
           .set({
             name: seed.name,
@@ -119,7 +119,7 @@ export async function registerRoutes(
 app.get("/api/marketplace", async (_req, res) => {
   try {
     // Haal voor nu even ALLES op om te zien of de verbinding werkt
-    const results = await useDb().select().from(marketplace).orderBy(marketplace.date);
+    const results = await getDb().select().from(marketplace).orderBy(marketplace.date);
     console.log("API Verzending naar client:", results);
     res.json(results || []);
   } catch (error) {
@@ -131,7 +131,7 @@ app.get("/api/marketplace", async (_req, res) => {
   app.post("/api/marketplace", async (req, res) => {
     try {
       const validatedData = insertMarketplaceSchema.parse(req.body);
-      const result = await useDb().insert(marketplace).values(validatedData).returning();
+      const result = await getDb().insert(marketplace).values(validatedData).returning();
       res.json(result[0]);
     } catch (error) {
       res.status(400).send("Ongeldige data");
@@ -141,7 +141,7 @@ app.get("/api/marketplace", async (_req, res) => {
 app.delete("/api/marketplace/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await useDb().delete(marketplace).where(sql`${marketplace.id} = ${id}`);
+    await getDb().delete(marketplace).where(sql`${marketplace.id} = ${id}`);
     res.json({ success: true });
   } catch (error) {
     res.status(500).send("Kon niet verwijderen");
@@ -165,8 +165,8 @@ app.delete("/api/marketplace/:id", async (req, res) => {
       }
 
       const found = userId
-        ? await useDb().select().from(users).where(eq(users.id, userId)).limit(1)
-        : await useDb().select().from(users).where(eq(users.username, username!)).limit(1);
+        ? await getDb().select().from(users).where(eq(users.id, userId)).limit(1)
+        : await getDb().select().from(users).where(eq(users.username, username!)).limit(1);
 
       const user = found[0];
       const expectedPin = user?.pin || user?.password;
@@ -184,7 +184,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
   app.post("/api/logbook/entries", async (req, res) => {
     try {
       const validated = insertLogbookEntrySchema.parse(req.body);
-      const result = await useDb()
+      const result = await getDb()
         .insert(logbookEntries)
         .values({
           userId: validated.userId,
@@ -212,7 +212,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
         return res.status(400).json({ error: "userId vereist" });
       }
 
-      const entries = await useDb()
+      const entries = await getDb()
         .select()
         .from(logbookEntries)
         .where(eq(logbookEntries.userId, userId))
@@ -242,7 +242,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
       if (startDate) filters.push(gte(logbookEntries.date, startDate));
       if (endDate) filters.push(lte(logbookEntries.date, endDate));
 
-      const query = useDb()
+      const query = getDb()
         .select({
           id: logbookEntries.id,
           userId: logbookEntries.userId,
@@ -291,7 +291,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
         filters.push(eq(users.role, role as UserRole));
       }
 
-      const rows = await useDb()
+      const rows = await getDb()
         .select({
           id: users.id,
           username: users.username,
@@ -324,7 +324,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
         return res.status(401).json({ error: "Authenticatie vereist" });
       }
 
-      const rows = await useDb()
+      const rows = await getDb()
         .select()
         .from(spinalLogs)
         .orderBy(desc(spinalLogs.createdAt));
@@ -348,7 +348,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
       delete body.userId;
       delete body.pin;
       const validated = insertSpinalLogSchema.parse(body);
-      const result = await useDb().insert(spinalLogs).values(validated).returning();
+      const result = await getDb().insert(spinalLogs).values(validated).returning();
       res.json(result[0]);
     } catch (error) {
       console.error("Spinal log insert error:", error);
@@ -376,7 +376,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
       }
 
       const cleanName = name.trim().toUpperCase();
-      const database = useDb();
+      const database = getDb();
       const existing = await database
         .select()
         .from(gameHighscores)
@@ -405,7 +405,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
 
   app.get("/api/highscores", async (_req, res) => {
     try {
-      const rows = await useDb()
+      const rows = await getDb()
         .select()
         .from(gameHighscores)
         .orderBy(desc(gameHighscores.score))
@@ -420,7 +420,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
   app.post("/api/game-stats/increment", async (_req, res) => {
     try {
       const key = "global_bird_attempts";
-      const database = useDb();
+      const database = getDb();
       await database
         .insert(gameStats)
         .values({ key, value: 1 })
@@ -438,7 +438,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
 
   app.get("/api/game-stats", async (_req, res) => {
     try {
-      const rows = await useDb()
+      const rows = await getDb()
         .select()
         .from(gameStats)
         .where(eq(gameStats.key, "global_bird_attempts"))
