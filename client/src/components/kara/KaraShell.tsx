@@ -30,7 +30,7 @@ export function KaraShell({
 
   const tabClass = (tab: KaraTab) =>
     cn(
-      "flex w-full items-center justify-center gap-1 rounded-xl py-3 text-[10px] font-black uppercase tracking-[0.08em] transition-all sm:gap-2 sm:py-3.5 sm:text-[11px] sm:tracking-[0.12em]",
+      "flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-[11px] font-black uppercase tracking-[0.12em] transition-all sm:py-4 sm:text-xs sm:tracking-[0.15em]",
       activeTab === tab ? "bg-white text-primary shadow-sm" : "text-slate-400"
     );
 
