@@ -2491,8 +2491,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
 ],
 "correctIndex": 0,
 "explanation": "Cauda Equina Syndroom na continue spinaal was een beruchte complicatie in de vroege jaren '90. Het werd voornamelijk veroorzaakt door het gebruik van microkatheters in combinatie met hyperbare oplossingen (vaak 5% lidocaïne). De medicatie mengde niet goed met de liquor (beperkte distributie) en 'poolde' in het sacrale gebied, wat leidde tot een fatale locale weefselconcentratie en onomkeerbare neurotoxiciteit van de cauda equina."
-}
-
+},
   {
     "id": "stat-001",
     "category": "statistiek",
