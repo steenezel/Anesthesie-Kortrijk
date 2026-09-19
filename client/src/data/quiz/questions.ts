@@ -2881,6 +2881,683 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
     ],
     "correctIndex": 1,
     "explanation": "Lokale anesthetica zijn zwakke basen (pKa meestal rond 7.6 - 8.1). Ze bestaan in fysiologisch weefsel (pH 7.4) in een evenwicht tussen de niet-geïoniseerde vorm (lipofiel, passeert membraan) en de geïoniseerde vorm (actief op receptor, maar kan membraan niet passeren). In geïnfecteerd weefsel heerst acidose (lage pH). Bij een lage pH verschuift de reactie zich drastisch naar de geïoniseerde, in water oplosbare kationische vorm (Henderson-Hasselbalch vergelijking). Deze geladen moleculen kunnen de lipide dubbellaag van de zenuw niet passeren om de natriumkanalen van binnenuit te blokkeren."
+  },
+    {
+    "id": "tech-001",
+    "category": "blocktechniek",
+    "stem": "Tijdens een echogeleid axillair plexus brachialis blok (een Core Block), welke zenuw bevindt zich typisch buiten de neurovasculaire schede en vereist een aparte naaldoriëntatie?",
+    "options": [
+      "Nervus radialis",
+      "Nervus medianus",
+      "Nervus ulnaris",
+      "Nervus musculocutaneus"
+    ],
+    "correctIndex": 3,
+    "explanation": "De nervus musculocutaneus verlaat de plexus vroeg en bevindt zich in het fasciale vlak tussen de m. biceps brachii en m. coracobrachialis, structureel buiten de eigenlijke axillaire neurovasculaire schede."
+  },
+  {
+    "id": "tech-002",
+    "category": "blocktechniek",
+    "stem": "U voert een echogeleid popliteaal blok uit. Welke anatomische relatie tussen de structuren is kenmerkend bij het scannen in de fossa poplitea?",
+    "options": [
+      "De nervus ischiadicus bevindt zich anteromediaal van de arteria poplitea.",
+      "De vena poplitea bevindt zich doorgaans tussen de arterie en de zenuw.",
+      "De nervus fibularis communis voegt zich vanaf mediaal bij de nervus tibialis.",
+      "De arterie ligt oppervlakkig ten opzichte van de zenuwstammen."
+    ],
+    "correctIndex": 1,
+    "explanation": "In de fossa poplitea is de typische ligging van oppervlakkig naar diep (posterior naar anterior) en van lateraal naar mediaal: zenuw, vene, arterie. De vene ligt vrijwel altijd tussen de zenuw en de arterie in het scanvlak."
+  },
+  {
+    "id": "tech-003",
+    "category": "blocktechniek",
+    "stem": "Welke zenuwen worden primair geblokkeerd bij een correct uitgevoerd Pectoral Nerves (PECS) II blok (een 'Advanced Block'), en in welke fasciale vlakken wordt het lokaal anestheticum geïnjecteerd?",
+    "options": [
+      "Nn. pectorales medialis et lateralis; injectie enkel tussen de m. pectoralis major en minor.",
+      "Nn. pectorales, intercostales (T2-T6) en n. thoracicus longus; injectie tussen m. pectoralis major/minor én tussen m. pectoralis minor/m. serratus anterior.",
+      "N. thoracodorsalis en n. thoracicus longus; injectie onder de m. serratus anterior.",
+      "Nn. supraclaviculares en intercostales; injectie subcutaan boven de m. pectoralis major en diep van de minor."
+    ],
+    "correctIndex": 1,
+    "explanation": "Het PECS II blok is een uitbreiding van het PECS I blok. Naast de injectie tussen de pectoralis major en minor (PECS I), wordt lokaal anestheticum gedeponeerd tussen de pectoralis minor en de serratus anterior om de intercostaalzenuwen (T2-T6), intercostobrachialis en n. thoracicus longus te blokkeren."
+  },
+  {
+    "id": "tech-004",
+    "category": "blocktechniek",
+    "stem": "Bij een transmusculair anterior Quadratus Lumborum (QL) blok (Advanced Block), waar wordt de naaldtip exact gepositioneerd voor optimale spreiding naar de lumbale plexuswortels?",
+    "options": [
+      "Posterior van de QL-spier, in de middelste laag van de thoracolumbale fascie.",
+      "Tussen de m. latissimus dorsi en de posterior rand van de QL-spier.",
+      "Tussen de QL-spier en de m. psoas major, anterieur van de fascia transversalis.",
+      "Binnen het spierweefsel van de m. psoas major om de plexus direct te infiltreren."
+    ],
+    "correctIndex": 2,
+    "explanation": "Bij het transmusculaire (anterior) QL-blok gaat de naald door de m. quadratus lumborum. Het doel is het fasciale vlak tussen de QL en de m. psoas major, waardoor het injectaat craniaal kan spreiden naar de thoracale paravertebrale ruimte en de origo van de lumbale plexus."
+  },
+  {
+    "id": "tech-005",
+    "category": "blocktechniek",
+    "stem": "U plant een Rectus Sheath Block (Core Block) voor analgesie. Welk anatomisch principe dicteert de locatie van de injectie om de anterieure cutane takken van de intercostaalzenuwen (T7-T11) betrouwbaar te verdoven?",
+    "options": [
+      "Injectie anterieur van de m. rectus abdominis, net onder de anterieure rectusschede.",
+      "Injectie in de linea alba om bilaterale spreiding te garanderen.",
+      "Injectie direct in de fascia transversalis, caudaal van de linea arcuata (van Douglas).",
+      "Injectie posterieur van de m. rectus abdominis, in het vlak tussen de spierbuik en de posterieure rectusschede."
+    ],
+    "correctIndex": 3,
+    "explanation": "De anterieure cutane takken van de thoraco-abdominale zenuwen (T7-T11) penetreren de posterieure rectusschede en lopen door de m. rectus abdominis. Een injectie in de potentiële ruimte tussen de spierbuik en de posterieure schede garandeert optimale blokkade."
+  },
+  {
+    "id": "tech-006",
+    "category": "blocktechniek",
+    "stem": "Tijdens een echogeleid thoracaal paravertebraal blok (Advanced Block) met een in-plane benadering van lateraal naar mediaal, welke structuur dient als de absolute posterieure grens van de paravertebrale ruimte en moet gepenetreerd worden?",
+    "options": [
+      "Ligamentum costotransversarium superius.",
+      "Pleura parietalis.",
+      "Fascia endothoracica.",
+      "Ligamentum longitudinale anterius."
+    ],
+    "correctIndex": 0,
+    "explanation": "Het ligamentum costotransversarium superius vormt de posterieure begrenzing van de thoracale paravertebrale ruimte. Penetratie van dit ligament met de naald ('pop') bevestigt de correcte toegang."
+  },
+  {
+    "id": "tech-007",
+    "category": "blocktechniek",
+    "stem": "Wat is het primair gepostuleerde mechanisme voor de diepe analgesie bij een Erector Spinae Plane (ESP) blok (Core Block)?",
+    "options": [
+      "Directe diffusie door de pleura naar het splanchnische zenuwstelsel.",
+      "Systemische resorptie vanuit de sterk gevasculariseerde erector spinae spier.",
+      "Anterieure spreiding via het foramen costotransversarium naar de paravertebrale ruimte.",
+      "Exclusieve blokkade van de rami dorsales."
+    ],
+    "correctIndex": 2,
+    "explanation": "Hoewel de injectie zich in een oppervlakkiger vlak bevindt (diep van de m. erector spinae op de processus transversus), wordt de werkzaamheid verklaard door anterieure diffusie van het anestheticum via het foramen costotransversarium naar de paravertebrale en epidurale ruimte, waardoor ventrale en dorsale rami geblokkeerd worden."
+  },
+  {
+    "id": "tech-008",
+    "category": "blocktechniek",
+    "stem": "Een subcostaal Transversus Abdominis Plane (TAP) blok (Core Block) biedt analgesie voor de bovenbuik. In welk specifiek fasciale vlak dient het anestheticum gedeponeerd te worden?",
+    "options": [
+      "Tussen de m. obliquus internus en de m. transversus abdominis, parallel aan de ribbenboog.",
+      "Tussen de m. obliquus externus en de m. obliquus internus.",
+      "Tussen de m. transversus abdominis en de fascia transversalis.",
+      "Tussen de posterieure rectusschede en het peritoneum parietale."
+    ],
+    "correctIndex": 0,
+    "explanation": "Alle TAP-blokvarianten targeten de intermusculaire ruimte tussen de m. obliquus internus en de m. transversus abdominis. Bij de subcostale benadering wordt dit echografisch gescand direct inferieur en parallel aan de ribbenboog."
+  },
+  {
+    "id": "tech-009",
+    "category": "blocktechniek",
+    "stem": "Voor een patiënt overweegt u een Parasternal Plane Block (Advanced). Waar bevinden de doelzenuwen (anterieure cutane takken van de intercostaalzenuwen) zich ter hoogte van T2-T6?",
+    "options": [
+      "Diep van de m. transversus thoracis, net anterieur van de pleura.",
+      "Subcutaan, oppervlakkig van de m. pectoralis major over de gehele lengte van het sternum.",
+      "Binnen de intercostale ruimte, halverwege tussen de midclaviculairlijn en de axillairlijn.",
+      "Tussen de m. pectoralis major en de intercostaalspieren, direct lateraal van het sternum."
+    ],
+    "correctIndex": 3,
+    "explanation": "De anterieure cutane takken van de intercostaalzenuwen penetreren de intercostaalspieren nabij het sternum. Ze liggen in het oppervlakkige parasternal plane, exact tussen de m. pectoralis major en de externe intercostaalspieren / ribkraakbeen."
+  },
+  {
+    "id": "tech-010",
+    "category": "blocktechniek",
+    "stem": "U voert een Ilioinguinalis/Iliohypogastricus blok uit (Advanced Block) mediaal van de spina iliaca anterior superior. Tussen welke spierlagen bevinden deze zenuwen zich typisch op deze locatie?",
+    "options": [
+      "Tussen de m. obliquus internus en de m. transversus abdominis.",
+      "Tussen de m. obliquus externus en de m. obliquus internus.",
+      "Tussen de m. obliquus externus en de subcutis.",
+      "Tussen de m. transversus abdominis en het peritoneum."
+    ],
+    "correctIndex": 0,
+    "explanation": "Net als bij een klassiek TAP-blok bevinden de nervus iliohypogastricus en nervus ilioinguinalis zich in het vlak tussen de musculus obliquus internus en de musculus transversus abdominis ter hoogte van het spina iliaca anterior superior."
+  },
+  {
+    "id": "tech-011",
+    "category": "blocktechniek",
+    "stem": "Bij het Posterior Quadratus Lumborum (QL2) blok wordt lokaal anestheticum geïnjecteerd posterieur van de QL-spier. Welk fasciale element vormt de belangrijkste geleider (conduit) voor de craniale spreiding?",
+    "options": [
+      "Fascia iliaca.",
+      "Middle layer of the thoracolumbar fascia (MTLF).",
+      "Fascia transversalis.",
+      "Fascia endothoracica."
+    ],
+    "correctIndex": 1,
+    "explanation": "De middelste laag van de thoracolumbale fascie (MTLF) scheidt de QL-spier van de erector spinae en begeleidt het lokaal anestheticum craniaal naar de paravertebrale ruimte via de lumbocostale boog."
+  },
+  {
+    "id": "tech-012",
+    "category": "blocktechniek",
+    "stem": "Het Serratus Anterior Plane (SAP) blok is een Core Block. Indien men streeft naar blokkade van de laterale cutane takken van de intercostaalzenuwen, wat is het oppervlakkige injectievlak?",
+    "options": [
+      "Tussen de m. pectoralis minor en de m. serratus anterior.",
+      "Tussen de m. serratus anterior en de externe intercostaalspieren.",
+      "Tussen de m. latissimus dorsi en de m. serratus anterior.",
+      "Tussen de pleura parietalis en de interne intercostaalspieren."
+    ],
+    "correctIndex": 2,
+    "explanation": "Het oppervlakkige SAP-blok deponeert anestheticum tussen de m. latissimus dorsi en de m. serratus anterior. Dit blokkeert effectief de laterale cutane takken van de thoracale intercostaalzenuwen die de laterale thoraxwand innerveren."
+  },
+  {
+    "id": "ana-051",
+    "category": "anatomie",
+    "stem": "De embryologische oorsprong van het perifere zenuwstelsel, waaronder de sensibele ganglia en Schwann-cellen, is ontleend aan:",
+    "options": [
+      "Mesoderm",
+      "Endoderm",
+      "Neurale lijst (neural crest)",
+      "Neurale buis (neural tube)"
+    ],
+    "correctIndex": 2,
+    "explanation": "Het perifere zenuwstelsel (inclusief Schwann-cellen en dorsale wortelganglia) ontstaat uit de neurale lijst (neural crest), terwijl het centrale zenuwstelsel (hersenen, ruggenmerg) afkomstig is van de neurale buis. Dit is fundamentele embryologie vereist voor het begrijpen van perifere zenuwpathologie."
+  },
+  {
+    "id": "ana-052",
+    "category": "anatomie",
+    "stem": "Welk type neuron is morfologisch kenmerkend voor de afferente sensibele vezels waarvan de cellichamen zich in het ganglion spinale (dorsal root ganglion) bevinden?",
+    "options": [
+      "Multipolair neuron",
+      "Bipolair neuron",
+      "Pseudounipolair neuron",
+      "Anaxonisch neuron"
+    ],
+    "correctIndex": 2,
+    "explanation": "Sensibele neuronen in de dorsale wortelganglia zijn pseudounipolair. Ze hebben één axon dat splitst in een perifere tak (naar de receptor) en een centrale tak (naar het ruggenmerg), wat continue impulsgeleiding zonder passage door het soma mogelijk maakt."
+  },
+  {
+    "id": "ana-053",
+    "category": "anatomie",
+    "stem": "Welke bindweefsellaag rondom perifere zenuwen fungeert anatomisch als de primaire bloed-zenuwbarrière en handhaaft het endoneuriale milieu?",
+    "options": [
+      "Perineurium",
+      "Epineurium",
+      "Mesoneurium",
+      "Endoneurium"
+    ],
+    "correctIndex": 0,
+    "explanation": "Het perineurium omhult individuele fascikels en bestaat uit meerdere lagen epitheloïde cellen verbonden door tight junctions. Het vormt de structurele basis van de bloed-zenuwbarrière, die de zenuw beschermt tegen chemische fluctuaties."
+  },
+  {
+    "id": "ana-054",
+    "category": "anatomie",
+    "stem": "Wat is het fysiologische mechanisme van myelinisatie in het perifere zenuwstelsel (PZS) vergeleken met het centrale zenuwstelsel (CZS)?",
+    "options": [
+      "Oligodendrocyten myeliniseren uitsluitend motorische axonen in het PZS.",
+      "Schwann-cellen (PZS) myeliniseren telkens één internodium van één axon, terwijl oligodendrocyten (CZS) internodiën van meerdere axonen tegelijk myeliniseren.",
+      "De myelineschede in het PZS is chemisch identiek aan die van het CZS maar mist knopen van Ranvier.",
+      "Myelinisatie in het PZS wordt exclusief gestuurd door astrocyten."
+    ],
+    "correctIndex": 1,
+    "explanation": "Een Schwann-cel wikkelt zich om een enkel axonsegment in het PZS, in tegenstelling tot oligodendrocyten in het CZS die uitlopers naar meerdere axonen sturen. Bij perifere zenuwschade (zoals door intraneurale injectie) zijn Schwann-cellen cruciaal voor regeneratie."
+  },
+  {
+    "id": "ana-055",
+    "category": "anatomie",
+    "stem": "Welk specifiek onderdeel van de zenuwvezel garandeert de saltatoire (sprongsgewijze) conductie en bevat een zeer hoge dichtheid aan voltage-gated natriumkanalen (Na+)?",
+    "options": [
+      "De internodiale myelinesegmenten",
+      "De Schwann-cel kern",
+      "Het axolemma onder de myelineschede",
+      "De knopen van Ranvier"
+    ],
+    "correctIndex": 3,
+    "explanation": "De knopen van Ranvier zijn kleine onderbrekingen in de myelineschede met een concentratie van voltage-gated Na+-kanalen. Depolarisatie 'springt' van knoop naar knoop, wat de actiepotentiaal versnelt. Lokale anesthetica moeten ten minste drie opeenvolgende knopen blokkeren voor adequate anesthesie."
+  },
+  {
+    "id": "ana-056",
+    "category": "anatomie",
+    "stem": "Volgens de vezelclassificatie (Erlanger & Gasser), welk vezeltype is ongemyeliniseerd, dun, geleidt nociceptieve (trage pijn) impulsen en is zeer gevoelig voor lokale anesthetica?",
+    "options": [
+      "C-vezels",
+      "A-delta vezels",
+      "B-vezels",
+      "A-alfa vezels"
+    ],
+    "correctIndex": 0,
+    "explanation": "C-vezels zijn ongemyeliniseerd, dun (0.4-1.2 µm) en geleiden trage pijn en temperatuur. A-delta vezels zijn dun gemyeliniseerd en geleiden snelle, scherpe pijn. B-vezels zijn preganglionaire autonome vezels."
+  },
+  {
+    "id": "ana-057",
+    "category": "fysiologie",
+    "stem": "Wat bepaalt primair de rustmembraanpotentiaal (ongeveer -70 mV) van een inactief perifeer axon?",
+    "options": [
+      "Actief pompen van natrium- en calciumionen naar het intracellulair compartiment.",
+      "Een relatief hoge permeabiliteit voor natrium (Na+) via 'leaky' kanalen.",
+      "De hoge selectieve permeabiliteit voor kalium (K+) en de activiteit van de Na+/K+-ATPase pomp.",
+      "De opening van chloorkanalen gedreven door extracellulaire acidose."
+    ],
+    "correctIndex": 2,
+    "explanation": "In rust diffundeert K+ de cel uit volgens zijn gradiënt via K+-lekkanalen, wat het intracellulaire milieu negatief maakt. De Na+/K+-pomp handhaaft deze gradiënten (3 Na+ uit, 2 K+ in)."
+  },
+  {
+    "id": "ana-058",
+    "category": "anatomie",
+    "stem": "Welk anatomisch weefselcomponent is hoofdzakelijk verantwoordelijk voor het typische hyperechogene (witte) 'honingraat'- of 'sterrenhemel'-aspect van een perifere zenuwstam op echografie?",
+    "options": [
+      "Het endoneurium en de axonen zelf.",
+      "Het myeline van de individuele zenuwvezels.",
+      "De gladde spiercellen van het vasa nervorum.",
+      "Het epineurium, door de hoge concentratie collageen en vet."
+    ],
+    "correctIndex": 3,
+    "explanation": "Fascikels (omgeven door perineurium) verschijnen meestal hypo-echogeen, terwijl het omringende interfasciculaire en perifere epineurium hyperechogeen is vanwege collageen- en vetweefsel, wat het honingraatpatroon genereert."
+  },
+  {
+    "id": "ana-059",
+    "category": "anatomie",
+    "stem": "Volgens de somatotopische organisatie in grote zenuwstammen (het mantel-core model), waar bevinden zich de vezels die de meest proximale musculatuur en huid innerveren?",
+    "options": [
+      "Uitsluitend in het interfasciculaire weefsel.",
+      "Centraal (core) in de zenuwstam.",
+      "Perifeer (mantle) in de zenuwstam.",
+      "In geïsoleerde fascikels gepositioneerd nabij het vasa nervorum."
+    ],
+    "correctIndex": 2,
+    "explanation": "Proximale vezels liggen doorgaans in de 'mantle' (periferie) van de zenuw, terwijl distale vezels de 'core' (centraal) bezetten. Lokale anesthetica diffunderen van buiten naar binnen, waardoor proximale structuren als eerste verdoofd raken."
+  },
+  {
+    "id": "ana-060",
+    "category": "fysiologie",
+    "stem": "Tijdens het genereren van een actiepotentiaal, welk proces kenmerkt de repolarisatiefase van het axolemma?",
+    "options": [
+      "Sluiting van voltage-gated Na+-kanalen en snelle efflux van K+.",
+      "Opening van voltage-gated Ca2+-kanalen en calcium influx.",
+      "Versnelde inwaartse stroom van Na+ en uitschakeling van de Na+/K+-ATPase pomp.",
+      "Massale influx van Cl- om de membraanpotentiaal te hyperpolariseren."
+    ],
+    "correctIndex": 0,
+    "explanation": "Repolarisatie wordt gedreven door de sluiting (inactivatie) van voltage-gated natriumkanalen en een uitgestelde opening van kaliumkanalen, wat resulteert in een uitstroom (efflux) van K+ om de membraanpotentiaal te herstellen."
+  },
+    {
+    "id": "farm-036",
+    "category": "farmacologie",
+    "stem": "Wat is het fundamentele farmacologische verschil tussen bupivacaïne enerzijds en levobupivacaïne en ropivacaïne anderzijds, wat hun verschil in cardiotoxiciteit verklaart?",
+    "options": [
+      "Bupivacaïne is een zuiver S(-)-enantiomeer, terwijl ropivacaïne een racemisch mengsel is.",
+      "Bupivacaïne heeft een hogere pKa-waarde, waardoor het sneller cardiaal weefsel penetreert.",
+      "Bupivacaïne is een racemisch mengsel van R(+)- en S(-)-enantiomeren, terwijl ropivacaïne en levobupivacaïne zuivere S(-)-enantiomeren zijn.",
+      "Levobupivacaïne en ropivacaïne worden in het plasma gemetaboliseerd door pseudocholinesterasen, wat cardiale accumulatie voorkomt."
+    ],
+    "correctIndex": 2,
+    "explanation": "Commerciële bupivacaïne is een racemisch mengsel (50:50) van R(+)- en S(-)-isomeren. De cardiotoxiciteit wordt voornamelijk gemedieerd door de R(+)-isomeer, die een sterke en langdurige affiniteit heeft voor de cardiale natriumkanalen. Ropivacaïne en levobupivacaïne zijn ontwikkeld als zuivere S(-)-enantiomeren, wat hun bredere therapeutische index en verlaagde cardiotoxiciteit verklaart."
+  },
+  {
+    "id": "farm-037",
+    "category": "farmacologie",
+    "stem": "De pKa van een lokaal anestheticum bepaalt in belangrijke mate de 'onset time' (inwerktijd). Wat is de farmacokinetische rationale achter de snellere inwerking van lidocaïne (pKa 7.9) in vergelijking met bupivacaïne (pKa 8.1) in fysiologisch weefsel (pH 7.4)?",
+    "options": [
+      "Lidocaïne heeft een grotere geïoniseerde fractie, wat de blokkade van de natriumkanalen vanuit de extracellulaire ruimte versnelt.",
+      "Bij pH 7.4 heeft lidocaïne een grotere niet-geïoniseerde (lipofiele) fractie dan bupivacaïne, waardoor het sneller de zenuwmembraan kan passeren.",
+      "De lagere pKa van lidocaïne verhoogt de eiwitbinding aan alfa-1-zure glycoproteïne (AAG), wat de diffusiegradiënt optimaliseert.",
+      "Lidocaïne induceert lokale vasodilatatie, wat de opname in de vasa nervorum en vervolgens in het axon versnelt."
+    ],
+    "correctIndex": 1,
+    "explanation": "Volgens de Henderson-Hasselbalch vergelijking bepaalt de verhouding tussen weefsel-pH en de pKa van het medicijn de fractie niet-geïoniseerde base. Omdat 7.9 dichter bij 7.4 ligt dan 8.1, heeft lidocaïne bij fysiologische pH een grotere niet-geïoniseerde (lipofiele) fractie (~25%) dan bupivacaïne (~17%). Alleen deze lipofiele fractie kan het zenuwmembraan passeren om de receptor intracellulair te bereiken."
+  },
+  {
+    "id": "farm-038",
+    "category": "farmacologie",
+    "stem": "Bij de behandeling van Local Anaesthetic Systemic Toxicity (LAST) wordt een 20% lipidenemulsie (Intralipid) intraveneus toegediend. Wat is, naast het 'lipid sink' fenomeen, een cruciaal hemodynamisch werkingsmechanisme van deze therapie?",
+    "options": [
+      "Het bindt direct aan de extracellulaire domeinen van de voltage-gated natriumkanalen en verdringt het lokaal anestheticum.",
+      "Het fungeert als een competitieve antagonist op de cardiale bètareceptoren om de inotropie te herstellen.",
+      "Het verhoogt de intracellulaire pH, waardoor het lokaal anestheticum intracellulair geïoniseerd raakt en van de receptor dissocieert.",
+      "Het levert een directe vetzuur-energiebron voor het myocard, wat de myocytaire contractiliteit verbetert ondanks de blokkade."
+    ],
+    "correctIndex": 3,
+    "explanation": "Naast het compartimentele 'lipid sink' mechanisme (waarbij sterk lipofiele LA's zoals bupivacaïne uit het weefsel naar de intravasculaire lipidenfase worden getrokken), biedt de lipidenemulsie vrije vetzuren. Deze vetzuren dienen als een krachtige en directe metabole brandstof voor het hart, wat een positief inotroop effect heeft en het weefselhelstel bevordert."
+  },
+  {
+    "id": "farm-039",
+    "category": "farmacologie",
+    "stem": "U voert een fascial plane block uit waarbij snelle resorptie verwacht wordt. Volgens de klassieke absorptiekinetiek (BICEPS mnemoon), welke van de volgende weefselgebieden kent de hoogste systemische absorptiesnelheid van lokale anesthetica?",
+    "options": [
+      "Epidurale ruimte.",
+      "Plexus brachialis (axillair).",
+      "Intercostale ruimte.",
+      "Subcutaan weefsel."
+    ],
+    "correctIndex": 2,
+    "explanation": "De mate van systemische absorptie hangt af van de weefseldoorbloeding (vascularisatie). De klassieke volgorde van meest naar minst snelle absorptie is: Intraveneus > Tracheaal > Intercostaal > Caudaal > Paracervicaal > Epiduraal > Plexus brachialis > Sciaticus > Subcutaan. De intercostale ruimte is extreem rijk gevasculariseerd."
+  },
+  {
+    "id": "farm-040",
+    "category": "farmacologie",
+    "stem": "Clonidine wordt soms als adjuvans gebruikt bij perifere zenuwblokkades. Via welk primair farmacodynamisch mechanisme in het perifere zenuwstelsel verlengt het de duur van analgesie?",
+    "options": [
+      "Het blokkeert direct presynaptische calciumkanalen in het ruggenmerg via lokale diffusie.",
+      "Het activeert perifere alfa-2-adrenerge receptoren, wat leidt tot hyperpolarisatie door verhoogde kaliumgeleiding en remming van de zenuwgeleiding.",
+      "Het veroorzaakt krachtige vasoconstrictie via alfa-1 receptoren in het vasa nervorum, sterker dan epinefrine.",
+      "Het inhibeert het enzym cytochroom P450 lokaal, waardoor de weefselklaring van het lokaal anestheticum stopt."
+    ],
+    "correctIndex": 1,
+    "explanation": "Clonidine is een alfa-2-agonist. Op perifeer niveau activeert het alfa-2-receptoren, wat intracellulair leidt tot een afname van cAMP. Dit resulteert in het openen van kaliumkanalen (K+ efflux), waardoor het axon hyperpolariseert. Dit verhoogt de drempel voor het genereren van een actiepotentiaal, wat de werking van het lokaal anestheticum synergistisch verlengt."
+  },
+  {
+    "id": "farm-041",
+    "category": "farmacologie",
+    "stem": "Het toevoegen van natriumbicarbonaat (alkalinisatie) aan lidocaïne voor een epidurale anesthesie of perifeer blok is een bekende techniek. Wat is het beoogde klinische effect en het chemische risico indien dit bij ropivacaïne of bupivacaïne wordt toegepast?",
+    "options": [
+      "Het verlengt de werkingsduur; bij ropivacaïne kan dit echter leiden tot onmiddellijke weefselnecrose.",
+      "Het versnelt de onset time; maar toevoeging aan bupivacaïne of ropivacaïne veroorzaakt precipitatie (kristallisatie) in de spuit.",
+      "Het vermindert de pijn bij injectie; ropivacaïne heeft echter reeds een sterk alkalische pH, wat het effect tenietdoet.",
+      "Het verhoogt de maximale veilige dosis; bij bupivacaïne leidt dit echter paradoxaal tot een hogere vrije plasmafractie."
+    ],
+    "correctIndex": 1,
+    "explanation": "Alkalinisatie verhoogt de weefsel-pH, waardoor de lipofiele (niet-geïoniseerde) fractie toeneemt en de onset time versnelt. Bupivacaïne en ropivacaïne zijn echter veel sterker base-oplossingen in vergelijking met lidocaïne en slaan vrijwel onmiddellijk neer (precipiteren) als de pH door bicarbonaat wordt verhoogd. Dit kan katheters verstoppen en is onveilig."
+  },
+  {
+    "id": "farm-042",
+    "category": "farmacologie",
+    "stem": "Ester-lokale anesthetica (zoals chloorprocaïne of tetracaïne) hebben een wezenlijk ander metabolisatieprofiel dan amiden. Wat is de primaire afbraakroute van esters en welk allergisch bijproduct ontstaat hierbij vaak?",
+    "options": [
+      "Hepatische klaring via het CYP3A4-enzym; bijproduct is o-toluïdine.",
+      "Hydrolyse door plasma-pseudocholinesterase; bijproduct is para-aminobenzoëzuur (PABA).",
+      "Renale uitscheiding in onveranderde vorm; bijproduct is methemoglobine.",
+      "A-specifieke weefselesterasen in het epineurium; bijproduct is methylparabeen."
+    ],
+    "correctIndex": 1,
+    "explanation": "Esters worden zeer snel gemetaboliseerd in het bloed door pseudocholinesterase (butyrylcholinesterase). Een van de belangrijkste metabolieten is para-aminobenzoëzuur (PABA). PABA is een sterk allergeen en de primaire reden waarom allergische reacties vaker voorkomen bij esters dan bij amide-lokale anesthetica."
+  },
+  {
+    "id": "farm-043",
+    "category": "farmacologie",
+    "stem": "Dexmedetomidine wordt toenemend gebruikt als sedativum tijdens regionale anesthesie. Welk farmacodynamisch kenmerk onderscheidt dexmedetomidine het sterkst van propofol of midazolam in deze setting?",
+    "options": [
+      "Het veroorzaakt een diepe amnesie en spierverslapping zonder analgesie.",
+      "Het bindt aan GABA-A receptoren en veroorzaakt dosisafhankelijke respiratoire depressie.",
+      "Het biedt bewuste sedatie ('cooperative sedation') mét analgetische eigenschappen en behoud van de respiratoire drive.",
+      "Het stimuleert de sympathische uitstroom, wat resulteert in een stabiele tachycardie tijdens het blok."
+    ],
+    "correctIndex": 2,
+    "explanation": "Dexmedetomidine is een zeer selectieve alfa-2-agonist. Het produceert sedatie via de locus coeruleus die lijkt op natuurlijke slaap (patiënten zijn wekbaar en coöperatief). In tegenstelling tot propofol (GABA-agonist), biedt het significante analgesie én laat het de respiratoire drive (ademhaling) intact, wat ideaal is tijdens wakkere procedures onder LRA."
+  },
+  {
+    "id": "farm-044",
+    "category": "farmacologie",
+    "stem": "Wat is het effect van de farmacokinetische eigenschap 'eiwitbinding' op de werkingsduur en toxiciteit van een amide lokaal anestheticum zoals bupivacaïne?",
+    "options": [
+      "Een hoge eiwitbinding correleert met een kortere werkingsduur en een hogere weefselklaring.",
+      "Een hoge eiwitbinding correleert met een langere werkingsduur; een lagere plasmaspiegel van alf-1-zure glycoproteïne (AAG) verhoogt echter de toxische vrije fractie.",
+      "Eiwitbinding vindt uitsluitend plaats in de intracellulaire ruimte van de zenuw, wat de 'lipid sink' theorie verklaart.",
+      "Lokale anesthetica met een hoge eiwitbinding worden uitsluitend door het niersysteem geklaard, wat toxiciteit bij nierfalen garandeert."
+    ],
+    "correctIndex": 1,
+    "explanation": "Lokale anesthetica binden sterk aan serumeiwitten, met name alfa-1-zure glycoproteïne (AAG) en albumine. Medicijnen met een hoge affiniteit voor eiwitten (zoals bupivacaïne) binden ook sterk aan weefseleiwitten, wat hun lange werkingsduur verklaart. Omdat alleen de ongebonden (vrije) drug toxisch is, leiden toestanden met verlaagd AAG (neonaten, leverfalen) tot een grotere vrije fractie en een verhoogd risico op LAST."
+  },
+  {
+    "id": "farm-045",
+    "category": "farmacologie",
+    "stem": "Epinefrine (adrenaline) wordt vaak in een concentratie van 1:200.000 toegevoegd aan lokaal anestheticum. Wat is het primaire doel hiervan en welk fysiologisch mechanisme ligt hieraan ten grondslag?",
+    "options": [
+      "Het blokkeert de parasympathische zenuwen lokaal, waardoor de analgetische werking verdubbelt.",
+      "Het verhoogt de pH van de oplossing, wat de weefselpenetratie van het anestheticum verbetert.",
+      "Het veroorzaakt vasoconstrictie via alfa-1 receptoren, wat de weefseldoorbloeding vermindert, systemische absorptie vertraagt en de werkingsduur lokaal verlengt.",
+      "Het stimuleert bèta-2 receptoren in het epineurium, wat resulteert in vasodilatatie en een diepere penetratie van de fascikels."
+    ],
+    "correctIndex": 2,
+    "explanation": "Epinefrine is een krachtige vasoconstrictor (alfa-1 agonisme). Door de lokale bloedvaten samen te trekken, vermindert het de weefselperfusie rond de injectieplaats. Hierdoor wordt het lokale anestheticum minder snel weggespoeld ('washout') in de systemische circulatie, wat zowel de werkingsduur ter plaatse verlengt als de piek-plasmaconcentratie (en dus toxiciteit) verlaagt."
+  },
+  [
+  {
+    "id": "farm-046",
+    "category": "farmacologie",
+    "stem": "Wat is het fundamentele verschil in farmacokinetiek tussen intrathecale toediening van morfine versus fentanyl, dat het risico op laattijdige ademhalingsdepressie verklaart?",
+    "options": [
+      "Morfine is sterk lipofiel en fixeert zich onmiddellijk in het ruggenmerg, waardoor het na 12 uur plots vrijkomt in de bloedbaan.",
+      "Fentanyl heeft een lagere pKa, waardoor het in de liquor grotendeels geïoniseerd blijft en naar craniaal stijgt.",
+      "Morfine is sterk hydrofiel, blijft lang in de cerebrospinale vloeistof (CSF) en migreert langzaam rostraal naar de hersenstam.",
+      "Fentanyl wordt in de liquor gemetaboliseerd door pseudocholinesterasen, terwijl morfine intact blijft."
+    ],
+    "correctIndex": 2,
+    "explanation": "Morfine is sterk hydrofiel (wateroplosbaar) en diffundeert traag in het lipofiele ruggenmergweefsel. Hierdoor blijft het lang in de liquor (CSF) en kan het met de CSF-stroom rostraal migreren richting de ademhalingscentra, wat laattijdige (6-24 uur) ademhalingsdepressie veroorzaakt. Fentanyl is lipofiel en wordt snel opgenomen door het omliggende neurale weefsel."
+  },
+  {
+    "id": "farm-047",
+    "category": "farmacologie",
+    "stem": "Gabapentine en pregabaline worden vaak ingezet in de perioperatieve multimodale analgesie. Wat is hun primaire moleculaire werkingsmechanisme in het zenuwstelsel?",
+    "options": [
+      "Ze blokkeren competitief de NMDA-receptoren in de dorsale hoorn van het ruggenmerg.",
+      "Ze binden aan de alfa-2-delta (α2δ) subeenheid van presynaptische spanningsafhankelijke calciumkanalen.",
+      "Ze verhogen de afbraak van glutamaat door stimulatie van GABA-transaminase.",
+      "Ze activeren postsynaptische mu-opiaatreceptoren via een allosterische bindingsplaats."
+    ],
+    "correctIndex": 1,
+    "explanation": "Gabapentinoïden binden selectief aan de α2δ-subeenheid van spanningsafhankelijke calciumkanalen in het centrale zenuwstelsel. Dit vermindert de influx van calcium in het presynaptische zenuwuiteinde, waardoor de afgifte van exciterende neurotransmitters (zoals glutamaat en substantie P) in de pijnbahnen afneemt."
+  },
+  {
+    "id": "farm-048",
+    "category": "farmacologie",
+    "stem": "Bij de behandeling van hypotensie na een spinaal blok kiest men vaak tussen efedrine en fenylefrine. Waarom kan een bolus fenylefrine bij een patiënt met een intact hart leiden tot een daling van de cardiac output?",
+    "options": [
+      "Fenylefrine is een zuivere bèta-2 agonist, wat leidt tot massale vasodilatatie en verminderde veneuze return.",
+      "Het stimuleert direct de vaguskern in de hersenstam, wat een bradycardie veroorzaakt.",
+      "Als zuivere alfa-1 agonist veroorzaakt het sterke vasoconstrictie, wat de afterload verhoogt en een baroreceptor-gemedieerde reflexbradycardie uitlokt.",
+      "Het put de endogene noradrenaline-voorraden in de sympathische zenuwuiteinden uit (tachyfylaxie)."
+    ],
+    "correctIndex": 2,
+    "explanation": "Fenylefrine is een krachtige, directe alfa-1-agonist zonder bèta-effecten. De resulterende perifere vasoconstrictie verhoogt de bloeddruk (afterload) abrupt. Dit activeert de baroreceptoren in de arcus aortae en sinus caroticus, wat via de nervus vagus leidt tot een reflexbradycardie. Gecombineerd met de hoge afterload kan dit de cardiac output doen dalen, wat nadelig is bij patiënten met een beperkte cardiale reserve."
+  },
+  {
+    "id": "farm-049",
+    "category": "farmacologie",
+    "stem": "Prilocaïne wordt in hoge doseringen of bij specifieke intraveneuze regionale anesthesie (IVRA) technieken in verband gebracht met cyanose. Welke metaboliet is hiervoor verantwoordelijk en hoe beïnvloedt deze het bloed?",
+    "options": [
+      "PABA (para-aminobenzoëzuur), wat een anafylactische shock met secundaire hypoxie veroorzaakt.",
+      "O-toluïdine, wat het ijzer in hemoglobine oxideert van de ferro- (Fe2+) naar de ferri-staat (Fe3+).",
+      "Mono-ethylglycinexylidide (MEGX), wat direct de respiratoire drive in de medulla inhibeert.",
+      "Xylidine, wat irreversibel bindt aan 2,3-DPG in de erytrocyt."
+    ],
+    "correctIndex": 1,
+    "explanation": "Prilocaïne wordt in de lever gemetaboliseerd tot o-toluïdine. Deze metaboliet oxideert het zuurstofdragende ijzer in hemoglobine naar de ferri-staat (Fe3+), waardoor methemoglobine ontstaat. Methemoglobine kan geen zuurstof binden en verschuift de zuurstofdissociatiecurve naar links, wat leidt tot weefselhypoxie en cyanose. De behandeling is methyleenblauw."
+  },
+  {
+    "id": "farm-050",
+    "category": "farmacologie",
+    "stem": "Een patiënt neemt chronisch niet-selectieve NSAID's in. Volgens de ESRA/ASRA-richtlijnen voor neuraxiale anesthesie, wat is het beleid rondom de punctie bij deze medicatie?",
+    "options": [
+      "NSAID's vormen een absolute contra-indicatie; de punctie moet minimaal 5 dagen worden uitgesteld.",
+      "NSAID's verhogen het risico op een epiduraal hematoom aanzienlijk, daarom moet altijd eerst een bloedingstijd worden bepaald.",
+      "Het gebruik van NSAID's alleen (zonder andere anticoagulantia) verhoogt het risico op een spinaal hematoom niet klinisch significant en is geen contra-indicatie voor neuraxiale blokkade.",
+      "De punctie mag plaatsvinden, maar de epidurale katheter mag pas verwijderd worden nadat de NSAID's 24 uur zijn gestopt."
+    ],
+    "correctIndex": 2,
+    "explanation": "Niet-selectieve NSAID's (zoals ibuprofen, diclofenac) remmen cyclo-oxygenase en verminderen de tromboxaan A2-afhankelijke bloedplaatjesaggregatie. Volgens de consensusrichtlijnen (ASRA/ESRA/ESAIC) vormt het monotherapie-gebruik van NSAID's of aspirine geen verhoogd risico op een neuraxiaal hematoom. Er zijn geen wachttijden voor punctie of katheterverwijdering, mits er geen gelijktijdig gebruik is van andere anticoagulantia (zoals LMWH)."
+  },
+  {
+    "id": "farm-051",
+    "category": "farmacologie",
+    "stem": "U overweegt het gebruik van een sub-anesthetische dosis ketamine (0.3 mg/kg) als adjuvans voor postoperatieve pijn 💊. Wat is het belangrijkste neurofarmacologische werkingsmechanisme van ketamine in deze context?",
+    "options": [
+      "Niet-competitieve antagonisme van de NMDA (N-methyl-D-aspartaat) receptoren in het ruggenmerg.",
+      "Directe inhibitie van cyclo-oxygenase 3 (COX-3) in de hersenstam.",
+      "Stimulatie van de presynaptische alfa-2 adrenerge receptoren in de locus coeruleus.",
+      "Agonisme op de GABA-A receptor via verhoogde chloride-influx."
+    ],
+    "correctIndex": 0,
+    "explanation": "Ketamine is primair een niet-competitieve NMDA-receptorantagonist. NMDA-receptoren in de dorsale hoorn van het ruggenmerg spelen een sleutelrol bij centrale sensitisatie en hyperalgesie ('wind-up' fenomeen) in reactie op acute weefselschade. Door deze receptoren te blokkeren, voorkomt of vermindert ketamine deze versterkte pijngewaarwording."
+  },
+  {
+    "id": "farm-052",
+    "category": "farmacologie",
+    "stem": "Dexamethason wordt veelvuldig gebruikt om de duur van perifere zenuwblokkades te verlengen. Wat is de huidige wetenschappelijke consensus (o.a. Prospect) betreffende de toedieningsweg van dexamethason bij perifere zenuwblokkades?",
+    "options": [
+      "Perineurale toediening is de enige effectieve manier; systemische (intraveneuze) toediening verlengt het blok niet.",
+      "Intraveneuze toediening (bijv. 8 mg) is klinisch vrijwel even effectief in het verlengen van de blokduur als perineurale toediening, en vermijdt de theoretische risico's van perineurale kristallisatie.",
+      "Perineurale dexamethason is inferieur aan perineurale clonidine en wordt afgeraden wegens bewezen neurotoxiciteit.",
+      "Dexamethason mag uitsluitend liposomaal worden toegediend om effect te sorteren op het axolemma."
+    ],
+    "correctIndex": 1,
+    "explanation": "Meerdere meta-analyses en richtlijnen (zoals PROSPECT) hebben aangetoond dat systemische (IV) dexamethason equivalent, of nagenoeg equivalent, is aan perineurale dexamethason voor het verlengen van de duur van perifere zenuwblokken. Omdat de perineurale toediening off-label is en er theoretische zorgen zijn over off-target effecten (voertuig toxiciteit/kristallisatie), geniet IV toediening vaak de voorkeur."
+  },
+  {
+    "id": "farm-053",
+    "category": "farmacologie",
+    "stem": "Bij het gebruik van propofol voor sedatie tijdens een plexusblokkade dient de anesthesist uiterst waakzaam te zijn. Welk kenmerk van propofol maakt het minder geschikt voor bewuste sedatie ('conscious sedation') ten opzichte van dexmedetomidine?",
+    "options": [
+      "Propofol veroorzaakt extreme tachycardie door sympathische overstimulatie.",
+      "Propofol heeft intrinsieke nociceptieve eigenschappen, wat pijn op de prikplaats verergert.",
+      "Propofol mist analgetische eigenschappen en heeft een smalle therapeutische index, waardoor de patiënt snel van bewuste sedatie naar algehele anesthesie (met luchtwegverlies) kan glijden.",
+      "Propofol veroorzaakt een langdurige en therapieresistente anxiolyse die de neurologische evaluatie postoperatief hindert."
+    ],
+    "correctIndex": 2,
+    "explanation": "Propofol is een GABA-agonist met krachtige hypnotische, maar géén analgetische eigenschappen. Bij stimulatie (zoals het plaatsen van een blok) kan een patiënt plots bewegen, wat leidt tot een neiging om de dosering te verhogen. Door de steile dosis-responscurve valt de patiënt dan snel in diepe sedatie of algemene anesthesie met respiratoire depressie en verlies van luchtwegreflexen. Dexmedetomidine behoudt daarentegen de respiratoire drive en biedt 'cooperative sedation'."
+  },
+  {
+    "id": "farm-054",
+    "category": "farmacologie",
+    "stem": "Magnesiumsulfaat wordt bestudeerd als adjuvans in locoregionale anesthesie. Wat is het ion-specifieke farmacologische doelwit dat het analgetische profiel van magnesium verklaart?",
+    "options": [
+      "Spanningsafhankelijke blokkade van de calciumion-porie binnen de NMDA-receptor.",
+      "Directe agonisatie van de perifere mu-opiaatreceptoren in ontstoken weefsel.",
+      "Inhibitie van de natrium-kalium pomp (Na+/K+-ATPase) in het axolemma.",
+      "Stimulatie van de chloor-instroom (Cl-) op de GABA-B receptor."
+    ],
+    "correctIndex": 0,
+    "explanation": "Magnesium blokkeert op spanningsafhankelijke wijze het ionkanaal van de NMDA-receptor bij rustmembraanpotentialen. Dit voorkomt de calcium-influx die nodig is voor centrale sensitisatie wanneer de receptor wordt geactiveerd door glutamaat, waardoor het een vergelijkbaar (zij het zwakker) analgetisch profiel als ketamine heeft."
+  },
+  {
+    "id": "farm-055",
+    "category": "farmacologie",
+    "stem": "Waarom is de toevoeging van epinefrine (adrenaline) aan een spray-oplossing (bijv. lidocaïne) klinisch superieur bij lokaal sterk gevasculariseerde weefsels vergeleken met minder gevasculariseerde weefsels?",
+    "options": [
+      "Omdat in goed gevasculariseerd weefsel de lokale pH lager is, wat de epinefrine activeert.",
+      "Omdat het de massale systemische absorptie in deze weefsels drastisch vertraagt door vasoconstrictie, wat zowel de piek-plasmaconcentratie verlaagt als de weefselcontacttijd maximaliseert.",
+      "Omdat epinefrine in gevasculariseerde weefsels direct de zenuwgeleiding inhibeert via bloed-gemedieerde vasodilatatie.",
+      "Omdat epinefrine de hepatische klaring van het lokaal anestheticum versnelt wanneer het systemisch wordt opgenomen."
+    ],
+    "correctIndex": 1,
+    "explanation": "In sterk doorbloede weefsels (zoals intercostaal of transversus abdominis plane) wordt een lokaal anestheticum zeer snel systemisch geabsorbeerd. Adrenaline bindt aan alfa-1-receptoren, veroorzaakt vasoconstrictie en vermindert deze snelle weefseldoorbloeding. Dit verlaagt het risico op LAST aanzienlijk en houdt het lokaal anestheticum langer rond de zenuw om de werking te verlengen."
+  },
+    {
+    "id": "surg-001",
+    "category": "indicatie",
+    "stem": "Een 72-jarige patiënt met ernstig COPD (FEV1 35%) staat gepland voor een totale schouderartroplastiek. Welke regionale anesthesietechniek biedt de best gebalanceerde chirurgische analgesie met het minste risico op respiratoire compromittering?",
+    "options": [
+      "Interscalenus blok (ISB) met een gereduceerd volume (5 ml) lokaal anestheticum.",
+      "Supraclaviculair plexus brachialis blok.",
+      "Combinatie van een suprascapularis zenuwblok (anterieure of posterieure benadering) en een axillaris zenuwblok (posterieure humerale benadering).",
+      "Erector Spinae Plane (ESP) blok op niveau T2."
+    ],
+    "correctIndex": 2,
+    "explanation": "Volgens de ESRA 2025 richtlijnen behoren het suprascapularis en axillaris blok tot de 'Intermediate / Advanced Blocks'. Deze combinatie wordt sterk aanbevolen voor schouderchirurgie bij patiënten met ernstig longlijden, omdat een interscalenus blok zelfs bij lage volumes een hoog risico geeft op ipsilaterale nervus phrenicus parese (tot 100%), wat bij een FEV1 van 35% absoluut gecontra-indiceerd is."
+  },
+  {
+    "id": "surg-002",
+    "category": "indicatie",
+    "stem": "Bij het opstellen van een multimodaal analgetisch protocol voor een totale knieartroplastiek (TKA) wordt vroege mobilisatie nagestreefd. Welke combinatie van blokken wordt hiervoor momenteel als optimaal beschouwd?",
+    "options": [
+      "Femoralis zenuwblok gecombineerd met een proximaal ischiadicus blok (anterieure benadering).",
+      "Femoral Triangle Block gecombineerd met een IPACK blok en geniculaire zenuwblokken.",
+      "Lumbalis plexus blok gecombineerd met een popliteaal blok.",
+      "Suprainguinaal fascia iliaca blok gecombineerd met een obturatorius zenuwblok."
+    ],
+    "correctIndex": 1,
+    "explanation": "Voor knieartroplastiek is motor-sparing cruciaal voor vroege revalidatie. Een Femoral Triangle Block biedt analgesie voor het anteromediale aspect zonder significante quadricepszwakte. Dit wordt gecombineerd met een IPACK blok en geniculaire zenuwblokken om de posterieure capsulaire pijn te dekken, waarbij de motorische functie van de nervus ischiadicus en femoralis gevrijwaard blijft."
+  },
+  {
+    "id": "surg-003",
+    "category": "indicatie",
+    "stem": "Welke anatomische structuren worden primair verdoofd door een PENG (Pericapsular Nerve Group) blok, wat het een geschikte techniek maakt voor analgesie bij een heupartroplastiek?",
+    "options": [
+      "De cutane takken van de nervus femoralis en de nervus cutaneus femoris lateralis.",
+      "De articulaire takken van de nervus femoralis, de nervus obturatorius en de accessoire nervus obturatorius.",
+      "De dorsale rami van de lumbale spinale zenuwen L1 tot L4.",
+      "De motorische takken van de plexus lumbalis die de musculus iliopsoas en quadriceps femoris innerveren."
+    ],
+    "correctIndex": 1,
+    "explanation": "Het PENG-blok is specifiek ontworpen om de anterieure heupcapsule te verdoven. Dit gebeurt door blokkade van de articulaire takken van de nervus femoralis, nervus obturatorius en de accessoire nervus obturatorius, wat uitstekende analgesie biedt voor heupfracturen en heupartroplastieken met behoud van motorische functie."
+  },
+  {
+    "id": "surg-004",
+    "category": "indicatie",
+    "stem": "U plant regionale anesthesie voor een patiënt die een correctie van een hallux valgus ondergaat. Welke zenuw wordt NIET gedekt door een geïsoleerd popliteaal blok en vereist mogelijk een aanvullende techniek voor tourniquet- of incisiepijn?",
+    "options": [
+      "Nervus fibularis (peroneus) superficialis",
+      "Nervus suralis",
+      "Nervus saphenus",
+      "Nervus tibialis"
+    ],
+    "correctIndex": 2,
+    "explanation": "De behandeling van een hallux valgus vereist adequate blokkade van de voet. Een popliteaal blok verdooft de nervus ischiadicus (tibialis en communis fibularis componenten), wat het overgrote deel van de voet dekt. De mediale zijde van de enkel en de voet wordt echter geïnnerveerd door de nervus saphenus (een eindtak van de nervus femoralis), die apart geblokkeerd moet worden (bijv. via een enkelblok)."
+  },
+  {
+    "id": "surg-005",
+    "category": "indicatie",
+    "stem": "Tijdens een oncologische borstoperatie (gemodificeerde radicale mastectomie met okselklieruitruiming) kiest u voor een Pectoral Nerves (PECS) II blok, ook wel PSPB genoemd. Welke specifieke thoracale zenuwen worden door de tweede injectie (tussen musculus pectoralis minor en serratus anterior) geblokkeerd?",
+    "options": [
+      "Uitsluitend de nervus pectoralis medialis en lateralis.",
+      "De intercostale zenuwen (T2-T6), de nervus thoracicus longus en de nervus thoracodorsalis.",
+      "De plexus brachialis (truncus superior en medius).",
+      "De supraclaviculaire zenuwen en de nervus phrenicus."
+    ],
+    "correctIndex": 1,
+    "explanation": "Het PECS II blok (PSPB) bestaat uit twee injecties. De eerste injectie (PECS I/IPPB) verdooft de mediale en laterale pectorale zenuwen. De tweede injectie, dieper gelegen, dekt de laterale cutane takken van de intercostale zenuwen (T2-T6), de nervus thoracicus longus en de nervus thoracodorsalis. Dit biedt uitgebreide analgesie voor de borstwand en de oksel, wat het superieur maakt voor uitgebreide oncologische borstchirurgie in vergelijking met enkelvoudige technieken."
+  },
+  {
+    "id": "surg-006",
+    "category": "indicatie",
+    "stem": "Wat is het voornaamste nadeel van een Rectus Sheath Block (RSB) als enige analgetische techniek voor een midline laparotomie?",
+    "options": [
+      "Het blokkeert de sympathische grensstreng, wat leidt tot ernstige en langdurige hypotensie.",
+      "Het dekt enkel de somatische pijn van de buikwand en biedt geen verlichting voor viscerale pijn.",
+      "Het is een Advanced techniek die een zeer hoog risico op intra-abdominale orgaanperforatie met zich meebrengt.",
+      "Het blokkeert de onderste intercostale zenuwen te proximaal, wat onbedoelde paradoxale ademhaling veroorzaakt."
+    ],
+    "correctIndex": 1,
+    "explanation": "Voor procedures zoals een laparotomie is pijnbestrijding complex. Het Rectus Sheath Block levert uitstekende analgesie voor de somatische pijncomponent van een mediane abdominale incisie (door blokkade van de terminale anterieure cutane takken van de intercostale zenuwen). Het verdooft echter het peritoneum of de intra-abdominale organen niet. Voor viscerale pijn is epidurale analgesie of multimodale systemische pijnstilling noodzakelijk."
+  },
+  {
+    "id": "surg-007",
+    "category": "indicatie",
+    "stem": "Tijdens de eerste fase van de baring (labour and delivery) rapporteert de patiënte intense viscerale pijn gerelateerd aan uteriene contracties en cervicale dilatatie. Via welke spinale segmenten wordt deze pijn primair getransmitteerd?",
+    "options": [
+      "T10 tot L1",
+      "S2 tot S4",
+      "T4 tot T8",
+      "L2 tot L4"
+    ],
+    "correctIndex": 0,
+    "explanation": "Kennis van de anatomie van de obstetrische patiënt en pijntransmissie is een vereiste binnen de EDRA-syllabus[cite: 1]. De pijn tijdens de eerste fase van de arbeid is visceraal van aard en reist via sympathische vezels naar de thoracale en lumbale spinale segmenten T10 tot L1. Tijdens de tweede fase (indaling en perineale rek) wordt de pijn somatisch en getransmitteerd via de nervus pudendus naar de sacrale segmenten S2 tot S4."
+  },
+  {
+    "id": "surg-008",
+    "category": "indicatie",
+    "stem": "Een patiënte weigert een spinale anesthesie voor een geplande keizersnede (C-section) en ondergaat algemene anesthesie. Welk fascial plane block is het meest aangewezen om postoperatief incisiepijn (Pfannenstiel) te reduceren?",
+    "options": [
+      "Subcostaal Transversus Abdominis Plane (TAP) blok",
+      "Midaxillair Transversus Abdominis Plane (TAP) blok of Anterieure Quadratus Lumborum (QLB) blok",
+      "Parasternal Plane Block (Superficial)",
+      "Erector Spinae Plane (ESP) blok op niveau T4"
+    ],
+    "correctIndex": 1,
+    "explanation": "Voor obstetrische procedures zoals een sectio met een lage transversale incisie (Pfannenstiel, T11-L1 dermatoom), is een midaxillair TAP-blok (Core Block) of een anterieur QLB (Intermediate Block) zeer effectief voor het reduceren van somatische wondpijn[cite: 2]. Een subcostaal TAP-blok dekt voornamelijk de bovenbuik (T6-T9) en is klinisch inferieur voor infra-umbilicale incisies."
+  },
+  {
+    "id": "surg-009",
+    "category": "indicatie",
+    "stem": "Bij urologische oncologische chirurgie, zoals een open radicale prostatectomie, wordt vaak gestreefd naar opioïd-sparende anesthesie. Welk van onderstaande neuraxiale/regionale technieken vermindert de chirurgische stressrespons het meest adequaat door zowel somatische als sympathische blokkade te garanderen?",
+    "options": [
+      "Bilateraal posterieur Quadratus Lumborum Blok (QLB)",
+      "Thoracale epidurale anesthesie (TEA)",
+      "Lumbale neuraxiale scan gevolgd door een intrathecale injectie van uitsluitend clonidine",
+      "Bilateraal Transversus Abdominis Plane (TAP) blok (midaxillair)"
+    ],
+    "correctIndex": 1,
+    "explanation": "Hoewel fascial plane blocks zoals TAP en QLB uitstekende somatische analgesie bieden voor abdominale wandincisies, blokkeren ze het sympathische zenuwstelsel onvoldoende om de viscerale pijn en chirurgische stressrespons bij grote laparotomieën of urologische resecties volledig te onderdrukken. Thoracale epidurale anesthesie blijft de 'gouden standaard' hiervoor, omdat het effectief zowel de somatische afferente wegen als de sympathische efferente en afferente vezels blokkeert."
+  },
+  {
+    "id": "surg-010",
+    "category": "indicatie",
+    "stem": "U voert een thoracoscopische longresectie (VATS) uit. Omwille van stollingsproblematiek is een thoracale epidurale gecontra-indiceerd. Welke van de volgende technieken biedt de meest gelijkwaardige unilaterale dermatome dekking en wordt door ESRA geclassificeerd als een 'Intermediate / Advanced Block'?",
+    "options": [
+      "Erector Spinae Plane (ESP) blok",
+      "Thoracaal Paravertebraal Blok (PVB) via parasagittale of transverse benadering",
+      "Rectus Sheath blok",
+      "Superficial Cervical Plexus blok"
+    ],
+    "correctIndex": 1,
+    "explanation": "Het Thoracaal Paravertebraal Blok (PVB) is een techniek die unilaterale somatische en sympathische blokkade biedt, zeer effectief voor thoracotomie en VATS[cite: 1]. Hoewel het ESP blok ook veel gebruikt wordt en geclassificeerd is als een Core Block[cite: 2], biedt het PVB een betrouwbaardere en directere penetratie van het lokaal anestheticum rond de intercostale zenuwen en de sympathische grensstreng in de paravertebrale ruimte."
   }
 ];
 
