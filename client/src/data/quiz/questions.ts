@@ -2621,8 +2621,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
     ],
     "correctIndex": 3,
     "explanation": "Correlatie tussen twee continue variabelen wordt klassiek berekend met de Pearson coëfficiënt (r). De kritische assumptie voor Pearson is echter dat beide variabelen normaal verdeeld zijn (en lineair correleren). Omdat uit de vraag blijkt dat ze niet-normaal verdeeld (scheef) zijn, is het gebruik van de non-parametrische tegenhanger - de Spearman rank correlation - de enige correcte keuze."
-  }
-
+  },
 {
 "id": "ana-046",
 "category": "anatomie",
@@ -2687,8 +2686,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
 ],
 "correctIndex": 1,
 "explanation": "Het adductor kanaal (van Hunter) begint bij de apex van de femorale driehoek (kruising m. sartorius over de m. adductor longus) en eindigt bij de hiatus adductorius. De neurale inhoud omvat niet alleen de nervus saphenus (sensorisch), maar klassiek ook de (takken van de) nervus vastus medialis, die cruciaal is voor de innervatie van het anteromediale kniekapsel. PENG of andere benaderingen richten zich op andere takken, maar voor het ware kanaal zijn deze twee van belang."
-}
-
+},
   {
     "id": "fys-036",
     "category": "fysica",
@@ -2753,7 +2751,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
     ],
     "correctIndex": 2,
     "explanation": "Een gladde, standaard naald fungeert als een spiegel voor ultrageluid. Bij een ondiepe hoek kaatst het geluid terug naar de probe. Bij een steile hoek (bijv. popliteaal blok) kaatst het geluid diep het lichaam in en 'verdwijnt' de naald van het scherm. Echogene naalden hebben speciale laser-etsen die de oppervlaktestructuur wijzigen, waardoor het ultrageluid verstrooid wordt (scatter). Een aanzienlijk deel van deze verstrooide signalen keert wél terug naar de probe, waardoor de naald ook bij steile hoeken zichtbaar blijft."
-  }
+  },
 {
     "id": "fysio-021",
     "category": "fysiologie",
