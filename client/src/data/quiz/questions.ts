@@ -3559,5 +3559,5 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
     "correctIndex": 1,
     "explanation": "Het Thoracaal Paravertebraal Blok (PVB) is een techniek die unilaterale somatische en sympathische blokkade biedt, zeer effectief voor thoracotomie en VATS[cite: 1]. Hoewel het ESP blok ook veel gebruikt wordt en geclassificeerd is als een Core Block[cite: 2], biedt het PVB een betrouwbaardere en directere penetratie van het lokaal anestheticum rond de intercostale zenuwen en de sympathische grensstreng in de paravertebrale ruimte."
   }
-];
+]
 
