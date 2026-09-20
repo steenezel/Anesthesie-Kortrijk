@@ -8,7 +8,6 @@ export const QUIZ_CATEGORIES = {
   farmacologie: "Farmacologie",
   complicaties: "Complicaties",
   fysiologie: "Fysiologie",
-  speciale: "Speciale groepen",
   statistiek: "Statistiek",
 } as const;
 

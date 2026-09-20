@@ -2124,7 +2124,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-001",
-    category: "speciale",
+    category: "indicatie",
     stem: "Bij kinderen is een caudale anesthesie vooral geschikt voor:",
     options: ["Open thoracotomie als primaire indicatie", "Inguinale, peri-umbilicale, peniele en onderbeenchirurgie onder het T10-niveau afhankelijk van volume", "Schouder-arthroscopie met phrenicuscover", "Intracraniale chirurgie via caudale spreiding"],
     correctIndex: 1,
@@ -2132,7 +2132,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-002",
-    category: "speciale",
+    category: "farmacologie",
     stem: "Maximale bupivacaïne-dosis bij kinderen ligt vaak rond:",
     options: ["5–6 mg/kg zoals lidocaïne met adrenaline", "0,2 mg/kg als absolute maximum bij elk kind", "2–2,5 mg/kg (conservatief; neonaten lager)", "Identiek aan volwassen 175 mg ongeacht gewicht"],
     correctIndex: 2,
@@ -2140,7 +2140,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-003",
-    category: "speciale",
+    category: "farmacologie",
     stem: "EMLA bij neonaten <3 maanden:",
     options: ["Onbeperkt gebruik zoals bij schoolkinderen", "Verplicht op slijmvlies in hoge doses", "Geen MetHb-risico onder 3 maanden", "Beperkte oppervlakte/tijd wegens MetHb (prilocaïne) en huidpermeabiliteit"],
     correctIndex: 3,
@@ -2148,7 +2148,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-004",
-    category: "speciale",
+    category: "indicatie",
     stem: "Obese patiënt en PNB:",
     options: ["US eerste keus, landmarks onbetrouwbaar, doses op ideale/lean body weight voor toxische plafonds overwegen", "Landmarktechniek betrouwbaarder dan US bij BMI >40", "Doses altijd op totaal lichaamsgewicht zonder plafond", "Sedatie/opioïden vrij verhogen bij OSA"],
     correctIndex: 0,
@@ -2156,7 +2156,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-005",
-    category: "speciale",
+    category: "indicatie",
     stem: "Trauma met mogelijke CWK-instabiliteit:",
     options: ["Harde collar verwijderen en nek vrij bewegen voor elk block", "Manuele in-line stabilisatie bij luchtweg; regio van de ledemaat kan GA-luchtweg vermijden als het de chirurgie dekt", "Regio altijd verboden bij trauma", "CWK-instabiliteit is irrelevant voor anesthesiekeuze"],
     correctIndex: 1,
@@ -2164,7 +2164,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-006",
-    category: "speciale",
+    category: "indicatie",
     stem: "Anticoagulatie en oppervlakkige PNB (bv. superficiële cervicale plexus, enkel):",
     options: ["Identiek risico als thoracale epiduraal", "Absolute vrijbrief zonder stollingsbeoordeling", "Lager hematoomrisico dan diepe plexus/neuraxiaal; individualiseer toch", "Hoger risico dan psoascompartment"],
     correctIndex: 2,
@@ -2172,7 +2172,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-007",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Pre-eclampsie en epiduraal:",
     options: ["Absoluut gecontra-indiceerd bij elke pre-eclampsie", "Geen plaatjescontrole nodig bij HELLP-verdenking", "GA altijd veiliger dan regio bij pre-eclampsie airway", "Vaak wenselijk (bloeddruk, sectio-ready); trombocyten/stolling checken, labiele hemodynamiek"],
     correctIndex: 3,
@@ -2180,23 +2180,23 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-008",
-    category: "speciale",
-    stem: "Sectio onder spinaal: oxytocine na afnavelen:",
+    category: "fysiologie",
+    stem: "Sectio onder spinale: oxytocine na afnavelen:",
     options: ["Lage dosis/infuus i.p.v. grote bolus (hypotensie, ST-depressie); phenylefrine paraat", "Grote IV-bolus oxytocine als hemodynamisch neutraal", "Oxytocine vermijden tot 1 uur na afnavelen altijd", "Ephedrine verboden; alleen vasopressine"],
     correctIndex: 0,
     explanation: "Hemodynamiek bovenop spinale vasodilatatie. Carbetocin/ergometrine volgens protocol.",
   },
   {
     id: "spe-009",
-    category: "speciale",
-    stem: "Ammniotic fluid embolism vs. hoge spinaal:",
-    options: ["AFE en hoge spinaal zijn klinisch niet te onderscheiden en altijd identiek", "AFE: plots collaps, coagulopathie, hypoxemie peri-partum; hoge spinaal: bradypneu/hoge motoriek zonder DIC", "Hoge spinaal presenteert typisch met DIC en longemboliebeeld", "AFE geeft geïsoleerde PDPH zonder collaps"],
+    category: "fysiologie",
+    stem: "Ammniotic fluid embolism vs. hoge spinale:",
+    options: ["AFE en hoge spinale zijn klinisch niet te onderscheiden en altijd identiek", "AFE: plots collaps, coagulopathie, hypoxemie peri-partum; hoge spinale: bradypneu/hoge motoriek zonder DIC", "Hoge spinale presenteert typisch met DIC en longemboliebeeld", "AFE geeft geïsoleerde PDPH zonder collaps"],
     correctIndex: 1,
     explanation: "Differentiaal van peri-partum collaps: aortocavaal, bloeding, AFE, LAST, anafylaxie, hoge spinaal, cardiaal.",
   },
   {
     id: "spe-010",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Dementie/delirium-risico bij heupfractuur:",
     options: ["Regio verhoogt delirium systematisch t.o.v. opioïden", "Delirium is uitsluitend genetisch en onaantastbaar", "Vroege regionale analgesie en vermijden van zware opioïden/sedatie kan deliriumdruk verlagen", "Enkel GA zonder block voorkomt delirium"],
     correctIndex: 2,
@@ -2204,7 +2204,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-011",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Reumatische spondylitis/scoliose en neuraxiaal:",
     options: ["Midline landmark altijd eenvoudiger bij ankylose", "Neuraxiaal nooit falen bij scoliose", "Geen informed consent over technisch falen nodig", "US/paramediaan, soms onmogelijk; PNB of GA als backup plannen"],
     correctIndex: 3,
@@ -2212,7 +2212,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-012",
-    category: "speciale",
+    category: "fysiologie",
     stem: "MS of bestaande neuropathie en neuraxiaal:",
     options: ["Geen absolute contra; documenteer deficit, discussieer risico van post-block verergering (vaak correlatie ≠ causatie)", "Absolute contra voor alle neuraxiaal bij MS", "Geen documentatie van pre-existente uitval nodig", "Lidocaïne neuraxiaal is verplicht veiliger dan bupivacaïne"],
     correctIndex: 0,
@@ -2220,7 +2220,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-013",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Dagziekenhuis-regio: ontslagcriteria omvatten:",
     options: ["Ontslag met Bromage 3 en onstabiele vitals als 'daycare'", "Stabiele vitals, pijn/PONV onder controle, (bij neuraxiaal) terugkerende motoriek/plas volgens protocol, begeleiding, alarmkaart rebound pain", "Geen instructie over valrisico na femoraal/ISB", "Rebound pain negeren tot SEH-bezoek"],
     correctIndex: 1,
@@ -2228,7 +2228,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-014",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Zwangere in 3e trimester voor niet-obstetrische chirurgie:",
     options: ["Rugligging zonder LUD is veilig na 24 weken", "NSAID vrij in het hele 3e trimester", "LUD, antacid, moeilijke luchtweg anticiperen, foetale monitoring volgens termijn, regio als het de chirurgie dekt", "MAC is verhoogd in zwangerschap"],
     correctIndex: 2,
@@ -2236,7 +2236,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-015",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Sikkelcelziekte en tourniquet/Bier-block:",
     options: ["Absolute indicatie voor langdurige tourniquet", "Bier-block is eerste keus zonder overleg", "Geen belang van warmte/zuurstof/hydratatie", "Relatieve contra; hypoxie/stasis/acidose vermijden, overleg hematologie"],
     correctIndex: 3,
@@ -2244,7 +2244,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-016",
-    category: "speciale",
+    category: "fysiologie",
     stem: "COVID/respiratoire infectie en ISB:",
     options: ["Extra voorzichtig met phrenicusparese; overweeg sparing techniek of GA met gesloten circuit volgens context", "Hoog-volume ISB is onveranderd veilig bij hypoxemie", "Phrenicusparese verbetert hoesten na schouderchirurgie", "Geen zuurstofplanning nodig postoperatief"],
     correctIndex: 0,
@@ -2252,7 +2252,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-017",
-    category: "speciale",
+    category: "statistiek",
     stem: "Statistiek: p < 0,05 betekent klassiek:",
     options: ["Het resultaat is bewezen klinisch belangrijk", "De kans dat dit resultaat (of extremer) onder H0 optreedt is <5%; het bewijst niet klinische relevantie", "De kans op type II-fout is <5%", "Power is per definitie 95%"],
     correctIndex: 1,
@@ -2260,7 +2260,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-018",
-    category: "speciale",
+    category: "statistiek",
     stem: "Power (1−β) van een studie is:",
     options: ["De kans op een vals-positief resultaat (α)", "1 minus de p-waarde", "De kans om een werkelijk bestaand effect te detecteren", "Hetzelfde als NNT"],
     correctIndex: 2,
@@ -2268,7 +2268,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-019",
-    category: "speciale",
+    category: "statistiek",
     stem: "NNT (number needed to treat) is:",
     options: ["1 / relatief risico", "Relatief risico / oddsratio", "Power × α", "1 / absolute risicoreductie"],
     correctIndex: 3,
@@ -2276,7 +2276,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-020",
-    category: "speciale",
+    category: "statistiek",
     stem: "Sensitiviteit van een test is:",
     options: ["True positives / (true positives + false negatives) — aandeel zieken dat terecht positief test", "True positives / (true positives + false positives) — dat is PPV", "True negatives / (true negatives + false positives) — dat is specificiteit", "False positives / true negatives"],
     correctIndex: 0,
@@ -2284,7 +2284,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-021",
-    category: "speciale",
+    category: "statistiek",
     stem: "Een forest plot in een meta-analyse toont:",
     options: ["Enkel ruwe individuele patiëntendata zonder pooling", "Puntschattingen en betrouwbaarheidsintervallen per studie plus gepoolde schatting", "Een ROC-curve van één diagnostische test", "Een Kaplan-Meier-curve van overleving alleen"],
     correctIndex: 1,
@@ -2292,7 +2292,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-022",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Acute neuropatische component na letsel van n. saphenus:",
     options: ["Herhaalde hoge LA-bolussen tot pijn weg is", "Negeer allodynie als normale wondpijn", "Brandend, allodynie in mediaal been; overweeg gabapentinoïd/lidocaïnepleister, geen herhaalde toxische LA-bolussen", "Verplicht opnieuw proximaal femoraalblock met bupivacaïne 0,5% 40 ml"],
     correctIndex: 2,
@@ -2300,7 +2300,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-023",
-    category: "speciale",
+    category: "fysiologie",
     stem: "CRPS type I vs. II:",
     options: ["I heeft altijd een doorgesneden zenuw; II niet", "Beide types vereisen permanente motorische uitval", "CRPS bestaat alleen na neuraxiaal, nooit na trauma", "II heeft een gedocumenteerd zenuwletsel; I niet; beiden: dysfunctie, allodynie, vasomotorisch"],
     correctIndex: 3,
@@ -2308,7 +2308,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-024",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Postoperatieve pijn na thoracotomie die op dag 3 exploderen na een goed werkende TEA:",
     options: ["Denk aan katheterdislocatie, pump failure, tachyfylaxie, chirurgische complicatie (lekkage, infectie)", "Verhoog blind de TEA-snelheid zonder inspectie", "Negeer breakthrough als normaal op dag 3", "Vervang TEA door bilateraal ISB"],
     correctIndex: 0,
@@ -2316,7 +2316,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-025",
-    category: "speciale",
+    category: "indicatie",
     stem: "Informed consent voor PNB omvat minstens:",
     options: ["Enkel 'het komt wel goed' zonder risico's te noemen", "Alternatieven (GA), veelvoorkomende bijwerkingen, zeldzame ernstige risico's (zenuwletsel, LAST, pneumothorax indien relevant), falen van het block", "Alleen zeldzame risico's zonder alternatieven", "Geen vermelding van blockfalen"],
     correctIndex: 1,
@@ -2324,7 +2324,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-026",
-    category: "speciale",
+    category: "indicatie",
     stem: "Monitoring tijdens PNB-plaatsing (minimum):",
     options: ["Geen monitoring nodig bij 'quick TAP'", "Enkel klinische blik zonder SpO2", "Aanwezigheid van IV-toegang, SpO2, BP, ECG, bewaking/zuurstof volgens sedatiediepte, LAST-kit in de buurt", "LAST-kit mag op een andere verdieping liggen"],
     correctIndex: 2,
@@ -2332,7 +2332,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-027",
-    category: "speciale",
+    category: "farmacologie",
     stem: "Steriliteit: chlorhexidine 0,5–2% in alcohol:",
     options: ["Inferior aan povidonjood voor huiddesinfectie", "Veilig om CHX in de LA-ampul te mengen", "Geen droogtijd nodig vóór punctie", "Superieur aan povidonjood voor huiddecontaminatie; niet in de naald/ampul laten druppelen (neurotoxisch)"],
     correctIndex: 3,
@@ -2340,15 +2340,15 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-028",
-    category: "speciale",
-    stem: "Een positieve likelihood ratio van 10 betekent grof:",
+    category: "statistiek",
+    stem: "Een positieve likelihood ratio van 10 betekent grofweg:",
     options: ["De test verhoogt de odds van ziekte ongeveer tienvoudig", "De test verlaagt de odds tienvoudig", "Sensitiviteit is per definitie 10%", "NNT is 10"],
     correctIndex: 0,
     explanation: "LR+ = sen/(1−spec). LR− = (1−sen)/spec. Handig baayesiaans denken.",
   },
   {
     id: "spe-029",
-    category: "speciale",
+    category: "statistiek",
     stem: "ANOVA wordt gebruikt om:",
     options: ["Twee proporties te vergelijken (chi-square)", "Gemiddelden van meer dan twee groepen te vergelijken (continue, ruwweg normale data)", "Twee gepaarde medianen zonder normaliteit (Wilcoxon) als enige ANOVA-rol", "Overlevingstijden te modelleren (Cox)"],
     correctIndex: 1,
@@ -2356,7 +2356,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-030",
-    category: "speciale",
+    category: "statistiek",
     stem: "Relative risk 0,5 bij misselijkheidsincidentie betekent:",
     options: ["De odds zijn per definitie gehalveerd identiek aan RR bij frequente events", "NNT is altijd 0,5", "Het risico is gehalveerd in de interventiegroep t.o.v. controle (niet hetzelfde als OR bij frequente uitkomsten)", "Absolute risicoreductie is 50 percentagepunten ongeacht baseline"],
     correctIndex: 2,
