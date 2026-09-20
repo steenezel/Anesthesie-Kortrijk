@@ -592,7 +592,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
     stem: "N. pudendus (S2–S4) verlaat het bekken via:",
     options: ["Foramen obturatum rechtstreeks naar de adductorenloge", "Foramen ischiadicum majus, rond spina ischiadica/sacrospinosus, terug via minus naar fossa ischio-analis", "Hiatus sacralis craniale richting de durale zak", "Lieskanalen samen met ductus deferens/rond ligamentum teres"],
     correctIndex: 1,
-    explanation: "Landmarks: spina ischiadica, Alcock-kanaal. Relevant voor perineum, verlossing, chronische bekkenpijn (niet-core EDRA-2B, wel theorie).",
+    explanation: "Landmarks: spina ischiadica, Alcock-kanaal. Relevant voor perineum, verlossing, chronische bekkenpijn.",
   },
   {
     id: "ana-040",
@@ -2885,7 +2885,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
     {
     "id": "tech-001",
     "category": "blocktechniek",
-    "stem": "Tijdens een echogeleid axillair plexus brachialis blok (een Core Block), welke zenuw bevindt zich typisch buiten de neurovasculaire schede en vereist een aparte naaldoriëntatie?",
+    "stem": "Tijdens een echogeleid axillair plexus brachialis blok, welke zenuw bevindt zich typisch buiten de neurovasculaire schede en vereist een aparte naaldoriëntatie?",
     "options": [
       "Nervus radialis",
       "Nervus medianus",
@@ -2937,7 +2937,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   {
     "id": "tech-005",
     "category": "blocktechniek",
-    "stem": "U plant een Rectus Sheath Block (Core Block) voor analgesie. Welk anatomisch principe dicteert de locatie van de injectie om de anterieure cutane takken van de intercostaalzenuwen (T7-T11) betrouwbaar te verdoven?",
+    "stem": "U plant een Rectus Sheath Block voor analgesie. Welk anatomisch principe dicteert de locatie van de injectie om de anterieure cutane takken van de intercostaalzenuwen (T7-T11) betrouwbaar te verdoven?",
     "options": [
       "Injectie anterieur van de m. rectus abdominis, net onder de anterieure rectusschede.",
       "Injectie in de linea alba om bilaterale spreiding te garanderen.",
@@ -2963,7 +2963,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   {
     "id": "tech-007",
     "category": "blocktechniek",
-    "stem": "Wat is het primair gepostuleerde mechanisme voor de diepe analgesie bij een Erector Spinae Plane (ESP) blok (Core Block)?",
+    "stem": "Wat is het primair gepostuleerde mechanisme voor de diepe analgesie bij een Erector Spinae Plane (ESP) blok?",
     "options": [
       "Directe diffusie door de pleura naar het splanchnische zenuwstelsel.",
       "Systemische resorptie vanuit de sterk gevasculariseerde erector spinae spier.",
@@ -2976,7 +2976,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   {
     "id": "tech-008",
     "category": "blocktechniek",
-    "stem": "Een subcostaal Transversus Abdominis Plane (TAP) blok (Core Block) biedt analgesie voor de bovenbuik. In welk specifiek fasciale vlak dient het anestheticum gedeponeerd te worden?",
+    "stem": "Een subcostaal Transversus Abdominis Plane (TAP) blok biedt analgesie voor de bovenbuik. In welk specifiek fasciale vlak dient het anestheticum gedeponeerd te worden?",
     "options": [
       "Tussen de m. obliquus internus en de m. transversus abdominis, parallel aan de ribbenboog.",
       "Tussen de m. obliquus externus en de m. obliquus internus.",
@@ -3028,7 +3028,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   {
     "id": "tech-012",
     "category": "blocktechniek",
-    "stem": "Het Serratus Anterior Plane (SAP) blok is een Core Block. Indien men streeft naar blokkade van de laterale cutane takken van de intercostaalzenuwen, wat is het oppervlakkige injectievlak?",
+    "stem": "Het Serratus Anterior Plane (SAP) blok. Indien men streeft naar blokkade van de laterale cutane takken van de intercostaalzenuwen, wat is het oppervlakkige injectievlak?",
     "options": [
       "Tussen de m. pectoralis minor en de m. serratus anterior.",
       "Tussen de m. serratus anterior en de externe intercostaalspieren.",
@@ -3298,7 +3298,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
     "correctIndex": 2,
     "explanation": "Epinefrine is een krachtige vasoconstrictor (alfa-1 agonisme). Door de lokale bloedvaten samen te trekken, vermindert het de weefselperfusie rond de injectieplaats. Hierdoor wordt het lokale anestheticum minder snel weggespoeld ('washout') in de systemische circulatie, wat zowel de werkingsduur ter plaatse verlengt als de piek-plasmaconcentratie (en dus toxiciteit) verlaagt."
   },
-  [
+  
   {
     "id": "farm-046",
     "category": "farmacologie",
@@ -3518,7 +3518,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
       "L2 tot L4"
     ],
     "correctIndex": 0,
-    "explanation": "Kennis van de anatomie van de obstetrische patiënt en pijntransmissie is een vereiste binnen de EDRA-syllabus[cite: 1]. De pijn tijdens de eerste fase van de arbeid is visceraal van aard en reist via sympathische vezels naar de thoracale en lumbale spinale segmenten T10 tot L1. Tijdens de tweede fase (indaling en perineale rek) wordt de pijn somatisch en getransmitteerd via de nervus pudendus naar de sacrale segmenten S2 tot S4."
+    "explanation": "Kennis van de anatomie van de obstetrische patiënt en pijntransmissie is een vereiste binnen de EDRA-syllabus. De pijn tijdens de eerste fase van de arbeid is visceraal van aard en reist via sympathische vezels naar de thoracale en lumbale spinale segmenten T10 tot L1. Tijdens de tweede fase (indaling en perineale rek) wordt de pijn somatisch en getransmitteerd via de nervus pudendus naar de sacrale segmenten S2 tot S4."
   },
   {
     "id": "surg-008",
@@ -3531,7 +3531,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
       "Erector Spinae Plane (ESP) blok op niveau T4"
     ],
     "correctIndex": 1,
-    "explanation": "Voor obstetrische procedures zoals een sectio met een lage transversale incisie (Pfannenstiel, T11-L1 dermatoom), is een midaxillair TAP-blok (Core Block) of een anterieur QLB (Intermediate Block) zeer effectief voor het reduceren van somatische wondpijn[cite: 2]. Een subcostaal TAP-blok dekt voornamelijk de bovenbuik (T6-T9) en is klinisch inferieur voor infra-umbilicale incisies."
+    "explanation": "Voor obstetrische procedures zoals een sectio met een lage transversale incisie (Pfannenstiel, T11-L1 dermatoom), is een midaxillair TAP-blok of een anterieur QLB zeer effectief voor het reduceren van somatische wondpijn. Een subcostaal TAP-blok dekt voornamelijk de bovenbuik (T6-T9) en is klinisch inferieur voor infra-umbilicale incisies."
   },
   {
     "id": "surg-009",
@@ -3549,7 +3549,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   {
     "id": "surg-010",
     "category": "indicatie",
-    "stem": "U voert een thoracoscopische longresectie (VATS) uit. Omwille van stollingsproblematiek is een thoracale epidurale gecontra-indiceerd. Welke van de volgende technieken biedt de meest gelijkwaardige unilaterale dermatome dekking en wordt door ESRA geclassificeerd als een 'Intermediate / Advanced Block'?",
+    "stem": "U voert een thoracoscopische longresectie (VATS) uit. Omwille van stollingsproblematiek is een thoracale epidurale gecontra-indiceerd. Welke van de volgende technieken biedt de meest gelijkwaardige unilaterale dermatome dekking?",
     "options": [
       "Erector Spinae Plane (ESP) blok",
       "Thoracaal Paravertebraal Blok (PVB) via parasagittale of transverse benadering",
@@ -3557,7 +3557,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
       "Superficial Cervical Plexus blok"
     ],
     "correctIndex": 1,
-    "explanation": "Het Thoracaal Paravertebraal Blok (PVB) is een techniek die unilaterale somatische en sympathische blokkade biedt, zeer effectief voor thoracotomie en VATS[cite: 1]. Hoewel het ESP blok ook veel gebruikt wordt en geclassificeerd is als een Core Block[cite: 2], biedt het PVB een betrouwbaardere en directere penetratie van het lokaal anestheticum rond de intercostale zenuwen en de sympathische grensstreng in de paravertebrale ruimte."
+    "explanation": "Het Thoracaal Paravertebraal Blok (PVB) is een techniek die unilaterale somatische en sympathische blokkade biedt, zeer effectief voor thoracotomie en VATS. Hoewel het ESP blok ook veel gebruikt wordt, biedt het PVB een betrouwbaardere en directere penetratie van het lokaal anestheticum rond de intercostale zenuwen en de sympathische grensstreng in de paravertebrale ruimte."
   }
-]
+];
 
