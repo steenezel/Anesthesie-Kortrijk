@@ -30,11 +30,12 @@ export function KaraShell({
 
   const tabClass = (tab: KaraTab) =>
     cn(
-      "flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-[11px] font-black uppercase tracking-[0.12em] transition-all sm:py-4 sm:text-xs sm:tracking-[0.15em]",
+      "flex w-full items-center justify-center gap-0 rounded-xl py-3 text-[10px] font-black uppercase tracking-[0.06em] transition-all sm:gap-2 sm:py-3.5 sm:text-[11px] sm:tracking-[0.12em]",
       activeTab === tab ? "bg-white text-primary shadow-sm" : "text-slate-400"
     );
 
   const tabLinkClass = "flex flex-1 min-w-0";
+  const tabIconClass = "hidden sm:block shrink-0";
 
   return (
     <div className="min-h-screen bg-slate-50 pb-24">
@@ -76,28 +77,28 @@ export function KaraShell({
           />
         </div>
 
-        <div className="mb-4 flex w-full rounded-2xl bg-slate-100 p-1.5 gap-1">
+        <div className="mb-4 flex w-full rounded-2xl bg-slate-100 p-1 gap-0.5 sm:p-1.5 sm:gap-1">
           <Link href="/blocks" className={tabLinkClass}>
             <button type="button" className={tabClass("atlas")}>
-              <Map size={16} className="shrink-0" />
+              <Map size={16} className={tabIconClass} />
               Atlas
             </button>
           </Link>
           <Link href="/blocks?view=list" className={tabLinkClass}>
             <button type="button" className={tabClass("list")}>
-              <List size={16} className="shrink-0" />
+              <List size={16} className={tabIconClass} />
               Lijst
             </button>
           </Link>
           <Link href="/blocks/referentie" className={tabLinkClass}>
             <button type="button" className={tabClass("referentie")}>
-              <GraduationCap size={16} className="shrink-0" />
+              <GraduationCap size={16} className={tabIconClass} />
               Referentie
             </button>
           </Link>
           <Link href="/blocks/quiz" className={tabLinkClass}>
             <button type="button" className={tabClass("quiz")}>
-              <Brain size={16} className="shrink-0" />
+              <Brain size={16} className={tabIconClass} />
               Quiz
             </button>
           </Link>
