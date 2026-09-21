@@ -13,6 +13,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -105,13 +106,12 @@ type LogbookUser = {
   id: string;
   username: string;
   name: string;
-  role: "aso" | "supervisor";
+  role: string;
   hidden?: boolean;
 };
 
 type SpinalSession = {
   user: LogbookUser;
-  pin: string;
 };
 
 type SpinalLog = {
@@ -148,32 +148,6 @@ const emptyFormValues = (name: string) => ({
   notes: "",
 });
 
-const SESSION_KEY = "ane_spinal_log_session";
-
-function readSession(): SpinalSession | null {
-  try {
-    const raw = sessionStorage.getItem(SESSION_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as SpinalSession;
-    if (!parsed?.user?.id || !parsed?.pin) return null;
-    return parsed;
-  } catch {
-    return null;
-  }
-}
-
-function writeSession(session: SpinalSession | null) {
-  if (!session) sessionStorage.removeItem(SESSION_KEY);
-  else sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
-}
-
-function authHeaders(session: SpinalSession) {
-  return {
-    "X-Logbook-User-Id": session.user.id,
-    "X-Logbook-Pin": session.pin,
-  };
-}
-
 function formatNlDateTime(value?: string | Date | null) {
   if (!value) return "—";
   const parsed = value instanceof Date ? value : new Date(value);
@@ -197,22 +171,38 @@ function percent(part: number, total: number) {
 }
 
 export default function SpinalLogbookPage() {
-  const [session, setSession] = useState<SpinalSession | null>(() => readSession());
-
-  const handleLogin = (next: SpinalSession) => {
-    writeSession(next);
-    setSession(next);
-  };
+  const { user, signOut, isKiosk, canWrite } = useAuth();
+  const { toast } = useToast();
 
   const handleLogout = () => {
-    writeSession(null);
-    setSession(null);
+    void signOut();
     queryClient.removeQueries({ queryKey: ["/api/spinal-logs"] });
+    toast({ title: "Uitgelogd" });
   };
 
-  if (!session) {
-    return <SpinalLogLogin onLogin={handleLogin} />;
+  if (!user) return null;
+
+  if (isKiosk || !canWrite) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3 text-center px-6">
+        <p className="font-black uppercase text-sm tracking-widest text-slate-700">
+          SMASH niet beschikbaar in kiosk-modus
+        </p>
+        <Link href="/">
+          <Button variant="outline">Terug naar home</Button>
+        </Link>
+      </div>
+    );
   }
+
+  const session: SpinalSession = {
+    user: {
+      id: user.id,
+      username: user.username,
+      name: user.name,
+      role: user.role,
+    },
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 pb-24 -mx-4">
@@ -266,207 +256,6 @@ export default function SpinalLogbookPage() {
   );
 }
 
-function SpinalLogLogin({ onLogin }: { onLogin: (session: SpinalSession) => void }) {
-  const { toast } = useToast();
-  const [selectedUser, setSelectedUser] = useState<LogbookUser | null>(null);
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState(false);
-
-  const {
-    data: users = [],
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery<LogbookUser[]>({
-    queryKey: ["/api/logbook/users"],
-  });
-
-  const loginMutation = useMutation({
-    mutationFn: async (payload: { userId: string; pin: string }) => {
-      const res = await apiRequest("POST", "/api/logbook/auth/login", payload);
-      return (await res.json()) as LogbookUser;
-    },
-    onSuccess: (user, variables) => onLogin({ user, pin: variables.pin }),
-    onError: () => {
-      setError(true);
-      setPin("");
-      if (navigator.vibrate) navigator.vibrate(200);
-      toast({
-        title: "Toegang geweigerd",
-        description: "Controleer de PIN en probeer opnieuw.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const submitPin = (value: string) => {
-    if (!selectedUser || value.length < 4) return;
-    loginMutation.mutate({ userId: selectedUser.id, pin: value });
-  };
-
-  const appendDigit = (digit: string) => {
-    setError(false);
-    const next = (pin + digit).slice(0, 4);
-    setPin(next);
-    if (next.length === 4) submitPin(next);
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-50 pb-24 -mx-4">
-      <header className="sticky top-0 z-20 bg-white border-b border-slate-100 px-4 py-3 flex items-center">
-        <Link href="/">
-          <Button variant="ghost" size="sm" className="px-2 text-slate-500">
-            <ChevronLeft className="h-4 w-4 mr-1" /> Home
-          </Button>
-        </Link>
-        <h1 className="flex-1 text-center font-black uppercase text-xs tracking-widest text-slate-900 flex items-center justify-center gap-1">
-          <Bone className="h-3.5 w-3.5 text-cyan-700" /> SMASH
-        </h1>
-        <div className="w-16" />
-      </header>
-
-      <div className="p-4 max-w-md mx-auto space-y-4">
-        {!selectedUser && (
-          <div className="space-y-3 pt-2">
-            <p className="text-center text-sm text-slate-600 leading-snug px-2">
-              Scandicaine versus Marcaine: Anesthesia Spinal Hip
-            </p>
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">
-              Selecteer ASO of staflid
-            </p>
-            {isLoading ? (
-              <div className="flex justify-center py-10">
-                <Loader2 className="h-6 w-6 animate-spin text-cyan-700" />
-              </div>
-            ) : isError ? (
-              <div className="rounded-2xl border-2 border-rose-100 bg-rose-50 p-4 space-y-3 text-center">
-                <p className="text-[10px] font-black uppercase tracking-widest text-rose-700">
-                  Gebruikerslijst niet bereikbaar
-                </p>
-                <p className="text-xs text-rose-600">
-                  Start de app met <span className="font-mono">npm run dev</span> zodat de API meedraait.
-                </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-9 rounded-xl text-[10px] font-black uppercase tracking-widest"
-                  onClick={() => refetch()}
-                >
-                  Opnieuw proberen
-                </Button>
-              </div>
-            ) : (
-              users.map((user) => (
-                <button
-                  key={user.id}
-                  type="button"
-                  onClick={() => setSelectedUser(user)}
-                  className={cn(
-                    "w-full rounded-2xl border-2 p-4 flex items-center gap-3 active:scale-[0.98] transition-all",
-                    user.hidden
-                      ? "border-transparent bg-transparent opacity-40 hover:opacity-70"
-                      : "border-slate-100 bg-white",
-                  )}
-                >
-                  <div
-                    className={cn(
-                      "h-10 w-10 rounded-xl flex items-center justify-center",
-                      user.hidden ? "bg-slate-100" : "bg-cyan-50",
-                    )}
-                  >
-                    <UserRound
-                      className={cn("h-5 w-5", user.hidden ? "text-slate-300" : "text-cyan-700")}
-                    />
-                  </div>
-                  <span
-                    className={cn(
-                      "uppercase tracking-tight",
-                      user.hidden
-                        ? "text-xs font-medium text-slate-400 normal-case"
-                        : "text-sm font-black text-slate-900",
-                    )}
-                  >
-                    {user.name}
-                  </span>
-                </button>
-              ))
-            )}
-          </div>
-        )}
-
-        {selectedUser && (
-          <div className="space-y-5">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-slate-400 uppercase text-[10px] font-black tracking-widest"
-              onClick={() => {
-                setSelectedUser(null);
-                setPin("");
-                setError(false);
-              }}
-            >
-              <ChevronLeft className="h-4 w-4 mr-1" /> Profiel
-            </Button>
-            <div className="text-center space-y-1">
-              <p className="text-lg font-black uppercase tracking-tight text-slate-900">
-                {selectedUser.name}
-              </p>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                Voer PIN in
-              </p>
-            </div>
-            <div className="flex justify-center gap-3">
-              {[0, 1, 2, 3].map((index) => (
-                <div
-                  key={index}
-                  className={cn(
-                    "h-4 w-4 rounded-full border-2",
-                    pin.length > index
-                      ? "bg-cyan-700 border-cyan-700"
-                      : error
-                        ? "border-rose-500"
-                        : "border-slate-300",
-                  )}
-                />
-              ))}
-            </div>
-            <div className="grid grid-cols-3 gap-3 max-w-xs mx-auto">
-              {["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫"].map((key) =>
-                key === "" ? (
-                  <div key="empty" />
-                ) : (
-                  <button
-                    key={key}
-                    type="button"
-                    disabled={loginMutation.isPending}
-                    onClick={() => {
-                      if (key === "⌫") {
-                        setError(false);
-                        setPin((prev) => prev.slice(0, -1));
-                        return;
-                      }
-                      appendDigit(key);
-                    }}
-                    className="h-16 rounded-2xl bg-white border-2 border-slate-100 font-black text-xl text-slate-900 active:scale-95 active:bg-cyan-50 transition-all disabled:opacity-50"
-                  >
-                    {key}
-                  </button>
-                ),
-              )}
-            </div>
-            {loginMutation.isPending && (
-              <div className="flex justify-center">
-                <Loader2 className="h-5 w-5 animate-spin text-cyan-700" />
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function SpinalLogForm({
   session,
   onUnauthorized,
@@ -501,7 +290,6 @@ function SpinalLogForm({
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          ...authHeaders(session),
         },
         body: JSON.stringify(payload),
       });
@@ -850,7 +638,6 @@ function SpinalLogOverview({
     queryFn: async () => {
       const res = await fetch("/api/spinal-logs", {
         credentials: "include",
-        headers: authHeaders(session),
       });
       if (res.status === 401) {
         onUnauthorized();

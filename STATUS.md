@@ -33,11 +33,12 @@
 
 ### Authenticatie (app-toegang)
 
-- Globale **`AuthGuard`** in `App.tsx` wrapt de volledige router.
-- PIN via `import.meta.env.VITE_APP_PIN`.
-- Persistente unlock: `localStorage` key `ane_kortrijk_auth === "true"`.
-- Foutieve PIN: shake + optionele `navigator.vibrate`.
-- Dit is **geen** server-side sessie; het is client-side toegangsbescherming voor de CDS-app.
+- Globale **`AuthGuard`** in `App.tsx`: **e-mail OTP** via Better Auth + Resend (geen gedeelde PIN meer op deze branch).
+- Sessies: httpOnly cookie, **90 dagen** (sliding); OTP alleen bij eerste login per toestel / na logout.
+- Allowlist: tabel `invited_users` — seed via `npm run auth:seed`.
+- App-profiel: `users` (rol `aso` | `staff` | `supervisor` | `kiosk` | `admin`); kiosk = read-only CDS.
+- Docs: `docs/AUTH_PREVIEW.md`, `docs/AUTH_CUTOVER.md`, `docs/AUTH_ENV.md`.
+- Legacy: `VITE_APP_PIN` / logboek-PIN zijn uitgefaseerd (`POST /api/logbook/auth/login` → 410).
 
 ### Routing (Wouter) — hoofdmodules
 

@@ -7,11 +7,93 @@ create extension if not exists pgcrypto;
 create table if not exists public.users (
   id varchar primary key default gen_random_uuid()::text,
   username text not null unique,
-  password text not null,
+  password text not null default '',
   name text,
+  email text unique,
   role text not null default 'aso',
   pin text,
+  active boolean not null default true,
+  auth_user_id text unique,
   created_at timestamptz default now()
+);
+
+-- Auth / identity (Better Auth + app extras). Safe to re-run.
+alter table public.users add column if not exists email text;
+alter table public.users add column if not exists active boolean not null default true;
+alter table public.users add column if not exists auth_user_id text;
+
+create table if not exists public.invited_users (
+  id varchar primary key default gen_random_uuid()::text,
+  email text not null unique,
+  name text not null,
+  role text not null default 'staff',
+  username text,
+  active boolean not null default true,
+  created_at timestamptz default now()
+);
+
+create table if not exists public."user" (
+  id text primary key,
+  name text not null,
+  email text not null unique,
+  email_verified boolean not null default false,
+  image text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.session (
+  id text primary key,
+  expires_at timestamptz not null,
+  token text not null unique,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  ip_address text,
+  user_agent text,
+  user_id text not null references public."user"(id) on delete cascade
+);
+
+create table if not exists public.account (
+  id text primary key,
+  account_id text not null,
+  provider_id text not null,
+  user_id text not null references public."user"(id) on delete cascade,
+  access_token text,
+  refresh_token text,
+  id_token text,
+  access_token_expires_at timestamptz,
+  refresh_token_expires_at timestamptz,
+  scope text,
+  password text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.verification (
+  id text primary key,
+  identifier text not null,
+  value text not null,
+  expires_at timestamptz not null,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create table if not exists public.user_preferences (
+  user_id varchar primary key references public.users(id) on delete cascade,
+  prefs jsonb not null default '{}'::jsonb,
+  updated_at timestamptz default now()
+);
+
+create table if not exists public.quiz_progress (
+  id varchar primary key default gen_random_uuid()::text,
+  user_id varchar not null references public.users(id) on delete cascade,
+  question_id text not null,
+  ease_factor real not null default 2.5,
+  interval_days integer not null default 0,
+  repetitions integer not null default 0,
+  due_at timestamptz not null default now(),
+  last_result text,
+  updated_at timestamptz default now()
 );
 
 create table if not exists public.logbook_entries (

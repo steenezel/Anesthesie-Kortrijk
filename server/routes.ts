@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { type Server } from "http";
 import { db } from "./db.js";
 import { DEFAULT_LOGBOOK_USERS, type SeedUser } from "./logbook-users.js";
@@ -12,9 +12,17 @@ import {
   insertSpinalLogSchema,
   gameHighscores,
   gameStats,
+  userPreferences,
+  quizProgress,
   type UserRole,
 } from "../shared/schema.js";
 import { sql, eq, and, desc, gte, lte, isNotNull, inArray, type SQL } from "drizzle-orm";
+import {
+  requireAuth,
+  rejectKioskWrites,
+  resolveSessionUser,
+  toPublicProfile,
+} from "./auth-middleware.js";
 
 function getDb() {
   if (!db) {
@@ -28,13 +36,14 @@ function getDb() {
 }
 
 function toPublicUser(
-  user: { id: string; username: string; name: string | null; role: UserRole | null | undefined },
+  user: { id: string; username: string; name: string | null; role: UserRole | null | undefined; email?: string | null },
   seed?: SeedUser,
 ) {
   return {
     id: user.id,
     username: user.username,
     name: user.name ?? user.username,
+    email: user.email ?? null,
     role: (user.role ?? "aso") as UserRole,
     hidden: Boolean(seed && "hidden" in seed && seed.hidden),
   };
@@ -47,143 +56,217 @@ function todayIsoDate() {
   return `${now.getFullYear()}-${month}-${day}`;
 }
 
-function headerValue(value: string | string[] | undefined) {
-  if (Array.isArray(value)) return String(value[0] || "");
-  return String(value || "");
+function isSupervisorRole(role: UserRole) {
+  return role === "supervisor" || role === "admin" || role === "staff";
 }
 
-function credentialsFromRequest(req: {
-  headers: Record<string, string | string[] | undefined>;
-  body?: { userId?: string; pin?: string };
-  query?: { userId?: string; pin?: string };
-}) {
-  const userId =
-    headerValue(req.headers["x-logbook-user-id"]) ||
-    String(req.body?.userId || req.query?.userId || "");
-  const pin =
-    headerValue(req.headers["x-logbook-pin"]) ||
-    String(req.body?.pin || req.query?.pin || "");
-  return { userId, pin };
-}
-
-async function authenticateLogbookUser(userId: string, pin: string) {
-  if (!userId || !pin) return null;
-
-  const found = await getDb().select().from(users).where(eq(users.id, userId)).limit(1);
-  const user = found[0];
-  const expectedPin = user?.pin || user?.password;
-  if (!user || expectedPin !== pin) return null;
-
-  return toPublicUser(user);
-}
-
-async function ensureLogbookUsers() {
-  for (const seed of DEFAULT_LOGBOOK_USERS) {
-    try {
-      const existing = await getDb()
-        .select({ id: users.id })
-        .from(users)
-        .where(eq(users.username, seed.username))
-        .limit(1);
-
-      if (existing.length === 0) {
-        await getDb().insert(users).values({
-          username: seed.username,
-          name: seed.name,
-          role: seed.role,
-          pin: seed.pin,
-          password: seed.pin,
-        });
-      } else {
-        await getDb()
-          .update(users)
-          .set({
-            name: seed.name,
-            role: seed.role,
-            pin: seed.pin,
-            password: seed.pin,
-          })
-          .where(eq(users.username, seed.username));
-      }
-    } catch (error) {
-      console.error(`Logbook seed failed for ${seed.username}:`, error);
-    }
+/** SM-2 inspired update for quiz SRS. quality: 0 fail … 5 easy */
+function applySm2(
+  prev: { easeFactor: number; intervalDays: number; repetitions: number },
+  quality: number,
+) {
+  let { easeFactor, intervalDays, repetitions } = prev;
+  if (quality < 3) {
+    repetitions = 0;
+    intervalDays = 1;
+  } else {
+    if (repetitions === 0) intervalDays = 1;
+    else if (repetitions === 1) intervalDays = 3;
+    else intervalDays = Math.round(intervalDays * easeFactor);
+    repetitions += 1;
   }
+  easeFactor = Math.max(
+    1.3,
+    easeFactor + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)),
+  );
+  const dueAt = new Date();
+  dueAt.setDate(dueAt.getDate() + Math.max(1, intervalDays));
+  return { easeFactor, intervalDays, repetitions, dueAt };
 }
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // --- NIEUW: MARKTPLAATS ROUTES ---
-app.get("/api/marketplace", async (_req, res) => {
-  try {
-    // Haal voor nu even ALLES op om te zien of de verbinding werkt
-    const results = await getDb().select().from(marketplace).orderBy(marketplace.date);
-    console.log("API Verzending naar client:", results);
-    res.json(results || []);
-  } catch (error) {
-    console.error("Database Error:", error);
-    res.status(500).json({ error: "Database onbereikbaar" });
-  }
-});
+  // --- SESSION / ME ---
+  app.get("/api/me", async (req, res) => {
+    try {
+      const sessionUser = await resolveSessionUser(req);
+      if (!sessionUser) {
+        return res.status(401).json({ error: "Niet ingelogd" });
+      }
+      return res.json({ user: toPublicProfile(sessionUser.profile) });
+    } catch (error) {
+      console.error("/api/me error:", error);
+      return res.status(500).json({ error: "Sessie ophalen mislukt" });
+    }
+  });
 
-  app.post("/api/marketplace", async (req, res) => {
+  // --- PREFERENCES ---
+  app.get("/api/preferences", requireAuth, async (req, res) => {
+    try {
+      const userId = req.appUser!.profile.id;
+      const rows = await getDb()
+        .select()
+        .from(userPreferences)
+        .where(eq(userPreferences.userId, userId))
+        .limit(1);
+      res.json({ prefs: rows[0]?.prefs ?? {} });
+    } catch (error) {
+      console.error("preferences get:", error);
+      res.status(500).json({ error: "Voorkeuren ophalen mislukt" });
+    }
+  });
+
+  app.put("/api/preferences", requireAuth, rejectKioskWrites, async (req, res) => {
+    try {
+      const userId = req.appUser!.profile.id;
+      const prefs =
+        req.body && typeof req.body === "object" && "prefs" in req.body
+          ? (req.body as { prefs: Record<string, unknown> }).prefs
+          : (req.body as Record<string, unknown>);
+
+      const [row] = await getDb()
+        .insert(userPreferences)
+        .values({ userId, prefs, updatedAt: new Date() })
+        .onConflictDoUpdate({
+          target: userPreferences.userId,
+          set: { prefs, updatedAt: new Date() },
+        })
+        .returning();
+      res.json({ prefs: row.prefs });
+    } catch (error) {
+      console.error("preferences put:", error);
+      res.status(500).json({ error: "Voorkeuren opslaan mislukt" });
+    }
+  });
+
+  // --- QUIZ SRS ---
+  app.get("/api/quiz/progress", requireAuth, async (req, res) => {
+    try {
+      const userId = req.appUser!.profile.id;
+      const rows = await getDb()
+        .select()
+        .from(quizProgress)
+        .where(eq(quizProgress.userId, userId));
+      res.json(rows);
+    } catch (error) {
+      console.error("quiz progress get:", error);
+      res.status(500).json({ error: "Quiz progress ophalen mislukt" });
+    }
+  });
+
+  app.post("/api/quiz/progress", requireAuth, rejectKioskWrites, async (req, res) => {
+    try {
+      const userId = req.appUser!.profile.id;
+      const questionId = String((req.body as { questionId?: string })?.questionId || "");
+      const correct = Boolean((req.body as { correct?: boolean })?.correct);
+      if (!questionId) {
+        return res.status(400).json({ error: "questionId vereist" });
+      }
+
+      const existing = await getDb()
+        .select()
+        .from(quizProgress)
+        .where(and(eq(quizProgress.userId, userId), eq(quizProgress.questionId, questionId)))
+        .limit(1);
+
+      const quality = correct ? 4 : 1;
+      const prev = existing[0]
+        ? {
+            easeFactor: existing[0].easeFactor,
+            intervalDays: existing[0].intervalDays,
+            repetitions: existing[0].repetitions,
+          }
+        : { easeFactor: 2.5, intervalDays: 0, repetitions: 0 };
+      const next = applySm2(prev, quality);
+
+      if (existing[0]) {
+        const [row] = await getDb()
+          .update(quizProgress)
+          .set({
+            easeFactor: next.easeFactor,
+            intervalDays: next.intervalDays,
+            repetitions: next.repetitions,
+            dueAt: next.dueAt,
+            lastResult: correct ? "correct" : "incorrect",
+            updatedAt: new Date(),
+          })
+          .where(eq(quizProgress.id, existing[0].id))
+          .returning();
+        return res.json(row);
+      }
+
+      const [row] = await getDb()
+        .insert(quizProgress)
+        .values({
+          userId,
+          questionId,
+          easeFactor: next.easeFactor,
+          intervalDays: next.intervalDays,
+          repetitions: next.repetitions,
+          dueAt: next.dueAt,
+          lastResult: correct ? "correct" : "incorrect",
+        })
+        .returning();
+      res.json(row);
+    } catch (error) {
+      console.error("quiz progress post:", error);
+      res.status(500).json({ error: "Quiz progress opslaan mislukt" });
+    }
+  });
+
+  // --- MARKTPLAATS ---
+  app.get("/api/marketplace", requireAuth, async (_req, res) => {
+    try {
+      const results = await getDb().select().from(marketplace).orderBy(marketplace.date);
+      res.json(results || []);
+    } catch (error) {
+      console.error("Database Error:", error);
+      res.status(500).json({ error: "Database onbereikbaar" });
+    }
+  });
+
+  app.post("/api/marketplace", requireAuth, rejectKioskWrites, async (req, res) => {
     try {
       const validatedData = insertMarketplaceSchema.parse(req.body);
       const result = await getDb().insert(marketplace).values(validatedData).returning();
       res.json(result[0]);
-    } catch (error) {
+    } catch {
       res.status(400).send("Ongeldige data");
     }
   });
 
-app.delete("/api/marketplace/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    await getDb().delete(marketplace).where(sql`${marketplace.id} = ${id}`);
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).send("Kon niet verwijderen");
-  }
-});
-
-  // --- EINDE MARKTPLAATS ROUTES ---
-
-  // --- ASO LOGBOEK ---
-  app.post("/api/logbook/auth/login", async (req, res) => {
+  app.delete("/api/marketplace/:id", requireAuth, rejectKioskWrites, async (req, res) => {
     try {
-      await ensureLogbookUsers();
-      const { username, userId, pin } = req.body as {
-        username?: string;
-        userId?: string;
-        pin?: string;
-      };
-
-      if (!pin || (!username && !userId)) {
-        return res.status(400).json({ error: "Gebruikersnaam en PIN vereist" });
-      }
-
-      const found = userId
-        ? await getDb().select().from(users).where(eq(users.id, userId)).limit(1)
-        : await getDb().select().from(users).where(eq(users.username, username!)).limit(1);
-
-      const user = found[0];
-      const expectedPin = user?.pin || user?.password;
-      if (!user || expectedPin !== pin) {
-        return res.status(401).json({ error: "Ongeldige PIN" });
-      }
-
-      res.json(toPublicUser(user));
-    } catch (error) {
-      console.error("Logbook login error:", error);
-      res.status(500).json({ error: "Login mislukt" });
+      const { id } = req.params;
+      await getDb().delete(marketplace).where(sql`${marketplace.id} = ${id}`);
+      res.json({ success: true });
+    } catch {
+      res.status(500).send("Kon niet verwijderen");
     }
   });
 
-  app.post("/api/logbook/entries", async (req, res) => {
+  // --- ASO LOGBOEK (session-based; PIN login deprecated) ---
+  app.post("/api/logbook/auth/login", (_req, res) => {
+    res.status(410).json({
+      error: "PIN-login is uitgefaseerd. Gebruik e-mail OTP via de app-login.",
+    });
+  });
+
+  app.post("/api/logbook/entries", requireAuth, rejectKioskWrites, async (req, res) => {
     try {
-      const validated = insertLogbookEntrySchema.parse(req.body);
+      const sessionUser = req.appUser!;
+      const body = { ...(req.body ?? {}), userId: sessionUser.profile.id };
+      const validated = insertLogbookEntrySchema.parse(body);
+
+      if (
+        validated.userId !== sessionUser.profile.id &&
+        !isSupervisorRole(sessionUser.profile.role)
+      ) {
+        return res.status(403).json({ error: "Je mag alleen voor jezelf registreren" });
+      }
+
       const result = await getDb()
         .insert(logbookEntries)
         .values({
@@ -205,12 +288,14 @@ app.delete("/api/marketplace/:id", async (req, res) => {
     }
   });
 
-  app.get("/api/logbook/my-entries", async (req, res) => {
+  app.get("/api/logbook/my-entries", requireAuth, async (req, res) => {
     try {
-      const userId = String(req.query.userId || "");
-      if (!userId) {
-        return res.status(400).json({ error: "userId vereist" });
-      }
+      const sessionUser = req.appUser!;
+      const requestedId = String(req.query.userId || sessionUser.profile.id);
+      const userId =
+        requestedId === sessionUser.profile.id || isSupervisorRole(sessionUser.profile.role)
+          ? requestedId
+          : sessionUser.profile.id;
 
       const entries = await getDb()
         .select()
@@ -225,8 +310,13 @@ app.delete("/api/marketplace/:id", async (req, res) => {
     }
   });
 
-  app.get("/api/logbook/supervisor/all", async (req, res) => {
+  app.get("/api/logbook/supervisor/all", requireAuth, async (req, res) => {
     try {
+      const sessionUser = req.appUser!;
+      if (!isSupervisorRole(sessionUser.profile.role)) {
+        return res.status(403).json({ error: "Alleen supervisors" });
+      }
+
       const asoId = req.query.asoId ? String(req.query.asoId) : "";
       const category = req.query.category ? String(req.query.category) : "";
       const subCategory = req.query.subCategory ? String(req.query.subCategory) : "";
@@ -272,22 +362,11 @@ app.delete("/api/marketplace/:id", async (req, res) => {
     }
   });
 
-  app.get("/api/logbook/users", async (req, res) => {
+  app.get("/api/logbook/users", requireAuth, async (req, res) => {
     try {
-      await ensureLogbookUsers();
       const role = req.query.role ? String(req.query.role) : "";
-
-      // Alleen accounts uit DEFAULT_LOGBOOK_USERS (niet elke oude rij in de DB)
-      const seedByUsername = new Map<string, SeedUser>(
-        DEFAULT_LOGBOOK_USERS.map((seed) => [seed.username, seed]),
-      );
-      const allowedUsernames: string[] = DEFAULT_LOGBOOK_USERS.map((seed) => seed.username);
-
-      const filters: SQL[] = [
-        isNotNull(users.name),
-        inArray(users.username, allowedUsernames),
-      ];
-      if (role === "aso" || role === "supervisor") {
+      const filters: SQL[] = [isNotNull(users.name), eq(users.active, true)];
+      if (role === "aso" || role === "supervisor" || role === "staff") {
         filters.push(eq(users.role, role as UserRole));
       }
 
@@ -296,39 +375,35 @@ app.delete("/api/marketplace/:id", async (req, res) => {
           id: users.id,
           username: users.username,
           name: users.name,
+          email: users.email,
           role: users.role,
         })
         .from(users)
         .where(and(...filters))
         .orderBy(users.name);
 
-      const published = rows
-        .map((row) => toPublicUser(row, seedByUsername.get(row.username)))
-        .sort((a, b) => Number(a.hidden) - Number(b.hidden) || a.name.localeCompare(b.name, "nl"));
+      const seedByUsername = new Map<string, SeedUser>(
+        DEFAULT_LOGBOOK_USERS.map((seed) => [seed.username, seed]),
+      );
 
-      res.json(published);
+      res.json(
+        rows
+          .map((row) => toPublicUser(row, seedByUsername.get(row.username)))
+          .sort((a, b) => Number(a.hidden) - Number(b.hidden) || a.name.localeCompare(b.name, "nl")),
+      );
     } catch (error) {
       console.error("Logbook users error:", error);
       res.status(500).json({ error: "Kon gebruikers niet ophalen" });
     }
   });
 
-  // --- EINDE ASO LOGBOEK ---
-
-  // --- SCANDICAINE SPINALE LOGBOEK ---
-  app.get("/api/spinal-logs", async (req, res) => {
+  // --- SMASH ---
+  app.get("/api/spinal-logs", requireAuth, rejectKioskWrites, async (_req, res) => {
     try {
-      const { userId, pin } = credentialsFromRequest(req);
-      const user = await authenticateLogbookUser(userId, pin);
-      if (!user) {
-        return res.status(401).json({ error: "Authenticatie vereist" });
-      }
-
       const rows = await getDb()
         .select()
         .from(spinalLogs)
         .orderBy(desc(spinalLogs.createdAt));
-
       res.json(rows);
     } catch (error) {
       console.error("Spinal logs fetch error:", error);
@@ -336,14 +411,8 @@ app.delete("/api/marketplace/:id", async (req, res) => {
     }
   });
 
-  app.post("/api/spinal-logs", async (req, res) => {
+  app.post("/api/spinal-logs", requireAuth, rejectKioskWrites, async (req, res) => {
     try {
-      const { userId, pin } = credentialsFromRequest(req);
-      const user = await authenticateLogbookUser(userId, pin);
-      if (!user) {
-        return res.status(401).json({ error: "Authenticatie vereist" });
-      }
-
       const body = { ...(req.body ?? {}) } as Record<string, unknown>;
       delete body.userId;
       delete body.pin;
@@ -363,10 +432,8 @@ app.delete("/api/marketplace/:id", async (req, res) => {
     }
   });
 
-  // --- EINDE SCANDICAINE SPINALE LOGBOEK ---
-
-  // --- FLAPPY HIGHSCORES (Postgres / Supabase) ---
-  app.post("/api/highscores", async (req, res) => {
+  // --- FLAPPY (public-ish but require login to reduce abuse) ---
+  app.post("/api/highscores", requireAuth, async (req, res) => {
     try {
       const { name, score } = req.body;
       const numericScore = Number(score);
@@ -403,7 +470,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
     }
   });
 
-  app.get("/api/highscores", async (_req, res) => {
+  app.get("/api/highscores", requireAuth, async (_req, res) => {
     try {
       const rows = await getDb()
         .select()
@@ -417,7 +484,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
     }
   });
 
-  app.post("/api/game-stats/increment", async (_req, res) => {
+  app.post("/api/game-stats/increment", requireAuth, async (_req, res) => {
     try {
       const key = "global_bird_attempts";
       const database = getDb();
@@ -436,7 +503,7 @@ app.delete("/api/marketplace/:id", async (req, res) => {
     }
   });
 
-  app.get("/api/game-stats", async (_req, res) => {
+  app.get("/api/game-stats", requireAuth, async (_req, res) => {
     try {
       const rows = await getDb()
         .select()
@@ -450,6 +517,9 @@ app.delete("/api/marketplace/:id", async (req, res) => {
     }
   });
 
+  void httpServer;
   return httpServer;
 }
 
+// silence unused Request import lint in some configs
+export type { Request, Response };

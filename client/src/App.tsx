@@ -1,10 +1,10 @@
 import { Switch, Route, useLocation } from "wouter";
-import { useState, useEffect, lazy, Suspense } from "react"; // Toegevoegd voor de login
+import { useEffect, lazy, Suspense } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@vercel/analytics/react";
-import { Lock, ShieldCheck, Loader2 } from "lucide-react"; // Voor het login scherm
+import { Loader2 } from "lucide-react";
 import Home from "@/pages/home";
 import ProtocolDetail from "@/pages/protocol-detail";
 import ProtocolList from "./pages/protocol-list";
@@ -47,89 +47,23 @@ import LogbookPage from "@/pages/logbook";
 import SpinalLogbookPage from "@/pages/SpinalLogbookPage";
 import SettingsPage from "@/pages/settings";
 import { PwaUpdateListener } from "@/components/PwaUpdateListener";
-import { SiteProvider, useSite } from "@/hooks/use-site";
+import { SiteProvider } from "@/hooks/use-site";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { LoginScreen } from "@/components/LoginScreen";
 
-// --- DE BEWAKER (AuthGuard) ---
 function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { site } = useSite();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState(false);
+  const { user, loading } = useAuth();
 
-  const CORRECT_PIN = import.meta.env.VITE_APP_PIN;
-
-  useEffect(() => {
-    if (!CORRECT_PIN) {
-      setIsAuthenticated(true);
-      return;
-    }
-    const authStatus = localStorage.getItem(site.authStorageKey);
-    if (authStatus === "true") setIsAuthenticated(true);
-  }, [CORRECT_PIN, site.authStorageKey]);
-
-  const handleLogin = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (pin === CORRECT_PIN) {
-      localStorage.setItem(site.authStorageKey, "true");
-      setIsAuthenticated(true);
-      setError(false);
-    } else {
-      setError(true);
-      setPin("");
-      if (navigator.vibrate) navigator.vibrate(200);
-    }
-  };
-
-  if (CORRECT_PIN && !isAuthenticated) {
+  if (loading) {
     return (
-      <div className="fixed inset-0 bg-slate-950 flex flex-col justify-center items-center z-[9999] px-6 pt-[env(safe-area-inset-top)]">
-        <div className="w-full max-w-sm space-y-10 mx-auto">
-          <div className="text-center space-y-4">
-            <div className="mx-auto w-16 h-16 bg-teal-500/10 rounded-3xl flex items-center justify-center mb-6 border border-teal-500/20">
-              <Lock className="h-8 w-8 text-teal-500" />
-            </div>
-            <h1 className="text-4xl font-black text-white uppercase tracking-tighter">
-              {site.shortName} <span className="text-teal-500">{site.highlightName}</span>
-            </h1>
-            <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">Medical Access Only</p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="relative">
-              <input
-                type="password"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                placeholder="PINCODE"
-                className={`w-full h-20 text-center text-4xl font-mono tracking-[0.5em] rounded-3xl bg-slate-900 border-2 transition-all ${
-                  error ? "border-red-500 text-red-500 animate-shake" : "border-slate-800 text-white focus:border-teal-500"
-                } focus:outline-none shadow-2xl`}
-                autoFocus
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full h-16 bg-teal-600 hover:bg-teal-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2"
-            >
-              <ShieldCheck className="h-5 w-5" /> Inloggen
-            </button>
-
-            {error && (
-              <p className="text-red-500 text-[10px] font-black uppercase text-center tracking-widest animate-in fade-in slide-in-from-top-1">
-                Toegang geweigerd
-              </p>
-            )}
-          </form>
-
-          <p className="text-center text-slate-600 text-[9px] uppercase font-medium tracking-widest">
-            {site.hospitalName} • {site.department}
-          </p>
-        </div>
+      <div className="fixed inset-0 bg-slate-950 flex items-center justify-center z-[9999]">
+        <Loader2 className="h-8 w-8 text-teal-500 animate-spin" />
       </div>
     );
+  }
+
+  if (!user) {
+    return <LoginScreen />;
   }
 
   return <>{children}</>;
@@ -139,34 +73,39 @@ function ScrollToTop() {
   const [location] = useLocation();
 
   useEffect(() => {
-    // We gebruiken een kleine timeout om de browser de tijd te geven
-    // de nieuwe pagina-inhoud te laden voordat we scrollen.
     const timer = setTimeout(() => {
       window.scrollTo({
         top: 0,
         left: 0,
-        behavior: "instant", // "instant" voorkomt dat je de pagina ziet omhoog glijden
+        behavior: "instant",
       });
     }, 0);
 
     return () => clearTimeout(timer);
-  }, [location]); // Telkens als 'location' verandert, start dit effect
+  }, [location]);
 
-  return null; // Deze component toont niets op het scherm
+  return null;
 }
 
-// --- ROUTER ---
 function Router() {
   const [location] = useLocation();
-  const isAdmin = location.startsWith('/admin');
+  const isAdmin = location.startsWith("/admin");
+  const { isKiosk } = useAuth();
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <ScrollToTop />
-      <main className={`
+      {isKiosk && (
+        <div className="bg-amber-500 text-amber-950 text-center text-[10px] font-black uppercase tracking-widest py-1.5 px-3">
+          Kiosk-modus — alleen lezen (geen logboek/schrijven)
+        </div>
+      )}
+      <main
+        className={`
         container mx-auto px-4 pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-24 transition-all duration-300
-        ${isAdmin ? 'max-w-none w-full lg:px-12' : 'max-w-screen-md'}
-      `}>
+        ${isAdmin ? "max-w-none w-full lg:px-12" : "max-w-screen-md"}
+      `}
+      >
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/protocols" component={ProtocolList} />
@@ -208,7 +147,7 @@ function Router() {
           <Route path="/settings" component={SettingsPage} />
           <Route path="/wordle" component={WordlePage} />
           <Route path="/chasse-patate" component={ChassePatatePage} />
-          <Route path="/onboarding" component={OnboardingSelection} /> 
+          <Route path="/onboarding" component={OnboardingSelection} />
           <Route path="/onboarding/:type" component={OnboardingPage} />
           <Route path="/journalclub" component={Journalclub} />
           <Route path="/journalclub/:id" component={JournalDetail} />
@@ -231,12 +170,14 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SiteProvider>
-        <Toaster />
-        <PwaUpdateListener />
-        <Analytics />
-        <AuthGuard>
-          <Router />
-        </AuthGuard>
+        <AuthProvider>
+          <Toaster />
+          <PwaUpdateListener />
+          <Analytics />
+          <AuthGuard>
+            <Router />
+          </AuthGuard>
+        </AuthProvider>
       </SiteProvider>
     </QueryClientProvider>
   );

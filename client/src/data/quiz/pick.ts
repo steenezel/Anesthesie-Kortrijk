@@ -30,24 +30,64 @@ function writeSeenIds(ids: string[]) {
   }
 }
 
+export type QuizProgressRow = {
+  questionId: string;
+  dueAt?: string | Date | null;
+  easeFactor?: number;
+  intervalDays?: number;
+};
+
+/**
+ * Prefer due / unseen cards (SRS), then fall back to local seen-rotation.
+ */
 export function pickQuizQuestions(
   bank: QuizQuestion[],
   count: number,
-  category: QuizCategoryId | "all"
+  category: QuizCategoryId | "all",
+  srsProgress: QuizProgressRow[] = [],
 ): QuizQuestion[] {
   const pool = category === "all" ? bank : bank.filter((q) => q.category === category);
   if (pool.length === 0) return [];
 
-  const seen = new Set(readSeenIds());
-  let unused = pool.filter((q) => !seen.has(q.id));
-  if (unused.length < count) {
-    unused = [...pool];
-    writeSeenIds([]);
+  const now = Date.now();
+  const byId = new Map(srsProgress.map((row) => [row.questionId, row]));
+  const dueOrNew = pool.filter((q) => {
+    const row = byId.get(q.id);
+    if (!row) return true;
+    const due = row.dueAt ? new Date(row.dueAt).getTime() : 0;
+    return due <= now;
+  });
+
+  let candidate = dueOrNew.length >= count ? dueOrNew : pool;
+
+  if (!srsProgress.length) {
+    const seen = new Set(readSeenIds());
+    let unused = candidate.filter((q) => !seen.has(q.id));
+    if (unused.length < count) {
+      unused = [...candidate];
+      writeSeenIds([]);
+    }
+    candidate = unused;
   }
 
-  const picked = shuffleInPlace([...unused]).slice(0, Math.min(count, unused.length));
-  writeSeenIds([...readSeenIds(), ...picked.map((q) => q.id)]);
+  const picked = shuffleInPlace([...candidate]).slice(0, Math.min(count, candidate.length));
+  if (!srsProgress.length) {
+    writeSeenIds([...readSeenIds(), ...picked.map((q) => q.id)]);
+  }
   return picked;
+}
+
+export async function reportQuizResult(questionId: string, correct: boolean) {
+  try {
+    await fetch("/api/quiz/progress", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ questionId, correct }),
+    });
+  } catch {
+    /* ignore */
+  }
 }
 
 export type ShuffledQuestion = QuizQuestion & {

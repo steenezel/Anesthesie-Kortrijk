@@ -1,11 +1,17 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, Circle, RotateCcw, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { EDRA_QUIZ_BANK } from "@/data/quiz/questions";
-import { pickQuizQuestions, shuffleQuestionOptions, type ShuffledQuestion } from "@/data/quiz/pick";
+import {
+  pickQuizQuestions,
+  reportQuizResult,
+  shuffleQuestionOptions,
+  type QuizProgressRow,
+  type ShuffledQuestion,
+} from "@/data/quiz/pick";
 import {
   QUIZ_CATEGORIES,
   QUIZ_CATEGORY_LIST,
@@ -30,6 +36,24 @@ export function KaraQuiz() {
   const [step, setStep] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [answers, setAnswers] = useState<AnsweredItem[]>([]);
+  const [srsProgress, setSrsProgress] = useState<QuizProgressRow[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/quiz/progress", { credentials: "include" });
+        if (!res.ok) return;
+        const rows = (await res.json()) as QuizProgressRow[];
+        if (!cancelled) setSrsProgress(rows);
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const poolCount = useMemo(
     () => (filter === "all" ? EDRA_QUIZ_BANK.length : EDRA_QUIZ_BANK.filter((q) => q.category === filter).length),
@@ -37,7 +61,9 @@ export function KaraQuiz() {
   );
 
   const startRound = () => {
-    const picked = pickQuizQuestions(EDRA_QUIZ_BANK, QUIZ_ROUND_SIZE, filter).map(shuffleQuestionOptions);
+    const picked = pickQuizQuestions(EDRA_QUIZ_BANK, QUIZ_ROUND_SIZE, filter, srsProgress).map(
+      shuffleQuestionOptions,
+    );
     if (picked.length === 0) return;
     setRound(picked);
     setStep(0);
@@ -49,6 +75,8 @@ export function KaraQuiz() {
   const commitAndAdvance = () => {
     if (selected === null) return;
     const current = round[step];
+    const correct = selected === current.displayCorrectIndex;
+    void reportQuizResult(current.id, correct);
     const nextAnswers = [...answers, { question: current, selectedIndex: selected }];
     if (step + 1 >= round.length) {
       setAnswers(nextAnswers);

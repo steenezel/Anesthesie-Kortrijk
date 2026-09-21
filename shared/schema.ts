@@ -1,9 +1,20 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, serial, boolean, integer, real } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  varchar,
+  timestamp,
+  serial,
+  boolean,
+  integer,
+  real,
+  jsonb,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const userRoles = ["aso", "supervisor"] as const;
+/** App roles: aso / staff / supervisor / kiosk (read-only CDS) / admin */
+export const userRoles = ["aso", "staff", "supervisor", "kiosk", "admin"] as const;
 export type UserRole = (typeof userRoles)[number];
 
 export const logbookStatuses = ["pass", "fail"] as const;
@@ -17,13 +28,20 @@ export const logbookSupervisionLevels = [
 ] as const;
 export type LogbookSupervisionLevel = (typeof logbookSupervisionLevels)[number];
 
+/**
+ * App profiles (logboek, prefs, SRS). Linked to Better Auth `user` via email / authUserId.
+ * Legacy PIN fields kept nullable for migration only.
+ */
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password").notNull().default(""),
   name: text("name"),
+  email: text("email").unique(),
   role: text("role").$type<UserRole>().notNull().default("aso"),
   pin: text("pin"),
+  active: boolean("active").notNull().default(true),
+  authUserId: text("auth_user_id").unique(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -31,8 +49,11 @@ export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
   name: true,
+  email: true,
   role: true,
   pin: true,
+  active: true,
+  authUserId: true,
 });
 
 export const selectUserSchema = createSelectSchema(users);
@@ -43,9 +64,99 @@ export const publicUserSchema = selectUserSchema.pick({
   id: true,
   username: true,
   name: true,
+  email: true,
   role: true,
 });
 export type PublicUser = z.infer<typeof publicUserSchema>;
+
+/** Invite allowlist — only these emails may request an OTP. */
+export const invitedUsers = pgTable("invited_users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull().unique(),
+  name: text("name").notNull(),
+  role: text("role").$type<UserRole>().notNull().default("staff"),
+  username: text("username"),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type InvitedUser = typeof invitedUsers.$inferSelect;
+
+/* ---------- Better Auth core tables ---------- */
+
+export const authUser = pgTable("user", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  emailVerified: boolean("email_verified").notNull().default(false),
+  image: text("image"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const authSession = pgTable("session", {
+  id: text("id").primaryKey(),
+  expiresAt: timestamp("expires_at").notNull(),
+  token: text("token").notNull().unique(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => authUser.id, { onDelete: "cascade" }),
+});
+
+export const authAccount = pgTable("account", {
+  id: text("id").primaryKey(),
+  accountId: text("account_id").notNull(),
+  providerId: text("provider_id").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => authUser.id, { onDelete: "cascade" }),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  idToken: text("id_token"),
+  accessTokenExpiresAt: timestamp("access_token_expires_at"),
+  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+  scope: text("scope"),
+  password: text("password"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const authVerification = pgTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+/** Synced personal preferences (theme, home modules). */
+export const userPreferences = pgTable("user_preferences", {
+  userId: varchar("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  prefs: jsonb("prefs").$type<Record<string, unknown>>().notNull().default({}),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+/** Quiz SRS / progress per user. */
+export const quizProgress = pgTable("quiz_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  questionId: text("question_id").notNull(),
+  easeFactor: real("ease_factor").notNull().default(2.5),
+  intervalDays: integer("interval_days").notNull().default(0),
+  repetitions: integer("repetitions").notNull().default(0),
+  dueAt: timestamp("due_at").notNull().defaultNow(),
+  lastResult: text("last_result"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
 
 export const logbookEntries = pgTable("logbook_entries", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -86,7 +197,7 @@ export type LogbookEntry = typeof logbookEntries.$inferSelect;
 export const marketplace = pgTable("marketplace", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   providerName: text("providerName").notNull(),
-  date: text("date").notNull(), // We slaan de datum op als ISO string of YYYY-MM-DD
+  date: text("date").notNull(),
   createdAt: text("createdAt").default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -178,14 +289,12 @@ export const selectSpinalLogSchema = createSelectSchema(spinalLogs);
 export type InsertSpinalLog = z.infer<typeof insertSpinalLogSchema>;
 export type SpinalLog = typeof spinalLogs.$inferSelect;
 
-/** Flappy highscores (was Redis sorted set). */
 export const gameHighscores = pgTable("game_highscores", {
   name: text("name").primaryKey(),
   score: integer("score").notNull(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-/** Simple counters (was Redis INCR), e.g. global_bird_attempts. */
 export const gameStats = pgTable("game_stats", {
   key: text("key").primaryKey(),
   value: integer("value").notNull().default(0),
