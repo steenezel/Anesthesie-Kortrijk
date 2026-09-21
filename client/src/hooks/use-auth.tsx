@@ -12,7 +12,7 @@ import { authClient, type SessionUser } from "@/lib/auth-client";
 type AuthState = {
   user: SessionUser | null;
   loading: boolean;
-  refresh: () => Promise<void>;
+  refresh: () => Promise<SessionUser | null>;
   signOut: () => Promise<void>;
   isKiosk: boolean;
   canWrite: boolean;
@@ -42,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (me) {
       window.dispatchEvent(new Event("ane-auth-changed"));
     }
+    return me;
   }, []);
 
   useEffect(() => {

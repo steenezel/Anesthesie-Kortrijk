@@ -102,29 +102,49 @@ export async function ensureAppUserFromAuth(auth: {
   const database = requireDb();
   const email = auth.email.trim().toLowerCase();
 
-  const byAuth = await database
-    .select()
-    .from(users)
-    .where(eq(users.authUserId, auth.id))
-    .limit(1);
-  if (byAuth[0]) return byAuth[0];
-
-  const byEmail = await database.select().from(users).where(eq(users.email, email)).limit(1);
-  if (byEmail[0]) {
-    const [updated] = await database
-      .update(users)
-      .set({ authUserId: auth.id, name: byEmail[0].name || auth.name, active: true })
-      .where(eq(users.id, byEmail[0].id))
-      .returning();
-    return updated;
-  }
-
   const invite = await database
     .select()
     .from(invitedUsers)
     .where(eq(invitedUsers.email, email))
     .limit(1);
   const inv = invite[0];
+
+  const byAuth = await database
+    .select()
+    .from(users)
+    .where(eq(users.authUserId, auth.id))
+    .limit(1);
+  if (byAuth[0]) {
+    if (inv?.active) {
+      const [updated] = await database
+        .update(users)
+        .set({
+          name: inv.name || byAuth[0].name || auth.name,
+          role: inv.role as UserRole,
+          active: true,
+        })
+        .where(eq(users.id, byAuth[0].id))
+        .returning();
+      return updated;
+    }
+    return byAuth[0];
+  }
+
+  const byEmail = await database.select().from(users).where(eq(users.email, email)).limit(1);
+  if (byEmail[0]) {
+    const [updated] = await database
+      .update(users)
+      .set({
+        authUserId: auth.id,
+        name: inv?.name || byEmail[0].name || auth.name,
+        role: (inv?.role as UserRole | undefined) || byEmail[0].role,
+        active: true,
+      })
+      .where(eq(users.id, byEmail[0].id))
+      .returning();
+    return updated;
+  }
+
   if (!inv?.active) {
     throw new Error("Geen uitnodiging voor dit e-mailadres");
   }

@@ -56,7 +56,7 @@ export function LoginScreen() {
     }
     setPending(true);
     try {
-      const { error: verifyError } = await authClient.signIn.emailOtp({
+      const { data, error: verifyError } = await authClient.signIn.emailOtp({
         email: email.trim().toLowerCase(),
         otp: otp.trim(),
       });
@@ -66,7 +66,16 @@ export function LoginScreen() {
         if (navigator.vibrate) navigator.vibrate(200);
         return;
       }
-      await refresh();
+      // Cookie is net gezet — korte delay helpt tegen race met /api/me
+      await new Promise((r) => setTimeout(r, 50));
+      const me = await refresh();
+      if (!me) {
+        setError(
+          "Code geaccepteerd, maar sessie niet gezet. Open de app via http://localhost:5000 (niet 127.0.0.1) en probeer opnieuw.",
+        );
+        console.warn("[auth] signIn OK but /api/me empty", data);
+        return;
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login mislukt");
       setOtp("");
