@@ -8,7 +8,7 @@ export const QUIZ_CATEGORIES = {
   farmacologie: "Farmacologie",
   complicaties: "Complicaties",
   fysiologie: "Fysiologie",
-  speciale: "Speciale groepen",
+  statistiek: "Statistiek",
 } as const;
 
 export type QuizCategoryId = keyof typeof QUIZ_CATEGORIES;

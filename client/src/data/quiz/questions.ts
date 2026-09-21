@@ -1,6 +1,6 @@
 import type { QuizQuestion } from "./types";
 
-/** Originele SBA-oefenvragen voor EDRA/LRA-voorbereiding. Geen kopie van beschermde MCQ-boeken. */
+/** Oefenvragen voor EDRA/LRA-voorbereiding. */
 export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   {
     id: "fys-001",
@@ -592,7 +592,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
     stem: "N. pudendus (S2–S4) verlaat het bekken via:",
     options: ["Foramen obturatum rechtstreeks naar de adductorenloge", "Foramen ischiadicum majus, rond spina ischiadica/sacrospinosus, terug via minus naar fossa ischio-analis", "Hiatus sacralis craniale richting de durale zak", "Lieskanalen samen met ductus deferens/rond ligamentum teres"],
     correctIndex: 1,
-    explanation: "Landmarks: spina ischiadica, Alcock-kanaal. Relevant voor perineum, verlossing, chronische bekkenpijn (niet-core EDRA-2B, wel theorie).",
+    explanation: "Landmarks: spina ischiadica, Alcock-kanaal. Relevant voor perineum, verlossing, chronische bekkenpijn.",
   },
   {
     id: "ana-040",
@@ -2124,7 +2124,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-001",
-    category: "speciale",
+    category: "indicatie",
     stem: "Bij kinderen is een caudale anesthesie vooral geschikt voor:",
     options: ["Open thoracotomie als primaire indicatie", "Inguinale, peri-umbilicale, peniele en onderbeenchirurgie onder het T10-niveau afhankelijk van volume", "Schouder-arthroscopie met phrenicuscover", "Intracraniale chirurgie via caudale spreiding"],
     correctIndex: 1,
@@ -2132,7 +2132,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-002",
-    category: "speciale",
+    category: "farmacologie",
     stem: "Maximale bupivacaïne-dosis bij kinderen ligt vaak rond:",
     options: ["5–6 mg/kg zoals lidocaïne met adrenaline", "0,2 mg/kg als absolute maximum bij elk kind", "2–2,5 mg/kg (conservatief; neonaten lager)", "Identiek aan volwassen 175 mg ongeacht gewicht"],
     correctIndex: 2,
@@ -2140,7 +2140,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-003",
-    category: "speciale",
+    category: "farmacologie",
     stem: "EMLA bij neonaten <3 maanden:",
     options: ["Onbeperkt gebruik zoals bij schoolkinderen", "Verplicht op slijmvlies in hoge doses", "Geen MetHb-risico onder 3 maanden", "Beperkte oppervlakte/tijd wegens MetHb (prilocaïne) en huidpermeabiliteit"],
     correctIndex: 3,
@@ -2148,7 +2148,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-004",
-    category: "speciale",
+    category: "indicatie",
     stem: "Obese patiënt en PNB:",
     options: ["US eerste keus, landmarks onbetrouwbaar, doses op ideale/lean body weight voor toxische plafonds overwegen", "Landmarktechniek betrouwbaarder dan US bij BMI >40", "Doses altijd op totaal lichaamsgewicht zonder plafond", "Sedatie/opioïden vrij verhogen bij OSA"],
     correctIndex: 0,
@@ -2156,7 +2156,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-005",
-    category: "speciale",
+    category: "indicatie",
     stem: "Trauma met mogelijke CWK-instabiliteit:",
     options: ["Harde collar verwijderen en nek vrij bewegen voor elk block", "Manuele in-line stabilisatie bij luchtweg; regio van de ledemaat kan GA-luchtweg vermijden als het de chirurgie dekt", "Regio altijd verboden bij trauma", "CWK-instabiliteit is irrelevant voor anesthesiekeuze"],
     correctIndex: 1,
@@ -2164,7 +2164,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-006",
-    category: "speciale",
+    category: "indicatie",
     stem: "Anticoagulatie en oppervlakkige PNB (bv. superficiële cervicale plexus, enkel):",
     options: ["Identiek risico als thoracale epiduraal", "Absolute vrijbrief zonder stollingsbeoordeling", "Lager hematoomrisico dan diepe plexus/neuraxiaal; individualiseer toch", "Hoger risico dan psoascompartment"],
     correctIndex: 2,
@@ -2172,7 +2172,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-007",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Pre-eclampsie en epiduraal:",
     options: ["Absoluut gecontra-indiceerd bij elke pre-eclampsie", "Geen plaatjescontrole nodig bij HELLP-verdenking", "GA altijd veiliger dan regio bij pre-eclampsie airway", "Vaak wenselijk (bloeddruk, sectio-ready); trombocyten/stolling checken, labiele hemodynamiek"],
     correctIndex: 3,
@@ -2180,23 +2180,23 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-008",
-    category: "speciale",
-    stem: "Sectio onder spinaal: oxytocine na afnavelen:",
+    category: "fysiologie",
+    stem: "Sectio onder spinale: oxytocine na afnavelen:",
     options: ["Lage dosis/infuus i.p.v. grote bolus (hypotensie, ST-depressie); phenylefrine paraat", "Grote IV-bolus oxytocine als hemodynamisch neutraal", "Oxytocine vermijden tot 1 uur na afnavelen altijd", "Ephedrine verboden; alleen vasopressine"],
     correctIndex: 0,
     explanation: "Hemodynamiek bovenop spinale vasodilatatie. Carbetocin/ergometrine volgens protocol.",
   },
   {
     id: "spe-009",
-    category: "speciale",
-    stem: "Ammniotic fluid embolism vs. hoge spinaal:",
-    options: ["AFE en hoge spinaal zijn klinisch niet te onderscheiden en altijd identiek", "AFE: plots collaps, coagulopathie, hypoxemie peri-partum; hoge spinaal: bradypneu/hoge motoriek zonder DIC", "Hoge spinaal presenteert typisch met DIC en longemboliebeeld", "AFE geeft geïsoleerde PDPH zonder collaps"],
+    category: "fysiologie",
+    stem: "Ammniotic fluid embolism vs. hoge spinale:",
+    options: ["AFE en hoge spinale zijn klinisch niet te onderscheiden en altijd identiek", "AFE: plots collaps, coagulopathie, hypoxemie peri-partum; hoge spinale: bradypneu/hoge motoriek zonder DIC", "Hoge spinale presenteert typisch met DIC en longemboliebeeld", "AFE geeft geïsoleerde PDPH zonder collaps"],
     correctIndex: 1,
     explanation: "Differentiaal van peri-partum collaps: aortocavaal, bloeding, AFE, LAST, anafylaxie, hoge spinaal, cardiaal.",
   },
   {
     id: "spe-010",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Dementie/delirium-risico bij heupfractuur:",
     options: ["Regio verhoogt delirium systematisch t.o.v. opioïden", "Delirium is uitsluitend genetisch en onaantastbaar", "Vroege regionale analgesie en vermijden van zware opioïden/sedatie kan deliriumdruk verlagen", "Enkel GA zonder block voorkomt delirium"],
     correctIndex: 2,
@@ -2204,7 +2204,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-011",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Reumatische spondylitis/scoliose en neuraxiaal:",
     options: ["Midline landmark altijd eenvoudiger bij ankylose", "Neuraxiaal nooit falen bij scoliose", "Geen informed consent over technisch falen nodig", "US/paramediaan, soms onmogelijk; PNB of GA als backup plannen"],
     correctIndex: 3,
@@ -2212,7 +2212,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-012",
-    category: "speciale",
+    category: "fysiologie",
     stem: "MS of bestaande neuropathie en neuraxiaal:",
     options: ["Geen absolute contra; documenteer deficit, discussieer risico van post-block verergering (vaak correlatie ≠ causatie)", "Absolute contra voor alle neuraxiaal bij MS", "Geen documentatie van pre-existente uitval nodig", "Lidocaïne neuraxiaal is verplicht veiliger dan bupivacaïne"],
     correctIndex: 0,
@@ -2220,7 +2220,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-013",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Dagziekenhuis-regio: ontslagcriteria omvatten:",
     options: ["Ontslag met Bromage 3 en onstabiele vitals als 'daycare'", "Stabiele vitals, pijn/PONV onder controle, (bij neuraxiaal) terugkerende motoriek/plas volgens protocol, begeleiding, alarmkaart rebound pain", "Geen instructie over valrisico na femoraal/ISB", "Rebound pain negeren tot SEH-bezoek"],
     correctIndex: 1,
@@ -2228,7 +2228,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-014",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Zwangere in 3e trimester voor niet-obstetrische chirurgie:",
     options: ["Rugligging zonder LUD is veilig na 24 weken", "NSAID vrij in het hele 3e trimester", "LUD, antacid, moeilijke luchtweg anticiperen, foetale monitoring volgens termijn, regio als het de chirurgie dekt", "MAC is verhoogd in zwangerschap"],
     correctIndex: 2,
@@ -2236,7 +2236,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-015",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Sikkelcelziekte en tourniquet/Bier-block:",
     options: ["Absolute indicatie voor langdurige tourniquet", "Bier-block is eerste keus zonder overleg", "Geen belang van warmte/zuurstof/hydratatie", "Relatieve contra; hypoxie/stasis/acidose vermijden, overleg hematologie"],
     correctIndex: 3,
@@ -2244,7 +2244,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-016",
-    category: "speciale",
+    category: "fysiologie",
     stem: "COVID/respiratoire infectie en ISB:",
     options: ["Extra voorzichtig met phrenicusparese; overweeg sparing techniek of GA met gesloten circuit volgens context", "Hoog-volume ISB is onveranderd veilig bij hypoxemie", "Phrenicusparese verbetert hoesten na schouderchirurgie", "Geen zuurstofplanning nodig postoperatief"],
     correctIndex: 0,
@@ -2252,7 +2252,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-017",
-    category: "speciale",
+    category: "statistiek",
     stem: "Statistiek: p < 0,05 betekent klassiek:",
     options: ["Het resultaat is bewezen klinisch belangrijk", "De kans dat dit resultaat (of extremer) onder H0 optreedt is <5%; het bewijst niet klinische relevantie", "De kans op type II-fout is <5%", "Power is per definitie 95%"],
     correctIndex: 1,
@@ -2260,7 +2260,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-018",
-    category: "speciale",
+    category: "statistiek",
     stem: "Power (1−β) van een studie is:",
     options: ["De kans op een vals-positief resultaat (α)", "1 minus de p-waarde", "De kans om een werkelijk bestaand effect te detecteren", "Hetzelfde als NNT"],
     correctIndex: 2,
@@ -2268,7 +2268,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-019",
-    category: "speciale",
+    category: "statistiek",
     stem: "NNT (number needed to treat) is:",
     options: ["1 / relatief risico", "Relatief risico / oddsratio", "Power × α", "1 / absolute risicoreductie"],
     correctIndex: 3,
@@ -2276,7 +2276,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-020",
-    category: "speciale",
+    category: "statistiek",
     stem: "Sensitiviteit van een test is:",
     options: ["True positives / (true positives + false negatives) — aandeel zieken dat terecht positief test", "True positives / (true positives + false positives) — dat is PPV", "True negatives / (true negatives + false positives) — dat is specificiteit", "False positives / true negatives"],
     correctIndex: 0,
@@ -2284,7 +2284,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-021",
-    category: "speciale",
+    category: "statistiek",
     stem: "Een forest plot in een meta-analyse toont:",
     options: ["Enkel ruwe individuele patiëntendata zonder pooling", "Puntschattingen en betrouwbaarheidsintervallen per studie plus gepoolde schatting", "Een ROC-curve van één diagnostische test", "Een Kaplan-Meier-curve van overleving alleen"],
     correctIndex: 1,
@@ -2292,7 +2292,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-022",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Acute neuropatische component na letsel van n. saphenus:",
     options: ["Herhaalde hoge LA-bolussen tot pijn weg is", "Negeer allodynie als normale wondpijn", "Brandend, allodynie in mediaal been; overweeg gabapentinoïd/lidocaïnepleister, geen herhaalde toxische LA-bolussen", "Verplicht opnieuw proximaal femoraalblock met bupivacaïne 0,5% 40 ml"],
     correctIndex: 2,
@@ -2300,7 +2300,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-023",
-    category: "speciale",
+    category: "fysiologie",
     stem: "CRPS type I vs. II:",
     options: ["I heeft altijd een doorgesneden zenuw; II niet", "Beide types vereisen permanente motorische uitval", "CRPS bestaat alleen na neuraxiaal, nooit na trauma", "II heeft een gedocumenteerd zenuwletsel; I niet; beiden: dysfunctie, allodynie, vasomotorisch"],
     correctIndex: 3,
@@ -2308,7 +2308,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-024",
-    category: "speciale",
+    category: "fysiologie",
     stem: "Postoperatieve pijn na thoracotomie die op dag 3 exploderen na een goed werkende TEA:",
     options: ["Denk aan katheterdislocatie, pump failure, tachyfylaxie, chirurgische complicatie (lekkage, infectie)", "Verhoog blind de TEA-snelheid zonder inspectie", "Negeer breakthrough als normaal op dag 3", "Vervang TEA door bilateraal ISB"],
     correctIndex: 0,
@@ -2316,7 +2316,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-025",
-    category: "speciale",
+    category: "indicatie",
     stem: "Informed consent voor PNB omvat minstens:",
     options: ["Enkel 'het komt wel goed' zonder risico's te noemen", "Alternatieven (GA), veelvoorkomende bijwerkingen, zeldzame ernstige risico's (zenuwletsel, LAST, pneumothorax indien relevant), falen van het block", "Alleen zeldzame risico's zonder alternatieven", "Geen vermelding van blockfalen"],
     correctIndex: 1,
@@ -2324,7 +2324,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-026",
-    category: "speciale",
+    category: "indicatie",
     stem: "Monitoring tijdens PNB-plaatsing (minimum):",
     options: ["Geen monitoring nodig bij 'quick TAP'", "Enkel klinische blik zonder SpO2", "Aanwezigheid van IV-toegang, SpO2, BP, ECG, bewaking/zuurstof volgens sedatiediepte, LAST-kit in de buurt", "LAST-kit mag op een andere verdieping liggen"],
     correctIndex: 2,
@@ -2332,7 +2332,7 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-027",
-    category: "speciale",
+    category: "farmacologie",
     stem: "Steriliteit: chlorhexidine 0,5–2% in alcohol:",
     options: ["Inferior aan povidonjood voor huiddesinfectie", "Veilig om CHX in de LA-ampul te mengen", "Geen droogtijd nodig vóór punctie", "Superieur aan povidonjood voor huiddecontaminatie; niet in de naald/ampul laten druppelen (neurotoxisch)"],
     correctIndex: 3,
@@ -2340,15 +2340,15 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-028",
-    category: "speciale",
-    stem: "Een positieve likelihood ratio van 10 betekent grof:",
+    category: "statistiek",
+    stem: "Een positieve likelihood ratio van 10 betekent grofweg:",
     options: ["De test verhoogt de odds van ziekte ongeveer tienvoudig", "De test verlaagt de odds tienvoudig", "Sensitiviteit is per definitie 10%", "NNT is 10"],
     correctIndex: 0,
     explanation: "LR+ = sen/(1−spec). LR− = (1−sen)/spec. Handig baayesiaans denken.",
   },
   {
     id: "spe-029",
-    category: "speciale",
+    category: "statistiek",
     stem: "ANOVA wordt gebruikt om:",
     options: ["Twee proporties te vergelijken (chi-square)", "Gemiddelden van meer dan twee groepen te vergelijken (continue, ruwweg normale data)", "Twee gepaarde medianen zonder normaliteit (Wilcoxon) als enige ANOVA-rol", "Overlevingstijden te modelleren (Cox)"],
     correctIndex: 1,
@@ -2356,11 +2356,1862 @@ export const EDRA_QUIZ_BANK: QuizQuestion[] = [
   },
   {
     id: "spe-030",
-    category: "speciale",
+    category: "statistiek",
     stem: "Relative risk 0,5 bij misselijkheidsincidentie betekent:",
     options: ["De odds zijn per definitie gehalveerd identiek aan RR bij frequente events", "NNT is altijd 0,5", "Het risico is gehalveerd in de interventiegroep t.o.v. controle (niet hetzelfde als OR bij frequente uitkomsten)", "Absolute risicoreductie is 50 percentagepunten ongeacht baseline"],
     correctIndex: 2,
     explanation: "RR = risk interventie / risk controle. OR benadert RR bij zeldzame events, niet bij frequente.",
   },
+  {
+"id": "com-030",
+"category": "complicaties",
+"stem": "Een patiënt ontwikkelt een cardiaal arrest (asystolie) ten gevolge van bupivacaïne toxiciteit (LAST) tijdens de uitvoering van een axillair blok. U start onmiddellijk reanimatie (ALS). Wat is het correcte initiële beleid met betrekking tot Lipid Emulsion 20% (Intralipid) bij deze volwassene (70 kg)?",
+"options": [
+"Bolus van 1.5 mL/kg (ongeveer 100 mL), onmiddellijk gevolgd door een infuus van 15 mL/kg/h.",
+"Bolus van 1.5 mL/kg, direct gevolgd door de standaard ALS-dosis van 1 mg epinefrine om de asystolie te doorbreken.",
+"Direct starten van een infuus aan 15 mL/kg/h zonder bolus, om acute 'lipid overload' in de pulmonale circulatie te vermijden.",
+"Bolus van 3.0 mL/kg indien er sprake is van asystolie; een onderhoudsinfuus is enkel geïndiceerd bij propofol toxiciteit."
+],
+"correctIndex": 0,
+"explanation": "Volgens de ASRA- en AAGBI-richtlijnen is de initiële behandeling van LAST een bolus van 1.5 ml/kg 20% lipidenemulsie, gevolgd door een infuus van 15 ml/kg/h. Hoge dosissen epinefrine (1 mg) moeten strikt vermeden worden; ze verergeren aritmieën en verminderen de effectiviteit van de lipiden-sink. Epinefrine mag enkel in kleine dosissen (<1 mcg/kg) gegeven worden."
+},
+{
+"id": "com-031",
+"category": "complicaties",
+"stem": "Tijdens een interscalenus blok onder echogeleiding merkt u een snelle, pijnloze expansie van de zenuw (het 'donut' teken binnen het epineurium). Uw in-line drukmeter toont een openingsdruk van >15 psi. Welke uitspraak betreffende deze intraneurale injectie is anatomisch en fysiologisch correct?",
+"options": [
+"Een intrafasciculaire injectie is geassocieerd met ernstige schade door ruptuur van het perineurium, terwijl extrafasciculaire-epineuriale injecties vaak zonder restschade verlopen.",
+"Elke vorm van intraneurale (epineuriale) injectie leidt onherroepelijk tot axonotmesis en vereist onmiddellijke microchirurgische decompressie.",
+"Hoge openingsdrukken (>15 psi) zijn pathognomonisch voor een veilige injectie in het losse paraneurale areolaire weefsel.",
+"De afwezigheid van een paresthesie bevestigt dat er geen risico is op ischemische schade of toxiciteit binnen de zenuw."
+],
+"correctIndex": 0,
+"explanation": "Niet elke intraneurale injectie is gelijk. De zenuwfascikels worden beschermd door het perineurium. Intrafasciculaire injectie (waarbij hoge drukken >15 psi ontstaan) leidt tot mechanische disruptie, ischemie en ernstige neurologische schade (axonotmesis/neurotmesis). Injectie tussen het epineurium en perineurium (extrafasciculair) leidt echter niet altijd tot schade, al dient het vermeden te worden."
+},
+{
+"id": "com-032",
+"category": "complicaties",
+"stem": "Bij een patiënte treedt een accidentele durapunctie op tijdens een poging tot epidurale anesthesie, waarna per abuis een therapeutische epidurale dosis bupivacaïne intrathecaal wordt geïnjecteerd (totaal spinaal). Naast ascenderende paralyse, wat is het primaire pathofysiologische mechanisme van de resulterende acute cardiovasculaire collaps?",
+"options": [
+"Massale pre-ganglionaire sympathische blokkade resulterend in venodilatatie (verlies van preload) en blokkade van de T1-T4 cardio-accelerator vezels (bradycardie).",
+"Directe negatief inotrope cardiotoxiciteit van de bupivacaïne door razendsnelle systemische absorptie vanuit de lumbale plexus venosus.",
+"Ongecontroleerde hyperactiviteit van de nervus vagus door het wegvallen van nociceptieve remming vanuit het ruggenmerg.",
+"Acute ischemie van de hersenstam en het ademhalingscentrum door opstijging van het hypobare lokale anestheticum."
+],
+"correctIndex": 0,
+"explanation": "Een totaal spinaal veroorzaakt een uitgebreide, massale sympathicolyse. Het verlies van veneuze tonus (capaciteitsvaten) doet de preload dramatisch kelderen. Tegelijkertijd zorgt de blokkade van de sympathische efferenten naar het hart (T1-T4) voor het onvermogen om reflexmatig tachycardie te genereren, resulterend in een diepe, vaak fatale bradycardie en hypotensie."
+},
+{
+"id": "com-033",
+"category": "complicaties",
+"stem": "Wat is de correcte anatomische relatie die het risico op een pneumothorax verhoogt bij een supraclaviculair blok, en welk echografisch artefact is cruciaal om een intacte pleura te identificeren?",
+"options": [
+"De pleura parietalis ligt mediaal en caudaal van de plexus; een intacte pleura wordt echografisch gekenmerkt door het 'sliding lung' sign en A-lijnen.",
+"De pleura ligt anterolateraal van de plexus brachialis; de aanwezigheid van B-lijnen (comet tails) is de enige sluitende bevestiging van een pneumothorax.",
+"De longtop reikt tot ver anterieur van de arteria subclavia; het 'seashore' sign in M-mode bewijst onomstotelijk de afwezigheid van longweefsel.",
+"De pleura bevindt zich direct posterieur van de vena subclavia; bij pneumothorax verdwijnen de B-lijnen en ziet men een versterkt 'comet tail' artefact."
+],
+"correctIndex": 0,
+"explanation": "Bij een supraclaviculair blok ligt de plexus (trunci/divisies) superolateraal van de arteria subclavia op de eerste rib. De pleura bevindt zich mediaal en caudaal hiervan. Een intacte, glijdende pleura toont 'lung sliding' en horizontale reverberaties (A-lijnen). Bij een pneumothorax verdwijnt de lung sliding, wat in M-mode resulteert in het 'barcode/stratosphere' teken (niet het normale 'seashore' teken)."
+},
+{
+"id": "com-034",
+"category": "complicaties",
+"stem": "Een patiënt ontwikkelt ptosis, miosis en anhidrose (syndroom van Horner) naast een lichte heesheid na een interscalenus blok. Welke structuren zijn accidenteel geblokkeerd en wat was de spreidingsrichting van het anestheticum?",
+"options": [
+"Het lokaal anestheticum is anteromediaal verspreid over de prevertebrale fascia, met blokkade van het ganglion stellatum (cervicale sympathicus) en de nervus laryngeus recurrens.",
+"Het lokaal anestheticum is posterieur verspreid door de musculus scalenus medius met blokkade van de plexus cervicalis profundus en de nervus phrenicus.",
+"Het lokaal anestheticum is craniaal gemigreerd binnen de carotis schede, wat leidde tot paralyse van de sympatische vezels op de arteria carotis en de nervus vagus.",
+"Het lokaal anestheticum werd intravasculair toegediend en heeft lokaal toxisch ingewerkt op het ganglion ciliare en de nervus laryngeus superior."
+],
+"correctIndex": 0,
+"explanation": "Het syndroom van Horner (ptosis, miosis, anhidrose) ontstaat door blokkade van de sympathische grensstreng (ganglion stellatum ter hoogte van C7-T1). Heesheid duidt op paralyse van de stemband (N. laryngeus recurrens). Beide structuren liggen mediaal van de interscalene groeve, wat wijst op diffusie van de medicatie in anteromediale richting."
+},
+{
+"id": "com-035",
+"category": "complicaties",
+"stem": "Een patiënt met een thoracale epidurale katheter rapporteert progressieve, bilaterale motorische zwakte en rugpijn, 6 uur na verwijdering van de katheter. Welk actieplan is volgens evidence-based richtlijnen het meest kritisch om permanente schade te voorkomen?",
+"options": [
+"Onmiddellijk een spoed-MRI van de wervelkolom aanvragen ter voorbereiding op chirurgische decompressie binnen 8 uur na het begin van de symptomen.",
+"Een CT-scan met intraveneus contrast aanvragen om een epiduraal abces uit te sluiten en te starten met empirische breedspectrum antibiotica.",
+"Een expectatief beleid voeren met nauwgezette neurologische observaties om de 4 uur; 90% van de epidurale hematomen resorbeert immers spontaan.",
+"Bloed afnemen ter controle van PT/aPTT en trombocyten; zodra de stolling genormaliseerd is, kan een therapeutische lumbaalpunctie worden verricht."
+],
+"correctIndex": 0,
+"explanation": "Nieuwe motorische uitval en/of rugpijn na manipulatie van neuraxiale katheters zijn sterke 'red flags' voor een epiduraal hematoom. Om onomkeerbare ischemische myelopathie (dwarslaesie) te voorkomen, is snelle diagnostiek met de gouden standaard (MRI) vereist. Laminectomie/decompressie moet idealiter binnen 8-12 uur na de eerste symptomen plaatsvinden."
+},
+{
+"id": "com-036",
+"category": "complicaties",
+"stem": "Tijdens de inductie van lumbale epidurale anesthesie krijgt een patiënte een onverwacht, onregelmatig en zeer hoog oplopend sensatoir blok (tot cervicaal niveau). Ze behoudt vrijwel volledige motoriek in de benen en is hemodynamisch opvallend stabiel. Er was geen liquor geaspireerd. Welke diagnose is het meest waarschijnlijk?",
+"options": [
+"Een subduraal blok.",
+"Een subarachnoïdale (spinale) injectie.",
+"Een epiduraal abces dat obstructie veroorzaakt.",
+"Intravasculaire injectie in de plexus van Batson."
+],
+"correctIndex": 0,
+"explanation": "De subdurale ruimte is een nauwe, potentiële ruimte. Een accidentele subdurale injectie kenmerkt zich door een grote, onvoorspelbare (vaak craniaal gerichte) spreiding van een kleine hoeveelheid anestheticum. Het beïnvloedt voornamelijk de dorsale (sensatoire) wortels, resulterend in een uitgebreid 'patchy' sensatoir blok dat de motoriek (anterieure wortels) en sympathicus (hemodynamiek) in hoge mate spaart, in schril contrast met een massaal spinaal blok."
+},
+{
+"id": "com-037",
+"category": "complicaties",
+"stem": "Tijdens een chirurgische procedure aan de pols onder axillair blok rapporteert de patiënt na 45 minuten een doffe, brandende pijn ter hoogte van de bovenarm waar de pneumatische tourniquet (250 mmHg) zit. Het operatieve veld zelf is volstrekt pijnloos. Welke zenuwvezels zijn primair verantwoordelijk voor deze specifieke 'tourniquet pijn'?",
+"options": [
+"Ongemyeliniseerde, traag geleidende C-vezels die minder goed geblokkeerd worden door lagere concentraties anestheticum en reageren op ischemie.",
+"Dikke, snel geleidende A-alfa motorische vezels die ectopische impulsen genereren door de mechanische knijpkracht van de tourniquet.",
+"Gemyeliniseerde A-beta vezels die primair temperatuur en fijne tast overbrengen en hyperactief reageren op de verhoogde bloeddruk.",
+"Pre-ganglionaire sympathische B-vezels, die door de druk van de manchet een sympathisch gemedieerde pijnsensatie (SMP) veroorzaken."
+],
+"correctIndex": 0,
+"explanation": "Tourniquet pijn ontstaat typisch na 45-60 minuten door weefselischemie en compressie. Deze pijn wordt voornamelijk gemedieerd door de kleine, ongemyeliniseerde C-vezels (doffe, brandende pijn). Deze vezels vereisen weliswaar een lagere minimale inhiberende concentratie (Cm) dan motorvezels, maar overleven vaak in de kern van grote zenuwstammen bij onvolledige penetratie van het lokaal anestheticum, of verlopen via oppervlakkige niet-geblokkeerde huidzenuwen (zoals n. intercostobrachialis)."
+},
+{
+"id": "com-038",
+"category": "complicaties",
+"stem": "Wat is het huidige consensus standpunt inzake het gebruik van continue perifere zenuwkatheters bij patiënten met een hoog risico op een acuut compartimentsyndroom (ACS), zoals bij hoogenergetische tibiaplateaufracturen?",
+"options": [
+"Analgetische concentraties lokaal anestheticum (bv. ropivacaïne 0.2%) maskeren de intense, ischemische 'breakthrough pain' van ACS doorgaans niet; het klinische beeld blijft leidend.",
+"Regionale technieken zijn absoluut gecontra-indiceerd bij elke fractuur van de onderste extremiteit omdat ze steevast de pijn (het belangrijkste klinische signaal) 100% maskeren.",
+"Katheters zijn veilig, mits adjuvante medicatie zoals dexamethason wordt toegevoegd om het weefseloedeem binnen het musculaire compartiment tegen te gaan.",
+"Er is een strikte richtlijn dat enkel single-shot neuraxiale anesthesie met lidocaïne is toegestaan, om een vertraging in de fasciotomie te voorkomen."
+],
+"correctIndex": 0,
+"explanation": "Moderne opvattingen (en literatuur) geven aan dat het gebruik van verdunde lokaal anesthetica (geen dens motorisch blok) veilige en superieure analgesie kan bieden. De extreme ischemische pijn van een ACS breekt vrijwel altijd door ('breakthrough pain') een dergelijk analgetisch blok heen. Er is geen absolute contra-indicatie, mits het verpleegkundig team getraind is en de patiënt strikt gemonitord wordt."
+},
+{
+"id": "com-039",
+"category": "complicaties",
+"stem": "Een patiënt ontwikkelt postoperatief zadelanesthesie, blaasdisfunctie en zwakte in de benen (cauda equina syndroom) na een langdurige proctologische ingreep onder continue spinale anesthesie. Welk mechanisme is historisch gezien het meest geassocieerd met deze zeldzame complicatie?",
+"options": [
+"De pooling en slechte menging van hyperbare oplossingen (zoals 5% lidocaïne) uit een microkatheter, resulterend in hoge neurotoxische concentraties rond de naakte zenuwwortels.",
+"Directe mechanische laceratie van het myelum door het herhaaldelijk manipuleren van de stugge epidurale naald in de subarachnoïdale ruimte.",
+"Ischemie van het myelum door toevoeging van vasoconstrictoren (zoals fenylefrine) aan hypobare lokaal anesthetica ter verlenging van de blokduur.",
+"Een late arachnoïditis veroorzaakt door het gebruik van preservative-free opioïden, wat leidde tot littekenvorming rond het filum terminale."
+],
+"correctIndex": 0,
+"explanation": "Cauda Equina Syndroom na continue spinaal was een beruchte complicatie in de vroege jaren '90. Het werd voornamelijk veroorzaakt door het gebruik van microkatheters in combinatie met hyperbare oplossingen (vaak 5% lidocaïne). De medicatie mengde niet goed met de liquor (beperkte distributie) en 'poolde' in het sacrale gebied, wat leidde tot een fatale locale weefselconcentratie en onomkeerbare neurotoxiciteit van de cauda equina."
+},
+  {
+    "id": "stat-001",
+    "category": "statistiek",
+    "stem": "In een gerandomiseerde, dubbelblinde studie vergelijkt men twee technieken voor een transversus abdominis plane (TAP) blok. De onderzoekers concluderen dat er géén statistisch significant verschil is in postoperatieve pijnscores (p=0.08), hoewel er in werkelijkheid (in de bredere populatie) wel degelijk een klinisch relevant verschil bestaat. Hoe wordt dit type fout genoemd en hoe relateert dit aan de 'power' van de studie?",
+    "options": [
+      "Type I fout; de power van de studie was waarschijnlijk te hoog ten opzichte van de klinische relevantie.",
+      "Type II fout; de power van de studie was waarschijnlijk te laag, vaak veroorzaakt door een onvoldoende grote steekproef (sample size).",
+      "Type I fout; de studie had een onvoldoende strenge alpha-waarde ingesteld om het werkelijke effect aan te tonen.",
+      "Type III fout; de p-waarde is foutief berekend ten opzichte van het gekozen betrouwbaarheidsinterval."
+    ],
+    "correctIndex": 1,
+    "explanation": "Een Type II (bèta) fout treedt op wanneer de nulhypothese ten onrechte wordt geaccepteerd (vals-negatief); men mist een effect dat in de realiteit wel bestaat. Dit is direct gerelateerd aan de 'power' (1 - bèta) van een studie. Een studie met te weinig patiënten (underpowered) heeft een hoog risico op een Type II fout."
+  },
+  {
+    "id": "stat-002",
+    "category": "statistiek",
+    "stem": "U evalueert de literatuur over een nieuw echografisch teken (artefact) om intravasculaire naaldplaatsing te detecteren. De studie rapporteert een sensitiviteit van 99% en een specificiteit van 50%. Welke van de volgende klinische conclusies is methodologisch het meest accuraat met betrekking tot deze test?",
+    "options": [
+      "Een negatief testresultaat sluit een intravasculaire naaldplaatsing met zeer grote zekerheid uit (SnNOut-principe).",
+      "Een positief testresultaat bevestigt met grote zekerheid dat de naald daadwerkelijk intravasculair zit (SpPIn-principe).",
+      "De positief voorspellende waarde (PPV) van deze echografische test zal in elke patiëntenpopulatie boven de 90% liggen.",
+      "Een specificiteit van 50% betekent dat de helft van de patiënten mét een daadwerkelijke intravasculaire injectie de test als negatief zal ervaren."
+    ],
+    "correctIndex": 0,
+    "explanation": "Een test met een zeer hoge sensitiviteit (99%) genereert nauwelijks vals-negatieven. Daarom helpt een negatief resultaat om de aandoening/complicatie betrouwbaar uit te sluiten (SnNOut: Sensitive test when Negative rules Out). De lage specificiteit (50%) leidt wel tot veel vals-positieven, waardoor een positieve test weinig bevestigende waarde heeft."
+  },
+  {
+    "id": "stat-003",
+    "category": "statistiek",
+    "stem": "Een onderzoeker wil de gemiddelde tijd (in minuten) tot het intreden van een chirurgisch sensorisch blok (onset time) vergelijken tussen drie onafhankelijke groepen patiënten die verschillende doseringen ropivacaïne kregen (0.2%, 0.5% en 0.75%). De variabele 'onset time' is continu en normaal verdeeld in alle drie de groepen. Welke statistische toets is het meest geschikt voor deze initiële analyse?",
+    "options": [
+      "Kruskal-Wallis test.",
+      "Meervoudige, ongepaarde Student's t-testen (zonder correctie).",
+      "One-way Analysis of Variance (ANOVA).",
+      "Chi-kwadraat (Chi-square) test."
+    ],
+    "correctIndex": 2,
+    "explanation": "One-way ANOVA wordt gebruikt om de gemiddelden van drie of meer onafhankelijke groepen te vergelijken wanneer de data continu en normaal verdeeld zijn (parametrisch). Het gebruik van meerdere t-testen (optie B) is fout omdat het cumulatieve risico op een Type I fout (alpha error inflation) dan onacceptabel hoog wordt."
+  },
+  {
+    "id": "stat-004",
+    "category": "statistiek",
+    "stem": "In een klinische studie meet men de VAS-pijnscore (een ordinale schaal van 0-10) bij een vaste groep van 40 patiënten op twee momenten: direct vóór en 30 minuten ná het toedienen van een rescue analgeticum via een epidurale katheter. Uit een Shapiro-Wilk test blijkt dat de data sterk scheef verdeeld (niet-normaal verdeeld) zijn. Welke statistische test moet men gebruiken om het verschil tussen deze twee meetmomenten te analyseren?",
+    "options": [
+      "Gepaarde t-test.",
+      "Wilcoxon signed-rank test.",
+      "Mann-Whitney U test (Wilcoxon rank-sum test).",
+      "Spearman rangcorrelatiecoëfficiënt."
+    ],
+    "correctIndex": 1,
+    "explanation": "De data zijn ordinaal (of niet-normaal verdeelde continue data) en betreffen gepaarde metingen (voor/na binnen dezelfde patiënten). De non-parametrische test voor twee gepaarde groepen is de Wilcoxon signed-rank test. De gepaarde t-test is parametrisch (vereist normale verdeling), en de Mann-Whitney U is voor twee óngepaarde/onafhankelijke groepen."
+  },
+  {
+    "id": "stat-005",
+    "category": "statistiek",
+    "stem": "Wat is het effect van een sterk verlaagde prevalentie van een aandoening (bijvoorbeeld incidentie van blijvende zenuwschade in een low-risk populatie in plaats van een trauma-populatie) op de voorspellende waarden van een diagnostische neurologische test, aannemende dat de sensitiviteit en specificiteit van de test ongewijzigd blijven?",
+    "options": [
+      "Zowel de Positief Voorspellende Waarde (PPV) als de Negatief Voorspellende Waarde (NPV) stijgen proportioneel.",
+      "De Positief Voorspellende Waarde (PPV) stijgt, terwijl de Negatief Voorspellende Waarde (NPV) daalt.",
+      "De Positief Voorspellende Waarde (PPV) daalt aanzienlijk, terwijl de Negatief Voorspellende Waarde (NPV) stijgt.",
+      "Prevalentie beïnvloedt de predictieve waarden (PPV en NPV) niet; dit gebeurt enkel bij veranderingen in test-betrouwbaarheid."
+    ],
+    "correctIndex": 2,
+    "explanation": "In tegenstelling tot sensitiviteit en specificiteit (die intrinsiek zijn aan de test), zijn voorspellende waarden sterk afhankelijk van de prevalentie. Naarmate een aandoening zeldzamer wordt (lage prevalentie), neemt het aantal vals-positieven relatief toe ten opzichte van de terecht-positieven, waardoor de PPV daalt. Tegelijkertijd wordt een negatief resultaat steeds betrouwbaarder, dus de NPV stijgt."
+  },
+  {
+    "id": "stat-006",
+    "category": "statistiek",
+    "stem": "In het domein van Evidence Based Medicine wordt vaak gebruik gemaakt van de Likelihood Ratio (LR). Hoe wordt de positieve likelihood ratio (LR+) van een diagnostische test berekend, en wat is de klinische interpretatie van een LR+ van 10?",
+    "options": [
+      "LR+ = Specificiteit / (1 - Sensitiviteit). Een LR+ van 10 verlaagt de post-test probabiliteit aanzienlijk.",
+      "LR+ = (1-Sensitiviteit) / Specificiteit. Een LR+ van 10 betekent dat de test te weinig onderscheidend vermogen heeft voor de praktijk.",
+      "LR+ is equivalent aan de Odds Ratio; een waarde van 10 impliceert een 10% toename in diagnostische accuratesse.",
+      "LR+ = Sensitiviteit / (1 - Specificiteit). Een LR+ van 10 betekent dat de kans op een positief resultaat 10x groter is bij een zieke dan bij een gezonde patiënt."
+    ],
+    "correctIndex": 3,
+    "explanation": "De LR+ is de verhouding tussen de kans op een positieve test bij patiënten mèt de aandoening (True Positive Rate = Sensitiviteit) en de kans op een positieve test bij patiënten zònder de aandoening (False Positive Rate = 1 - Specificiteit). Een LR+ > 10 verandert (verhoogt) de pre-test probabiliteit naar post-test probabiliteit in zeer aanzienlijke en klinisch nuttige mate."
+  },
+  {
+    "id": "stat-007",
+    "category": "statistiek",
+    "stem": "In een observationele studie naar postoperatieve misselijkheid en braken (PONV) rapporteert men zowel een Relative Risk (RR) als een Odds Ratio (OR). De baseline incidentie (prevalentie) van PONV in deze setting is zeer hoog (meer dan 50%). Welke stelling met betrekking tot het rapporteren van de OR en RR is statistisch correct voor deze specifieke studie?",
+    "options": [
+      "De OR en RR zullen mathematisch nagenoeg identiek zijn omdat de uitkomst frequent voorkomt.",
+      "Naarmate de incidentie van een uitkomst toeneemt, zal de Odds Ratio (OR) het daadwerkelijke Relative Risk (RR) numeriek steeds sterker overdrijven (verder van 1 afwijken).",
+      "De OR zal structureel een onderschatting geven van het RR, waardoor de interventie ten onrechte minder effectief lijkt.",
+      "Het Relative Risk (RR) is een non-parametrische maat en kan bijgevolg niet berekend worden als de incidentie boven de 50% ligt."
+    ],
+    "correctIndex": 1,
+    "explanation": "Wanneer de bestudeerde uitkomst zeldzaam is (<10%), benadert de OR het RR. Echter, wanneer de uitkomst vaak voorkomt (zoals PONV, vaak >30-50%), divergeert de OR sterk van het RR. De OR zal het effect 'overdrijven': een risicoverhoging (RR > 1) resulteert in een nóg grotere OR, en een risicoverlaging (RR < 1) resulteert in een nog kleinere (sterkere) OR."
+  },
+  {
+    "id": "stat-008",
+    "category": "statistiek",
+    "stem": "Een onderzoeksgroep analyseert de 'tijd (in uren) tot het eerste verzoek om systemische opioïden' na een single-shot versus een continu interscalenus blok. Bepaalde patiënten verlaten het ziekenhuis pijnvrij binnen 24 uur en vragen nooit om pijnstilling (zogenaamde 'censored data'). Welke statistische methodologie is aangewezen om deze data-set correct te analyseren?",
+    "options": [
+      "Kaplan-Meier survival analyse met een Log-rank test.",
+      "Meervoudige lineaire regressie gecombineerd met de Chi-kwadraat test voor nominale afkappunten.",
+      "Een Pearson rangcorrelatie, gevolgd door het uitsluiten van de gecensureerde datapunten om bias te voorkomen.",
+      "Een ongepaarde Student's t-test over de absolute follow-up duur van alle patiënten."
+    ],
+    "correctIndex": 0,
+    "explanation": "Survival analysis (zoals de Kaplan-Meier methode) is expliciet ontworpen voor 'time-to-event' data (tijd tot eerste analgesie verzoek). Het grote voordeel hiervan is dat het de 'censored data' (patiënten bij wie het event zich tijdens de studieperiode niet heeft voorgedaan of die uit de follow-up verdwijnen) meeneemt zonder bias te introduceren. De curven kunnen vervolgens vergeleken worden met de Log-rank test."
+  },
+  {
+    "id": "stat-009",
+    "category": "statistiek",
+    "stem": "Een grote meta-analyse naar het effect van dexamethason op de duur van een axillair blok rapporteert een Odds Ratio (OR) van 3.20 ten gunste van dexamethason, met een bijbehorend 95% Betrouwbaarheidsinterval (Confidence Interval - CI) van 0.95 tot 5.10. Wat kunt u op basis van dit 95% CI statistisch besluiten, uitgaande van een vooraf bepaalde alpha van 0.05?",
+    "options": [
+      "Er is een overtuigend, statistisch significant verschil aangetoond in het voordeel van dexamethason (p < 0.05).",
+      "Er is 95% kans dat dexamethason de blokduur met minimaal 320% verlengt in de gemiddelde patiënt.",
+      "Het effect is statistisch gezien niet-significant op het 5% niveau, aangezien het betrouwbaarheidsinterval de ratio 1.0 (de nulhypothesewaarde voor OR) omsluit.",
+      "De brede spreiding van het interval toont aan dat de p-waarde ongeldig is wegens onvoldoende power (Type I error)."
+    ],
+    "correctIndex": 2,
+    "explanation": "Voor verhoudingsmaten (zoals Odds Ratio of Relative Risk) is de waarde voor 'geen effect' of de 'nulhypothese' exact 1.0. Als het 95% betrouwbaarheidsinterval de waarde 1.0 omsluit (hier loopt het van 0.95 tot 5.10), kunnen we met 95% zekerheid niet uitsluiten dat het werkelijke effect 1.0 (dus geen verschil) is. Daarmee is de bevinding automatisch statistisch niet-significant op p=0.05 niveau."
+  },
+  {
+    "id": "stat-010",
+    "category": "statistiek",
+    "stem": "U wilt prospectief analyseren of er een statistische correlatie bestaat tussen het lichaamsgewicht van de patiënt in kilogrammen (continu, niet-normaal verdeeld) en de diepte in millimeters waarop de nervus ischiadicus zich bevindt bij een infragluteale benadering (continu, niet-normaal verdeeld). Welke maat voor correlatie is methodologisch het meest juist?",
+    "options": [
+      "De Pearson correlatiecoëfficiënt, vanwege het feit dat beide parameters strikt continu zijn.",
+      "Een logistische regressie-analyse, omdat er naar de voorspelbaarheid van diepte ten opzichte van gewicht gekeken wordt.",
+      "De Intraclass Correlatie Coëfficiënt (ICC), omdat men de inter-individuele spreiding wil minimaliseren.",
+      "De Spearman rangcorrelatie (Spearman's rho), omdat minstens één (of beide) van de continue variabelen niet normaal verdeeld is."
+    ],
+    "correctIndex": 3,
+    "explanation": "Correlatie tussen twee continue variabelen wordt klassiek berekend met de Pearson coëfficiënt (r). De kritische assumptie voor Pearson is echter dat beide variabelen normaal verdeeld zijn (en lineair correleren). Omdat uit de vraag blijkt dat ze niet-normaal verdeeld (scheef) zijn, is het gebruik van de non-parametrische tegenhanger - de Spearman rank correlation - de enige correcte keuze."
+  },
+{
+"id": "ana-046",
+"category": "anatomie",
+"stem": "Bij een lumbaal plexus blok (psoas compartiment blok) wordt het lokaal anestheticum geïnjecteerd ter hoogte van de lumbale zenuwwortels. Wat is de exacte anatomische positie van de lumbale plexus ten opzichte van de musculus psoas major en de processus transversi op niveau L4?",
+"options": [
+"Binnen de spierbuik van de m. psoas major, posterieur van het voorste spiercompartiment en anterieur van de processus transversi.",
+"Tussen de m. psoas major en de m. quadratus lumborum, strikt posterieur van de processus transversi.",
+"Anterieur van de m. psoas major, direct onder de fascia iliaca, waar de zenuwen conflueren.",
+"Binnen de m. erector spinae, craniaal van de m. psoas major en mediaal van de m. quadratus lumborum."
+],
+"correctIndex": 0,
+"explanation": "De lumbale plexus (L1-L4) bevindt zich in het 'psoas compartiment', wat anatomisch gezien binnen de musculatuur van de musculus psoas major ligt. De plexus wordt gevormd anterieur van de processus transversi en ligt ingebed tussen een massieve anterieure (vlezig) en een dunnere posterieure spierlaag van de psoas major."
+},
+{
+"id": "ana-047",
+"category": "anatomie",
+"stem": "Tijdens een echogeleid infraclaviculair blok (coracoïd benadering) identificeert u de arteria axillaris. Hoe zijn de fasciculi (cords) van de plexus brachialis anatomisch gepositioneerd ten opzichte van de arteria axillaris in dit specifieke vlak?",
+"options": [
+"De trunci liggen nog steeds als een compacte cluster craniaal van de arterie; de verdeling in fasciculi vindt pas meer distaal in de axilla plaats.",
+"De fasciculus lateralis ligt lateraal, de fasciculus medialis ligt mediaal tot caudaal, en de fasciculus posterior ligt direct posterieur van de arterie.",
+"De fasciculus posterior ligt craniaal, terwijl de laterale en mediale fasciculi zich gezamenlijk caudaal van de arterie bevinden.",
+"Alle fasciculi liggen gegroepeerd lateraal van de arteria en vena axillaris, nauw begrensd door de musculus pectoralis minor."
+],
+"correctIndex": 1,
+"explanation": "Op infraclaviculair niveau (onder de m. pectoralis minor) zijn de trunci via divisies overgegaan in de fasciculi (cords). Deze danken hun anatomische naamgeving specifiek aan hun positie ten opzichte van het tweede deel van de arteria axillaris: de lateral cord ligt lateraal (vaak superolateraal op echografie), de medial cord ligt mediaal (vaak inferomediaal), en de posterior cord ligt achter de arterie."
+},
+{
+"id": "ana-048",
+"category": "anatomie",
+"stem": "U voert een echogeleid popliteaal blok uit. Op welk anatomisch niveau ten opzichte van de patella splitst de nervus ischiadicus zich typisch in de nervus tibialis (TN) en de nervus peroneus communis (CPN), en wat is de ruimtelijke verhouding in de fossa poplitea?",
+"options": [
+"De splitsing bevindt zich altijd distaal van de popliteale plooi; de CPN duikt onmiddellijk mediaal van de arterie naar de mediale malleolus.",
+"De splitsing varieert sterk; de TN ligt oppervlakkig en lateraal ten opzichte van de popliteale vaten, de CPN duikt in de diepte naar mediaal.",
+"De splitsing bevindt zich typisch 5-10 cm proximaal van de knieplooi; de TN blijft dicht bij de popliteale vaten, terwijl de CPN divergeert naar lateraal richting het fibulakopje.",
+"De zenuw splitst reeds in het proximale eenderde van het femur; beide takken verlopen vervolgens strikt mediaal van de vena poplitea tot in de kuit."
+],
+"correctIndex": 2,
+"explanation": "De nervus ischiadicus splitst in de meeste gevallen zo'n 5 tot 10 cm (of hoger) proximaal van de popliteale plooi. Na de bifurcatie vervolgt de TN zijn weg in de directe nabijheid van de popliteale vaten (meestal posterieur/oppervlakkig en licht lateraal ervan), terwijl de CPN duidelijk divergeert naar de laterale zijde van de fossa poplitea om rond de collum fibulae te draaien."
+},
+{
+"id": "ana-049",
+"category": "anatomie",
+"stem": "Bij het uitvoeren van een Transversus Abdominis Plane (TAP) blok via de klassieke laterale (mid-axillaire) benadering ter hoogte van de Petit driehoek, penetreert de naald verschillende weefsellagen. Tussen welke twee fasciale vlakken bevindt zich het doelcompartiment waar de anterieure rami van de thoracale spinale zenuwen verlopen?",
+"options": [
+"Tussen de m. obliquus externus abdominis en de m. obliquus internus abdominis.",
+"Tussen de fascia transversalis en het peritoneum parietale.",
+"Tussen de m. rectus abdominis en de posterieure rectusschede.",
+"Tussen de m. obliquus internus abdominis en de m. transversus abdominis."
+],
+"correctIndex": 3,
+"explanation": "Het Transversus Abdominis Plane (TAP) is het weefselvlak dat zich bevindt tussen de musculus obliquus internus abdominis en de musculus transversus abdominis. De segmentale zenuwen (intercostaalzenuwen T7-T11, subcostaalzenuw T12, en iliohypogastricus/ilioinguinalis L1) verlopen primair in dit specifieke neurofasciale vlak om de anterolaterale buikwand te innerveren."
+},
+{
+"id": "ana-050",
+"category": "anatomie",
+"stem": "U besluit een adductor kanaal blok uit te voeren voor een totale knieprothese, met als expliciet doel de m. quadriceps motorisch te sparen. Welke neurologische structuren bevinden zich in het ware adductor kanaal (Hunter's canal), distaal van de apex van de femorale driehoek?",
+"options": [
+"Uitsluitend de nervus saphenus.",
+"De nervus saphenus en de nervus vastus medialis.",
+"De anterieure tak van de nervus obturatorius en de volledige nervus femoralis.",
+"De ongesplitste nervus femoralis en de nervus ischiadicus anterieur."
+],
+"correctIndex": 1,
+"explanation": "Het adductor kanaal (van Hunter) begint bij de apex van de femorale driehoek (kruising m. sartorius over de m. adductor longus) en eindigt bij de hiatus adductorius. De neurale inhoud omvat niet alleen de nervus saphenus (sensorisch), maar klassiek ook de (takken van de) nervus vastus medialis, die cruciaal is voor de innervatie van het anteromediale kniekapsel. PENG of andere benaderingen richten zich op andere takken, maar voor het ware kanaal zijn deze twee van belang."
+},
+  {
+    "id": "fys-036",
+    "category": "fysica",
+    "stem": "Wat is de klinische betekenis van de chronaxie in de context van perifere zenuwstimulatie?",
+    "options": [
+      "Het is de minimale stroomsterkte benodigd om een actiepotentiaal te genereren bij een oneindig lange stroompuls.",
+      "Het is de pulsduur (in ms) die nodig is om een zenuw te stimuleren met een stroomsterkte die exact tweemaal de rheobase bedraagt.",
+      "Het is de frequentie (in Hz) waarmee een zenuw gedepolariseerd moet worden om een tetanische contractie te genereren.",
+      "Het is de impedantie van de naaldtip die overwonnen moet worden voordat ladingsverplaatsing in het weefsel kan optreden."
+    ],
+    "correctIndex": 1,
+    "explanation": "Volgens de EDRA-syllabus is rheobase de minimale stroomsterkte (mA) voor een prikkel bij een oneindig lange pulsduur. Chronaxie is de pulsduur (ms) benodigd om te stimuleren bij tweemaal de rheobase. A-alfa motorische vezels hebben een kortere chronaxie (50-100 µs) dan A-delta (pijn) vezels, wat toelaat om motorvezels selectief te stimuleren zonder onnodige pijn te veroorzaken door een korte pulsbreedte (bijv. 0.1 ms) te gebruiken."
+  },
+  {
+    "id": "fys-037",
+    "category": "fysica",
+    "stem": "Waarom wordt de stimulerende naald bij de setup voor perifere zenuwstimulatie standaard verbonden met de negatieve pool (kathode) in plaats van de positieve pool (anode)?",
+    "options": [
+      "De anode wordt uitsluitend gebruikt voor radiofrequente ablatie en veroorzaakt brandwonden bij stroomsterktes boven 1.0 mA.",
+      "De kathode veroorzaakt elektrolyse van lokaal weefselvocht, wat een hoog-geleidend plasma vormt direct rond de zenuwstam.",
+      "De kathode verhoogt de rustmembraanpotentiaal van het axon, waardoor de drempel voor depolarisatie verlaagt en er sneller een blok optreedt.",
+      "De kathode initieert depolarisatie door extracellulaire positieve ladingen aan te trekken, terwijl de anode hyperpolarisatie rond de naaldtip veroorzaakt."
+    ],
+    "correctIndex": 3,
+    "explanation": "Bij kathodische stimulatie (negatieve pool aan de naald) worden extracellulaire positieve ionen onttrokken. Dit maakt de buitenzijde van het axon relatief negatiever ten opzichte van de binnenzijde, wat direct resulteert in depolarisatie. Anodische stimulatie veroorzaakt lokaal hyperpolarisatie (anodal block); hoewel stimulatie hiermee wel mogelijk is, vereist dit driemaal tot viermaal hogere stroomsterktes (mA) om een actiepotentiaal te forceren."
+  },
+  {
+    "id": "fys-038",
+    "category": "fysica",
+    "stem": "Hoe beïnvloedt de frequentie van de ultrasone transducer (bijv. 15 MHz versus 5 MHz) de beeldvorming tijdens de uitvoering van een echogeleid zenuwblok?",
+    "options": [
+      "Een hogere frequentie verbetert de laterale resolutie, maar veroorzaakt een hinderlijk 'acoustic enhancement' artefact achter de zenuw.",
+      "Een lagere frequentie geeft een betere axiale resolutie maar een significant slechtere weefselpenetratie.",
+      "Een hogere frequentie verbetert de axiale resolutie aanzienlijk, maar gaat gepaard met snellere weefselabsorptie en een verminderde penetratiediepte.",
+      "Een lagere frequentie vermindert het 'acoustic shadowing' artefact bij botstructuren, maar heeft geen effect op de penetratiediepte of resolutie."
+    ],
+    "correctIndex": 2,
+    "explanation": "In de echofysica is de relatie tussen frequentie, resolutie en penetratiediepte fundamenteel. Een hoogfrequente transducer (zoals een lineaire 12-15 MHz probe) creëert kortere golflengten, wat resulteert in superieure axiale resolutie voor oppervlakkige structuren (zoals interscalenus of axillair blok). Echter, hoge frequenties dissiperen sneller (attenuatie), wat betekent dat ze geen diep gelegen structuren (zoals de lumbale plexus of gluteale ischiadicus) in beeld kunnen brengen."
+  },
+  {
+    "id": "fys-039",
+    "category": "fysica",
+    "stem": "Tijdens het scannen van de nervus medianus in de onderarm merkt u dat de zenuw plotseling hypo-echogeen wordt en in het omliggende spierweefsel lijkt te verdwijnen, terwijl u de probe slechts licht kantelt. Hoe heet dit fenomeen en hoe wordt het verklaard?",
+    "options": [
+      "Anisotropie; veroorzaakt doordat de ultrasone bundel niet langer exact loodrecht (90 graden) op de sterk georganiseerde, lineaire zenuwfasciculi valt.",
+      "Reverberatie; veroorzaakt door het heen en weer kaatsen van de geluidsgolf tussen de fascialagen rondom de zenuw en de transducer.",
+      "Posterior acoustic enhancement; veroorzaakt door de vloeistofrijke matrix van het epineurium in vergelijking met het omliggende weefsel.",
+      "Akoestische schaduw (Acoustic shadowing); veroorzaakt door volledige reflectie van de geluidsgolven door een onderliggende botstructuur."
+    ],
+    "correctIndex": 0,
+    "explanation": "Zenuwen (en pezen) zijn sterk anisotrope structuren. Anisotropie betekent dat de weergave (echogeniciteit) afhankelijk is van de insonatiehoek. Zodra de ultrasone bundel in een hoek van iets minder of meer dan 90 graden op de zenuw valt, worden de echogolven gereflecteerd weg van de transducer (in plaats van terug ernaartoe). De zenuw verschijnt dan donker (hypo-echogeen) en is lastig te onderscheiden van spierweefsel. Kantelen (toggling) van de probe corrigeert dit."
+  },
+  {
+    "id": "fys-040",
+    "category": "fysica",
+    "stem": "Wat is het voornaamste echofysische mechanisme waardoor 'echogene naalden' (voorzien van micro-etsen of 'dimples') beter zichtbaar zijn tijdens steile 'in-plane' inbrenghoeken dan klassieke naalden?",
+    "options": [
+      "Ze reduceren de snelheid van het ultrageluid in de naaldschacht, waardoor weefsel-artefacten tot een minimum worden beperkt.",
+      "De etsen verlagen de elektrische impedantie van de naald waardoor lokaal weefselgas wordt geproduceerd dat een heldere reflectie geeft.",
+      "De inkepingen genereren meervoudige reflectievlakken die in staat zijn om de geluidsgolven deels terug te kaatsen (backscatter) naar de transducer, onafhankelijk van de steile inbrenghoek.",
+      "Ze induceren een lineair 'comet-tail' reverberatie-artefact dat de naaldtip exact markeert in de diepte, ongeacht de alignment met de probe."
+    ],
+    "correctIndex": 2,
+    "explanation": "Een gladde, standaard naald fungeert als een spiegel voor ultrageluid. Bij een ondiepe hoek kaatst het geluid terug naar de probe. Bij een steile hoek (bijv. popliteaal blok) kaatst het geluid diep het lichaam in en 'verdwijnt' de naald van het scherm. Echogene naalden hebben speciale laser-etsen die de oppervlaktestructuur wijzigen, waardoor het ultrageluid verstrooid wordt (scatter). Een aanzienlijk deel van deze verstrooide signalen keert wél terug naar de probe, waardoor de naald ook bij steile hoeken zichtbaar blijft."
+  },
+{
+    "id": "fysio-021",
+    "category": "fysiologie",
+    "stem": "Tijdens het instellen van een neuraxiaal blok treedt 'differentiële blokkade' op, waarbij verschillende zenuwvezels in een specifieke volgorde worden geblokkeerd. Welk type zenuwvezel is in de fysiologische praktijk het meest gevoelig voor lokale anesthetica en wordt daardoor als eerste geblokkeerd?",
+    "options": [
+      "Ongemyeliniseerde C-vezels (dragen trage pijn en temperatuur).",
+      "Dunne, gemyeliniseerde A-delta vezels (dragen snelle, scherpe pijn).",
+      "Dunne, gemyeliniseerde preganglionaire B-vezels (sympathische efferenten).",
+      "Dikke, gemyeliniseerde A-alfa vezels (motorische efferenten)."
+    ],
+    "correctIndex": 2,
+    "explanation": "Hoewel men vaak intuïtief denkt dat de dunste vezels (C-vezels) als eerste blokkeren, zijn het de dunne, gemyeliniseerde B-vezels (preganglionaire sympathicus) die het meest sensibel zijn voor lokale anesthetica. Dit verklaart waarom de sympathische blokkade bij spinale of epidurale anesthesie vaak 2 tot 3 dermatomen hoger reikt dan het sensorische blok (A-delta/C-vezels) en nog hoger dan het motorische blok (A-alfa)."
+  },
+  {
+    "id": "fysio-022",
+    "category": "fysiologie",
+    "stem": "Een patiënt ontwikkelt een plotselinge, diepe bradycardie en hypotensie kort na het induceren van een hoge thoracale epidurale anesthesie met een snelle daling van de veneuze return (preload). Welk cardiovasculair fysiologisch reflexmechanisme is primair verantwoordelijk voor deze paradoxale bradycardie?",
+    "options": [
+      "De Bezold-Jarisch reflex, gemedieerd door cardiale mechanoreceptoren in reactie op een lege ventrikel.",
+      "De Bainbridge reflex, geactiveerd door overrekking van het rechter atrium.",
+      "De Cushing reflex, als secundaire reactie op relatieve cerebrale hypoperfusie.",
+      "De baroreceptor reflex, veroorzaakt door vasodilatatie van de aortaboog."
+    ],
+    "correctIndex": 0,
+    "explanation": "Bij een sterk verlaagde preload (zoals bij uitgebreide sympathectomie door epidurale anesthesie) trekt het hart krachtig samen rond een relatief lege kamer. Dit stimuleert vagale mechanoreceptoren in de ventrikelwand (C-vezels), wat leidt tot de Bezold-Jarisch reflex: een paradoxale toename van parasympathische tonus (vagus) resulterend in diepe bradycardie en verdere hypotensie. De Bainbridge reflex doet juist het tegenovergestelde (tachycardie bij rek van het atrium door overvulling)."
+  },
+  {
+    "id": "fysio-023",
+    "category": "fysiologie",
+    "stem": "Bij zwangere vrouwen à terme (derde trimester) is de vereiste dosis lokaal anestheticum voor spinale anesthesie aanzienlijk gereduceerd ten opzichte van niet-zwangere vrouwen. Wat is hiervoor de primaire fysiologische en anatomische verklaring?",
+    "options": [
+      "Een toename van de dichtheid van de cerebrospinale vloeistof (CSF specific gravity) door eiwitveranderingen.",
+      "Een massale toename in epiduraal vetweefsel dat het lokale anestheticum in de subarachnoïdale ruimte dwingt.",
+      "Hyperventilatie (progesteron-gemedieerd) leidend tot respiratoire alkalose, wat de pKa van bupivacaïne verlaagt.",
+      "Epidurale veneuze stuwing (plexus van Batson) door aortocavale compressie, resulterend in een afgenomen lumbaal CSF-volume."
+    ],
+    "correctIndex": 3,
+    "explanation": "De uterus comprimeert in het derde trimester de vena cava inferior, waardoor het bloed via collaterale wegen (zoals de epidurale veneuze plexus van Batson) terugvloeit. Deze veneuze engorgement verkleint de epidurale ruimte én drukt de durale zak samen, wat leidt tot een afname van het lumbosacrale CSF-volume. Een kleinere 'pool' aan CSF betekent dat een gelijke dosis anestheticum een grotere craniocaudale spreiding kent. Daarbovenop verhoogt progesteron de neurotoxiciteit/gevoeligheid van de zenuwen."
+  },
+  {
+    "id": "fysio-024",
+    "category": "fysiologie",
+    "stem": "Een gezonde patiënt (ASA I) ondergaat schouderchirurgie onder een echogeleid interscalenus blok. Er treedt een ipsilaterale nervus phrenicus parese op (hemidiafragma paralyse). Wat is het verwachte fysiologische effect op de respiratoire mechanica bij deze specifieke patiënt?",
+    "options": [
+      "Een reductie van 50-60% in de Forced Vital Capacity (FVC), gepaard met milde dyspnoe in rust.",
+      "Een reductie van ongeveer 25-30% in FVC en FEV1, wat doorgaans volledig asymptomatisch verloopt in rust.",
+      "Vrijwel geen verandering in spirometrie waarden, omdat de ipsilaterale intercostaalspieren onmiddellijk de ademhalingsarbeid overnemen.",
+      "Een paradoxale beweging van de borstkas leidend tot acute hypoxie (SpO2 <90%), wat onmiddellijke CPAP vereist."
+    ],
+    "correctIndex": 1,
+    "explanation": "Een unilaterale diafragmaparese (die bij 100% van de klassieke interscalene blokken optreedt) veroorzaakt een daling van ongeveer 25 tot 30% in longfunctieparameters (FVC, FEV1, PEFR). Bij gezonde patiënten wordt dit verlies moeiteloos gecompenseerd en zijn zij asymptomatisch in rust. Bij patiënten met ernstig longlijden (COPD, obesitas hypoventilatie) kan deze 25-30% reductie echter leiden tot levensbedreigende respiratoire insufficiëntie."
+  },
+  {
+    "id": "fysio-025",
+    "category": "fysiologie",
+    "stem": "Waarom is het fysiologische risico op Local Anaesthetic Systemic Toxicity (LAST) significant hoger bij neonaten (0-1 maand) in vergelijking met oudere kinderen of volwassenen bij een gelijke mg/kg dosering van een amide lokaal anestheticum?",
+    "options": [
+      "Neonaten hebben verlaagde spiegels van alfa-1-zure glycoproteïne (AAG), wat resulteert in een grotere fractie ongebonden (vrij) en toxisch lokaal anestheticum.",
+      "Neonaten hebben een extreem snelle hepatische extractieratio, wat leidt tot de massale productie van toxische metabolieten zoals o-toluidine.",
+      "Het centraal zenuwstelsel van neonaten mist de beschermende myelineschede rond de craniale zenuwen, waardoor insulten sneller optreden.",
+      "De bloed-hersenbarrière bij neonaten is impermeabel voor lipofiele stoffen, waardoor bloedconcentraties van het anestheticum gevaarlijk hoog oplopen."
+    ],
+    "correctIndex": 0,
+    "explanation": "Lokale anesthetica (vooral bupivacaïne en ropivacaïne) binden sterk aan plasma-eiwitten, primair aan alfa-1-zure glycoproteïne (AAG) en secundair aan albumine. Neonaten hebben fysiologisch zeer lage AAG-spiegels (slechts 30-40% van volwassenen). Hierdoor is de ongebonden (vrije) fractie van het medicijn in het bloed veel groter. Enkel de ongebonden fractie kan de weefsels (hersenen, hart) penetreren en toxiciteit veroorzaken."
+  },
+  {
+    "id": "fysio-026",
+    "category": "fysiologie",
+    "stem": "Welke fysiologische of anatomische verandering, typerend voor de veroudering (geriatrische patiënt), vereist een reductie in de dosering van lokaal anesthetica bij spinale en epidurale technieken?",
+    "options": [
+      "Een toename van de vascularisatie en absorptiecapaciteit van het epidurale vetweefsel.",
+      "Een significante verbreding van de intervertebrale foramina, waardoor het medicijn sneller naar de paravertebrale ruimte weglekt.",
+      "Een afname van het cerebrospinale vloeistof (CSF) volume en progressieve sclerose van de intervertebrale foramina.",
+      "Een fysiologische toename in het aantal gemyeliniseerde zenuwvezels in de cauda equina."
+    ],
+    "correctIndex": 2,
+    "explanation": "Bij ouderen nemen zowel het lumbale CSF-volume als de ruimte in het spinale kanaal af. Voor de epidurale ruimte geldt dat het bindweefsel stugger wordt (minder compliance) en de intervertebrale foramina vernauwen (scleroseren). Hierdoor kan geïnjecteerde vloeistof minder goed ontsnappen naar de paravertebrale ruimtes, wat leidt tot een grotere longitudinale spreiding binnen het spinale/epidurale kanaal. Een dosisreductie is daarom vereist om een te hoog blok te voorkomen."
+  },
+  {
+    "id": "fysio-027",
+    "category": "fysiologie",
+    "stem": "Een patiënt met een verminderde hartfunctie en levercirrose krijgt een continue perifere zenuwkatheter met ropivacaïne. Via welke specifieke fysiologische en farmacokinetische mechanismen verhogen deze comorbiditeiten de kans op toxiciteit (LAST)?",
+    "options": [
+      "Ze verlagen de activiteit van plasma-cholinesterase, wat de afbraak van amide anesthetica in het bloed blokkeert.",
+      "Een verminderde hepatische bloedstroom vertraagt de klaring (clearance), gecombineerd met lagere AAG-spiegels die de vrije toxische fractie verhogen.",
+      "De cirrose leidt tot overexpressie van cytochroom P450, waardoor ropivacaïne toxisch accumuleert in de hartspier.",
+      "Door de cardiale disfunctie stijgt de renale excretie van de onveranderde actieve stof tot toxische niveaus in de nieren."
+    ],
+    "correctIndex": 1,
+    "explanation": "Amide anesthetica (zoals ropivacaïne, bupivacaïne, lidocaïne) ondergaan biotransformatie in de lever via het cytochroom P450-systeem. De klaring (clearance) hangt sterk af van de hepatische bloedstroom (verminderd bij hartfalen) en leverenzymfunctie (verminderd bij cirrose). Bovendien maken cirrosepatiënten minder eiwitten aan (zoals AAG en albumine), wat leidt tot een grotere vrije (toxische) fractie van de drug."
+  },
+  {
+    "id": "fysio-028",
+    "category": "fysiologie",
+    "stem": "Wat is de primaire fysiologische determinant van de rustmembraanpotentiaal (ongeveer -70 mV) van een perifeer zenuwaxon, welke overwonnen moet worden om een actiepotentiaal (en zenuwgeleiding) te genereren?",
+    "options": [
+      "De hoge intracellulaire natriumconcentratie en de constante influx via voltage-gated natriumkanalen.",
+      "De efflux van chloride-ionen uit de cel via passieve chloorkanalen.",
+      "De werking van voltage-gated calciumkanalen in het presynaptisch membraan.",
+      "De hoge selectieve permeabiliteit van het membraan voor kaliumionen (K+) en de activiteit van de Na+/K+-ATPase pomp."
+    ],
+    "correctIndex": 3,
+    "explanation": "In rust is het axonmembraan veel meer permeabel voor kalium (K+) dan voor natrium (Na+) dankzij 'leaky' kaliumkanalen. Kalium diffundeert de cel uit volgens zijn concentratiegradiënt, wat de binnenzijde van de cel negatief maakt ten opzichte van de buitenzijde. De Na+/K+-ATPase pomp handhaaft deze ionengradiënten (3 Na+ eruit, 2 K+ erin) en draagt tevens direct bij aan de elektronegatieve rustmembraanpotentiaal (-70 mV)."
+  },
+  {
+    "id": "fysio-029",
+    "category": "fysiologie",
+    "stem": "Een patiënt ondergaat open abdominale heelkunde onder algemene anesthesie gecombineerd met een actieve thoracale epidurale anesthesie (blokniveau T5-L1). Wat is het verwachte, directe fysiologische effect van dit neuro-axiale blok op de motiliteit van het maag-darmkanaal?",
+    "options": [
+      "Een toename in sympathische tonus leidend tot paralytische ileus en vertraagde maaglediging.",
+      "Vasoconstrictie van de mesenteriale vaten, met een hoog risico op ischemische colitis.",
+      "Een relatieve dominantie van parasympathische tonus (vagus), leidend tot toegenomen peristaltiek en ontspannen sfincters.",
+      "Complete paralyse van het gladde spierweefsel van de darmwand door directe systemische resorptie van het lokaal anestheticum."
+    ],
+    "correctIndex": 2,
+    "explanation": "Het gastro-intestinaal stelsel wordt geïnnerveerd door zowel het sympathische zenuwstelsel (remt peristaltiek, contraheert sfincters) als het parasympathische stelsel via de nervus vagus (stimuleert peristaltiek, relaxeert sfincters). Een thoracale epidurale anesthesie blokkeert de sympathische efferenten (T5-L1). Hierdoor ontstaat een ongehinderde, relatieve parasympathische hyperactiviteit (de vagus zenuw blijft immers gespaard), wat in de praktijk darmmotiliteit bevordert en postoperatieve ileus tegengaat."
+  },
+  {
+    "id": "fysio-030",
+    "category": "fysiologie",
+    "stem": "Bij weefselinfecties (bijvoorbeeld een abces rond een zenuw) is de effectiviteit van een lokaal anestheticum sterk verminderd. Welk basaal fysiologisch / chemisch mechanisme is hiervoor primair verantwoordelijk?",
+    "options": [
+      "Lokale hyperemie (verhoogde bloedflow) wast het lokaal anestheticum binnen enkele minuten weg voordat penetratie kan plaatsvinden.",
+      "Weefselacidose (lage pH) verhoogt de geïoniseerde (kationische) fractie van de zwakke base, waardoor het lipofiele axonmembraan niet gepenetreerd kan worden.",
+      "Ontstekingsmediatoren blokkeren de natriumkanalen irreversibel, waardoor het lokaal anestheticum zijn bindingsplaats niet kan bereiken.",
+      "De hoge pH (alkalose) van de pus zorgt ervoor dat het lokaal anestheticum precipiteert en inactiveert in het weefsel."
+    ],
+    "correctIndex": 1,
+    "explanation": "Lokale anesthetica zijn zwakke basen (pKa meestal rond 7.6 - 8.1). Ze bestaan in fysiologisch weefsel (pH 7.4) in een evenwicht tussen de niet-geïoniseerde vorm (lipofiel, passeert membraan) en de geïoniseerde vorm (actief op receptor, maar kan membraan niet passeren). In geïnfecteerd weefsel heerst acidose (lage pH). Bij een lage pH verschuift de reactie zich drastisch naar de geïoniseerde, in water oplosbare kationische vorm (Henderson-Hasselbalch vergelijking). Deze geladen moleculen kunnen de lipide dubbellaag van de zenuw niet passeren om de natriumkanalen van binnenuit te blokkeren."
+  },
+    {
+    "id": "tech-001",
+    "category": "blocktechniek",
+    "stem": "Tijdens een echogeleid axillair plexus brachialis blok, welke zenuw bevindt zich typisch buiten de neurovasculaire schede en vereist een aparte naaldoriëntatie?",
+    "options": [
+      "Nervus radialis",
+      "Nervus medianus",
+      "Nervus ulnaris",
+      "Nervus musculocutaneus"
+    ],
+    "correctIndex": 3,
+    "explanation": "De nervus musculocutaneus verlaat de plexus vroeg en bevindt zich in het fasciale vlak tussen de m. biceps brachii en m. coracobrachialis, structureel buiten de eigenlijke axillaire neurovasculaire schede."
+  },
+  {
+    "id": "tech-002",
+    "category": "blocktechniek",
+    "stem": "U voert een echogeleid popliteaal blok uit. Welke anatomische relatie tussen de structuren is kenmerkend bij het scannen in de fossa poplitea?",
+    "options": [
+      "De nervus ischiadicus bevindt zich anteromediaal van de arteria poplitea.",
+      "De vena poplitea bevindt zich doorgaans tussen de arterie en de zenuw.",
+      "De nervus fibularis communis voegt zich vanaf mediaal bij de nervus tibialis.",
+      "De arterie ligt oppervlakkig ten opzichte van de zenuwstammen."
+    ],
+    "correctIndex": 1,
+    "explanation": "In de fossa poplitea is de typische ligging van oppervlakkig naar diep (posterior naar anterior) en van lateraal naar mediaal: zenuw, vene, arterie. De vene ligt vrijwel altijd tussen de zenuw en de arterie in het scanvlak."
+  },
+  {
+    "id": "tech-003",
+    "category": "blocktechniek",
+    "stem": "Welke zenuwen worden primair geblokkeerd bij een correct uitgevoerd Pectoral Nerves (PECS) II blok (een 'Advanced Block'), en in welke fasciale vlakken wordt het lokaal anestheticum geïnjecteerd?",
+    "options": [
+      "Nn. pectorales medialis et lateralis; injectie enkel tussen de m. pectoralis major en minor.",
+      "Nn. pectorales, intercostales (T2-T6) en n. thoracicus longus; injectie tussen m. pectoralis major/minor én tussen m. pectoralis minor/m. serratus anterior.",
+      "N. thoracodorsalis en n. thoracicus longus; injectie onder de m. serratus anterior.",
+      "Nn. supraclaviculares en intercostales; injectie subcutaan boven de m. pectoralis major en diep van de minor."
+    ],
+    "correctIndex": 1,
+    "explanation": "Het PECS II blok is een uitbreiding van het PECS I blok. Naast de injectie tussen de pectoralis major en minor (PECS I), wordt lokaal anestheticum gedeponeerd tussen de pectoralis minor en de serratus anterior om de intercostaalzenuwen (T2-T6), intercostobrachialis en n. thoracicus longus te blokkeren."
+  },
+  {
+    "id": "tech-004",
+    "category": "blocktechniek",
+    "stem": "Bij een transmusculair anterior Quadratus Lumborum (QL) blok (Advanced Block), waar wordt de naaldtip exact gepositioneerd voor optimale spreiding naar de lumbale plexuswortels?",
+    "options": [
+      "Posterior van de QL-spier, in de middelste laag van de thoracolumbale fascie.",
+      "Tussen de m. latissimus dorsi en de posterior rand van de QL-spier.",
+      "Tussen de QL-spier en de m. psoas major, anterieur van de fascia transversalis.",
+      "Binnen het spierweefsel van de m. psoas major om de plexus direct te infiltreren."
+    ],
+    "correctIndex": 2,
+    "explanation": "Bij het transmusculaire (anterior) QL-blok gaat de naald door de m. quadratus lumborum. Het doel is het fasciale vlak tussen de QL en de m. psoas major, waardoor het injectaat craniaal kan spreiden naar de thoracale paravertebrale ruimte en de origo van de lumbale plexus."
+  },
+  {
+    "id": "tech-005",
+    "category": "blocktechniek",
+    "stem": "U plant een Rectus Sheath Block voor analgesie. Welk anatomisch principe dicteert de locatie van de injectie om de anterieure cutane takken van de intercostaalzenuwen (T7-T11) betrouwbaar te verdoven?",
+    "options": [
+      "Injectie anterieur van de m. rectus abdominis, net onder de anterieure rectusschede.",
+      "Injectie in de linea alba om bilaterale spreiding te garanderen.",
+      "Injectie direct in de fascia transversalis, caudaal van de linea arcuata (van Douglas).",
+      "Injectie posterieur van de m. rectus abdominis, in het vlak tussen de spierbuik en de posterieure rectusschede."
+    ],
+    "correctIndex": 3,
+    "explanation": "De anterieure cutane takken van de thoraco-abdominale zenuwen (T7-T11) penetreren de posterieure rectusschede en lopen door de m. rectus abdominis. Een injectie in de potentiële ruimte tussen de spierbuik en de posterieure schede garandeert optimale blokkade."
+  },
+  {
+    "id": "tech-006",
+    "category": "blocktechniek",
+    "stem": "Tijdens een echogeleid thoracaal paravertebraal blok (Advanced Block) met een in-plane benadering van lateraal naar mediaal, welke structuur dient als de absolute posterieure grens van de paravertebrale ruimte en moet gepenetreerd worden?",
+    "options": [
+      "Ligamentum costotransversarium superius.",
+      "Pleura parietalis.",
+      "Fascia endothoracica.",
+      "Ligamentum longitudinale anterius."
+    ],
+    "correctIndex": 0,
+    "explanation": "Het ligamentum costotransversarium superius vormt de posterieure begrenzing van de thoracale paravertebrale ruimte. Penetratie van dit ligament met de naald ('pop') bevestigt de correcte toegang."
+  },
+  {
+    "id": "tech-007",
+    "category": "blocktechniek",
+    "stem": "Wat is het primair gepostuleerde mechanisme voor de diepe analgesie bij een Erector Spinae Plane (ESP) blok?",
+    "options": [
+      "Directe diffusie door de pleura naar het splanchnische zenuwstelsel.",
+      "Systemische resorptie vanuit de sterk gevasculariseerde erector spinae spier.",
+      "Anterieure spreiding via het foramen costotransversarium naar de paravertebrale ruimte.",
+      "Exclusieve blokkade van de rami dorsales."
+    ],
+    "correctIndex": 2,
+    "explanation": "Hoewel de injectie zich in een oppervlakkiger vlak bevindt (diep van de m. erector spinae op de processus transversus), wordt de werkzaamheid verklaard door anterieure diffusie van het anestheticum via het foramen costotransversarium naar de paravertebrale en epidurale ruimte, waardoor ventrale en dorsale rami geblokkeerd worden."
+  },
+  {
+    "id": "tech-008",
+    "category": "blocktechniek",
+    "stem": "Een subcostaal Transversus Abdominis Plane (TAP) blok biedt analgesie voor de bovenbuik. In welk specifiek fasciale vlak dient het anestheticum gedeponeerd te worden?",
+    "options": [
+      "Tussen de m. obliquus internus en de m. transversus abdominis, parallel aan de ribbenboog.",
+      "Tussen de m. obliquus externus en de m. obliquus internus.",
+      "Tussen de m. transversus abdominis en de fascia transversalis.",
+      "Tussen de posterieure rectusschede en het peritoneum parietale."
+    ],
+    "correctIndex": 0,
+    "explanation": "Alle TAP-blokvarianten targeten de intermusculaire ruimte tussen de m. obliquus internus en de m. transversus abdominis. Bij de subcostale benadering wordt dit echografisch gescand direct inferieur en parallel aan de ribbenboog."
+  },
+  {
+    "id": "tech-009",
+    "category": "blocktechniek",
+    "stem": "Voor een patiënt overweegt u een Parasternal Plane Block (Advanced). Waar bevinden de doelzenuwen (anterieure cutane takken van de intercostaalzenuwen) zich ter hoogte van T2-T6?",
+    "options": [
+      "Diep van de m. transversus thoracis, net anterieur van de pleura.",
+      "Subcutaan, oppervlakkig van de m. pectoralis major over de gehele lengte van het sternum.",
+      "Binnen de intercostale ruimte, halverwege tussen de midclaviculairlijn en de axillairlijn.",
+      "Tussen de m. pectoralis major en de intercostaalspieren, direct lateraal van het sternum."
+    ],
+    "correctIndex": 3,
+    "explanation": "De anterieure cutane takken van de intercostaalzenuwen penetreren de intercostaalspieren nabij het sternum. Ze liggen in het oppervlakkige parasternal plane, exact tussen de m. pectoralis major en de externe intercostaalspieren / ribkraakbeen."
+  },
+  {
+    "id": "tech-010",
+    "category": "blocktechniek",
+    "stem": "U voert een Ilioinguinalis/Iliohypogastricus blok uit (Advanced Block) mediaal van de spina iliaca anterior superior. Tussen welke spierlagen bevinden deze zenuwen zich typisch op deze locatie?",
+    "options": [
+      "Tussen de m. obliquus internus en de m. transversus abdominis.",
+      "Tussen de m. obliquus externus en de m. obliquus internus.",
+      "Tussen de m. obliquus externus en de subcutis.",
+      "Tussen de m. transversus abdominis en het peritoneum."
+    ],
+    "correctIndex": 0,
+    "explanation": "Net als bij een klassiek TAP-blok bevinden de nervus iliohypogastricus en nervus ilioinguinalis zich in het vlak tussen de musculus obliquus internus en de musculus transversus abdominis ter hoogte van het spina iliaca anterior superior."
+  },
+  {
+    "id": "tech-011",
+    "category": "blocktechniek",
+    "stem": "Bij het Posterior Quadratus Lumborum (QL2) blok wordt lokaal anestheticum geïnjecteerd posterieur van de QL-spier. Welk fasciale element vormt de belangrijkste geleider (conduit) voor de craniale spreiding?",
+    "options": [
+      "Fascia iliaca.",
+      "Middle layer of the thoracolumbar fascia (MTLF).",
+      "Fascia transversalis.",
+      "Fascia endothoracica."
+    ],
+    "correctIndex": 1,
+    "explanation": "De middelste laag van de thoracolumbale fascie (MTLF) scheidt de QL-spier van de erector spinae en begeleidt het lokaal anestheticum craniaal naar de paravertebrale ruimte via de lumbocostale boog."
+  },
+  {
+    "id": "tech-012",
+    "category": "blocktechniek",
+    "stem": "Het Serratus Anterior Plane (SAP) blok. Indien men streeft naar blokkade van de laterale cutane takken van de intercostaalzenuwen, wat is het oppervlakkige injectievlak?",
+    "options": [
+      "Tussen de m. pectoralis minor en de m. serratus anterior.",
+      "Tussen de m. serratus anterior en de externe intercostaalspieren.",
+      "Tussen de m. latissimus dorsi en de m. serratus anterior.",
+      "Tussen de pleura parietalis en de interne intercostaalspieren."
+    ],
+    "correctIndex": 2,
+    "explanation": "Het oppervlakkige SAP-blok deponeert anestheticum tussen de m. latissimus dorsi en de m. serratus anterior. Dit blokkeert effectief de laterale cutane takken van de thoracale intercostaalzenuwen die de laterale thoraxwand innerveren."
+  },
+  {
+    "id": "ana-051",
+    "category": "anatomie",
+    "stem": "De embryologische oorsprong van het perifere zenuwstelsel, waaronder de sensibele ganglia en Schwann-cellen, is ontleend aan:",
+    "options": [
+      "Mesoderm",
+      "Endoderm",
+      "Neurale lijst (neural crest)",
+      "Neurale buis (neural tube)"
+    ],
+    "correctIndex": 2,
+    "explanation": "Het perifere zenuwstelsel (inclusief Schwann-cellen en dorsale wortelganglia) ontstaat uit de neurale lijst (neural crest), terwijl het centrale zenuwstelsel (hersenen, ruggenmerg) afkomstig is van de neurale buis. Dit is fundamentele embryologie vereist voor het begrijpen van perifere zenuwpathologie."
+  },
+  {
+    "id": "ana-052",
+    "category": "anatomie",
+    "stem": "Welk type neuron is morfologisch kenmerkend voor de afferente sensibele vezels waarvan de cellichamen zich in het ganglion spinale (dorsal root ganglion) bevinden?",
+    "options": [
+      "Multipolair neuron",
+      "Bipolair neuron",
+      "Pseudounipolair neuron",
+      "Anaxonisch neuron"
+    ],
+    "correctIndex": 2,
+    "explanation": "Sensibele neuronen in de dorsale wortelganglia zijn pseudounipolair. Ze hebben één axon dat splitst in een perifere tak (naar de receptor) en een centrale tak (naar het ruggenmerg), wat continue impulsgeleiding zonder passage door het soma mogelijk maakt."
+  },
+  {
+    "id": "ana-053",
+    "category": "anatomie",
+    "stem": "Welke bindweefsellaag rondom perifere zenuwen fungeert anatomisch als de primaire bloed-zenuwbarrière en handhaaft het endoneuriale milieu?",
+    "options": [
+      "Perineurium",
+      "Epineurium",
+      "Mesoneurium",
+      "Endoneurium"
+    ],
+    "correctIndex": 0,
+    "explanation": "Het perineurium omhult individuele fascikels en bestaat uit meerdere lagen epitheloïde cellen verbonden door tight junctions. Het vormt de structurele basis van de bloed-zenuwbarrière, die de zenuw beschermt tegen chemische fluctuaties."
+  },
+  {
+    "id": "ana-054",
+    "category": "anatomie",
+    "stem": "Wat is het fysiologische mechanisme van myelinisatie in het perifere zenuwstelsel (PZS) vergeleken met het centrale zenuwstelsel (CZS)?",
+    "options": [
+      "Oligodendrocyten myeliniseren uitsluitend motorische axonen in het PZS.",
+      "Schwann-cellen (PZS) myeliniseren telkens één internodium van één axon, terwijl oligodendrocyten (CZS) internodiën van meerdere axonen tegelijk myeliniseren.",
+      "De myelineschede in het PZS is chemisch identiek aan die van het CZS maar mist knopen van Ranvier.",
+      "Myelinisatie in het PZS wordt exclusief gestuurd door astrocyten."
+    ],
+    "correctIndex": 1,
+    "explanation": "Een Schwann-cel wikkelt zich om een enkel axonsegment in het PZS, in tegenstelling tot oligodendrocyten in het CZS die uitlopers naar meerdere axonen sturen. Bij perifere zenuwschade (zoals door intraneurale injectie) zijn Schwann-cellen cruciaal voor regeneratie."
+  },
+  {
+    "id": "ana-055",
+    "category": "anatomie",
+    "stem": "Welk specifiek onderdeel van de zenuwvezel garandeert de saltatoire (sprongsgewijze) conductie en bevat een zeer hoge dichtheid aan voltage-gated natriumkanalen (Na+)?",
+    "options": [
+      "De internodiale myelinesegmenten",
+      "De Schwann-cel kern",
+      "Het axolemma onder de myelineschede",
+      "De knopen van Ranvier"
+    ],
+    "correctIndex": 3,
+    "explanation": "De knopen van Ranvier zijn kleine onderbrekingen in de myelineschede met een concentratie van voltage-gated Na+-kanalen. Depolarisatie 'springt' van knoop naar knoop, wat de actiepotentiaal versnelt. Lokale anesthetica moeten ten minste drie opeenvolgende knopen blokkeren voor adequate anesthesie."
+  },
+  {
+    "id": "ana-056",
+    "category": "anatomie",
+    "stem": "Volgens de vezelclassificatie (Erlanger & Gasser), welk vezeltype is ongemyeliniseerd, dun, geleidt nociceptieve (trage pijn) impulsen en is zeer gevoelig voor lokale anesthetica?",
+    "options": [
+      "C-vezels",
+      "A-delta vezels",
+      "B-vezels",
+      "A-alfa vezels"
+    ],
+    "correctIndex": 0,
+    "explanation": "C-vezels zijn ongemyeliniseerd, dun (0.4-1.2 µm) en geleiden trage pijn en temperatuur. A-delta vezels zijn dun gemyeliniseerd en geleiden snelle, scherpe pijn. B-vezels zijn preganglionaire autonome vezels."
+  },
+  {
+    "id": "ana-057",
+    "category": "fysiologie",
+    "stem": "Wat bepaalt primair de rustmembraanpotentiaal (ongeveer -70 mV) van een inactief perifeer axon?",
+    "options": [
+      "Actief pompen van natrium- en calciumionen naar het intracellulair compartiment.",
+      "Een relatief hoge permeabiliteit voor natrium (Na+) via 'leaky' kanalen.",
+      "De hoge selectieve permeabiliteit voor kalium (K+) en de activiteit van de Na+/K+-ATPase pomp.",
+      "De opening van chloorkanalen gedreven door extracellulaire acidose."
+    ],
+    "correctIndex": 2,
+    "explanation": "In rust diffundeert K+ de cel uit volgens zijn gradiënt via K+-lekkanalen, wat het intracellulaire milieu negatief maakt. De Na+/K+-pomp handhaaft deze gradiënten (3 Na+ uit, 2 K+ in)."
+  },
+  {
+    "id": "ana-058",
+    "category": "anatomie",
+    "stem": "Welk anatomisch weefselcomponent is hoofdzakelijk verantwoordelijk voor het typische hyperechogene (witte) 'honingraat'- of 'sterrenhemel'-aspect van een perifere zenuwstam op echografie?",
+    "options": [
+      "Het endoneurium en de axonen zelf.",
+      "Het myeline van de individuele zenuwvezels.",
+      "De gladde spiercellen van het vasa nervorum.",
+      "Het epineurium, door de hoge concentratie collageen en vet."
+    ],
+    "correctIndex": 3,
+    "explanation": "Fascikels (omgeven door perineurium) verschijnen meestal hypo-echogeen, terwijl het omringende interfasciculaire en perifere epineurium hyperechogeen is vanwege collageen- en vetweefsel, wat het honingraatpatroon genereert."
+  },
+  {
+    "id": "ana-059",
+    "category": "anatomie",
+    "stem": "Volgens de somatotopische organisatie in grote zenuwstammen (het mantel-core model), waar bevinden zich de vezels die de meest proximale musculatuur en huid innerveren?",
+    "options": [
+      "Uitsluitend in het interfasciculaire weefsel.",
+      "Centraal (core) in de zenuwstam.",
+      "Perifeer (mantle) in de zenuwstam.",
+      "In geïsoleerde fascikels gepositioneerd nabij het vasa nervorum."
+    ],
+    "correctIndex": 2,
+    "explanation": "Proximale vezels liggen doorgaans in de 'mantle' (periferie) van de zenuw, terwijl distale vezels de 'core' (centraal) bezetten. Lokale anesthetica diffunderen van buiten naar binnen, waardoor proximale structuren als eerste verdoofd raken."
+  },
+  {
+    "id": "ana-060",
+    "category": "fysiologie",
+    "stem": "Tijdens het genereren van een actiepotentiaal, welk proces kenmerkt de repolarisatiefase van het axolemma?",
+    "options": [
+      "Sluiting van voltage-gated Na+-kanalen en snelle efflux van K+.",
+      "Opening van voltage-gated Ca2+-kanalen en calcium influx.",
+      "Versnelde inwaartse stroom van Na+ en uitschakeling van de Na+/K+-ATPase pomp.",
+      "Massale influx van Cl- om de membraanpotentiaal te hyperpolariseren."
+    ],
+    "correctIndex": 0,
+    "explanation": "Repolarisatie wordt gedreven door de sluiting (inactivatie) van voltage-gated natriumkanalen en een uitgestelde opening van kaliumkanalen, wat resulteert in een uitstroom (efflux) van K+ om de membraanpotentiaal te herstellen."
+  },
+    {
+    "id": "farm-036",
+    "category": "farmacologie",
+    "stem": "Wat is het fundamentele farmacologische verschil tussen bupivacaïne enerzijds en levobupivacaïne en ropivacaïne anderzijds, wat hun verschil in cardiotoxiciteit verklaart?",
+    "options": [
+      "Bupivacaïne is een zuiver S(-)-enantiomeer, terwijl ropivacaïne een racemisch mengsel is.",
+      "Bupivacaïne heeft een hogere pKa-waarde, waardoor het sneller cardiaal weefsel penetreert.",
+      "Bupivacaïne is een racemisch mengsel van R(+)- en S(-)-enantiomeren, terwijl ropivacaïne en levobupivacaïne zuivere S(-)-enantiomeren zijn.",
+      "Levobupivacaïne en ropivacaïne worden in het plasma gemetaboliseerd door pseudocholinesterasen, wat cardiale accumulatie voorkomt."
+    ],
+    "correctIndex": 2,
+    "explanation": "Commerciële bupivacaïne is een racemisch mengsel (50:50) van R(+)- en S(-)-isomeren. De cardiotoxiciteit wordt voornamelijk gemedieerd door de R(+)-isomeer, die een sterke en langdurige affiniteit heeft voor de cardiale natriumkanalen. Ropivacaïne en levobupivacaïne zijn ontwikkeld als zuivere S(-)-enantiomeren, wat hun bredere therapeutische index en verlaagde cardiotoxiciteit verklaart."
+  },
+  {
+    "id": "farm-037",
+    "category": "farmacologie",
+    "stem": "De pKa van een lokaal anestheticum bepaalt in belangrijke mate de 'onset time' (inwerktijd). Wat is de farmacokinetische rationale achter de snellere inwerking van lidocaïne (pKa 7.9) in vergelijking met bupivacaïne (pKa 8.1) in fysiologisch weefsel (pH 7.4)?",
+    "options": [
+      "Lidocaïne heeft een grotere geïoniseerde fractie, wat de blokkade van de natriumkanalen vanuit de extracellulaire ruimte versnelt.",
+      "Bij pH 7.4 heeft lidocaïne een grotere niet-geïoniseerde (lipofiele) fractie dan bupivacaïne, waardoor het sneller de zenuwmembraan kan passeren.",
+      "De lagere pKa van lidocaïne verhoogt de eiwitbinding aan alfa-1-zure glycoproteïne (AAG), wat de diffusiegradiënt optimaliseert.",
+      "Lidocaïne induceert lokale vasodilatatie, wat de opname in de vasa nervorum en vervolgens in het axon versnelt."
+    ],
+    "correctIndex": 1,
+    "explanation": "Volgens de Henderson-Hasselbalch vergelijking bepaalt de verhouding tussen weefsel-pH en de pKa van het medicijn de fractie niet-geïoniseerde base. Omdat 7.9 dichter bij 7.4 ligt dan 8.1, heeft lidocaïne bij fysiologische pH een grotere niet-geïoniseerde (lipofiele) fractie (~25%) dan bupivacaïne (~17%). Alleen deze lipofiele fractie kan het zenuwmembraan passeren om de receptor intracellulair te bereiken."
+  },
+  {
+    "id": "farm-038",
+    "category": "farmacologie",
+    "stem": "Bij de behandeling van Local Anaesthetic Systemic Toxicity (LAST) wordt een 20% lipidenemulsie (Intralipid) intraveneus toegediend. Wat is, naast het 'lipid sink' fenomeen, een cruciaal hemodynamisch werkingsmechanisme van deze therapie?",
+    "options": [
+      "Het bindt direct aan de extracellulaire domeinen van de voltage-gated natriumkanalen en verdringt het lokaal anestheticum.",
+      "Het fungeert als een competitieve antagonist op de cardiale bètareceptoren om de inotropie te herstellen.",
+      "Het verhoogt de intracellulaire pH, waardoor het lokaal anestheticum intracellulair geïoniseerd raakt en van de receptor dissocieert.",
+      "Het levert een directe vetzuur-energiebron voor het myocard, wat de myocytaire contractiliteit verbetert ondanks de blokkade."
+    ],
+    "correctIndex": 3,
+    "explanation": "Naast het compartimentele 'lipid sink' mechanisme (waarbij sterk lipofiele LA's zoals bupivacaïne uit het weefsel naar de intravasculaire lipidenfase worden getrokken), biedt de lipidenemulsie vrije vetzuren. Deze vetzuren dienen als een krachtige en directe metabole brandstof voor het hart, wat een positief inotroop effect heeft en het weefselhelstel bevordert."
+  },
+  {
+    "id": "farm-039",
+    "category": "farmacologie",
+    "stem": "U voert een fascial plane block uit waarbij snelle resorptie verwacht wordt. Volgens de klassieke absorptiekinetiek (BICEPS mnemoon), welke van de volgende weefselgebieden kent de hoogste systemische absorptiesnelheid van lokale anesthetica?",
+    "options": [
+      "Epidurale ruimte.",
+      "Plexus brachialis (axillair).",
+      "Intercostale ruimte.",
+      "Subcutaan weefsel."
+    ],
+    "correctIndex": 2,
+    "explanation": "De mate van systemische absorptie hangt af van de weefseldoorbloeding (vascularisatie). De klassieke volgorde van meest naar minst snelle absorptie is: Intraveneus > Tracheaal > Intercostaal > Caudaal > Paracervicaal > Epiduraal > Plexus brachialis > Sciaticus > Subcutaan. De intercostale ruimte is extreem rijk gevasculariseerd."
+  },
+  {
+    "id": "farm-040",
+    "category": "farmacologie",
+    "stem": "Clonidine wordt soms als adjuvans gebruikt bij perifere zenuwblokkades. Via welk primair farmacodynamisch mechanisme in het perifere zenuwstelsel verlengt het de duur van analgesie?",
+    "options": [
+      "Het blokkeert direct presynaptische calciumkanalen in het ruggenmerg via lokale diffusie.",
+      "Het activeert perifere alfa-2-adrenerge receptoren, wat leidt tot hyperpolarisatie door verhoogde kaliumgeleiding en remming van de zenuwgeleiding.",
+      "Het veroorzaakt krachtige vasoconstrictie via alfa-1 receptoren in het vasa nervorum, sterker dan epinefrine.",
+      "Het inhibeert het enzym cytochroom P450 lokaal, waardoor de weefselklaring van het lokaal anestheticum stopt."
+    ],
+    "correctIndex": 1,
+    "explanation": "Clonidine is een alfa-2-agonist. Op perifeer niveau activeert het alfa-2-receptoren, wat intracellulair leidt tot een afname van cAMP. Dit resulteert in het openen van kaliumkanalen (K+ efflux), waardoor het axon hyperpolariseert. Dit verhoogt de drempel voor het genereren van een actiepotentiaal, wat de werking van het lokaal anestheticum synergistisch verlengt."
+  },
+  {
+    "id": "farm-041",
+    "category": "farmacologie",
+    "stem": "Het toevoegen van natriumbicarbonaat (alkalinisatie) aan lidocaïne voor een epidurale anesthesie of perifeer blok is een bekende techniek. Wat is het beoogde klinische effect en het chemische risico indien dit bij ropivacaïne of bupivacaïne wordt toegepast?",
+    "options": [
+      "Het verlengt de werkingsduur; bij ropivacaïne kan dit echter leiden tot onmiddellijke weefselnecrose.",
+      "Het versnelt de onset time; maar toevoeging aan bupivacaïne of ropivacaïne veroorzaakt precipitatie (kristallisatie) in de spuit.",
+      "Het vermindert de pijn bij injectie; ropivacaïne heeft echter reeds een sterk alkalische pH, wat het effect tenietdoet.",
+      "Het verhoogt de maximale veilige dosis; bij bupivacaïne leidt dit echter paradoxaal tot een hogere vrije plasmafractie."
+    ],
+    "correctIndex": 1,
+    "explanation": "Alkalinisatie verhoogt de weefsel-pH, waardoor de lipofiele (niet-geïoniseerde) fractie toeneemt en de onset time versnelt. Bupivacaïne en ropivacaïne zijn echter veel sterker base-oplossingen in vergelijking met lidocaïne en slaan vrijwel onmiddellijk neer (precipiteren) als de pH door bicarbonaat wordt verhoogd. Dit kan katheters verstoppen en is onveilig."
+  },
+  {
+    "id": "farm-042",
+    "category": "farmacologie",
+    "stem": "Ester-lokale anesthetica (zoals chloorprocaïne of tetracaïne) hebben een wezenlijk ander metabolisatieprofiel dan amiden. Wat is de primaire afbraakroute van esters en welk allergisch bijproduct ontstaat hierbij vaak?",
+    "options": [
+      "Hepatische klaring via het CYP3A4-enzym; bijproduct is o-toluïdine.",
+      "Hydrolyse door plasma-pseudocholinesterase; bijproduct is para-aminobenzoëzuur (PABA).",
+      "Renale uitscheiding in onveranderde vorm; bijproduct is methemoglobine.",
+      "A-specifieke weefselesterasen in het epineurium; bijproduct is methylparabeen."
+    ],
+    "correctIndex": 1,
+    "explanation": "Esters worden zeer snel gemetaboliseerd in het bloed door pseudocholinesterase (butyrylcholinesterase). Een van de belangrijkste metabolieten is para-aminobenzoëzuur (PABA). PABA is een sterk allergeen en de primaire reden waarom allergische reacties vaker voorkomen bij esters dan bij amide-lokale anesthetica."
+  },
+  {
+    "id": "farm-043",
+    "category": "farmacologie",
+    "stem": "Dexmedetomidine wordt toenemend gebruikt als sedativum tijdens regionale anesthesie. Welk farmacodynamisch kenmerk onderscheidt dexmedetomidine het sterkst van propofol of midazolam in deze setting?",
+    "options": [
+      "Het veroorzaakt een diepe amnesie en spierverslapping zonder analgesie.",
+      "Het bindt aan GABA-A receptoren en veroorzaakt dosisafhankelijke respiratoire depressie.",
+      "Het biedt bewuste sedatie ('cooperative sedation') mét analgetische eigenschappen en behoud van de respiratoire drive.",
+      "Het stimuleert de sympathische uitstroom, wat resulteert in een stabiele tachycardie tijdens het blok."
+    ],
+    "correctIndex": 2,
+    "explanation": "Dexmedetomidine is een zeer selectieve alfa-2-agonist. Het produceert sedatie via de locus coeruleus die lijkt op natuurlijke slaap (patiënten zijn wekbaar en coöperatief). In tegenstelling tot propofol (GABA-agonist), biedt het significante analgesie én laat het de respiratoire drive (ademhaling) intact, wat ideaal is tijdens wakkere procedures onder LRA."
+  },
+  {
+    "id": "farm-044",
+    "category": "farmacologie",
+    "stem": "Wat is het effect van de farmacokinetische eigenschap 'eiwitbinding' op de werkingsduur en toxiciteit van een amide lokaal anestheticum zoals bupivacaïne?",
+    "options": [
+      "Een hoge eiwitbinding correleert met een kortere werkingsduur en een hogere weefselklaring.",
+      "Een hoge eiwitbinding correleert met een langere werkingsduur; een lagere plasmaspiegel van alf-1-zure glycoproteïne (AAG) verhoogt echter de toxische vrije fractie.",
+      "Eiwitbinding vindt uitsluitend plaats in de intracellulaire ruimte van de zenuw, wat de 'lipid sink' theorie verklaart.",
+      "Lokale anesthetica met een hoge eiwitbinding worden uitsluitend door het niersysteem geklaard, wat toxiciteit bij nierfalen garandeert."
+    ],
+    "correctIndex": 1,
+    "explanation": "Lokale anesthetica binden sterk aan serumeiwitten, met name alfa-1-zure glycoproteïne (AAG) en albumine. Medicijnen met een hoge affiniteit voor eiwitten (zoals bupivacaïne) binden ook sterk aan weefseleiwitten, wat hun lange werkingsduur verklaart. Omdat alleen de ongebonden (vrije) drug toxisch is, leiden toestanden met verlaagd AAG (neonaten, leverfalen) tot een grotere vrije fractie en een verhoogd risico op LAST."
+  },
+  {
+    "id": "farm-045",
+    "category": "farmacologie",
+    "stem": "Epinefrine (adrenaline) wordt vaak in een concentratie van 1:200.000 toegevoegd aan lokaal anestheticum. Wat is het primaire doel hiervan en welk fysiologisch mechanisme ligt hieraan ten grondslag?",
+    "options": [
+      "Het blokkeert de parasympathische zenuwen lokaal, waardoor de analgetische werking verdubbelt.",
+      "Het verhoogt de pH van de oplossing, wat de weefselpenetratie van het anestheticum verbetert.",
+      "Het veroorzaakt vasoconstrictie via alfa-1 receptoren, wat de weefseldoorbloeding vermindert, systemische absorptie vertraagt en de werkingsduur lokaal verlengt.",
+      "Het stimuleert bèta-2 receptoren in het epineurium, wat resulteert in vasodilatatie en een diepere penetratie van de fascikels."
+    ],
+    "correctIndex": 2,
+    "explanation": "Epinefrine is een krachtige vasoconstrictor (alfa-1 agonisme). Door de lokale bloedvaten samen te trekken, vermindert het de weefselperfusie rond de injectieplaats. Hierdoor wordt het lokale anestheticum minder snel weggespoeld ('washout') in de systemische circulatie, wat zowel de werkingsduur ter plaatse verlengt als de piek-plasmaconcentratie (en dus toxiciteit) verlaagt."
+  },
+  
+  {
+    "id": "farm-046",
+    "category": "farmacologie",
+    "stem": "Wat is het fundamentele verschil in farmacokinetiek tussen intrathecale toediening van morfine versus fentanyl, dat het risico op laattijdige ademhalingsdepressie verklaart?",
+    "options": [
+      "Morfine is sterk lipofiel en fixeert zich onmiddellijk in het ruggenmerg, waardoor het na 12 uur plots vrijkomt in de bloedbaan.",
+      "Fentanyl heeft een lagere pKa, waardoor het in de liquor grotendeels geïoniseerd blijft en naar craniaal stijgt.",
+      "Morfine is sterk hydrofiel, blijft lang in de cerebrospinale vloeistof (CSF) en migreert langzaam rostraal naar de hersenstam.",
+      "Fentanyl wordt in de liquor gemetaboliseerd door pseudocholinesterasen, terwijl morfine intact blijft."
+    ],
+    "correctIndex": 2,
+    "explanation": "Morfine is sterk hydrofiel (wateroplosbaar) en diffundeert traag in het lipofiele ruggenmergweefsel. Hierdoor blijft het lang in de liquor (CSF) en kan het met de CSF-stroom rostraal migreren richting de ademhalingscentra, wat laattijdige (6-24 uur) ademhalingsdepressie veroorzaakt. Fentanyl is lipofiel en wordt snel opgenomen door het omliggende neurale weefsel."
+  },
+  {
+    "id": "farm-047",
+    "category": "farmacologie",
+    "stem": "Gabapentine en pregabaline worden vaak ingezet in de perioperatieve multimodale analgesie. Wat is hun primaire moleculaire werkingsmechanisme in het zenuwstelsel?",
+    "options": [
+      "Ze blokkeren competitief de NMDA-receptoren in de dorsale hoorn van het ruggenmerg.",
+      "Ze binden aan de alfa-2-delta (α2δ) subeenheid van presynaptische spanningsafhankelijke calciumkanalen.",
+      "Ze verhogen de afbraak van glutamaat door stimulatie van GABA-transaminase.",
+      "Ze activeren postsynaptische mu-opiaatreceptoren via een allosterische bindingsplaats."
+    ],
+    "correctIndex": 1,
+    "explanation": "Gabapentinoïden binden selectief aan de α2δ-subeenheid van spanningsafhankelijke calciumkanalen in het centrale zenuwstelsel. Dit vermindert de influx van calcium in het presynaptische zenuwuiteinde, waardoor de afgifte van exciterende neurotransmitters (zoals glutamaat en substantie P) in de pijnbahnen afneemt."
+  },
+  {
+    "id": "farm-048",
+    "category": "farmacologie",
+    "stem": "Bij de behandeling van hypotensie na een spinaal blok kiest men vaak tussen efedrine en fenylefrine. Waarom kan een bolus fenylefrine bij een patiënt met een intact hart leiden tot een daling van de cardiac output?",
+    "options": [
+      "Fenylefrine is een zuivere bèta-2 agonist, wat leidt tot massale vasodilatatie en verminderde veneuze return.",
+      "Het stimuleert direct de vaguskern in de hersenstam, wat een bradycardie veroorzaakt.",
+      "Als zuivere alfa-1 agonist veroorzaakt het sterke vasoconstrictie, wat de afterload verhoogt en een baroreceptor-gemedieerde reflexbradycardie uitlokt.",
+      "Het put de endogene noradrenaline-voorraden in de sympathische zenuwuiteinden uit (tachyfylaxie)."
+    ],
+    "correctIndex": 2,
+    "explanation": "Fenylefrine is een krachtige, directe alfa-1-agonist zonder bèta-effecten. De resulterende perifere vasoconstrictie verhoogt de bloeddruk (afterload) abrupt. Dit activeert de baroreceptoren in de arcus aortae en sinus caroticus, wat via de nervus vagus leidt tot een reflexbradycardie. Gecombineerd met de hoge afterload kan dit de cardiac output doen dalen, wat nadelig is bij patiënten met een beperkte cardiale reserve."
+  },
+  {
+    "id": "farm-049",
+    "category": "farmacologie",
+    "stem": "Prilocaïne wordt in hoge doseringen of bij specifieke intraveneuze regionale anesthesie (IVRA) technieken in verband gebracht met cyanose. Welke metaboliet is hiervoor verantwoordelijk en hoe beïnvloedt deze het bloed?",
+    "options": [
+      "PABA (para-aminobenzoëzuur), wat een anafylactische shock met secundaire hypoxie veroorzaakt.",
+      "O-toluïdine, wat het ijzer in hemoglobine oxideert van de ferro- (Fe2+) naar de ferri-staat (Fe3+).",
+      "Mono-ethylglycinexylidide (MEGX), wat direct de respiratoire drive in de medulla inhibeert.",
+      "Xylidine, wat irreversibel bindt aan 2,3-DPG in de erytrocyt."
+    ],
+    "correctIndex": 1,
+    "explanation": "Prilocaïne wordt in de lever gemetaboliseerd tot o-toluïdine. Deze metaboliet oxideert het zuurstofdragende ijzer in hemoglobine naar de ferri-staat (Fe3+), waardoor methemoglobine ontstaat. Methemoglobine kan geen zuurstof binden en verschuift de zuurstofdissociatiecurve naar links, wat leidt tot weefselhypoxie en cyanose. De behandeling is methyleenblauw."
+  },
+  {
+    "id": "farm-050",
+    "category": "farmacologie",
+    "stem": "Een patiënt neemt chronisch niet-selectieve NSAID's in. Volgens de ESRA/ASRA-richtlijnen voor neuraxiale anesthesie, wat is het beleid rondom de punctie bij deze medicatie?",
+    "options": [
+      "NSAID's vormen een absolute contra-indicatie; de punctie moet minimaal 5 dagen worden uitgesteld.",
+      "NSAID's verhogen het risico op een epiduraal hematoom aanzienlijk, daarom moet altijd eerst een bloedingstijd worden bepaald.",
+      "Het gebruik van NSAID's alleen (zonder andere anticoagulantia) verhoogt het risico op een spinaal hematoom niet klinisch significant en is geen contra-indicatie voor neuraxiale blokkade.",
+      "De punctie mag plaatsvinden, maar de epidurale katheter mag pas verwijderd worden nadat de NSAID's 24 uur zijn gestopt."
+    ],
+    "correctIndex": 2,
+    "explanation": "Niet-selectieve NSAID's (zoals ibuprofen, diclofenac) remmen cyclo-oxygenase en verminderen de tromboxaan A2-afhankelijke bloedplaatjesaggregatie. Volgens de consensusrichtlijnen (ASRA/ESRA/ESAIC) vormt het monotherapie-gebruik van NSAID's of aspirine geen verhoogd risico op een neuraxiaal hematoom. Er zijn geen wachttijden voor punctie of katheterverwijdering, mits er geen gelijktijdig gebruik is van andere anticoagulantia (zoals LMWH)."
+  },
+  {
+    "id": "farm-051",
+    "category": "farmacologie",
+    "stem": "U overweegt het gebruik van een sub-anesthetische dosis ketamine (0.3 mg/kg) als adjuvans voor postoperatieve pijn 💊. Wat is het belangrijkste neurofarmacologische werkingsmechanisme van ketamine in deze context?",
+    "options": [
+      "Niet-competitieve antagonisme van de NMDA (N-methyl-D-aspartaat) receptoren in het ruggenmerg.",
+      "Directe inhibitie van cyclo-oxygenase 3 (COX-3) in de hersenstam.",
+      "Stimulatie van de presynaptische alfa-2 adrenerge receptoren in de locus coeruleus.",
+      "Agonisme op de GABA-A receptor via verhoogde chloride-influx."
+    ],
+    "correctIndex": 0,
+    "explanation": "Ketamine is primair een niet-competitieve NMDA-receptorantagonist. NMDA-receptoren in de dorsale hoorn van het ruggenmerg spelen een sleutelrol bij centrale sensitisatie en hyperalgesie ('wind-up' fenomeen) in reactie op acute weefselschade. Door deze receptoren te blokkeren, voorkomt of vermindert ketamine deze versterkte pijngewaarwording."
+  },
+  {
+    "id": "farm-052",
+    "category": "farmacologie",
+    "stem": "Dexamethason wordt veelvuldig gebruikt om de duur van perifere zenuwblokkades te verlengen. Wat is de huidige wetenschappelijke consensus (o.a. Prospect) betreffende de toedieningsweg van dexamethason bij perifere zenuwblokkades?",
+    "options": [
+      "Perineurale toediening is de enige effectieve manier; systemische (intraveneuze) toediening verlengt het blok niet.",
+      "Intraveneuze toediening (bijv. 8 mg) is klinisch vrijwel even effectief in het verlengen van de blokduur als perineurale toediening, en vermijdt de theoretische risico's van perineurale kristallisatie.",
+      "Perineurale dexamethason is inferieur aan perineurale clonidine en wordt afgeraden wegens bewezen neurotoxiciteit.",
+      "Dexamethason mag uitsluitend liposomaal worden toegediend om effect te sorteren op het axolemma."
+    ],
+    "correctIndex": 1,
+    "explanation": "Meerdere meta-analyses en richtlijnen (zoals PROSPECT) hebben aangetoond dat systemische (IV) dexamethason equivalent, of nagenoeg equivalent, is aan perineurale dexamethason voor het verlengen van de duur van perifere zenuwblokken. Omdat de perineurale toediening off-label is en er theoretische zorgen zijn over off-target effecten (voertuig toxiciteit/kristallisatie), geniet IV toediening vaak de voorkeur."
+  },
+  {
+    "id": "farm-053",
+    "category": "farmacologie",
+    "stem": "Bij het gebruik van propofol voor sedatie tijdens een plexusblokkade dient de anesthesist uiterst waakzaam te zijn. Welk kenmerk van propofol maakt het minder geschikt voor bewuste sedatie ('conscious sedation') ten opzichte van dexmedetomidine?",
+    "options": [
+      "Propofol veroorzaakt extreme tachycardie door sympathische overstimulatie.",
+      "Propofol heeft intrinsieke nociceptieve eigenschappen, wat pijn op de prikplaats verergert.",
+      "Propofol mist analgetische eigenschappen en heeft een smalle therapeutische index, waardoor de patiënt snel van bewuste sedatie naar algehele anesthesie (met luchtwegverlies) kan glijden.",
+      "Propofol veroorzaakt een langdurige en therapieresistente anxiolyse die de neurologische evaluatie postoperatief hindert."
+    ],
+    "correctIndex": 2,
+    "explanation": "Propofol is een GABA-agonist met krachtige hypnotische, maar géén analgetische eigenschappen. Bij stimulatie (zoals het plaatsen van een blok) kan een patiënt plots bewegen, wat leidt tot een neiging om de dosering te verhogen. Door de steile dosis-responscurve valt de patiënt dan snel in diepe sedatie of algemene anesthesie met respiratoire depressie en verlies van luchtwegreflexen. Dexmedetomidine behoudt daarentegen de respiratoire drive en biedt 'cooperative sedation'."
+  },
+  {
+    "id": "farm-054",
+    "category": "farmacologie",
+    "stem": "Magnesiumsulfaat wordt bestudeerd als adjuvans in locoregionale anesthesie. Wat is het ion-specifieke farmacologische doelwit dat het analgetische profiel van magnesium verklaart?",
+    "options": [
+      "Spanningsafhankelijke blokkade van de calciumion-porie binnen de NMDA-receptor.",
+      "Directe agonisatie van de perifere mu-opiaatreceptoren in ontstoken weefsel.",
+      "Inhibitie van de natrium-kalium pomp (Na+/K+-ATPase) in het axolemma.",
+      "Stimulatie van de chloor-instroom (Cl-) op de GABA-B receptor."
+    ],
+    "correctIndex": 0,
+    "explanation": "Magnesium blokkeert op spanningsafhankelijke wijze het ionkanaal van de NMDA-receptor bij rustmembraanpotentialen. Dit voorkomt de calcium-influx die nodig is voor centrale sensitisatie wanneer de receptor wordt geactiveerd door glutamaat, waardoor het een vergelijkbaar (zij het zwakker) analgetisch profiel als ketamine heeft."
+  },
+  {
+    "id": "farm-055",
+    "category": "farmacologie",
+    "stem": "Waarom is de toevoeging van epinefrine (adrenaline) aan een spray-oplossing (bijv. lidocaïne) klinisch superieur bij lokaal sterk gevasculariseerde weefsels vergeleken met minder gevasculariseerde weefsels?",
+    "options": [
+      "Omdat in goed gevasculariseerd weefsel de lokale pH lager is, wat de epinefrine activeert.",
+      "Omdat het de massale systemische absorptie in deze weefsels drastisch vertraagt door vasoconstrictie, wat zowel de piek-plasmaconcentratie verlaagt als de weefselcontacttijd maximaliseert.",
+      "Omdat epinefrine in gevasculariseerde weefsels direct de zenuwgeleiding inhibeert via bloed-gemedieerde vasodilatatie.",
+      "Omdat epinefrine de hepatische klaring van het lokaal anestheticum versnelt wanneer het systemisch wordt opgenomen."
+    ],
+    "correctIndex": 1,
+    "explanation": "In sterk doorbloede weefsels (zoals intercostaal of transversus abdominis plane) wordt een lokaal anestheticum zeer snel systemisch geabsorbeerd. Adrenaline bindt aan alfa-1-receptoren, veroorzaakt vasoconstrictie en vermindert deze snelle weefseldoorbloeding. Dit verlaagt het risico op LAST aanzienlijk en houdt het lokaal anestheticum langer rond de zenuw om de werking te verlengen."
+  },
+    {
+    "id": "surg-001",
+    "category": "indicatie",
+    "stem": "Een 72-jarige patiënt met ernstig COPD (FEV1 35%) staat gepland voor een totale schouderartroplastiek. Welke regionale anesthesietechniek biedt de best gebalanceerde chirurgische analgesie met het minste risico op respiratoire compromittering?",
+    "options": [
+      "Interscalenus blok (ISB) met een gereduceerd volume (5 ml) lokaal anestheticum.",
+      "Supraclaviculair plexus brachialis blok.",
+      "Combinatie van een suprascapularis zenuwblok (anterieure of posterieure benadering) en een axillaris zenuwblok (posterieure humerale benadering).",
+      "Erector Spinae Plane (ESP) blok op niveau T2."
+    ],
+    "correctIndex": 2,
+    "explanation": "Volgens de ESRA 2025 richtlijnen behoren het suprascapularis en axillaris blok tot de 'Intermediate / Advanced Blocks'. Deze combinatie wordt sterk aanbevolen voor schouderchirurgie bij patiënten met ernstig longlijden, omdat een interscalenus blok zelfs bij lage volumes een hoog risico geeft op ipsilaterale nervus phrenicus parese (tot 100%), wat bij een FEV1 van 35% absoluut gecontra-indiceerd is."
+  },
+  {
+    "id": "surg-002",
+    "category": "indicatie",
+    "stem": "Bij het opstellen van een multimodaal analgetisch protocol voor een totale knieartroplastiek (TKA) wordt vroege mobilisatie nagestreefd. Welke combinatie van blokken wordt hiervoor momenteel als optimaal beschouwd?",
+    "options": [
+      "Femoralis zenuwblok gecombineerd met een proximaal ischiadicus blok (anterieure benadering).",
+      "Femoral Triangle Block gecombineerd met een IPACK blok en geniculaire zenuwblokken.",
+      "Lumbalis plexus blok gecombineerd met een popliteaal blok.",
+      "Suprainguinaal fascia iliaca blok gecombineerd met een obturatorius zenuwblok."
+    ],
+    "correctIndex": 1,
+    "explanation": "Voor knieartroplastiek is motor-sparing cruciaal voor vroege revalidatie. Een Femoral Triangle Block biedt analgesie voor het anteromediale aspect zonder significante quadricepszwakte. Dit wordt gecombineerd met een IPACK blok en geniculaire zenuwblokken om de posterieure capsulaire pijn te dekken, waarbij de motorische functie van de nervus ischiadicus en femoralis gevrijwaard blijft."
+  },
+  {
+    "id": "surg-003",
+    "category": "indicatie",
+    "stem": "Welke anatomische structuren worden primair verdoofd door een PENG (Pericapsular Nerve Group) blok, wat het een geschikte techniek maakt voor analgesie bij een heupartroplastiek?",
+    "options": [
+      "De cutane takken van de nervus femoralis en de nervus cutaneus femoris lateralis.",
+      "De articulaire takken van de nervus femoralis, de nervus obturatorius en de accessoire nervus obturatorius.",
+      "De dorsale rami van de lumbale spinale zenuwen L1 tot L4.",
+      "De motorische takken van de plexus lumbalis die de musculus iliopsoas en quadriceps femoris innerveren."
+    ],
+    "correctIndex": 1,
+    "explanation": "Het PENG-blok is specifiek ontworpen om de anterieure heupcapsule te verdoven. Dit gebeurt door blokkade van de articulaire takken van de nervus femoralis, nervus obturatorius en de accessoire nervus obturatorius, wat uitstekende analgesie biedt voor heupfracturen en heupartroplastieken met behoud van motorische functie."
+  },
+  {
+    "id": "surg-004",
+    "category": "indicatie",
+    "stem": "U plant regionale anesthesie voor een patiënt die een correctie van een hallux valgus ondergaat. Welke zenuw wordt NIET gedekt door een geïsoleerd popliteaal blok en vereist mogelijk een aanvullende techniek voor tourniquet- of incisiepijn?",
+    "options": [
+      "Nervus fibularis (peroneus) superficialis",
+      "Nervus suralis",
+      "Nervus saphenus",
+      "Nervus tibialis"
+    ],
+    "correctIndex": 2,
+    "explanation": "De behandeling van een hallux valgus vereist adequate blokkade van de voet. Een popliteaal blok verdooft de nervus ischiadicus (tibialis en communis fibularis componenten), wat het overgrote deel van de voet dekt. De mediale zijde van de enkel en de voet wordt echter geïnnerveerd door de nervus saphenus (een eindtak van de nervus femoralis), die apart geblokkeerd moet worden (bijv. via een enkelblok)."
+  },
+  {
+    "id": "surg-005",
+    "category": "indicatie",
+    "stem": "Tijdens een oncologische borstoperatie (gemodificeerde radicale mastectomie met okselklieruitruiming) kiest u voor een Pectoral Nerves (PECS) II blok, ook wel PSPB genoemd. Welke specifieke thoracale zenuwen worden door de tweede injectie (tussen musculus pectoralis minor en serratus anterior) geblokkeerd?",
+    "options": [
+      "Uitsluitend de nervus pectoralis medialis en lateralis.",
+      "De intercostale zenuwen (T2-T6), de nervus thoracicus longus en de nervus thoracodorsalis.",
+      "De plexus brachialis (truncus superior en medius).",
+      "De supraclaviculaire zenuwen en de nervus phrenicus."
+    ],
+    "correctIndex": 1,
+    "explanation": "Het PECS II blok (PSPB) bestaat uit twee injecties. De eerste injectie (PECS I/IPPB) verdooft de mediale en laterale pectorale zenuwen. De tweede injectie, dieper gelegen, dekt de laterale cutane takken van de intercostale zenuwen (T2-T6), de nervus thoracicus longus en de nervus thoracodorsalis. Dit biedt uitgebreide analgesie voor de borstwand en de oksel, wat het superieur maakt voor uitgebreide oncologische borstchirurgie in vergelijking met enkelvoudige technieken."
+  },
+  {
+    "id": "surg-006",
+    "category": "indicatie",
+    "stem": "Wat is het voornaamste nadeel van een Rectus Sheath Block (RSB) als enige analgetische techniek voor een midline laparotomie?",
+    "options": [
+      "Het blokkeert de sympathische grensstreng, wat leidt tot ernstige en langdurige hypotensie.",
+      "Het dekt enkel de somatische pijn van de buikwand en biedt geen verlichting voor viscerale pijn.",
+      "Het is een Advanced techniek die een zeer hoog risico op intra-abdominale orgaanperforatie met zich meebrengt.",
+      "Het blokkeert de onderste intercostale zenuwen te proximaal, wat onbedoelde paradoxale ademhaling veroorzaakt."
+    ],
+    "correctIndex": 1,
+    "explanation": "Voor procedures zoals een laparotomie is pijnbestrijding complex. Het Rectus Sheath Block levert uitstekende analgesie voor de somatische pijncomponent van een mediane abdominale incisie (door blokkade van de terminale anterieure cutane takken van de intercostale zenuwen). Het verdooft echter het peritoneum of de intra-abdominale organen niet. Voor viscerale pijn is epidurale analgesie of multimodale systemische pijnstilling noodzakelijk."
+  },
+  {
+    "id": "surg-007",
+    "category": "indicatie",
+    "stem": "Tijdens de eerste fase van de baring (labour and delivery) rapporteert de patiënte intense viscerale pijn gerelateerd aan uteriene contracties en cervicale dilatatie. Via welke spinale segmenten wordt deze pijn primair getransmitteerd?",
+    "options": [
+      "T10 tot L1",
+      "S2 tot S4",
+      "T4 tot T8",
+      "L2 tot L4"
+    ],
+    "correctIndex": 0,
+    "explanation": "Kennis van de anatomie van de obstetrische patiënt en pijntransmissie is een vereiste binnen de EDRA-syllabus. De pijn tijdens de eerste fase van de arbeid is visceraal van aard en reist via sympathische vezels naar de thoracale en lumbale spinale segmenten T10 tot L1. Tijdens de tweede fase (indaling en perineale rek) wordt de pijn somatisch en getransmitteerd via de nervus pudendus naar de sacrale segmenten S2 tot S4."
+  },
+  {
+    "id": "surg-008",
+    "category": "indicatie",
+    "stem": "Een patiënte weigert een spinale anesthesie voor een geplande keizersnede (C-section) en ondergaat algemene anesthesie. Welk fascial plane block is het meest aangewezen om postoperatief incisiepijn (Pfannenstiel) te reduceren?",
+    "options": [
+      "Subcostaal Transversus Abdominis Plane (TAP) blok",
+      "Midaxillair Transversus Abdominis Plane (TAP) blok of Anterieure Quadratus Lumborum (QLB) blok",
+      "Parasternal Plane Block (Superficial)",
+      "Erector Spinae Plane (ESP) blok op niveau T4"
+    ],
+    "correctIndex": 1,
+    "explanation": "Voor obstetrische procedures zoals een sectio met een lage transversale incisie (Pfannenstiel, T11-L1 dermatoom), is een midaxillair TAP-blok of een anterieur QLB zeer effectief voor het reduceren van somatische wondpijn. Een subcostaal TAP-blok dekt voornamelijk de bovenbuik (T6-T9) en is klinisch inferieur voor infra-umbilicale incisies."
+  },
+  {
+    "id": "surg-009",
+    "category": "indicatie",
+    "stem": "Bij urologische oncologische chirurgie, zoals een open radicale prostatectomie, wordt vaak gestreefd naar opioïd-sparende anesthesie. Welk van onderstaande neuraxiale/regionale technieken vermindert de chirurgische stressrespons het meest adequaat door zowel somatische als sympathische blokkade te garanderen?",
+    "options": [
+      "Bilateraal posterieur Quadratus Lumborum Blok (QLB)",
+      "Thoracale epidurale anesthesie (TEA)",
+      "Lumbale neuraxiale scan gevolgd door een intrathecale injectie van uitsluitend clonidine",
+      "Bilateraal Transversus Abdominis Plane (TAP) blok (midaxillair)"
+    ],
+    "correctIndex": 1,
+    "explanation": "Hoewel fascial plane blocks zoals TAP en QLB uitstekende somatische analgesie bieden voor abdominale wandincisies, blokkeren ze het sympathische zenuwstelsel onvoldoende om de viscerale pijn en chirurgische stressrespons bij grote laparotomieën of urologische resecties volledig te onderdrukken. Thoracale epidurale anesthesie blijft de 'gouden standaard' hiervoor, omdat het effectief zowel de somatische afferente wegen als de sympathische efferente en afferente vezels blokkeert."
+  },
+  {
+    "id": "surg-010",
+    "category": "indicatie",
+    "stem": "U voert een thoracoscopische longresectie (VATS) uit. Omwille van stollingsproblematiek is een thoracale epidurale gecontra-indiceerd. Welke van de volgende technieken biedt de meest gelijkwaardige unilaterale dermatome dekking?",
+    "options": [
+      "Erector Spinae Plane (ESP) blok",
+      "Thoracaal Paravertebraal Blok (PVB) via parasagittale of transverse benadering",
+      "Rectus Sheath blok",
+      "Superficial Cervical Plexus blok"
+    ],
+    "correctIndex": 1,
+    "explanation": "Het Thoracaal Paravertebraal Blok (PVB) is een techniek die unilaterale somatische en sympathische blokkade biedt, zeer effectief voor thoracotomie en VATS. Hoewel het ESP blok ook veel gebruikt wordt, biedt het PVB een betrouwbaardere en directere penetratie van het lokaal anestheticum rond de intercostale zenuwen en de sympathische grensstreng in de paravertebrale ruimte."
+  },
+  
+  {
+    "id": "edra-001",
+    "category": "fysica",
+    "stem": "Bij het gebruik van een perifere zenuwstimulator (PNS) voor lokalisatie van zenuwen streeft men naar selectieve stimulatie van motorische Aα-vezels zonder nociceptieve C-vezels te activeren. Welke fysische eigenschap van deze vezels verklaart waarom een korte pulsduur (bv. 0,1 ms) hiervoor optimaal is?",
+    "options": [
+      "Aα-vezels hebben een significant kortere chronaxie dan C-vezels",
+      "Aα-vezels bezitten een hogere reobase dan ongemyeliniseerde C-vezels",
+      "De elektrische impedantie van de myelineschede daalt evenredig met de pulsduur",
+      "Korte pulsen verhinderen weefselaccommodatie door de wet van Coulomb te omzeilen"
+    ],
+    "correctIndex": 0,
+    "explanation": "Chronaxie is de minimale stimulusduur die nodig is om een zenuwvezel te prikkelen bij tweemaal de reobase-stroomsterkte. Gemyeliniseerde motorische Aα-vezels hebben een zeer korte chronaxie (50-100 µs), terwijl trage, ongemyeliniseerde C-vezels een veel langere chronaxie hebben (>400 µs). Door een pulsduur van 0,1 ms (100 µs) in te stellen, worden selectief de motorische vezels gedepolariseerd zonder de pijngeleidende C-vezels te activeren."
+  },
+  {
+    "id": "edra-002",
+    "category": "fysica",
+    "stem": "Tijdens een echogeleide zenuwblokkade van de plexus brachialis kantelt de anesthesist de transducer lichtjes om een loodrechte hoek (90°) ten opzichte van de zenuwbundel te verkrijgen. Welk fysisch echografisch artefact probeert men hiermee primair op te heffen?",
+    "options": [
+      "Akoestische schaduwvorming (acoustic shadowing)",
+      "Reverberatie-artefact",
+      "Anisotropie",
+      "Post-cystische versterking (acoustic enhancement)"
+    ],
+    "correctIndex": 2,
+    "explanation": "Anisotropie is het fenomeen waarbij de echogeniciteit van een structuur (vooral pezen en zenuwen) sterk afhangt van de insonatiehoek van de ultrageluidbundel. Wanneer de bundel loodrecht (90°) op de parallelle bundels van de zenuw valt, worden de meeste echo's gereflecteerd naar de transducer (helder/hyperechogeen). Wijkt de hoek af, dan worden de reflecties weggestuurd en oogt de structuur plots donker (hypoechogeen), wat verward kan worden met omliggend weefsel of vaten."
+  },
+  {
+    "id": "edra-003",
+    "category": "anatomie",
+    "stem": "Welke van de volgende anatomische structuren vormt de anterieure grens van de paravertebrale ruimte (PVS) op thoracaal niveau?",
+    "options": [
+      "Het ligamentum costotransversarium superius",
+      "De fascia endothoracica en pleura parietalis",
+      "Het posterieure intercostale membraan",
+      "Het corpus vertebrae en de discus intervertebralis"
+    ],
+    "correctIndex": 1,
+    "explanation": "De thoracale paravertebrale ruimte is een wigvormige ruimte met als posterieure begrenzing het ligamentum costotransversarium superius (SCTL), mediaal het posterolaterale aspect van het wervellichaam, de discus en het foramen intervertebrale, en anterolateraal de fascia endothoracica en de pariëtale pleura."
+  },
+  {
+    "id": "edra-004",
+    "category": "anatomie",
+    "stem": "Bij het uitvoeren van een subgluteale heupzenuwblokkade (sciatic nerve block) bevindt de nervus ischiadicus zich in een intermusculair vlak. Tussen welke twee spiergroepen daalt de zenuw direct af op dit niveau?",
+    "options": [
+      "Tussen de musculus gluteus maximus (dorsaal) en musculus quadratus femoris (ventraal)",
+      "Tussen de musculus piriformis (craniaal) en musculus gemellus superior (caudaal)",
+      "Tussen de musculus biceps femoris (lateraal) en musculus semimembranosus (medaal)",
+      "Tussen de musculus pectineus (ventraal) en musculus iliopsoas (dorsaal)"
+    ],
+    "correctIndex": 0,
+    "explanation": "In de subgluteale ruimte, net distaal van de onderrand van de m. gluteus maximus, ligt de nervus ischiadicus in het vlak tussen de musculus gluteus maximus aan de posterieure (oppervlakkige) zijde en de musculus quadratus femoris aan de anterieure (diepe) zijde, halverwege tussen het tuber ischiadicum en de trochanter major."
+  },
+  {
+    "id": "edra-005",
+    "category": "bezenuwing",
+    "stem": "Een chirurg voert een open reductie en interne fixatie uit van een distale radiusfractuur via een volaire benadering (Henry-incisie). Welke zenuw verzorgt de sensorische bezenuwing van het periost aan de volaire zijde van de distale radius en het radiocarpale gewricht?",
+    "options": [
+      "Nervus interosseus posterior",
+      "Nervus cutaneus antebrachii lateralis",
+      "Nervus interosseus anterior",
+      "Ramus superficialis nervi radialis"
+    ],
+    "correctIndex": 2,
+    "explanation": "De nervus interosseus anterior (AIN, tak van de n. medianus) verzorgt niet alleen de motoriek van de diepe volaire onderarmspieren (FPL, FPD laterale helft, pronator quadratus), maar geeft ook de voornaamste articulaire/periostale takken af aan het distale radioulnaire gewricht, het radiocarpale gewricht en de volaire zijde van het distale radiusperiost."
+  },
+  {
+    "id": "edra-006",
+    "category": "bezenuwing",
+    "stem": "Welke zenuw is primair verantwoordelijk voor de sensorische innervatie van het anteromediale aspect van het heupgewrichtskapsel en wordt specifiek geviseerd bij het PENG-blok (Pericapsular Nerve Group)?",
+    "options": [
+      "Nervus femoralis en accessoire nervus obturatorius (ON/aON)",
+      "Nervus cutaneus femoris lateralis (LFCN)",
+      "Nervus genitofemoralis (ramus femoralis)",
+      "Nervus iliohypogastricus"
+    ],
+    "correctIndex": 0,
+    "explanation": "Anatomische studies tonen aan dat het anterieure heupkapsel de hoogste dichtheid aan nociceptoren bevat. Dit gebied wordt bezenuwd door articulaire takken van de nervus femoralis en de nervus obturatorius accessorius (aON, indien aanwezig) lateraal/craniaal, en takken van de nervus obturatorius anteromediaal. Het PENG-blok deponeert lokaal anestheticum diep onder de psoaspees op de eminentia iliopubica om precies deze articulaire takken uit te schakelen met behoud van quadriceps-kracht."
+  },
+  {
+    "id": "edra-007",
+    "category": "motoriek",
+    "stem": "Tijdens het uitvoeren van een neurostimulator-geleide axillaire plexus brachialis blokkade veroorzaakt elektrostimulatie krachtige pronatie van de onderarm gecombineerd met flexie van de pols en de wijsvinger. Welke zenuw is hier geprikkeld?",
+    "options": [
+      "Nervus musculocutaneus",
+      "Nervus medianus",
+      "Nervus radialis",
+      "Nervus ulnaris"
+    ],
+    "correctIndex": 1,
+    "explanation": "De nervus medianus innerveert onder andere de m. pronator teres, m. flexor carpi radialis en m. flexor digitorum superficialis/profundus (wijs- en middelvinger). Stimulatie leidt derhalve tot pronatie van de voorarm en flexie van pols en vingers (met name digitus II en III)."
+  },
+  {
+    "id": "edra-008",
+    "category": "motoriek",
+    "stem": "Bij een elektrostimulatie-geleide lumbale plexusblokkade (psoas compartment block) observeert u contracties van de musculus adductor longus en magnus (adductie van de dij), maar géén patella-twitch (extensie van de knie). Welke conclusie en handeling zijn correct?",
+    "options": [
+      "De naald bevindt zich in de juiste positie; u kunt het volledige volume injecteren",
+      "De naald bevindt zich te diep in de musculus psoas major; trek de naald 1 cm terug",
+      "De naald stimuleert selectief de nervus obturatorius en ligt te mediaal; heroriënteer de naald lichtjes lateraal",
+      "De naald zit in de epidurale ruimte; breek de procedure onmiddellijk af"
+    ],
+    "correctIndex": 2,
+    "explanation": "Bij een psoas compartment block is een twitch van de musculus quadriceps femoris (patella-elevatie) het enige betrouwbare motorische eindpunt dat ligging nabij de hoofdstam van de plexus bevestigt. Een adductietwitch wijst op selectieve stimulatie van de nervus obturatorius, die meer mediaal in het psoascompartiment loopt. Injecteren op dit punt leidt tot een inadequate blokkade van de n. femoralis en vergroot het risico op epidurale spreiding. De naald moet iets worden teruggetrokken en lateraal worden gericht."
+  },
+  {
+    "id": "edra-009",
+    "category": "blocktechniek",
+    "stem": "Bij het uitvoeren van een transversus abdominis plane (TAP) blok via de klassieke midaxillaire laterale benadering, tussen welke twee spierlagen dient het lokaal anestheticum onder echogeleiding te worden gedeponeerd?",
+    "options": [
+      "Tussen de musculus obliquus externus en de musculus obliquus internus",
+      "Tussen de musculus obliquus internus en de musculus transversus abdominis",
+      "Tussen de musculus transversus abdominis en de fascia transversalis",
+      "Tussen de musculus rectus abdominis en de posterieure rectusschede"
+    ],
+    "correctIndex": 1,
+    "explanation": "Het klassieke TAP-blok deponeert lokaal anestheticum in de neurovasculaire fasciale ruimte tussen de musculus obliquus internus abdominis en de musculus transversus abdominis. Hier lopen de anterieure rami van de thoracale intercostale zenuwen T7-L1 alvorens ze de buikwand penetreren."
+  },
+  {
+    "id": "edra-010",
+    "category": "blocktechniek",
+    "stem": "Wat is bij een echogeleide supraclaviculaire plexus brachialis blokkade de anatomische definitie van de zogeheten 'corner pocket'?",
+    "options": [
+      "De hoek gevormd door de clavicula en het coracoïdproces",
+      "De overgangsruimte tussen de musculus scalenus anterior en de nervus phrenicus",
+      "De verbinding tussen de eerste rib en de clavicula onder de musculus subclavius",
+      "De hoek tussen de arteria subclavia mediaal en de eerste rib daaronder"
+    ],
+    "correctIndex": 3,
+    "explanation": "De 'corner pocket' is de anatomische hoek die gevormd wordt door het raakvlak van het inferolaterale aspect van de arteria subclavia en het superieure oppervlak van de eerste rib. Een injectie op deze plek zorgt voor betrouwbare spreiding rond de truncus inferior (C8-T1), waardoor de beruchte 'ulnar sparing' bij supraclaviculaire blokkades wordt voorkomen."
+  },
+  {
+    "id": "edra-011",
+    "category": "indicatie",
+    "stem": "Een patiënt met ernstig chronisch obstructief longlijden (COPD, FEV1 38% van voorspeld) moet een electieve elleboogarthrolyse ondergaan. Welke van de onderstaande technieken verdient de voorkeur om respiratoire complicaties door hemidiafragmatische parese te vermijden?",
+    "options": [
+      "Interscalenair plexus brachialis blok",
+      "Infraclaviculair plexus brachialis blok",
+      "Supraclaviculair plexus brachialis blok met 20 mL ropivacaïne 0,5%",
+      "Diep cervicaal plexusblok"
+    ],
+    "correctIndex": 1,
+    "explanation": "Interscalenaire blokkades veroorzaken in bijna 100% van de gevallen een ipsilaterale nervus phrenicusparese; supraclaviculair bedraagt dit risico nog steeds 30-50%. Bij patiënten met ernstige respiratoire limitaties is een hemidiafragmaparese potentieel fataal. Een infraclaviculair blok (of axillair blok) spaart de nervus phrenicus nagenoeg volledig (0%) en biedt uitstekende analgesie en anesthesie voor elleboogchirurgie."
+  },
+  {
+    "id": "edra-012",
+    "category": "indicatie",
+    "stem": "Welke regionale techniek biedt de meest doeltreffende analgesie voor posterieure kapselpijn na een totale kniearthroplastiek (TKA) zónder motorische uitval van de nervus tibialis of nervus peroneus communis te induceren?",
+    "options": [
+      "Hoge continue nervus ischiadicus-blokkade via transgluteale benadering",
+      "iPACK-blok (Infiltration between Popliteal Artery and Capsule of the Knee)",
+      "Klassieke femorale zenuwblokkade met 20 mL ropivacaïne 0,5%",
+      "Popliteale zenuwblokkade ter hoogte van de splitsing"
+    ],
+    "correctIndex": 1,
+    "explanation": "Het iPACK-blok infiltreert lokaal anestheticum tussen de arteria poplitea en het posterieure kapsel van het kniegewricht. Hierdoor worden selectief de articulaire sensorische takken van de n. tibialis en de ramus posterior van de n. obturatorius geblokkeerd zonder de distale motorische hoofdstammen te verdoven, wat een vroege 'foot-drop-vrije' mobilisatie toelaat."
+  },
+  {
+    "id": "edra-013",
+    "category": "farmacologie",
+    "stem": "Welke fysisch-chemische eigenschap van een lokaal anestheticum correleert het sterkst met de intrinsieke anesthetische potentie van het molecuul?",
+    "options": [
+      "De dissociatieconstante (pKa)",
+      "De mate van plasma-eiwitbinding (alfa-1-zuur glycoproteïne)",
+      "De vetoplosbaarheid (octanol:water partitiecoëfficiënt)",
+      "Het molecuulgewicht van de tussenketen"
+    ],
+    "correctIndex": 2,
+    "explanation": "De vetoplosbaarheid (lipofiliciteit), gekwantificeerd via de octanol-waterpartitiecoëfficiënt, correleert rechtstreeks met de intrinsieke potentie van een lokaal anestheticum. Meer lipofiele moleculen (bv. bupivacaïne) penetreren het hydrofobe celmembraan van de axonale zenuw veel vlotter dan hydrofiele stoffen (bv. lidocaïne, mepivacaïne). De pKa correleert daarentegen voornamelijk met de aanslagtijd (onset)."
+  },
+  {
+    "id": "edra-014",
+    "category": "farmacologie",
+    "stem": "Waarom mag liposomale bupivacaïne (Exparel) nooit in dezelfde spuit vermengd worden met lidocaïne?",
+    "options": [
+      "Lidocaïne induceert een massieve neerslag van onoplosbare bupivacaïnekristallen",
+      "Lidocaïne verdringt bupivacaïne competitief uit de liposoombilayers, wat leidt tot een ongecontroleerde massale piek van vrij bupivacaïne",
+      "Lidocaïne verlaagt de pH tot onder 3,5, waardoor irreversibele hydrolyse van de amidenucleus optreedt",
+      "De combinatie stimuleert CYP1A2 in de weefsels, wat resulteert in onmiddellijk verlies van werking"
+    ],
+    "correctIndex": 1,
+    "explanation": "Liposomale bupivacaïne (Exparel) bevat multivesiculaire liposomen (DepoFoam). Wanneer dit gemengd wordt met niet-bupivacaïne lokale anesthetica zoals lidocaïne, treedt er een interactie op met de lipidemembranen waardoor bupivacaïne acuut en massaal uit de partikels vrijkomt. Dit elimineert het verlengde afgifteprofiel en kan leiden tot levensbedreigende systemische lokale anestheticatoxiciteit (LAST)."
+  },
+  {
+    "id": "edra-015",
+    "category": "complicaties",
+    "stem": "Wat is het aanbevolen initiële bolusvolume van 20% lipidenemulsie (Intralipid) bij de behandeling van een volwassen patiënt van 70 kg met een circulatoire stilstand ten gevolge van Local Anesthetic Systemic Toxicity (LAST)?",
+    "options": [
+      "20 mL over 10 minuten",
+      "100 mL (of 1,5 mL/kg) intraveneus over 2-3 minuten",
+      "500 mL als snelle drukzakinfusie over 1 minuut",
+      "3 mL/kg intraveneus als continue infusie over 24 uur"
+    ],
+    "correctIndex": 1,
+    "explanation": "Volgens de ASRA/ESRA LAST-richtlijnen is de initiële behandeling van ernstige toxiciteit/cardiovasculair arrest: een bolus van 20% lipidenemulsie van 1,5 mL/kg over 2-3 minuten (voor een patiënt van >70 kg wordt pragmatisch een vaste bolus van 100 mL gehanteerd), direct gevolgd door een continue infusie van 0,25 mL/kg/min (circa 200-250 mL over 15-20 minuten)."
+  },
+  {
+    "id": "edra-016",
+    "category": "complicaties",
+    "stem": "Welke van de volgende anatomische factoren verklaart waarom een hoge injectiedruk (>15-20 psi) tijdens een perifere zenuwblokkade sterk geassocieerd is met postoperatieve neurologische schade?",
+    "options": [
+      "De lage compliantie van het perineurium, wat leidt tot intrafasciculaire ischemie en mechanische fascikelruptuur",
+      "De directe destructie van het collageenrijke epifasciaal epineurium",
+      "Acute trombosevorming in de longitudinale vasa nervorum van het paraneurium",
+      "Reflexmatige stimulatie van retrograde axoplasmatische stroom naar het ruggenmerg"
+    ],
+    "correctIndex": 0,
+    "explanation": "Het perineurium omhult de afzonderlijke zenuwfascikels en heeft een uiterst lage compliantie. Een injectie met de naaldtip intrafasciculair stuit op enorme weerstand. Als men forceert met een druk van >15-20 psi, overschrijdt de intrafasciculaire druk de capillaire perfusiedruk, resulterend in ischemie, structurele ruptuur van het perineurium en irreversibele axonale destructie."
+  },
+  {
+    "id": "edra-017",
+    "category": "fysiologie",
+    "stem": "Welke zenuwvezels worden tijdens de inductie van een spinaalanesthesie met lokaal anestheticum als eerste geblokkeerd, en wat is het fysiologische gevolg hiervan op de hemodynamiek?",
+    "options": [
+      "Dikke gemyeliniseerde Aα-motorische vezels; dit leidt tot verlies van skeletspiertonus en hypertensie",
+      "Kleine dun gemyeliniseerde B-vezels; dit leidt tot preganglionaire sympathicusblokkade en perifere venodilatatie",
+      "Ongemyeliniseerde C-vezels; dit veroorzaakt selectieve tachycardie door remming van de cardiale vagusreflex",
+      "Aδ-pijnvezels; dit induceert een plotse toename in systemische vaatweerstand door catecholaminerelease"
+    ],
+    "correctIndex": 1,
+    "explanation": "De volgorde van zenuwblokkade bij centrale neuraxiale blokkades is: B-vezels (preganglionair sympathisch) > C- en Aδ-vezels (temperatuur en pijn) > Aβ-vezels (aanraking en druk) > Aα-vezels (motoriek). De blokkade van de dun gemyeliniseerde B-vezels leidt tot een vroege sympathische denervatie, met pooling van bloed in het veneuze capaciteitssysteem (venodilatatie), afname van de veneuze return (preload) en arteriële vasodilatatie, leidend tot hypotensie."
+  },
+  {
+    "id": "edra-018",
+    "category": "fysiologie",
+    "stem": "Wat is het mechanisme achter de bradycardie die optreedt bij een hoog thoracaal spinaalblok (niveau T1-T4)?",
+    "options": [
+      "Blokkade van de cardioacceleratorische sympathische vezels (T1-T4) gecombineerd met afgenomen veneuze return via de Bezold-Jarisch-reflex",
+      "Directe toxische remming van de sinusknoop door lokale anesthetica die diffunderen naar het vierde ventrikel",
+      "Verhoogde centrale baroreceptortriggering ten gevolge van een plotse stijging in de 'stroke volume index'",
+      "Selectieve stimulatie van bèta-2-adrenoreceptoren in het myocard"
+    ],
+    "correctIndex": 0,
+    "explanation": "Bradycardie tijdens spinaalanesthesie heeft twee fysiologische hoofdcomponenten: (1) verlamming van de sympathische cardioacceleratorvezels die ontspringen uit de ruggenmergsegmenten T1-T4, waardoor de nervus vagus ongehinderd overheerst; en (2) sterke afname van de cardiale vullingsdrukken (reductie van de preload), wat intracardiale mechanoreceptoren activeert en de Bezold-Jarisch- en Bainbridge-reflexen triggert met uitgesproken bradycardie of zelfs asystolie tot gevolg."
+  },
+  {
+    "id": "edra-019",
+    "category": "statistiek",
+    "stem": "In een dubbelblinde gerandomiseerde trial naar het effect van dexamethason als perineuraal adjuvans blijkt het risico op postoperatieve misselijkheid (PONV) 10% te zijn in de behandelde groep versus 30% in de placebogroep. Wat is de Number Needed to Treat (NNT) om bij één patiënt PONV te voorkomen?",
+    "options": [
+      "3",
+      "5",
+      "10",
+      "20"
+    ],
+    "correctIndex": 1,
+    "explanation": "De absolute risicoreductie (ARR) is het verschil in incidentie tussen controle en interventie: ARR = 0,30 - 0,10 = 0,20 (20%). De Number Needed to Treat (NNT) is de reciproke waarde van de absolute risicoreductie: NNT = 1 / ARR = 1 / 0,20 = 5."
+  },
+  {
+    "id": "edra-020",
+    "category": "statistiek",
+    "stem": "Bij het evalueren van een nieuwe echografische test om intraneurale naaldplaatsing te detecteren, blijkt de test een sensitiviteit van 95% en een specificiteit van 60% te hebben. Wat betekent deze lage specificiteit in de klinische praktijk?",
+    "options": [
+      "De test mist 40% van de werkelijke intraneurale naaldposities (fout-negatieven)",
+      "Er is een hoog percentage fout-positieven: de test zal bij 40% van de extraneurale naalden onterecht aangeven dat de naald intraneuraal ligt",
+      "De positief voorspellende waarde (PPV) is per definitie 95%",
+      "De test heeft een type II-fout van 40%"
+    ],
+    "correctIndex": 1,
+    "explanation": "Specificiteit is het vermogen van een test om terecht-negatieven te identificeren (Specificiteit = TN / (TN + FP)). Een specificiteit van 60% betekent dat bij 40% van de patiënten zónder intraneurale ligging (1 - specificiteit) de test vals-positief zal aanslaan. Dit kan leiden tot onnodig herhaald prikken en manoeuvreren."
+  },
+  
+  {
+    "id": "edra-021",
+    "category": "anatomie",
+    "stem": "Welke laag van het bindweefsel van een perifere zenuw vormt de voornaamste diffusiebarrière voor macromoleculen en lokale anesthetica, en functioneert fysiologisch als de bloed-zenuwbarrière?",
+    "options": [
+      "Het epifasculaire epineurium",
+      "Het perineurium",
+      "Het endoneurium",
+      "Het paraneurium"
+    ],
+    "correctIndex": 1,
+    "explanation": "Het perineurium bestaat uit concentrische lamellen van afgeplatte myofibroblastachtige cellen verbonden door hechte 'tight junctions' (zonula occludens) en omgeven door een basale lamina. Deze gespecialiseerde architectuur zorgt voor mechanische treksterkte, handhaaft de intrafasciculaire vloeistofdruk en fungeert als een metabool actieve diffusie- en bloed-zenuwbarrière."
+  },
+  {
+    "id": "edra-022",
+    "category": "anatomie",
+    "stem": "Welke uitspraak betreffende de embryologische ontwikkeling en organisatie van pre-axiale en post-axiale zenuwen in de bovenste en onderste ledematen is anatomisch correct?",
+    "options": [
+      "In de bovenste extremiteit is de nervus medianus de enige zuiver post-axiale zenuw distaal van de schouder",
+      "In de onderste extremiteit roteert het lidmaat lateraal, waardoor post-axiale extensoren anteromediaal komen te liggen",
+      "De nervus radialis is de enige post-axiale zenuw van de bovenste extremiteit distaal van de schouder",
+      "De nervus tibialis vertegenwoordigt het post-axiale compartiment binnen de gemeenschappelijke sheath van de nervus ischiadicus"
+    ],
+    "correctIndex": 2,
+    "explanation": "Tijdens de embryonale ontwikkeling roteert het bovenste lidmaat 90° lateraal (waardoor extensoren dorsaal/posterieur komen te liggen) en het onderste lidmaat 90° mediaal. Structuren ventraal van de axiale as zijn pre-axiaal (afkomstig van anterieure divisies; bijv. n. musculocutaneus, n. medianus, n. ulnaris en n. tibialis), terwijl structuren dorsaal van de as post-axiaal zijn (afkomstig van posterieure divisies). De nervus radialis is de enige post-axiale zenuw distaal van de schouder; in het been is de nervus peroneus communis (fibularis) post-axiaal."
+  },
+  {
+    "id": "edra-023",
+    "category": "fysiologie",
+    "stem": "Wat verklaart het fenomeen van saltatoire impulsgeleiding in gemyeliniseerde Aα- en Aβ-axonen?",
+    "options": [
+      "Een uniforme verdeling van spanningsafhankelijke Na+-kanalen over het gehele axolemmatraject",
+      "Hoge elektrische capacitantie en lage weerstand van de myelineschede ter hoogte van de internodes",
+      "Clusteren van hoge dichtheden spanningsafhankelijke Na+-kanalen ter hoogte van de knopen van Ranvier",
+      "Geleiding die uitsluitend berust op retrograde elektrotonische stroom via het axoplasma"
+    ],
+    "correctIndex": 2,
+    "explanation": "De knopen van Ranvier vertonen een extreem hoge dichtheid van spanningsafhankelijke Na+-kanalen (NaV1.6), terwijl de internodale myelineschede een hoge elektrische weerstand en lage capacitantie biedt. Hierdoor kan de actiepotentiaal niet weglekken over het internodium, maar 'springt' de depolarisatiestroom nagenoeg instantaan van knoop naar knoop (saltatoire geleiding)."
+  },
+  {
+    "id": "edra-024",
+    "category": "fysiologie",
+    "stem": "Hoeveel opeenvolgende knopen van Ranvier moeten minimaal door een lokaal anestheticum functioneel geblokkeerd worden om propagatie van een actiepotentiaal over een gemyeliniseerde zenuwvezel volledig te verhinderen?",
+    "options": [
+      "1 knoop",
+      "3 knopen",
+      "6 knopen",
+      "10 knopen"
+    ],
+    "correctIndex": 1,
+    "explanation": "Vanwege de fysiologische 'safety margin' van zenuwgeleiding kan een lokale actiestroom twee opeenvolgende gedepolariseerde of geïnactiveerde knopen overbruggen en de derde knoop alsnog depolariseren. Conductieblokkade treedt in vitro en in vivo pas betrouwbaar op wanneer minimaal drie opeenvolgende knopen van Ranvier (over een lengte van circa 4 tot 6 mm) gelijktijdig zijn geblokkeerd."
+  },
+  {
+    "id": "edra-025",
+    "category": "anatomie",
+    "stem": "Welk cytologisch en ultrastructureel verschil onderscheidt Schwann-cellen van oligodendrocyten?",
+    "options": [
+      "Schwann-cellen myeliniseren meerdere axonen tegelijk in het centrale zenuwstelsel, terwijl oligodendrocyten monomyeliniserend zijn",
+      "Een myeliniserende Schwann-cel omhult slechts één enkel axonsegment (internode) en is omgeven door een basale lamina",
+      "Oligodendrocyten ontstaan embryologisch uit de neurale lijst, terwijl Schwann-cellen afkomstig zijn uit de neurale buis",
+      "Niet-myeliniserende Schwann-cellen ontbreken volledig rondom C-vezels in perifere zenuwen"
+    ],
+    "correctIndex": 1,
+    "explanation": "In het perifere zenuwstelsel levert één myeliniserende Schwann-cel (afkomstig van de neurale lijst) myeline voor exact één internodaal segment van één axon, en elke Schwann-cel bezit een eigen continue basale lamina. Oligodendrocyten (afkomstig uit de neurale buis) in het CZS kunnen daarentegen uitlopers sturen naar wel 30-50 verschillende axonen en ontberen een individuele basale lamina. Niet-myeliniserende Schwann-cellen omhullen meerdere dunne C-vezels in zogeheten Remak-bundels."
+  },
+  {
+    "id": "edra-026",
+    "category": "anatomie",
+    "stem": "Wat is de definitie en klinische relevantie van de 'Obersteiner-Redlich-zone'?",
+    "options": [
+      "Het anatomische overgangsgebied aan de zenuwwortel waar de centrale glia (oligodendrocyten/astocyten) overgaan in perifere Schwann-cellen",
+      "De zone in het perineurium waar de tight junctions ontbreken en transperineurale arteriolen binnendringen",
+      "Het overgangsgebied tussen het epifasculaire epineurium en het diepe paraneurium ter hoogte van de popliteale fossa",
+      "De bindweefselovergang tussen het ligamentum flavum en de spinale dura mater"
+    ],
+    "correctIndex": 0,
+    "explanation": "De Obersteiner-Redlich-zone (root entry zone) markeert de microscopische overgang tussen het centrale en perifere zenuwstelsel bij spinale en craniale zenuwwortels. Hier verdwijnt de piale bekleding en het centrale astrocytaire vlechtwerk en nemen Schwann-cellen en collageenrijke perifere bindweefselscheden het over; op dit kwetsbare grensvlak is de zenuw bijzonder vatbaar voor mechanische en chemische beschadiging."
+  },
+  {
+    "id": "edra-027",
+    "category": "fysiologie",
+    "stem": "Welke zenuwvezels bezitten de laagste geleidingssnelheid en zijn primair verantwoordelijk voor de diffuse, doffe 'tweede pijn' (second pain) en warmtesensatie?",
+    "options": [
+      "Aα-vezels",
+      "Aβ-vezels",
+      "Aδ-vezels",
+      "C-vezels"
+    ],
+    "correctIndex": 3,
+    "explanation": "C-vezels zijn dunne (0,4-1,2 µm), ongemyeliniseerde polymodale vezels met een zeer trage geleidingssnelheid (0,5-2 m/s). Zij mediëren de trage, slecht gelokaliseerde, brandende of doffe 'tweede pijn' en warmte. Aδ-vezels zijn dun gemyeliniseerd (conductie 5-25 m/s) en geleiden de snelle, scherpe, prikkende 'eerste pijn'."
+  },
+  {
+    "id": "edra-028",
+    "category": "farmacologie",
+    "stem": "Wat verklaart het fenomeen van differentiële zenuwblokkade waarbij sympathische B-vezels sneller worden geblokkeerd dan ongemyeliniseerde C-vezels, hoewel C-vezels een kleinere diameter hebben?",
+    "options": [
+      "C-vezels bezitten geen spanningsafhankelijke natriumkanalen",
+      "B-vezels zijn dun gemyeliniseerd waardoor de kritieke blokkadelengte over enkele dicht opeenstaande knopen van Ranvier sneller wordt bereikt",
+      "De myelineschede rondom B-vezels trekt kationische anesthetica actief aan via negatieve oppervlakteladingen",
+      "C-vezels hebben een significant grotere axoplasmatische inhoud waardoor diffusie van lokaal anestheticum vertraagd is"
+    ],
+    "correctIndex": 1,
+    "explanation": "Klassieke Erlanger-Gasser-gevoeligheid toont de volgorde: B > Aδ ≈ C > Aγ > Aβ > Aα. Hoewel C-vezels kleiner zijn in absolute diameter, zijn B-vezels (preganglionair autonoom) dun gemyeliniseerd met zeer korte internodale afstanden. Hierdoor hoeft een lokaal anestheticum slechts een heel kort segment te penetreren om drie opeenvolgende knopen van Ranvier te overbruggen, wat resulteert in een vlottere functionele blokkade dan bij een continue axonale membraan van een ongemyeliniseerde C-vezel."
+  },
+  {
+    "id": "edra-029",
+    "category": "anatomie",
+    "stem": "Wat is het anatomische onderscheid tussen het epifasculaire epineurium en het interfasculaire epineurium?",
+    "options": [
+      "Het epifasculaire epineurium omsluit individuele axonen, terwijl het interfasculaire epineurium de gehele zenuwstomp omgeeft",
+      "Het epifasculaire epineurium vormt de buitenste collageenmantel van de zenuw, terwijl het interfasculaire epineurium het losse bindweefsel en vet tussen de afzonderlijke fascikels vormt",
+      "Het interfasculaire epineurium bezit 'tight junctions' en de bloed-zenuwbarrière, het epifasculaire epineurium niet",
+      "Het interfasculaire epineurium is uitsluitend aanwezig in monofasciculaire zenuwen nabij peesaanhechtingen"
+    ],
+    "correctIndex": 1,
+    "explanation": "Het epineurium wordt verdeeld in: (1) epifasculair (extern) epineurium, dat als een compacte bindweefsellaag de gehele perifere zenuw omhult en definieert, en (2) interfasciculair (intern) epineurium, dat bestaat uit losser collageen bindweefsel, vetcellen en grotere vasa nervorum die de ruimtes tussen de afzonderlijke fascikels binnen de zenuw opvullen."
+  },
+  {
+    "id": "edra-030",
+    "category": "complicaties",
+    "stem": "Volgens de Sunderland-classificatie van zenuwletsels: welk type letsel wordt gekenmerkt door axonale doorsnijding met verlies van endoneuriale continuïteit, maar met behoud van een intact perineurium rondom het fascikel?",
+    "options": [
+      "Graad I (neuropraxie)",
+      "Graad II (axonotmesis met intacte endoneuriale buizen)",
+      "Graad III",
+      "Graad V (neurotmesis)"
+    ],
+    "correctIndex": 2,
+    "explanation": "Sunderland graad III letsel betreft een laesie van het axon en de endoneuriale schede (buis), maar met behoud van het perineurium. Herstel is vaak incompleet door intrafasciculaire fibrose en foutieve uitgroei. Graad I is neuropraxie (myelinebeschadiging), graad II is zuivere axonotmesis met intacte endoneuriale kokers, graad IV betreft ruptuur van het perineurium (fascikelruptuur) en graad V is volledige anatomische zenuwtranssectie."
+  },
+  {
+    "id": "edra-031",
+    "category": "fysiologie",
+    "stem": "Tijdens de depolarisatiefase van de actiepotentiaal in een zenuwcelmembraan treedt welke ionenbeweging op?",
+    "options": [
+      "Passieve efflux van K+-ionen door spanningsafhankelijke K+-kanalen",
+      "Snelle influx van Na+-ionen door spanningsafhankelijke Na+-kanalen zodra de drempelpotentiaal (-55 mV) wordt bereikt",
+      "Actieve uitstoot van 3 Na+-ionen voor 2 K+-ionen via de Na+/K+-ATPase-pomp",
+      "Massale influx van Cl--ionen via GABA-A-receptoren"
+    ],
+    "correctIndex": 1,
+    "explanation": "Wanneer een depolariserende prikkel de drempelwaarde (ongeveer -55 mV) bereikt vanuit de rustmembraanpotentiaal (-70 mV), openen de m-poorten van spanningsafhankelijke natriumkanalen zich massaal. Dit veroorzaakt een snelle, passieve influx van Na+-ionen gedreven door zowel de concentratie- als de elektrische gradiënt, resulterend in membraandepolarisatie tot circa +35 mV."
+  },
+  {
+    "id": "edra-032",
+    "category": "farmacologie",
+    "stem": "In welke conformatie toont het spanningsafhankelijke Na+-kanaal de hoogste affiniteit voor lokale anesthetica?",
+    "options": [
+      "De gesloten rusttoestand (resting state)",
+      "De geïnactiveerde toestand (inactivated state)",
+      "De hypergepolariseerde toestand",
+      "De refractaire absolute K+-gesloten toestand"
+    ],
+    "correctIndex": 1,
+    "explanation": "Lokale anesthetica binden met de hoogste affiniteit aan het natriumkanaal wanneer dit zich in de open toestand en vooral in de geïnactiveerde toestand (inactivated state) bevindt. Dit verklaart tevens het fenomeen van 'use-dependent' of 'phasic' block: bij hogere vuurfrequenties bevindt een grotere fractie van de kanalen zich cyclisch in de open/geïnactiveerde toestand, waardoor binding toeneemt."
+  },
+  {
+    "id": "edra-033",
+    "category": "anatomie",
+    "stem": "Wat bevindt zich microscopisch direct in het endoneurium tussen individuele zenuwvezels?",
+    "options": [
+      "Fenestratieloze capillairen met 'tight junctions', collageenfibrillen, fibroblasten, macrofagen en endoneuriale vloeistof",
+      "Grote concentrische lagen van gladde spiercellen en elastineplaten",
+      "Dichte pakketten meerkernige vetcellen zonder interstitiële vloeistof",
+      "Directe lymfevaten die in open verbinding staan met de liquorruimte"
+    ],
+    "correctIndex": 0,
+    "explanation": "Het endoneurium bevat dunne collageenfibrillen (type I en III) parallel aan de axonen, fibroblasten, residente macrofagen, incidentele mestcellen en capillairen. Deze capillairen zijn niet-gefenestreerd en bevatten endotheel met gespecialiseerde 'tight junctions', die samen met het binnenste perineurium de functionele bloed-zenuwbarrière vormen."
+  },
+  {
+    "id": "edra-034",
+    "category": "anatomie",
+    "stem": "Wat is de functionele en klinische rol van het 'paraneurium' (zoals gezien bij de nervus ischiadicus in de popliteale fossa)?",
+    "options": [
+      "Het vormt de ondoordringbare osmotische diffusiebarrière voor lokaal anestheticum rondom individuele fascikels",
+      "Het is een losse bindweefsellaag rondom de zenuw(en) die fysiologische glijbeweging ten opzichte van spiercompartimenten toelaat en waarin injectaat longitudinaal divergeert",
+      "Het is een synoniem voor de basale lamina van de Schwann-cel",
+      "Het is een pathologische collageenwoekering die uitsluitend ontstaat na zenuwtrauma"
+    ],
+    "correctIndex": 1,
+    "explanation": "Het paraneurium (adventitia / paraneural sheath / common epineural sheath) is de bindweefsellaag die zenuwen scheidt van en verankert aan omringende structuren/intermusculaire septa. Het faciliteert longitudinaal glijden tijdens gewrichtsbewegingen. Injectie van lokaal anestheticum binnen deze paraneurale schede (bijv. bij de splitsing van de n. ischiadicus) leidt tot een snelle, circulaire en longitudinale spreiding rondom de zenuwcomponenten zonder mechanisch intrafasciculair risico."
+  },
+  {
+    "id": "edra-035",
+    "category": "fysica",
+    "stem": "Waarom depolariseert een katodale elektrische prikkel (negatieve pool aan de naaldpunt) een perifere zenuwvezel veel efficiënter dan een anodale prikkel?",
+    "options": [
+      "De katode verlaagt de extracellulaire kationconcentratie aan het axolemma, waardoor het transmembraanpotentiaalverschil afneemt richting drempelpotentiaal",
+      "De katode trekt intracellulair kalium naar buiten via spanningsonafhankelijke poriën",
+      "De katode veroorzaakt onmiddellijke hyperpolarisatie van het axolemma wat de refractaire periode verkort",
+      "De katode schakelt de axoplasmatische weerstand van het endoneurium volledig uit"
+    ],
+    "correctIndex": 0,
+    "explanation": "Wanneer de naaldpunt als katode (negatieve pool) functioneert, maakt de negatieve lading de buitenzijde van het axolemma minder positief ten opzichte van het negatieve celinnerste. Hierdoor daalt de transmembraanpotentiaal direct naar de drempelwaarde (-55 mV), wat leidt tot depolarisatie. Een anode (positieve pool aan de naald) maakt de buitenzijde juist positiever en induceert lokale hyperpolarisatie (waardoor een veel hogere stroom nodig is om de zenuw te prikkelen)."
+  },
+  {
+    "id": "edra-036",
+    "category": "anatomie",
+    "stem": "Welk specifiek onderdeel van het spanningsafhankelijke Na+-kanaal fungeert primair als de 'voltagesensor' die van conformatie verandert bij membraandepolarisatie?",
+    "options": [
+      "Het intracellulaire N-terminale domein",
+      "Het S4 transmembraansegment met zijn positief geladen aminozuren (arginine/lysine)",
+      "De extracellulaire P-lus tussen segment S5 en S6",
+      "De cytoplasmatische inactivatiepoort tussen domein III en IV"
+    ],
+    "correctIndex": 1,
+    "explanation": "Het Na+-kanaal bestaat uit een grote α-subeenheid met vier homologe domeinen (I-IV), elk opgebouwd uit 6 transmembraanhelices (S1-S6). Het S4-segment bevat op regelmatige afstanden positief geladen aminozuurresiduen (arginine en lysine) en fungeert als de transmembraansensor voor voltageveranderingen. Bij depolarisatie verschuift het S4-segment buitenwaarts, wat leidt tot conformatieverandering en opening van het poriekanaal."
+  },
+  {
+    "id": "edra-037",
+    "category": "complicaties",
+    "stem": "Waarom resulteert een intrafasciculaire injectie (binnen het perineurium) onder hoge druk (>20 psi) vrijwel universeel in ernstige axonale schade?",
+    "options": [
+      "Het perineurium bezit een zeer lage compliantie, waardoor de intrafasciculaire druk direct de capillaire perfusiedruk overstijgt met acute ischemie en mechanische ruptuur tot gevolg",
+      "Het interfasciculaire epineurium scheurt direct door verlies van elastinevezels",
+      "De Na+/K+-ATPase-pompen worden door mechanische stretch irreversibel omgezet in calciumkanalen",
+      "Er treedt onmiddellijk massale degranulatie op van epineuriale mestcellen in de liquorruimte"
+    ],
+    "correctIndex": 0,
+    "explanation": "Het perineurium is een dicht, stug membraan met uiterst geringe compliantie. Wanneer een naald intrafasciculair penetreert en vloeistof wordt geïnjecteerd, stijgt de intrafasciculaire druk abrupt boven de capillaire perfusiedruk van de endoneuriale microvasculatuur (ongeveer 30 mmHg), leidend tot complete weefselischemie, fascikelruptuur, verlies van het micro-milieu en onomkeerbare axonale destructie."
+  },
+  {
+    "id": "edra-038",
+    "category": "fysiologie",
+    "stem": "Welke fysiologische factor bepaalt het 'alles-of-niets'-principe van de neuronale actiepotentiaal?",
+    "options": [
+      "Zodra de drempelwaarde wordt bereikt, overtreft de regeneratieve Na+-influx via geopende Na+-kanalen de repolariserende K+-efflux",
+      "Het continue en onbeperkte openen van chloorkanalen via secundaire boodschappersystemen",
+      "De onmiddellijke lediging van neurotransmitterblaasjes ter hoogte van het axon hillock",
+      "De absolute sluiting van alle knopen van Ranvier proximaal van het cellichaam"
+    ],
+    "correctIndex": 0,
+    "explanation": "Het 'alles-of-niets'-karakter ontstaat doordat bij het bereiken van de drempelpotentiaal de instroom van Na+-ionen (depolariserend) groter wordt dan de uitstroom van K+-ionen (repolariserend). Dit creëert een positieve feedback-cyclus (Hodgkin-cyclus): depolarisatie opent meer Na+-kanalen, wat leidt tot verdere depolarisatie, waardoor een volledige actiepotentiaal ontstaat van constante amplitude, onafhankelijk van de initiële stimulussterkte zolang deze supradrempelig was."
+  },
+  {
+    "id": "edra-039",
+    "category": "anatomie",
+    "stem": "In welk anatomisch kenmerk verschilt het bindweefsel van spinale zenuwwortels in de subarachnoïdale ruimte fundamenteel van dat van perifere zenuwstammen?",
+    "options": [
+      "Spinale wortels bezitten een extra dik, collageenrijk epifasciculair epineurium ter bescherming tegen lumbale liquorwervelingen",
+      "Spinale zenuwwortels ontberen een klassiek beschermend epineurium en een meerlagig perineurium, waardoor zij aanzienlijk kwetsbaarder zijn voor chemische neurotoxiciteit en mechanisch trauma",
+      "Spinale zenuwwortels bevatten uitsluitend ongemyeliniseerde C-vezels",
+      "De endoneuriale ruimte van spinale wortels is volledig afgesloten van enige vloeistofuitwisseling met het hersenvocht"
+    ],
+    "correctIndex": 1,
+    "explanation": "Zenuwwortels in de subarachnoïdale ruimte zijn enkel omgeven door een dunne wortelschede (afgeleid van de pia/arachnoidea). Zij bezitten noch het stugge, meerlagige perineurium, noch het dikke, schokdempende collageen/vetrijke epineurium van perifere zenuwen. Dit gebrek aan mechanische en biochemische bescherming verklaart waarom zenuwwortels extreem gevoelig zijn voor compressie en direct toxische concentraties van lokale anesthetica."
+  },
+  {
+    "id": "edra-040",
+    "category": "fysiologie",
+    "stem": "Welk proces vindt plaats tijdens de relatieve refractaire periode van een zenuwvezel?",
+    "options": [
+      "Geen enkele prikkel, hoe sterk ook, kan een tweede actiepotentiaal opwekken omdat alle Na+-kanalen geopend zijn",
+      "Een tweede actiepotentiaal kan worden opgewekt, mits de prikkel sterker is dan normaal, doordat een deel van de Na+-kanalen is hersteld naar de rusttoestand terwijl de K+-permeabiliteit nog verhoogd is",
+      "De membraanpotentiaal is positiever dan +35 mV door aanhoudende calciumaccumulatie",
+      "De Na+/K+-pomp is tijdelijk geïnactiveerd door ATP-depletie"
+    ],
+    "correctIndex": 1,
+    "explanation": "Gedurende de absolute refractaire periode zijn vrijwel alle Na+-kanalen geïnactiveerd en is stimulatie onmogelijk. Tijdens de relatieve refractaire periode zijn voldoende Na+-kanalen teruggekeerd naar de gesloten rustconformatie (herwinnend vermogen tot opening), maar bevindt de membraan zich in hyperpolarisatie door persisterend geopende spanningsafhankelijke K+-kanalen. Een supranormale prikkelsterkte kan in deze fase wel een nieuwe actiepotentiaal genereren."
+  },
+
+  {
+    "id": "edra-041",
+    "category": "farmacologie",
+    "stem": "Bij de postoperatieve evaluatie van acute pijn na een grote gewrichtsarthroplastiek wordt aanbevolen om zowel statische als dynamische pijnscores te registreren. Welke methodologische en klinische reden rechtvaardigt deze aanpak het sterkst?",
+    "options": [
+      "Pijnscores in rust correleren selectief met viscerale stimulatie, terwijl dynamische scores uitsluitend Aβ-vezelactiviteit weerspiegelen",
+      "Statische pijnmeting onderschat systematisch de nociceptieve intensiteit die functioneel herstel en mobilisatie belemmert",
+      "Pijn bij beweging wordt uitsluitend veroorzaakt door centrale sensitisatie en vereist preventieve anti-epilepticadosering",
+      "Alleen de statische pijnscore vertoont een lineair verband met de plasmaconcentratie van opioïden"
+    ],
+    "correctIndex": 1,
+    "explanation": "Pijn in rust (statisch) is postoperatief doorgaans aanzienlijk lager dan pijn tijdens functionele belasting of fysiotherapie (dynamisch). Het uitsluitend monitoren van rustpijn leidt frequent tot onderbehandeling van de pijn die vroege revalidatie, diepe ademhaling en functioneel herstel belemmert. Dynamische pijnmeting correleert superieur met postoperatieve revalidatiedoelen en het succes van locoregionale analgesieprotocollen."
+  },
+  {
+    "id": "edra-042",
+    "category": "farmacologie",
+    "stem": "Een patiënt op de verkoeverkamer geeft 3 uur na een laparotomie op de Visual Analogue Scale (VAS) een score van 35 mm aan, maar op een 4-punts Verbal Rating Scale (VRS: geen, lichte, matige, ernstige pijn) kiest hij 'matige pijn'. Wat is de voornaamste methodologische verklaring voor dit fenomeen?",
+    "options": [
+      "Categorische 4-punts schalen missen ratio-eigenschappen en hebben de neiging intense pijncategorieën disproportioneel te condenseren",
+      "De VAS-score is ongevoelig voor acute fluctuaties in postoperatieve pijnintensiteit",
+      "De VRS meet uitsluitend de affectieve component (onbehagen) en niet de sensorische intensiteit",
+      "De VAS heeft in klinische populaties een significant lagere sensitiviteit dan ordinale verbale schalen"
+    ],
+    "correctIndex": 0,
+    "explanation": "De 4-punts Verbal Rating Scale (VRS) is een ordinale categorische schaal met grove intervallen. Patiënten voelen zich bij matige pijn vaak gedwongen te kiezen tussen arbitraire categorieën ('licht' vs. 'matig'), wat kan leiden tot discrepanties met continue schalen (zoals de 100 mm VAS of 0-10 NRS). De VAS en NRS bezitten superieure metrische en psychometrische eigenschappen ten opzichte van een beperkte 4-punts categorische schaal."
+  },
+  {
+    "id": "edra-043",
+    "category": "farmacologie",
+    "stem": "Op de afdeling intensieve zorgen ligt een geïntubeerde, beademde patiënt na een thoracoabdominale resectie. Welk gevalideerd observationeel meetinstrument is specifiek ontwikkeld en gevalideerd voor pijnmonitoring bij zowel beademde als niet-beademde volwassen IC-patiënten?",
+    "options": [
+      "FLACC-schaal (Face, Legs, Activity, Cry, Consolability)",
+      "PAINAD (Pain Assessment in Advanced Dementia)",
+      "CPOT (Critical-Care Pain Observation Tool)",
+      "Abbey Pain Scale"
+    ],
+    "correctIndex": 2,
+    "explanation": "De Critical-Care Pain Observation Tool (CPOT) evalueert vier domeinen: gelaatsuitdrukking, lichaamsbewegingen, spierspanning en interactie met de beademingsmachine (of vocalisatie bij geëxtubeerde patiënten). In tegenstelling tot de Behavioral Pain Scale (BPS), die oorspronkelijk louter voor beademde patiënten ontworpen werd, is de CPOT gevalideerd voor zowel mechanisch beademde als spontaan ademende volwassen IC-patiënten."
+  },
+  {
+    "id": "edra-044",
+    "category": "farmacologie",
+    "stem": "Tijdens postoperatieve monitoring van een continue epidurale analgesie met opioïden en lokale anesthetica vertoont een patiënt progressieve sedatie. Waarom is het systematisch monitoren van het sedatieniveau (bv. via de Pasero Opioid-Induced Sedation Scale) een betrouwbaardere vroege indicator voor dreigende opioïdgeïnduceerde ademhalingsdepressie dan louter de perifere zuurstofsaturatie (SpO2)?",
+    "options": [
+      "Toediening van zuurstoftherapie via neusbril maskeert hypoventilatie en hypercapnie, waardoor desaturatie pas laat optreedt",
+      "Opioïden remmen selectief de perifere chemoreceptoren in de sinus caroticus zonder de centrale ademhalingscentra te beïnvloeden",
+      "Sedatie ontstaat pas nádat de arteriële PaCO2 de drempel van 80 mmHg overschrijdt",
+      "Polsometrie vertoont een systematische fout-positieve afwijking in de aanwezigheid van lipofiele opioïden"
+    ],
+    "correctIndex": 0,
+    "explanation": "Onder invloed van postoperatieve zuurstoftoediening kan de SpO2 lange tijd bedrieglijk normaal (>95%) blijven, zelfs wanneer de patiënt ernstig hypoventileert en forse hypercapnie ontwikkelt. Progressieve sedatie (centrale depressie) gaat klinisch vrijwel altijd vooraf aan levensbedreigende ademhalingsstilstand door opioïden. Monitoring van het sedatieniveau en de ademhalingsfrequentie/-diepte biedt daarom een veel vroeger waarschuwingssignaal dan pulsoximetrie alleen."
+  },
+  {
+    "id": "edra-045",
+    "category": "farmacologie",
+    "stem": "Welk meetinstrument is bij uitstek gevalideerd en betrouwbaar voor het objectiveren en kwantificeren van cutane mechanische allodynie en hyperalgesie in de peri-incisionele zone na chirurgisch weefseltrauma?",
+    "options": [
+      "Von Frey monofilamenten met gekalibreerde buigkracht",
+      "Standaard 128 Hz stemvork op de beenderige uitsteeksels",
+      "Pinch-test met een anatomisch pincet",
+      "Kwantitatieve dermothermometrie via infraroodcamera"
+    ],
+    "correctIndex": 0,
+    "explanation": "Von Frey monofilamenten bestaan uit nylondraden van gelijke lengte maar verschillende diktes, die bij een nauwkeurig gedefinieerde buigkracht (uitgedrukt in gram of mN) een reproduceerbare mechanische stimulus leveren. Hiermee kan men de mechanische prikkeldrempel vaststellen en zowel statische allodynie (laagdrempelig) als secundaire punctiforme hyperalgesie rond het wondgebied kwantitatief monitoren."
+  },
+  {
+    "id": "edra-046",
+    "category": "farmacologie",
+    "stem": "Een 83-jarige patiënte met matige tot ernstige vasculaire dementie ondergaat een hemi-arthroplastiek van de heup. Welk van de volgende scoringssystemen is het meest geschikt en gevalideerd voor pijnmonitoring bij niet-communicatieve patiënten met gevorderde cognitieve stoornissen?",
+    "options": [
+      "Visual Analogue Scale (VAS)",
+      "PAINAD (Pain Assessment in Advanced Dementia)",
+      "McGill Pain Questionnaire (MPQ)",
+      "Brief Pain Inventory (BPI) verkorte versie"
+    ],
+    "correctIndex": 1,
+    "explanation": "De PAINAD-schaal (Pain Assessment in Advanced Dementia) is specifiek ontworpen en psychometrisch gevalideerd voor patiënten met gevorderde dementie die niet meer betrouwbaar kunnen zelfrapporteren. De schaal observeert vijf gedragsdimensies: ademhaling, vocalisatie, gelaatsuitdrukking, lichaamstaal en troostbaarheid."
+  },
+  {
+    "id": "edra-047",
+    "category": "farmacologie",
+    "stem": "Wat meet de Brief Pain Inventory (BPI) naast de zuivere pijnintensiteit, waardoor deze vragenlijst een multidimensionale meerwaarde biedt in de perioperatieve follow-up en pijnmonitoring?",
+    "options": [
+      "De directe elektrofysiologische transmissiesnelheid in de dorsale kolommen",
+      "De mate van interferentie van pijn met zeven dagelijkse functionele domeinen",
+      "De exacte plasmahalfwaardetijd van multimodale analgetica",
+      "Het risico op maligne hyperthermie bij blootstelling aan inhalatieanesthetica"
+    ],
+    "correctIndex": 1,
+    "explanation": "De Brief Pain Inventory (BPI) evalueert niet alleen de pijnintensiteit (laagste, hoogste, gemiddelde en huidige pijn), maar meet specifiek de mate waarin pijn interfereert met het dagelijks functioneren over zeven domeinen: algemene activiteit, stemming, loopvermogen, normaal werk/taken, relaties met anderen, slaap en levensvreugde."
+  },
+  {
+    "id": "edra-048",
+    "category": "farmacologie",
+    "stem": "Bij het evalueren van pijnscores in klinisch wetenschappelijk onderzoek naar postoperatieve analgesie spreekt men van het 'Minimal Clinically Important Difference' (MCID). Welke daling op een 100-punts Visual Analogue Scale (VAS) of 11-punts Numerical Rating Scale (NRS) wordt algemeen beschouwd als de drempel voor een klinisch betekenisvolle pijnverlichting voor de individuele patiënt?",
+    "options": [
+      "Een daling van minstens 2-5 mm op de VAS (of 0,2-0,5 punten op de NRS)",
+      "Een reductie van minstens 10-20 mm op de VAS (of 1,0-2,0 punten op de NRS)",
+      "Een absolute reductie van exact 50 mm op de VAS, ongeacht de baselinescore",
+      "Uitsluitend een daling tot een absolute score van 0"
+    ],
+    "correctIndex": 1,
+    "explanation": "Het 'Minimal Clinically Important Difference' (MCID) voor acute postoperatieve pijn ligt in de meeste studies rond een absolute reductie van 10 tot 20 mm op een 100 mm VAS (of circa 1,3 tot 2 punten op een 11-punts NRS, wat ruwweg overeenkomt met een relatieve pijnvermindering van circa 30%). Kleinere veranderingen weerspiegelen vaak meetruis en worden door de patiënt niet als relevant ervaren."
+  },
+  {
+    "id": "edra-049",
+    "category": "farmacologie",
+    "stem": "Bij het monitoren van de effectiviteit van een continu perifere zenuwkatheterblok (bv. fascia iliaca of adductor canal block) treedt plots 'breakthrough pain' op. Welke klinische stap hoort prioritair plaats te vinden alvorens de infusiesnelheid van het lokaal anestheticum blindelings te verhogen?",
+    "options": [
+      "Onmiddellijk starten met intraveneuze ketamine-infusie aan 0,5 mg/kg/u",
+      "Systematische inspectie van het katheterinsteeppunt, controle op lekkage/dislocatie en evaluatie van het sensorische en motorische dermatoomblok",
+      "Spoelen van de katheter met 20 mL steriel water onder hoge druk om intravasculaire fibrinepluggen te verwijderen",
+      "Het blindelings verder opvoeren van de katheter met 5 cm doorheen het bestaande occlusieve verband"
+    ],
+    "correctIndex": 1,
+    "explanation": "Secundair katheterfalen door dislocatie, lekkage of knikken komt frequent voor (tot 15-25% in sommige series). Alvorens de dosering op te voeren of extra sedativa te geven, moet eerst worden gecontroleerd of de katheter nog in situ is, of het verband droog is, en of er überhaupt nog een correlerend sensorisch/motorisch blok aantoonbaar is. Echografische controle van de spreiding met een kleine testbolus kan uitsluitsel geven over de anatomische positie."
+  },
+  {
+    "id": "edra-050",
+    "category": "farmacologie",
+    "stem": "Wat is het belangrijkste methodologische nadeel van de Face, Legs, Activity, Cry, Consolability (FLACC) gedragsschaal wanneer deze wordt toegepast bij niet-intact verlamde of met spierverslappers behandelde patiënten?",
+    "options": [
+      "De schaal vereist actieve verbale communicatie en cijfermatig inzicht van de patiënt",
+      "De motorische gedragsdimensies (benen, activiteit, troostbaarheid) worden farmacologisch gemaskeerd, wat leidt tot een vals-lage score ondanks aanwezige nociceptie",
+      "De FLACC-score vertoont een kruisreactie met lokale anesthetica waardoor pupildilatatie ontstaat",
+      "De schaal meet uitsluitend sympathische tachycardie en hypertensie"
+    ],
+    "correctIndex": 1,
+    "explanation": "De FLACC-schaal is een observationele gedragsschaal die zwaar leunt op motorische uitingen (beentragiek, onrust, huilen/kreunen en troostbaarheid). Toediening van spierrelaxantia, diepe sedatie of neurologische parese schakelt deze motorische expressie uit, waardoor de score vals-laag kan uitvallen terwijl nociceptieve transmissie en centrale stressresponsen ongehinderd doorgaan."
+  }
+
 ];
 
