@@ -84,7 +84,7 @@ export default function PedsCalculator() {
   };
 
   return (
-    <div className="space-y-6 pb-20 pt-[env(safe-area-inset-top)] px-4 max-w-2xl mx-auto">
+    <div className="space-y-6 pb-20 px-4 max-w-2xl mx-auto">
       {/* PATIENT GEGEVENS KAART */}
       <Card className={`border-2 transition-colors ${isWeightRequired ? 'border-amber-400 bg-amber-50/20' : 'border-teal-100 shadow-sm'}`}>
         <CardHeader className="p-4 border-b flex flex-row items-center gap-2">

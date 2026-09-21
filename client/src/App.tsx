@@ -17,7 +17,7 @@ import ReferenceInnervatiePage from "@/pages/reference-innervatie";
 import ReferencePlexusListPage from "@/pages/reference-plexus-list";
 import ReferencePlexusDetailPage from "@/pages/reference-plexus-detail";
 
-/** Lazy: houdt de 295-vragenbank buiten de main PWA-precache bundle. */
+/** Lazy: houdt de EDRA-vragenbank buiten de main PWA-precache bundle. */
 const KaraQuizPage = lazy(() => import("@/pages/kara-quiz"));
 import CalculatorPage from "@/pages/last";
 import CalculatorList from "@/pages/calculator-list";
@@ -164,7 +164,7 @@ function Router() {
     <div className="flex flex-col min-h-screen bg-background">
       <ScrollToTop />
       <main className={`
-        container mx-auto px-4 pt-4 pb-24 transition-all duration-300
+        container mx-auto px-4 pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-24 transition-all duration-300
         ${isAdmin ? 'max-w-none w-full lg:px-12' : 'max-w-screen-md'}
       `}>
         <Switch>
