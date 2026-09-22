@@ -21,6 +21,8 @@ import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { compressImageForUpload, formatCompressionSummary } from "@/lib/compress-image";
 import { BodyRegionSelector } from "@/components/blocks/BodyRegionSelector";
 import { parseBodyRegions, type BodyRegionId } from "@/data/body-map-regions";
+import { useAuth } from "@/hooks/use-auth";
+import { canEditCms } from "@shared/permissions";
 
 const TAB_CONFIG: Record<string, { label: string; field: string }[]> = {
   pocus: [
@@ -110,6 +112,7 @@ function MarkdownSplitPane({
 
 export default function AdminEditor() {
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
   const search = useSearch();
   const queryParams = new URLSearchParams(search);
   const editId = queryParams.get("id");
@@ -137,6 +140,12 @@ export default function AdminEditor() {
   const pocusTextareaRef1 = useRef<HTMLTextAreaElement>(null);
   const pocusTextareaRef2 = useRef<HTMLTextAreaElement>(null);
   const pocusTextareaRef3 = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (user && !canEditCms(user.role)) {
+      setLocation("/");
+    }
+  }, [user, setLocation]);
 
   useEffect(() => {
     if (!editId) return;
@@ -372,6 +381,15 @@ export default function AdminEditor() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20 text-slate-900">
+      {!canEditCms(user?.role) ? (
+        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-2 px-6 text-center">
+          <p className="font-black uppercase tracking-widest text-slate-700 text-sm">
+            Geen toegang tot de content editor
+          </p>
+          <p className="text-xs text-slate-500">Alleen staf kan protocols, blocks en journals bewerken.</p>
+        </div>
+      ) : (
+      <>
       <div className="sticky top-0 z-50 flex items-center justify-between border-b bg-white p-4">
         <Button variant="ghost" size="sm" onClick={() => window.history.back()} className="rounded-xl">
           <ArrowLeft className="mr-2 h-4 w-4" /> Terug
@@ -681,6 +699,8 @@ export default function AdminEditor() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }

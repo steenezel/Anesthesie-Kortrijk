@@ -1,6 +1,8 @@
 import { Link } from "wouter";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
+import { canEditCms } from "@shared/permissions";
 
 type AdminAddColor = "teal" | "blue";
 
@@ -23,6 +25,9 @@ const colorStyles: Record<AdminAddColor, { header: string; fab: string }> = {
 };
 
 export function AdminAddButton({ href, label, mode, color = "teal" }: AdminAddButtonProps) {
+  const { user } = useAuth();
+  if (!canEditCms(user?.role)) return null;
+
   const styles = colorStyles[color];
 
   if (mode === "header") {
@@ -32,7 +37,7 @@ export function AdminAddButton({ href, label, mode, color = "teal" }: AdminAddBu
           type="button"
           className={cn(
             "hidden lg:inline-flex shrink-0 items-center gap-2 rounded-2xl px-4 py-2.5 text-[11px] font-black uppercase tracking-wide text-white shadow-md transition-all hover:shadow-lg active:scale-[0.98]",
-            styles.header
+            styles.header,
           )}
         >
           <Plus size={18} strokeWidth={2.5} />
@@ -48,7 +53,7 @@ export function AdminAddButton({ href, label, mode, color = "teal" }: AdminAddBu
         type="button"
         className={cn(
           "lg:hidden fixed bottom-24 right-6 z-50 flex items-center justify-center rounded-full p-4 text-white shadow-2xl transition-all hover:scale-110 active:scale-95",
-          styles.fab
+          styles.fab,
         )}
         aria-label={label}
       >

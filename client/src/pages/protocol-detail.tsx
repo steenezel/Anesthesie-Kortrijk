@@ -1,9 +1,10 @@
 import React from "react";
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, Clock, Loader2, Pencil } from "lucide-react";
+import { ChevronLeft, Clock, Loader2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { CmsEditLink } from "@/components/CmsEditLink";
 import DantroleenCalc from '../components/calculators/DantroleenCalc.js';
 import SedationPedsCalculator from "@/components/calculators/SedationPedsCalculator";
 
@@ -50,11 +51,7 @@ export default function ProtocolDetail() {
         
         <div className="flex gap-2">
           {dbProtocol && (
-            <Link href={`/admin?type=protocols&id=${dbProtocol.id}`}>
-              <div className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-teal-600 cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest">
-                <Pencil size={14} /> Edit
-              </div>
-            </Link>
+            <CmsEditLink href={`/admin?type=protocols&id=${dbProtocol.id}`} />
           )}
         </div>
       </div>

@@ -23,6 +23,10 @@ import {
   resolveSessionUser,
   toPublicProfile,
 } from "./auth-middleware.js";
+import {
+  canReviewAsoLogbooks,
+  canWriteLogbook,
+} from "../shared/permissions.js";
 
 function getDb() {
   if (!db) {
@@ -54,10 +58,6 @@ function todayIsoDate() {
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
   return `${now.getFullYear()}-${month}-${day}`;
-}
-
-function isSupervisorRole(role: UserRole) {
-  return role === "supervisor" || role === "admin" || role === "staff";
 }
 
 /** SM-2 inspired update for quiz SRS. quality: 0 fail … 5 easy */
@@ -257,15 +257,13 @@ export async function registerRoutes(
   app.post("/api/logbook/entries", requireAuth, rejectKioskWrites, async (req, res) => {
     try {
       const sessionUser = req.appUser!;
+      if (!canWriteLogbook(sessionUser.profile.role)) {
+        return res.status(403).json({ error: "Geen schrijfrechten voor het logboek" });
+      }
+
+      // Iedereen registreert alleen voor zichzelf (ook staf).
       const body = { ...(req.body ?? {}), userId: sessionUser.profile.id };
       const validated = insertLogbookEntrySchema.parse(body);
-
-      if (
-        validated.userId !== sessionUser.profile.id &&
-        !isSupervisorRole(sessionUser.profile.role)
-      ) {
-        return res.status(403).json({ error: "Je mag alleen voor jezelf registreren" });
-      }
 
       const result = await getDb()
         .insert(logbookEntries)
@@ -292,10 +290,22 @@ export async function registerRoutes(
     try {
       const sessionUser = req.appUser!;
       const requestedId = String(req.query.userId || sessionUser.profile.id);
-      const userId =
-        requestedId === sessionUser.profile.id || isSupervisorRole(sessionUser.profile.role)
-          ? requestedId
-          : sessionUser.profile.id;
+      let userId = sessionUser.profile.id;
+
+      if (requestedId !== sessionUser.profile.id) {
+        if (!canReviewAsoLogbooks(sessionUser.profile.role)) {
+          return res.status(403).json({ error: "Je mag alleen je eigen logboek bekijken" });
+        }
+        const [target] = await getDb()
+          .select({ id: users.id, role: users.role })
+          .from(users)
+          .where(eq(users.id, requestedId))
+          .limit(1);
+        if (!target || target.role !== "aso") {
+          return res.status(403).json({ error: "Alleen ASO-logboeken zijn zichtbaar" });
+        }
+        userId = requestedId;
+      }
 
       const entries = await getDb()
         .select()
@@ -313,8 +323,8 @@ export async function registerRoutes(
   app.get("/api/logbook/supervisor/all", requireAuth, async (req, res) => {
     try {
       const sessionUser = req.appUser!;
-      if (!isSupervisorRole(sessionUser.profile.role)) {
-        return res.status(403).json({ error: "Alleen supervisors" });
+      if (!canReviewAsoLogbooks(sessionUser.profile.role)) {
+        return res.status(403).json({ error: "Alleen staf mag ASO-logboeken nakijken" });
       }
 
       const asoId = req.query.asoId ? String(req.query.asoId) : "";
@@ -324,7 +334,8 @@ export async function registerRoutes(
       const startDate = req.query.startDate ? String(req.query.startDate) : "";
       const endDate = req.query.endDate ? String(req.query.endDate) : "";
 
-      const filters: SQL[] = [];
+      // Altijd enkel ASO-entries — nooit staf-logboeken van collega's.
+      const filters: SQL[] = [eq(users.role, "aso")];
       if (asoId) filters.push(eq(logbookEntries.userId, asoId));
       if (category) filters.push(eq(logbookEntries.category, category));
       if (subCategory) filters.push(eq(logbookEntries.subCategory, subCategory));
@@ -332,7 +343,7 @@ export async function registerRoutes(
       if (startDate) filters.push(gte(logbookEntries.date, startDate));
       if (endDate) filters.push(lte(logbookEntries.date, endDate));
 
-      const query = getDb()
+      const entries = await getDb()
         .select({
           id: logbookEntries.id,
           userId: logbookEntries.userId,
@@ -349,11 +360,9 @@ export async function registerRoutes(
           createdAt: logbookEntries.createdAt,
         })
         .from(logbookEntries)
-        .leftJoin(users, eq(logbookEntries.userId, users.id));
-
-      const entries = filters.length
-        ? await query.where(and(...filters)).orderBy(desc(logbookEntries.date), desc(logbookEntries.createdAt))
-        : await query.orderBy(desc(logbookEntries.date), desc(logbookEntries.createdAt));
+        .innerJoin(users, eq(logbookEntries.userId, users.id))
+        .where(and(...filters))
+        .orderBy(desc(logbookEntries.date), desc(logbookEntries.createdAt));
 
       res.json(entries);
     } catch (error) {

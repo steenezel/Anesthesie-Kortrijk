@@ -1,10 +1,11 @@
 import React from "react";
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, Loader2, Pencil } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { CmsEditLink } from "@/components/CmsEditLink";
 
 export default function PocusDetail() {
   const [, params] = useRoute("/pocus/:id");
@@ -41,11 +42,11 @@ export default function PocusDetail() {
             <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Overzicht
           </div>
         </Link>
-        <Link href={`/admin?type=pocus&id=${dbPocus.id}`}>
-          <div className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-blue-600 cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest transition-colors">
-            <Pencil size={14} /> Bewerken
-          </div>
-        </Link>
+        <CmsEditLink
+          href={`/admin?type=pocus&id=${dbPocus.id}`}
+          label="Bewerken"
+          className="hover:text-blue-600 transition-colors"
+        />
       </div>
 
       <div className="p-6 max-w-3xl mx-auto w-full">

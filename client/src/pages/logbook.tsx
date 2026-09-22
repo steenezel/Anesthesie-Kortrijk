@@ -13,6 +13,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
+import { canReviewAsoLogbooks } from "@shared/permissions";
 import {
   LOGBOOK_TREE,
   SUPERVISION_LEVELS,
@@ -79,7 +80,7 @@ function todayIsoDate() {
 }
 
 function isSupervisorRole(role: UserRole) {
-  return role === "supervisor" || role === "admin" || role === "staff";
+  return canReviewAsoLogbooks(role);
 }
 
 function formatNlDate(isoDate: string) {
@@ -95,6 +96,7 @@ function formatNlDate(isoDate: string) {
 export default function LogbookPage() {
   const { user, signOut, isKiosk, canWrite } = useAuth();
   const { toast } = useToast();
+  const [staffView, setStaffView] = useState<"registreren" | "aso">("registreren");
 
   if (!user) return null;
 
@@ -120,6 +122,8 @@ export default function LogbookPage() {
     email: user.email,
   };
 
+  const canReview = isSupervisorRole(session.role);
+
   return (
     <div className="min-h-screen bg-slate-50 pb-24 -mx-4">
       <header className="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-slate-100 px-4 py-3 flex items-center gap-2">
@@ -130,7 +134,7 @@ export default function LogbookPage() {
         </Link>
         <div className="flex-1 min-w-0 text-center">
           <p className="text-[10px] font-black uppercase tracking-[0.25em] text-teal-600">
-            ASO Logboek
+            Logboek
           </p>
           <p className="text-xs font-black uppercase tracking-tight text-slate-900 truncate">
             {session.name}
@@ -149,7 +153,38 @@ export default function LogbookPage() {
         </Button>
       </header>
 
-      {isSupervisorRole(session.role) ? (
+      {canReview && (
+        <div className="px-4 pt-4 max-w-md mx-auto">
+          <div className="flex h-12 rounded-2xl bg-slate-200/70 p-1 gap-1">
+            <button
+              type="button"
+              onClick={() => setStaffView("registreren")}
+              className={cn(
+                "flex-1 rounded-xl font-black text-[10px] uppercase tracking-widest transition-colors",
+                staffView === "registreren"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-500",
+              )}
+            >
+              Registreren
+            </button>
+            <button
+              type="button"
+              onClick={() => setStaffView("aso")}
+              className={cn(
+                "flex-1 rounded-xl font-black text-[10px] uppercase tracking-widest transition-colors",
+                staffView === "aso"
+                  ? "bg-white text-slate-900 shadow-sm"
+                  : "text-slate-500",
+              )}
+            >
+              ASO-overzicht
+            </button>
+          </div>
+        </div>
+      )}
+
+      {canReview && staffView === "aso" ? (
         <SupervisorOverview />
       ) : (
         <AsoWorkspace user={session} />
@@ -606,7 +641,7 @@ function SupervisorOverview() {
     <div className="px-4 pt-4 max-w-md mx-auto space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-          Supervisor overzicht
+          ASO-logboeken
         </p>
         <Button
           size="sm"

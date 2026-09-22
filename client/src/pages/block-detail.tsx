@@ -1,10 +1,11 @@
 import React, { useMemo } from "react"; // <--- useMemo toegevoegd
 import { useRoute, Link } from "wouter";
-import { ChevronLeft, Loader2, Pencil } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import { CmsEditLink } from "@/components/CmsEditLink";
 import CaudalCalculator from "@/components/CaudalCalculator";
 
 const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
@@ -67,13 +68,7 @@ export default function BlockDetail() {
           </div>
         </Link>
         <div className="flex gap-2">
-          {dbBlock && (
-            <Link href={`/admin?type=blocks&id=${dbBlock.id}`}>
-              <div className="p-2 bg-slate-50 text-slate-400 rounded-xl hover:text-teal-600 cursor-pointer flex items-center gap-2 font-black text-[9px] uppercase tracking-widest">
-                <Pencil size={14} /> Edit
-              </div>
-            </Link>
-          )}
+          {dbBlock && <CmsEditLink href={`/admin?type=blocks&id=${dbBlock.id}`} />}
         </div>
       </div>
 
