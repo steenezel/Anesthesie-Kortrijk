@@ -1,24 +1,24 @@
 # Auth: preview vs production (parallel werken)
 
-Login leeft op branch **`User-login`**. Productie (`main` → `anesthesie-kortrijk.vercel.app`) blijft de PIN-app tot cutover.
+Login leeft op branch **`User-login`**. Productie (`main`) blijft de PIN-app tot cutover.
 
-## Preview
+## Preview-env in Vercel
 
-1. Push/`gh pr create` vanaf `User-login` → Vercel geeft een Preview-URL.
-2. Zet in Vercel **Preview** environment (niet Production):
-   - `DATABASE_URL` → aparte preview/branch-database (niet productie)
-   - `BETTER_AUTH_SECRET` → lange random string
-   - `BETTER_AUTH_URL` → de preview-origin (of laat leeg en gebruik request host)
-   - `RESEND_API_KEY` + `AUTH_FROM_EMAIL`
-   - Optioneel: `AUTH_DEV_OTP_LOG=1` om OTP in server logs te zien als mail faalt
-3. Seed invites: `npm run auth:seed` met preview `DATABASE_URL`.
-4. Checklist: OTP ontvangen → inloggen → app heropenen zonder OTP → logout → tweede browser → logboek/SMASH → API zonder cookie = 401.
+| Variabele | Preview | Production |
+|-----------|---------|------------|
+| `DATABASE_URL` | Zelfde Supabase OK als auth-tabellen bestaan, of aparte DB | Productie-DB |
+| `BETTER_AUTH_SECRET` | Ja (mag apart van prod) | Ja |
+| `BETTER_AUTH_URL` | **Niet zetten / leeg** — code gebruikt `VERCEL_URL` | `https://anesthesie-kortrijk.be` |
+| `RESEND_API_KEY` | Ja | Ja |
+| `AUTH_FROM_EMAIL` | `Anesthesie Kortrijk <noreply@anesthesie-kortrijk.be>` | Idem |
 
-## Parallel: kleinere changes live
+Belangrijk: als `BETTER_AUTH_URL` op Preview op het **productiedomein** staat, faalt OTP/sessie op de `*.vercel.app`-URL. De code negeert die waarde nu op `VERCEL_ENV=preview`.
 
-- Korte fixes/content: PR’s naar **`main`** zoals gewoonlijk.
-- Op `User-login` regelmatig: `git fetch origin && git merge origin/main`.
-- Geen auth-breaking changes op `main` tot cutover.
+Optioneel Preview: `AUTH_DEV_OTP_LOG=1` → OTP in Vercel Function logs.
+
+## Checklist
+
+OTP ontvangen → inloggen → app heropenen zonder OTP → logout → tweede browser → logboek/SMASH → API zonder cookie = 401.
 
 ## Cutover
 
