@@ -2,10 +2,12 @@ import React from "react";
 import { Link } from "wouter";
 import { ChevronLeft, Info } from "lucide-react";
 import SedationPedsCalculator from "@/components/calculators/SedationPedsCalculator";
+import { CalculatorPageBookmark } from "@/components/CalculatorPageBookmark";
 
 export default function SedationCalculatorPage() {
   return (
     <div className="min-h-screen bg-slate-50 pb-12">
+      <CalculatorPageBookmark calculatorId="sedation-peds" />
       <div className="p-4">
         <Link href="/calculator">
           <a className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-widest">
@@ -38,3 +40,4 @@ export default function SedationCalculatorPage() {
     </div>
   );
 }
+

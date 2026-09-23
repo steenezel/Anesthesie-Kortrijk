@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"; // <--- useMemo toegevoegd
+import React, { useMemo } from "react";
 import { useRoute, Link } from "wouter";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,7 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { CmsEditLink } from "@/components/CmsEditLink";
+import { BookmarkButton } from "@/components/BookmarkButton";
+import { UserNotesPanel } from "@/components/UserNotesPanel";
 import CaudalCalculator from "@/components/CaudalCalculator";
+import { cacheContent, readCachedContent } from "@/lib/offline";
 
 const allBlocks = import.meta.glob('../content/blocks/*.md', { query: 'raw', eager: true });
 
@@ -36,7 +39,10 @@ export default function BlockDetail() {
     queryKey: ['block', id],
     queryFn: async () => {
       if (!id || !isUuid) return null;
+      const cacheKey = `block_${id}`;
+      if (!navigator.onLine) return readCachedContent<any>(cacheKey);
       const { data } = await supabase.from('blocks').select('*').eq('id', id).single();
+      if (data) cacheContent(cacheKey, data);
       return data;
     },
     enabled: !!id && isUuid
@@ -67,7 +73,8 @@ export default function BlockDetail() {
             <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Terug
           </div>
         </Link>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <BookmarkButton itemType="block" itemId={dbBlock?.id || id} />
           {dbBlock && <CmsEditLink href={`/admin?type=blocks&id=${dbBlock.id}`} />}
         </div>
       </div>
@@ -94,6 +101,10 @@ export default function BlockDetail() {
             <BlockTabContent content={dbBlock?.content_technique || local.technique} />
           </TabsContent>
         </Tabs>
+
+        {(dbBlock?.id || id) && (
+          <UserNotesPanel targetType="block" targetId={String(dbBlock?.id || id)} />
+        )}
       </div>
     </div>
   );

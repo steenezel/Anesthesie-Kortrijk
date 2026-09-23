@@ -17,6 +17,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CalculatorPageBookmark } from "@/components/CalculatorPageBookmark";
 
 export default function LastCalculator() {
   const [weight, setWeight] = useState<number>(70);
@@ -92,6 +93,7 @@ export default function LastCalculator() {
 
   return (
     <div className="space-y-6 pb-20">
+      <CalculatorPageBookmark calculatorId="last" />
       {/* EMERGENCY HEADER */}
       <Card className="border-primary/20 shadow-lg overflow-hidden">
         <div className="bg-primary/5 p-4 border-b border-primary/10 flex items-center justify-between">
@@ -389,3 +391,4 @@ export default function LastCalculator() {
     </div>
   );
 }
+

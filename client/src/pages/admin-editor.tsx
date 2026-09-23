@@ -12,6 +12,7 @@ import {
   ExternalLink,
   FileText,
   HelpCircle,
+  History,
   ImageIcon,
   Loader2,
   Save,
@@ -23,6 +24,16 @@ import { BodyRegionSelector } from "@/components/blocks/BodyRegionSelector";
 import { parseBodyRegions, type BodyRegionId } from "@/data/body-map-regions";
 import { useAuth } from "@/hooks/use-auth";
 import { canEditCms } from "@shared/permissions";
+import { apiRequest } from "@/lib/queryClient";
+import { useQuery } from "@tanstack/react-query";
+import type { AuditResourceType } from "@/lib/user-content";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 const TAB_CONFIG: Record<string, { label: string; field: string }[]> = {
   pocus: [
@@ -146,6 +157,34 @@ export default function AdminEditor() {
       setLocation("/");
     }
   }, [user, setLocation]);
+
+  const auditResourceType: AuditResourceType =
+    type === "protocols"
+      ? "protocol"
+      : type === "blocks"
+        ? "block"
+        : type === "pocus"
+          ? "pocus"
+          : "journal_club";
+
+  const auditQueryUrl = editId
+    ? `/api/content-audit?resourceType=${auditResourceType}&resourceId=${encodeURIComponent(editId)}&limit=30`
+    : `/api/content-audit?resourceType=${auditResourceType}&limit=30`;
+
+  const { data: auditLogs = [] } = useQuery<
+    {
+      id: string;
+      userKortenaam: string;
+      action: string;
+      resourceId: string;
+      createdAt: string;
+      details?: { title?: string } | null;
+    }[]
+  >({
+    queryKey: [auditQueryUrl],
+    enabled: canEditCms(user?.role),
+    staleTime: 30_000,
+  });
 
   useEffect(() => {
     if (!editId) return;
@@ -291,6 +330,15 @@ export default function AdminEditor() {
     setLoading(true);
     try {
       let error: any = null;
+      let savedId = editId;
+      const action = editId ? "updated" : "created";
+
+      const toAuditType = (t: string): AuditResourceType => {
+        if (t === "protocols") return "protocol";
+        if (t === "blocks") return "block";
+        if (t === "pocus") return "pocus";
+        return "journal_club";
+      };
 
       if (type === "protocols") {
         const payload = {
@@ -299,9 +347,10 @@ export default function AdminEditor() {
           content,
         };
         const result = editId
-          ? await supabase.from("protocols").update(payload).eq("id", editId)
-          : await supabase.from("protocols").insert([payload]);
+          ? await supabase.from("protocols").update(payload).eq("id", editId).select("id").single()
+          : await supabase.from("protocols").insert([payload]).select("id").single();
         error = result.error;
+        savedId = result.data?.id ?? editId;
       } else if (type === "journal_club") {
         const payload: Record<string, unknown> = {
           title: title.trim(),
@@ -310,9 +359,10 @@ export default function AdminEditor() {
         };
         if (pubmedId.trim()) payload.pubmed_id = pubmedId.trim();
         const result = editId
-          ? await supabase.from("journal_club").update(payload).eq("id", editId)
-          : await supabase.from("journal_club").insert([payload]);
+          ? await supabase.from("journal_club").update(payload).eq("id", editId).select("id").single()
+          : await supabase.from("journal_club").insert([payload]).select("id").single();
         error = result.error;
+        savedId = result.data?.id ?? editId;
       } else if (type === "blocks" || type === "pocus") {
         const cfg = TAB_CONFIG[type];
         const payload: Record<string, unknown> = {
@@ -325,12 +375,25 @@ export default function AdminEditor() {
           payload.body_regions = bodyRegions;
         }
         const result = editId
-          ? await supabase.from(type).update(payload).eq("id", editId)
-          : await supabase.from(type).insert([payload]);
+          ? await supabase.from(type).update(payload).eq("id", editId).select("id").single()
+          : await supabase.from(type).insert([payload]).select("id").single();
         error = result.error;
+        savedId = result.data?.id ?? editId;
       }
 
       if (error) throw error;
+
+      if (savedId) {
+        void apiRequest("POST", "/api/content-audit", {
+          action,
+          resourceType: toAuditType(type),
+          resourceId: savedId,
+          details: { title: title.trim() },
+        }).catch(() => {
+          /* best-effort */
+        });
+      }
+
       toast({ title: "Succesvol opgeslagen!" });
       setLocation(`/${type === "journal_club" ? "journalclub" : type}`);
     } catch (err: any) {
@@ -390,15 +453,61 @@ export default function AdminEditor() {
         </div>
       ) : (
       <>
-      <div className="sticky top-0 z-50 flex items-center justify-between border-b bg-white p-4">
-        <Button variant="ghost" size="sm" onClick={() => window.history.back()} className="rounded-xl">
+      <div className="sticky top-0 z-50 flex items-center justify-between gap-2 border-b bg-white p-4">
+        <Button variant="ghost" size="sm" onClick={() => window.history.back()} className="rounded-xl shrink-0">
           <ArrowLeft className="mr-2 h-4 w-4" /> Terug
         </Button>
-        <h1 className="font-black uppercase tracking-tighter">Content Editor</h1>
-        <Button onClick={handleSave} disabled={loading} className="rounded-xl bg-teal-600 px-6 font-bold text-white hover:bg-teal-700">
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-          OPSLAAN
-        </Button>
+        <h1 className="font-black uppercase tracking-tighter text-sm sm:text-base truncate">Content Editor</h1>
+        <div className="flex items-center gap-2 shrink-0">
+          <Drawer>
+            <DrawerTrigger asChild>
+              <Button variant="outline" size="sm" className="rounded-xl">
+                <History className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Historiek</span>
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle className="font-black uppercase tracking-tighter">
+                  Wijzigingshistoriek
+                </DrawerTitle>
+              </DrawerHeader>
+              <div className="px-4 pb-8 max-h-[60vh] overflow-y-auto space-y-2">
+                {auditLogs.length === 0 ? (
+                  <p className="text-sm text-slate-400 py-6 text-center">Nog geen wijzigingen gelogd.</p>
+                ) : (
+                  auditLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-sm"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-black uppercase text-[10px] tracking-widest text-teal-700">
+                          {log.action}
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          {log.createdAt
+                            ? new Date(log.createdAt).toLocaleString("nl-BE")
+                            : ""}
+                        </span>
+                      </div>
+                      <p className="text-slate-700 font-semibold mt-0.5">
+                        {log.userKortenaam}
+                        {log.details && typeof log.details === "object" && "title" in log.details && log.details.title
+                          ? ` · ${String(log.details.title)}`
+                          : ""}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </DrawerContent>
+          </Drawer>
+          <Button onClick={handleSave} disabled={loading} className="rounded-xl bg-teal-600 px-4 sm:px-6 font-bold text-white hover:bg-teal-700">
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+            OPSLAAN
+          </Button>
+        </div>
       </div>
 
       <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 p-6 lg:grid-cols-3">

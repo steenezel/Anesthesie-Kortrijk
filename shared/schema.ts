@@ -9,6 +9,7 @@ import {
   integer,
   real,
   jsonb,
+  unique,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -157,6 +158,82 @@ export const quizProgress = pgTable("quiz_progress", {
   lastResult: text("last_result"),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+export const bookmarkItemTypes = ["protocol", "block", "pocus", "calculator"] as const;
+export type BookmarkItemType = (typeof bookmarkItemTypes)[number];
+
+export const userBookmarks = pgTable(
+  "user_bookmarks",
+  {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    userId: varchar("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    itemType: text("item_type").$type<BookmarkItemType>().notNull(),
+    itemId: text("item_id").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+  },
+  (t) => [unique("user_bookmarks_user_item_uniq").on(t.userId, t.itemType, t.itemId)],
+);
+
+export const insertUserBookmarkSchema = z.object({
+  itemType: z.enum(bookmarkItemTypes),
+  itemId: z.string().trim().min(1),
+});
+export type UserBookmark = typeof userBookmarks.$inferSelect;
+
+export const noteTargetTypes = ["protocol", "block", "general"] as const;
+export type NoteTargetType = (typeof noteTargetTypes)[number];
+
+export const userNotes = pgTable(
+  "user_notes",
+  {
+    id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+    userId: varchar("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    targetType: text("target_type").$type<NoteTargetType>().notNull(),
+    /** Empty string for general notes (keeps unique constraint simple). */
+    targetId: text("target_id").notNull().default(""),
+    content: text("content").notNull().default(""),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (t) => [unique("user_notes_user_target_uniq").on(t.userId, t.targetType, t.targetId)],
+);
+
+export const upsertUserNoteSchema = z.object({
+  targetType: z.enum(noteTargetTypes),
+  targetId: z.string().optional().nullable(),
+  content: z.string(),
+});
+export type UserNote = typeof userNotes.$inferSelect;
+
+export const auditActions = ["created", "updated", "published", "deleted"] as const;
+export type AuditAction = (typeof auditActions)[number];
+
+export const auditResourceTypes = ["protocol", "block", "pocus", "journal_club"] as const;
+export type AuditResourceType = (typeof auditResourceTypes)[number];
+
+export const contentAuditLogs = pgTable("content_audit_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  userKortenaam: text("user_kortenaam").notNull(),
+  action: text("action").$type<AuditAction>().notNull(),
+  resourceType: text("resource_type").$type<AuditResourceType>().notNull(),
+  resourceId: text("resource_id").notNull(),
+  details: jsonb("details").$type<Record<string, unknown> | null>(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertContentAuditSchema = z.object({
+  action: z.enum(auditActions),
+  resourceType: z.enum(auditResourceTypes),
+  resourceId: z.string().trim().min(1),
+  details: z.record(z.unknown()).optional().nullable(),
+});
+export type ContentAuditLog = typeof contentAuditLogs.$inferSelect;
 
 export const logbookEntries = pgTable("logbook_entries", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

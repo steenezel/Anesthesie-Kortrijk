@@ -12,6 +12,7 @@ import {
   Calculator
 } from "lucide-react";
 import { useSite } from "@/hooks/use-site";
+import { BookmarkButton } from "@/components/BookmarkButton";
 
 const calculators = [
   {
@@ -110,24 +111,29 @@ export default function CalculatorList() {
         {/* High Density Grid/List */}
         <div className="grid grid-cols-1 gap-2">
           {calculators.map((calc) => (
-            <Link key={calc.id} href={calc.path}>
-              <div className={`group flex items-center justify-between p-3 rounded-2xl border border-slate-100 ${calc.color} active:scale-[0.98] transition-all cursor-pointer`}>
-                <div className="flex items-center gap-3">
-                  <div className={`${calc.iconBg} p-2 rounded-xl shadow-sm group-hover:scale-105 transition-transform`}>
-                    {calc.icon}
+            <div key={calc.id} className="relative">
+              <Link href={calc.path}>
+                <div className={`group flex items-center justify-between p-3 pr-12 rounded-2xl border border-slate-100 ${calc.color} active:scale-[0.98] transition-all cursor-pointer`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`${calc.iconBg} p-2 rounded-xl shadow-sm group-hover:scale-105 transition-transform`}>
+                      {calc.icon}
+                    </div>
+                    <div>
+                      <h2 className="font-black text-slate-800 uppercase text-xs tracking-tight">
+                        {calc.title}
+                      </h2>
+                      <p className="text-[10px] text-slate-500 font-bold leading-none mt-0.5 opacity-80">
+                        {calc.description}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="font-black text-slate-800 uppercase text-xs tracking-tight">
-                      {calc.title}
-                    </h2>
-                    <p className="text-[10px] text-slate-500 font-bold leading-none mt-0.5 opacity-80">
-                      {calc.description}
-                    </p>
-                  </div>
+                  <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
                 </div>
-                <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </Link>
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 z-10">
+                <BookmarkButton itemType="calculator" itemId={calc.id} className="bg-white/90 shadow-sm" />
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 

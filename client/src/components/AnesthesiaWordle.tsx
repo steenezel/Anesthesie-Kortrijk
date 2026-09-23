@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '@/hooks/use-auth';
 
 // @ts-expect-error: Negeer ontbrekende types voor de woordenlijst
  
@@ -24,6 +25,8 @@ const AZERTY_KEYS = [
 ];
 
 export default function AnesthesiaWordle() {
+  const { user } = useAuth();
+  const kortenaam = user?.kortenaam || user?.username || "";
   const [solution, setSolution] = useState('');
   const [guesses, setGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState('');
@@ -53,7 +56,7 @@ setTimeout(() => setErrorMessage(null), 2000);
       }).join('');
     }).join('\n');
 
-    const shareText = `Anesthesie-dle ${new Date().toLocaleDateString('nl-BE', {day: '2-digit', month: '2-digit'})}\n${emojiGrid}\nScore: ${guesses.length}/6`;
+    const shareText = `Anesthesie-dle ${new Date().toLocaleDateString('nl-BE', {day: '2-digit', month: '2-digit'})}${kortenaam ? ` · ${kortenaam}` : ""}\n${emojiGrid}\nScore: ${guesses.length}/6`;
 
     if (navigator.share) {
       navigator.share({ title: 'Anesthesie-dle', text: shareText }).catch(console.error);

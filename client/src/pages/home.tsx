@@ -27,6 +27,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { quotes } from "@/data/quotes";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
+import { HomeFavoritesSection } from "@/components/HomeFavoritesSection";
 import { useSite } from "@/hooks/use-site";
 
 // @ts-expect-error: __BUILD_DATE__ is defined globally by Vite during the build process
@@ -223,6 +224,10 @@ export default function Home() {
           </div>
         </div>
       </motion.div>
+
+      <div className="max-w-xl mx-auto px-1 mt-4">
+        <HomeFavoritesSection />
+      </div>
 
       {site.modules.games && (
         <Dialog open={showEgg} onOpenChange={setShowEgg}>

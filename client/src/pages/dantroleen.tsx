@@ -1,3 +1,4 @@
+import { CalculatorPageBookmark } from "@/components/CalculatorPageBookmark";
 // client/src/pages/dantroleen.tsx
 import { Link } from "wouter";
 import { ChevronLeft, Info } from "lucide-react";
@@ -7,6 +8,7 @@ import DantroleenCalc from "../components/calculators/DantroleenCalc.js";
 export default function DantroleenPage() {
   return (
     <div className="space-y-6 pb-20">
+      <CalculatorPageBookmark calculatorId="dantroleencalc" />
       <Link href="/calculator">
         <a className="flex items-center text-blue-600 font-bold uppercase text-xs tracking-widest">
           <ChevronLeft className="h-4 w-4" /> Terug naar overzicht
@@ -36,3 +38,4 @@ export default function DantroleenPage() {
     </div>
   );
 }
+

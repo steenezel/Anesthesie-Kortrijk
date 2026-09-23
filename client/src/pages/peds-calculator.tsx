@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Baby, Zap, ShieldAlert, AlertCircle, Ruler } from "lucide-react";
 import { pediatricMeds, PediatricMed } from "@/lib/pediatric-config";
+import { CalculatorPageBookmark } from "@/components/CalculatorPageBookmark";
 
 export default function PedsCalculator() {
   const [ageValue, setAgeValue] = useState<number>(2);
@@ -85,6 +86,7 @@ export default function PedsCalculator() {
 
   return (
     <div className="space-y-6 pb-20 px-4 max-w-2xl mx-auto">
+      <CalculatorPageBookmark calculatorId="peds" />
       {/* PATIENT GEGEVENS KAART */}
       <Card className={`border-2 transition-colors ${isWeightRequired ? 'border-amber-400 bg-amber-50/20' : 'border-teal-100 shadow-sm'}`}>
         <CardHeader className="p-4 border-b flex flex-row items-center gap-2">
@@ -260,3 +262,4 @@ function DrugListItem({ med, data }: { med: PediatricMed, data: any }) {
     </div>
   );
 }
+

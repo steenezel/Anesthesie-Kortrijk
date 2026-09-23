@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { CmsEditLink } from "@/components/CmsEditLink";
+import { BookmarkButton } from "@/components/BookmarkButton";
+import { cacheContent, readCachedContent } from "@/lib/offline";
 
 export default function PocusDetail() {
   const [, params] = useRoute("/pocus/:id");
@@ -14,12 +16,18 @@ export default function PocusDetail() {
   const { data: dbPocus, isLoading } = useQuery({
     queryKey: ['pocus-detail', id],
     queryFn: async () => {
+      const cacheKey = `pocus_${id}`;
+      if (!navigator.onLine) {
+        const cached = readCachedContent<any>(cacheKey);
+        if (cached) return cached;
+      }
       const { data, error } = await supabase
         .from('pocus')
         .select('*')
         .eq('id', id)
         .single();
       if (error) throw error;
+      if (data) cacheContent(cacheKey, data);
       return data;
     },
     enabled: !!id
@@ -35,18 +43,20 @@ export default function PocusDetail() {
 
   return (
     <div className="min-h-screen bg-white pb-20 px-4">
-      {/* STICKY HEADER */}
       <div className="flex items-center justify-between py-4 sticky top-0 bg-white/80 backdrop-blur-md z-10 max-w-3xl mx-auto w-full">
         <Link href="/pocus">
           <div className="flex items-center text-blue-600 font-black uppercase text-[10px] tracking-widest cursor-pointer group">
             <ChevronLeft className="h-4 w-4 mr-1 group-hover:-translate-x-1 transition-transform" /> Overzicht
           </div>
         </Link>
-        <CmsEditLink
-          href={`/admin?type=pocus&id=${dbPocus.id}`}
-          label="Bewerken"
-          className="hover:text-blue-600 transition-colors"
-        />
+        <div className="flex gap-2 items-center">
+          <BookmarkButton itemType="pocus" itemId={dbPocus.id} />
+          <CmsEditLink
+            href={`/admin?type=pocus&id=${dbPocus.id}`}
+            label="Bewerken"
+            className="hover:text-blue-600 transition-colors"
+          />
+        </div>
       </div>
 
       <div className="p-6 max-w-3xl mx-auto w-full">

@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { ChevronLeft, AlertCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { CalculatorPageBookmark } from "@/components/CalculatorPageBookmark";
 
 const factors = [
   { id: "gender", label: "Vrouw" },
@@ -25,6 +26,7 @@ export default function ApfelCalculator() {
 
   return (
     <div className="space-y-6 pb-20">
+      <CalculatorPageBookmark calculatorId="apfel" />
       <Link href="/calculator">
         <a className="flex items-center text-blue-600 font-bold uppercase text-xs tracking-widest">
           <ChevronLeft className="h-4 w-4" /> Terug naar overzicht
@@ -68,3 +70,4 @@ export default function ApfelCalculator() {
     </div>
   );
 }
+

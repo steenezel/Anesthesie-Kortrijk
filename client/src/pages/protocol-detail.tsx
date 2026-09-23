@@ -5,8 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { CmsEditLink } from "@/components/CmsEditLink";
+import { BookmarkButton } from "@/components/BookmarkButton";
+import { UserNotesPanel } from "@/components/UserNotesPanel";
 import DantroleenCalc from '../components/calculators/DantroleenCalc.js';
 import SedationPedsCalculator from "@/components/calculators/SedationPedsCalculator";
+import { cacheContent, readCachedContent } from "@/lib/offline";
 
 const allProtocols = import.meta.glob('../content/protocols/**/*.md', { query: 'raw', eager: true });
 
@@ -24,7 +27,10 @@ export default function ProtocolDetail() {
     queryKey: ['protocol', id],
     queryFn: async () => {
       if (!id || !isUuid) return null;
+      const cacheKey = `protocol_${id}`;
+      if (!navigator.onLine) return readCachedContent<any>(cacheKey);
       const { data } = await supabase.from('protocols').select('*').eq('id', id).single();
+      if (data) cacheContent(cacheKey, data);
       return data;
     },
     enabled: !!id && isUuid
@@ -49,7 +55,8 @@ export default function ProtocolDetail() {
           </div>
         </Link>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <BookmarkButton itemType="protocol" itemId={dbProtocol?.id || id} />
           {dbProtocol && (
             <CmsEditLink href={`/admin?type=protocols&id=${dbProtocol.id}`} />
           )}
@@ -72,6 +79,10 @@ export default function ProtocolDetail() {
           {content.includes("[DANTROLEEN_CALC]") && <DantroleenCalc />}
           {content.includes("[PEDS_SEDATION_CALC]") && <SedationPedsCalculator />}
         </div>
+
+        {(dbProtocol?.id || id) && (
+          <UserNotesPanel targetType="protocol" targetId={String(dbProtocol?.id || id)} />
+        )}
       </div>
     </div>
   );

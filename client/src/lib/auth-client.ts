@@ -8,6 +8,8 @@ export const authClient = createAuthClient({
 export type SessionUser = {
   id: string;
   username: string;
+  /** Alias for username (invite kortenaam). */
+  kortenaam?: string;
   name: string;
   email: string | null;
   role: "aso" | "staff" | "supervisor" | "kiosk" | "admin";

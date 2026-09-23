@@ -14,6 +14,12 @@ import {
   gameStats,
   userPreferences,
   quizProgress,
+  userBookmarks,
+  insertUserBookmarkSchema,
+  userNotes,
+  upsertUserNoteSchema,
+  contentAuditLogs,
+  insertContentAuditSchema,
   type UserRole,
 } from "../shared/schema.js";
 import { sql, eq, and, desc, gte, lte, isNotNull, inArray, type SQL } from "drizzle-orm";
@@ -24,6 +30,7 @@ import {
   toPublicProfile,
 } from "./auth-middleware.js";
 import {
+  canEditCms,
   canReviewAsoLogbooks,
   canWriteLogbook,
 } from "../shared/permissions.js";
@@ -138,6 +145,203 @@ export async function registerRoutes(
     } catch (error) {
       console.error("preferences put:", error);
       res.status(500).json({ error: "Voorkeuren opslaan mislukt" });
+    }
+  });
+
+  // --- BOOKMARKS ---
+  app.get("/api/bookmarks", requireAuth, async (req, res) => {
+    try {
+      const userId = req.appUser!.profile.id;
+      const rows = await getDb()
+        .select()
+        .from(userBookmarks)
+        .where(eq(userBookmarks.userId, userId))
+        .orderBy(desc(userBookmarks.createdAt));
+      res.json(rows);
+    } catch (error) {
+      console.error("bookmarks get:", error);
+      res.status(500).json({ error: "Bookmarks ophalen mislukt" });
+    }
+  });
+
+  app.post("/api/bookmarks", requireAuth, rejectKioskWrites, async (req, res) => {
+    try {
+      const userId = req.appUser!.profile.id;
+      const validated = insertUserBookmarkSchema.parse(req.body ?? {});
+      const [row] = await getDb()
+        .insert(userBookmarks)
+        .values({
+          userId,
+          itemType: validated.itemType,
+          itemId: validated.itemId,
+        })
+        .onConflictDoNothing({
+          target: [userBookmarks.userId, userBookmarks.itemType, userBookmarks.itemId],
+        })
+        .returning();
+
+      if (!row) {
+        const existing = await getDb()
+          .select()
+          .from(userBookmarks)
+          .where(
+            and(
+              eq(userBookmarks.userId, userId),
+              eq(userBookmarks.itemType, validated.itemType),
+              eq(userBookmarks.itemId, validated.itemId),
+            ),
+          )
+          .limit(1);
+        return res.json(existing[0] ?? null);
+      }
+      res.json(row);
+    } catch (error) {
+      console.error("bookmarks post:", error);
+      res.status(400).json({ error: "Bookmark opslaan mislukt" });
+    }
+  });
+
+  app.delete("/api/bookmarks", requireAuth, rejectKioskWrites, async (req, res) => {
+    try {
+      const userId = req.appUser!.profile.id;
+      const itemType = String(req.query.itemType || (req.body as { itemType?: string })?.itemType || "");
+      const itemId = String(req.query.itemId || (req.body as { itemId?: string })?.itemId || "");
+      const validated = insertUserBookmarkSchema.parse({ itemType, itemId });
+      await getDb()
+        .delete(userBookmarks)
+        .where(
+          and(
+            eq(userBookmarks.userId, userId),
+            eq(userBookmarks.itemType, validated.itemType),
+            eq(userBookmarks.itemId, validated.itemId),
+          ),
+        );
+      res.json({ ok: true });
+    } catch (error) {
+      console.error("bookmarks delete:", error);
+      res.status(400).json({ error: "Bookmark verwijderen mislukt" });
+    }
+  });
+
+  // --- USER NOTES ---
+  app.get("/api/notes", requireAuth, async (req, res) => {
+    try {
+      const userId = req.appUser!.profile.id;
+      const targetType = String(req.query.targetType || "");
+      const rawTargetId = req.query.targetId != null ? String(req.query.targetId) : "";
+      const targetId = targetType === "general" ? "" : rawTargetId;
+
+      if (!targetType) {
+        return res.status(400).json({ error: "targetType verplicht" });
+      }
+
+      const rows = await getDb()
+        .select()
+        .from(userNotes)
+        .where(
+          and(
+            eq(userNotes.userId, userId),
+            eq(userNotes.targetType, targetType as "protocol" | "block" | "general"),
+            eq(userNotes.targetId, targetId),
+          ),
+        )
+        .limit(1);
+      res.json(rows[0] ?? { content: "", targetType, targetId, updatedAt: null });
+    } catch (error) {
+      console.error("notes get:", error);
+      res.status(500).json({ error: "Notitie ophalen mislukt" });
+    }
+  });
+
+  app.put("/api/notes", requireAuth, rejectKioskWrites, async (req, res) => {
+    try {
+      const userId = req.appUser!.profile.id;
+      const validated = upsertUserNoteSchema.parse(req.body ?? {});
+      const targetId =
+        validated.targetType === "general" ? "" : String(validated.targetId ?? "").trim();
+
+      if (validated.targetType !== "general" && !targetId) {
+        return res.status(400).json({ error: "targetId verplicht" });
+      }
+
+      const [row] = await getDb()
+        .insert(userNotes)
+        .values({
+          userId,
+          targetType: validated.targetType,
+          targetId,
+          content: validated.content,
+          updatedAt: new Date(),
+        })
+        .onConflictDoUpdate({
+          target: [userNotes.userId, userNotes.targetType, userNotes.targetId],
+          set: { content: validated.content, updatedAt: new Date() },
+        })
+        .returning();
+      res.json(row);
+    } catch (error) {
+      console.error("notes put:", error);
+      res.status(400).json({ error: "Notitie opslaan mislukt" });
+    }
+  });
+
+  // --- CONTENT AUDIT ---
+  app.post("/api/content-audit", requireAuth, rejectKioskWrites, async (req, res) => {
+    try {
+      const sessionUser = req.appUser!;
+      if (!canEditCms(sessionUser.profile.role)) {
+        return res.status(403).json({ error: "Alleen staf mag auditlogs schrijven" });
+      }
+      const validated = insertContentAuditSchema.parse(req.body ?? {});
+      const [row] = await getDb()
+        .insert(contentAuditLogs)
+        .values({
+          userId: sessionUser.profile.id,
+          userKortenaam: sessionUser.profile.username,
+          action: validated.action,
+          resourceType: validated.resourceType,
+          resourceId: validated.resourceId,
+          details: validated.details ?? null,
+        })
+        .returning();
+      res.json(row);
+    } catch (error) {
+      console.error("content-audit post:", error);
+      res.status(400).json({ error: "Auditlog schrijven mislukt" });
+    }
+  });
+
+  app.get("/api/content-audit", requireAuth, async (req, res) => {
+    try {
+      const sessionUser = req.appUser!;
+      if (!canEditCms(sessionUser.profile.role)) {
+        return res.status(403).json({ error: "Alleen staf mag auditlogs bekijken" });
+      }
+
+      const resourceType = req.query.resourceType ? String(req.query.resourceType) : "";
+      const resourceId = req.query.resourceId ? String(req.query.resourceId) : "";
+      const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 40));
+
+      const filters: SQL[] = [];
+      if (resourceType) {
+        filters.push(
+          eq(
+            contentAuditLogs.resourceType,
+            resourceType as "protocol" | "block" | "pocus" | "journal_club",
+          ),
+        );
+      }
+      if (resourceId) filters.push(eq(contentAuditLogs.resourceId, resourceId));
+
+      const query = getDb().select().from(contentAuditLogs);
+      const rows = filters.length
+        ? await query.where(and(...filters)).orderBy(desc(contentAuditLogs.createdAt)).limit(limit)
+        : await query.orderBy(desc(contentAuditLogs.createdAt)).limit(limit);
+
+      res.json(rows);
+    } catch (error) {
+      console.error("content-audit get:", error);
+      res.status(500).json({ error: "Auditlogs ophalen mislukt" });
     }
   });
 
@@ -444,14 +648,15 @@ export async function registerRoutes(
   // --- FLAPPY (public-ish but require login to reduce abuse) ---
   app.post("/api/highscores", requireAuth, async (req, res) => {
     try {
-      const { name, score } = req.body;
+      const sessionUser = req.appUser!;
+      const { score } = req.body ?? {};
       const numericScore = Number(score);
+      const cleanName = (sessionUser.profile.username || "").trim().toUpperCase();
 
-      if (!name || isNaN(numericScore)) {
+      if (!cleanName || isNaN(numericScore)) {
         return res.status(400).send("Ongeldige data");
       }
 
-      const cleanName = name.trim().toUpperCase();
       const database = getDb();
       const existing = await database
         .select()
@@ -468,9 +673,9 @@ export async function registerRoutes(
             target: gameHighscores.name,
             set: { score: numericScore, updatedAt: new Date() },
           });
-        res.json({ success: true, updated: true });
+        res.json({ success: true, updated: true, name: cleanName });
       } else {
-        res.json({ success: true, updated: false });
+        res.json({ success: true, updated: false, name: cleanName });
       }
     } catch (error) {
       console.error("Fout bij opslaan score:", error);

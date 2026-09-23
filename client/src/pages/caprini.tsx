@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronLeft, AlertTriangle } from "lucide-react";
 import { Link } from "wouter";
+import { CalculatorPageBookmark } from "@/components/CalculatorPageBookmark";
 
 // Definitie van de risicofactoren
 const RISK_FACTORS = [
@@ -69,6 +70,7 @@ export default function CapriniCalculator() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
+      <CalculatorPageBookmark calculatorId="caprini" />
       {/* Header */}
       <div className="p-4 flex items-center bg-white border-b">
         <Link href="/calculator">
@@ -137,3 +139,4 @@ export default function CapriniCalculator() {
     </div>
   );
 }
+

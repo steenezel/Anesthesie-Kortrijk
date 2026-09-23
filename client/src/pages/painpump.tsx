@@ -2,10 +2,12 @@ import React from "react";
 import { Link } from "wouter";
 import { ChevronLeft, Info } from "lucide-react";
 import PainPumpCalculator from "@/components/calculators/PainPumpCalculator";
+import { CalculatorPageBookmark } from "@/components/CalculatorPageBookmark";
 
 export default function PainPumpPage() {
   return (
     <div className="min-h-screen bg-slate-50 pb-12">
+      <CalculatorPageBookmark calculatorId="painpump" />
       <div className="p-4">
         <Link href="/calculator">
           <a className="flex items-center text-teal-600 font-black uppercase text-[10px] tracking-widest">
@@ -33,3 +35,4 @@ export default function PainPumpPage() {
     </div>
   );
 }
+

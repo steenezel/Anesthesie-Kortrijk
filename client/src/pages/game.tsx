@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Syringe, RotateCcw, Trophy, Send, Loader2, Volume2, VolumeX } from 'lucide-react';
 import { Link } from 'wouter';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/hooks/use-auth';
 
 const GRAVITY = 0.6;
 const JUMP_STRENGTH = -8;
@@ -20,6 +21,8 @@ interface Pipe {
 }
 
 export default function GamePage() {
+  const { user } = useAuth();
+  const kortenaam = (user?.kortenaam || user?.username || "").trim().toUpperCase();
   const [birdPos, setBirdPos] = useState(GAME_HEIGHT / 2);
   const [birdVelocity, setBirdVelocity] = useState(0);
   const [pipes, setPipes] = useState<Pipe[]>([]);
@@ -111,12 +114,12 @@ export default function GamePage() {
 
   const fetchLeaderboard = useCallback(async () => {
     try {
-      const resScores = await fetch('/api/highscores');
+      const resScores = await fetch('/api/highscores', { credentials: 'include' });
       if (resScores.ok) {
         const data = await resScores.json();
         setLeaderboard(Array.isArray(data) ? data : []);
       }
-      const resStats = await fetch('/api/game-stats');
+      const resStats = await fetch('/api/game-stats', { credentials: 'include' });
       if (resStats.ok) {
         const data = await resStats.json();
         setGlobalCounter(data.totalAttempts || 0);
@@ -132,14 +135,20 @@ export default function GamePage() {
     fetchLeaderboard();
   }, [fetchLeaderboard]);
 
+  useEffect(() => {
+    if (kortenaam) setPlayerName(kortenaam);
+  }, [kortenaam]);
+
   const submitScore = async () => {
-    if (!playerName || isSubmitting) return;
+    const name = (kortenaam || playerName).trim().toUpperCase();
+    if (!name || isSubmitting) return;
     setIsSubmitting(true);
     try {
       const res = await fetch('/api/highscores', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: playerName.trim().toUpperCase(), score: score }),
+        credentials: 'include',
+        body: JSON.stringify({ score }),
       });
       if (res.ok) {
         setHasSubmitted(true);
@@ -151,6 +160,14 @@ export default function GamePage() {
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (gameState !== 'gameover' || hasSubmitted || score <= 0 || isSubmitting) return;
+    if (kortenaam) {
+      void submitScore();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState, kortenaam, score, hasSubmitted]);
 
   const triggerGameOver = useCallback(() => {
     setGameState('gameover');
@@ -165,7 +182,7 @@ export default function GamePage() {
       setHighScore(score);
       localStorage.setItem('flappy_ane_highscore', score.toString());
     }
-    fetch('/api/game-stats/increment', { method: 'POST' }).then(() => fetchLeaderboard());
+    fetch('/api/game-stats/increment', { method: 'POST', credentials: 'include' }).then(() => fetchLeaderboard());
   }, [score, fetchLeaderboard, playDeathSound]);
 
   const jump = useCallback(() => {
@@ -319,15 +336,35 @@ export default function GamePage() {
               </div>
             </div>
             {!hasSubmitted && score > 0 ? (
-              <div className="w-full max-w-xs bg-white/5 p-5 rounded-3xl border border-white/10 mb-6">
-                <div className="flex gap-2">
-                  <Input placeholder="Initialen" className="bg-black/20 border-white/10 text-white uppercase font-bold" value={playerName} onChange={(e) => setPlayerName(e.target.value.slice(0, 10))} />
-                  <Button className="bg-teal-600 hover:bg-teal-700" disabled={!playerName || isSubmitting} onClick={submitScore}>
-                    {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                  </Button>
-                </div>
+              <div className="w-full max-w-xs bg-white/5 p-5 rounded-3xl border border-white/10 mb-6 space-y-3">
+                {kortenaam ? (
+                  <p className="text-xs text-white/70">
+                    Score als <span className="font-black text-teal-400">{kortenaam}</span>
+                  </p>
+                ) : (
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Kortenaam"
+                      className="bg-black/20 border-white/10 text-white uppercase font-bold"
+                      value={playerName}
+                      onChange={(e) => setPlayerName(e.target.value.slice(0, 10))}
+                    />
+                    <Button
+                      className="bg-teal-600 hover:bg-teal-700"
+                      disabled={!playerName || isSubmitting}
+                      onClick={() => void submitScore()}
+                    >
+                      {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                    </Button>
+                  </div>
+                )}
+                {kortenaam && isSubmitting && (
+                  <div className="flex justify-center text-teal-400">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  </div>
+                )}
               </div>
-            ) : hasSubmitted && <div className="mb-6 py-3 px-6 bg-teal-500/20 border border-teal-500/30 rounded-full text-teal-400 text-xs font-black uppercase">✅ Geregistreerd</div>}
+            ) : hasSubmitted && <div className="mb-6 py-3 px-6 bg-teal-500/20 border border-teal-500/30 rounded-full text-teal-400 text-xs font-black uppercase">✅ Geregistreerd{kortenaam ? ` · ${kortenaam}` : ""}</div>}
             <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100 font-black rounded-xl py-6 w-full max-w-xs" onClick={resetGame}>
               <RotateCcw className="w-5 h-5 mr-2" /> NIEUWE POGING
             </Button>

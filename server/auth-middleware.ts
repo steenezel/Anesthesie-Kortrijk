@@ -88,6 +88,7 @@ export function toPublicProfile(user: User) {
   return {
     id: user.id,
     username: user.username,
+    kortenaam: user.username,
     name: user.name ?? user.username,
     email: user.email,
     role: user.role,
