@@ -21,7 +21,10 @@ Je hoeft **geen** TypeScript meer te wijzigen om iemand toe te voegen.
 
 4. Opslaan. De gebruiker kan meteen een OTP aanvragen (geen redeploy).
 
-Iemand deactiveren: zet `active` op `false` (rij mag blijven staan).
+Iemand deactiveren: zet `active` op `false` (rij mag blijven staan).  
+Dat blokkeert **nieuwe OTP’s** én bestaande sessies (API geeft dan `401`; `users.active` wordt ook uitgezet).
+
+Mails altijd **lowercase** opslaan (`naam@azgroeninge.be`).
 
 ## Via SQL Editor
 

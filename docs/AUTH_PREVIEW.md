@@ -1,8 +1,8 @@
-# Auth: preview, soft launch & go-live checklist
+# Auth: preview & go-live checklist (zonder dienst-downtime)
 
 Login leeft op branch **`User-login`**. Productie (`main`) blijft de **PIN-app** tot je merget/deploy’t.
 
-Er is **geen** tweede simultane Production-app op hetzelfde domein. Soft launch = **één** live OTP-deploy + **kleine allowlist** (zie hieronder).
+**Soft launch (OTP-only + kleine allowlist) is geen optie:** op één Production-domein vervangt die deploy de PIN volledig; wie niet in `invited_users` staat, kan de app niet meer openen. Dat is downtime voor de dienst.
 
 ---
 
@@ -56,7 +56,7 @@ Vink af met minstens **1 ASO + 1 staf**, bij voorkeur GSM + desktop.
 ### Kiosk (optioneel)
 - [ ] Kiosk-rol: CDS lezen, geen logboek/notities-schrijven
 
-**Preview groen?** → Production-DB + soft launch (onder). Volledige cutover: [AUTH_CUTOVER.md](./AUTH_CUTOVER.md).
+**Preview groen?** → kies een **zero-downtime cutover** (onder) + [AUTH_CUTOVER.md](./AUTH_CUTOVER.md).
 
 ---
 
@@ -75,8 +75,7 @@ De app-auth/user-tabellen zitten in de Postgres van **`DATABASE_URL`** (Supabase
    - `users`, `invited_users`, `user_preferences`
    - `user_bookmarks`, `user_notes`, `content_audit_logs`
    - logboek / highscores / … (zoals in `APP_SCHEMA.sql`)
-4. **Allowlist soft launch:** in `invited_users` alleen de pilotgroep (`active = true`, juiste `role` + `username`/kortenaam).  
-   Rest van de dienst: ofwel nog **geen** rij, ofwel `active = false`.
+4. **Allowlist vóór cutover:** zie zero-downtime opties hieronder (niet “alleen pilot”).
 5. Optioneel lokaal tegen **prod**-URL (voorzichtig):  
    `DATABASE_URL=<prod> npm run db:push`  
    (drizzle-kit kan interactieve prompts geven; SQL hierboven is veiliger.)
@@ -89,30 +88,27 @@ Zie ook [INVITES_SUPABASE.md](./INVITES_SUPABASE.md).
 
 ---
 
-## Soft launch — wat het wél en niet is
+## Cutover zonder dienst-downtime
 
-### Niet: twee Production-versies naast elkaar
+Op `https://anesthesie-kortrijk.be` draait **altijd één** Production-deploy. Huidige `User-login`-code is **OTP-only** (PIN-endpoint → `410`). Kies daarom vóór merge één pad:
 
-Op `https://anesthesie-kortrijk.be` (of je Vercel-productiedomein) draait **altijd één** deploy van `main`.
+| Optie | Wat | Wanneer |
+|-------|-----|---------|
+| **A. Dual auth (tijdelijk)** | Feature flag: gedeelde PIN **of** e-mail OTP tot iedereen op OTP zit; daarna PIN uit | Je wilt geleidelijk migreren zonder dat iemand buitensluit |
+| **B. Big-bang invite** | Zet **alle** actieve staf/ASO in `invited_users` (`active = true`) **vóór** Production OTP-deploy | **Gekozen** — lijst compleet; één overstapmoment |
+| **C. PIN blijft live** | `main` = PIN; OTP alleen op Preview tot A of B klaar is | Veiligste default tot cutover |
 
-| Fase | Wat bezoekers zien |
-|------|-------------------|
-| Nu | PIN-app (`main` oud) |
-| Soft launch | OTP-app voor **iedereen** die de site opent; inloggen kan **alleen** met allowlist |
-| Volledige launch | Zelfde OTP-app; allowlist uitgebreid naar hele dienst |
+**Niet doen:** OTP-only deployen met een kleine pilot-allowlist — niet-uitgenodigden kunnen de live app dan niet meer openen.
 
-Soft launch ≠ Preview + Production tegelijk als “twee prod-apps”. Preview (`*.vercel.app`) mag blijven bestaan voor experimenten, maar is **niet** de dienst-URL.
+Preview (`*.vercel.app`) blijft bruikbaar om OTP/RBAC te testen zonder Production te raken.
 
-### Wel: beperkte toegang via allowlist
+Aanbevolen volgorde zonder downtime:
 
-1. Preview-checklist groen.
-2. Production-DB + env klaar ([AUTH_CUTOVER.md](./AUTH_CUTOVER.md) §1–2).
-3. `invited_users`: **alleen** jij + 2 staf + 3 ASO (pilot).
-4. Merge `User-login` → `main` → Vercel Production deploy.
-5. Pilot test **48–72 u** op het **live domein**.
-6. Daarna: overige collega’s toevoegen in `invited_users` (geen nieuwe deploy nodig).
-
-**Let op:** vanaf soft-launch-deploy werkt de **oude PIN niet meer** op Production. Wie niet uitgenodigd is, kan de app **niet** gebruiken tot je hen invite’t. Plant de soft launch dus kort, of nodig meteen de hele dienst uit als downtime onaanvaardbaar is.
+1. Preview-checklist groen (boven).
+2. Production-DB + env klaar ([AUTH_CUTOVER.md](./AUTH_CUTOVER.md)).
+3. **Of** dual-auth gebouwd + getest (**A**), **of** volledige `invited_users` geverifieerd in prod (**B**).
+4. Merge `User-login` → `main` → Production deploy.
+5. Smoke op live domein; Instant Rollback paraat (onder).
 
 ---
 
@@ -150,10 +146,10 @@ Vercel herdeploy’t automatisch.
 ### Na rollback
 
 - Preview/`User-login` blijft beschikbaar om te fixen.
-- Pas opnieuw soft-launchen als Preview opnieuw groen is.
+- Opnieuw cutoveren pas als Preview opnieuw groen is én pad A of B opnieuw klopt.
 
 ---
 
-## Cutover (volledige dienst)
+## Cutover (live)
 
-Zie [AUTH_CUTOVER.md](./AUTH_CUTOVER.md): env, schema, merge, post-cutover.
+Zie [AUTH_CUTOVER.md](./AUTH_CUTOVER.md): env, schema, zero-downtime pad, merge, post-cutover.

@@ -1,7 +1,9 @@
 # Auth production cutover
 
-Voer dit uit **nadat** de checklist in [AUTH_PREVIEW.md](./AUTH_PREVIEW.md) groen is.  
-Soft launch (kleine allowlist) en rollback staan daar uitgelegd.
+**Gekozen pad: B — big-bang invite** (hele dienst in allowlist vóór OTP Production-deploy).  
+Geen soft launch / geen dual PIN. Rollback: [AUTH_PREVIEW.md](./AUTH_PREVIEW.md).
+
+Voer dit uit **nadat** de Preview-checklist in [AUTH_PREVIEW.md](./AUTH_PREVIEW.md) groen is.
 
 ## 1. Productie-env (Vercel Production)
 
@@ -13,17 +15,21 @@ Soft launch (kleine allowlist) en rollback staan daar uitgelegd.
 | `RESEND_API_KEY` | Resend key |
 | `AUTH_FROM_EMAIL` | `Anesthesie Kortrijk <noreply@anesthesie-kortrijk.be>` |
 
-Verwijder of negeer `VITE_APP_PIN` — PIN-AuthGuard is vervangen door e-mail OTP.
+**Verwijder op Production:** `AUTH_DEV_OTP_LOG`, `VITE_APP_PIN`, `OAUTH_CLIENT_ID` (legacy).  
+`AUTH_DEV_OTP_LOG` mag alleen Preview/local blijven.
 
 ## 2. Schema + invites (Production-DB)
 
-In Supabase SQL Editor (productieproject):
-
 1. [`APP_SCHEMA.sql`](../APP_SCHEMA.sql) indien auth/users nog ontbreken  
 2. [`scripts/sql/user-features-tables.sql`](../scripts/sql/user-features-tables.sql) voor bookmarks/notes/audit  
-3. Soft launch: alleen pilot in `invited_users` (`active = true`) — zie [INVITES_SUPABASE.md](./INVITES_SUPABASE.md)
+3. **Volledige dienst** in `invited_users` (`active = true`, lowercase email, juiste `role` + kortenaam) — [INVITES_SUPABASE.md](./INVITES_SUPABASE.md)
 
-Optioneel: `DATABASE_URL=<prod> npm run db:push` (kan interactieve prompts geven; SQL is veiliger).
+Controle vóór merge:
+
+```sql
+select role, count(*) from public.invited_users where active group by role;
+select email from public.invited_users where email <> lower(email);
+```
 
 ## 3. Merge & deploy
 
@@ -31,15 +37,10 @@ Optioneel: `DATABASE_URL=<prod> npm run db:push` (kan interactieve prompts geven
 2. PR `User-login` → `main`, review, merge.
 3. Vercel Production deploy afwachten.
 4. Smoke op **live domein**: OTP → heropen zonder OTP → logboek → notitie → (staf) edit → uitloggen.
+5. Rollback paraat: Instant Rollback naar pre-OTP Production.
 
-## 4. Soft launch → hele dienst
+## 4. Na cutover
 
-- Eerste 48–72 u: alleen pilot-allowlist.
-- Daarna overige mails in `invited_users` (geen redeploy).
-- Rollback: Vercel → vorige Production-deploy **Promote** — details in [AUTH_PREVIEW.md](./AUTH_PREVIEW.md).
-
-## 5. Na volledige cutover
-
-- Deel geen gedeelde PIN meer.
-- PIN-endpoint `/api/logbook/auth/login` geeft `410`.
+- Deel de gedeelde PIN niet meer (endpoint blijft `410`).
+- Extra collega’s: nieuwe rij in `invited_users` (geen redeploy).
 - Kolommen `users.pin` / `password` zijn legacy.

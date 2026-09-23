@@ -577,6 +577,11 @@ export async function registerRoutes(
 
   app.get("/api/logbook/users", requireAuth, async (req, res) => {
     try {
+      const sessionUser = req.appUser!;
+      if (!canReviewAsoLogbooks(sessionUser.profile.role)) {
+        return res.status(403).json({ error: "Geen toegang tot gebruikerslijst" });
+      }
+
       const role = req.query.role ? String(req.query.role) : "";
       const filters: SQL[] = [isNotNull(users.name), eq(users.active, true)];
       if (role === "aso" || role === "supervisor" || role === "staff") {
@@ -646,7 +651,7 @@ export async function registerRoutes(
   });
 
   // --- FLAPPY (public-ish but require login to reduce abuse) ---
-  app.post("/api/highscores", requireAuth, async (req, res) => {
+  app.post("/api/highscores", requireAuth, rejectKioskWrites, async (req, res) => {
     try {
       const sessionUser = req.appUser!;
       const { score } = req.body ?? {};

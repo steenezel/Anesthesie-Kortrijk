@@ -13,8 +13,8 @@ export function CmsEditLink({
   label?: string;
   className?: string;
 }) {
-  const { user } = useAuth();
-  if (!canEditCms(user?.role)) return null;
+  const { user, offlineSession } = useAuth();
+  if (offlineSession || !canEditCms(user?.role)) return null;
 
   return (
     <Link href={href}>

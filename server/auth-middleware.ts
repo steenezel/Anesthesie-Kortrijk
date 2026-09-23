@@ -3,7 +3,7 @@ import { fromNodeHeaders } from "better-auth/node";
 import { eq } from "drizzle-orm";
 import { getAuth, ensureAppUserFromAuth } from "./auth.js";
 import { db } from "./db.js";
-import { users, type User, type UserRole } from "../shared/schema.js";
+import { invitedUsers, users, type User, type UserRole } from "../shared/schema.js";
 
 export type AppSessionUser = {
   authUserId: string;
@@ -36,6 +36,20 @@ export async function resolveSessionUser(req: Request): Promise<AppSessionUser |
     });
 
     if (!profile.active) return null;
+
+    // Invite revoke must kill access even with an existing cookie.
+    const email = session.user.email.trim().toLowerCase();
+    const invite = await db
+      .select({ active: invitedUsers.active })
+      .from(invitedUsers)
+      .where(eq(invitedUsers.email, email))
+      .limit(1);
+    if (!invite[0]?.active) {
+      if (profile.active) {
+        await db.update(users).set({ active: false }).where(eq(users.id, profile.id));
+      }
+      return null;
+    }
 
     return {
       authUserId: session.user.id,

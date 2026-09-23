@@ -67,6 +67,7 @@ function authTrustedOrigins() {
   return Array.from(origins).filter(Boolean);
 }
 
+/** Allowlist = invited_users.active only (not legacy users.active). */
 async function isEmailAllowed(email: string): Promise<boolean> {
   const normalized = email.trim().toLowerCase();
   const database = requireDb();
@@ -75,14 +76,11 @@ async function isEmailAllowed(email: string): Promise<boolean> {
     .from(invitedUsers)
     .where(eq(invitedUsers.email, normalized))
     .limit(1);
-  if (invite[0]?.active) return true;
+  return Boolean(invite[0]?.active);
+}
 
-  const profile = await database
-    .select()
-    .from(users)
-    .where(eq(users.email, normalized))
-    .limit(1);
-  return Boolean(profile[0]?.active && profile[0]?.email);
+function allowDevOtpLog(): boolean {
+  return process.env.AUTH_DEV_OTP_LOG === "1" && process.env.NODE_ENV !== "production";
 }
 
 async function sendOtpEmail(email: string, otp: string) {
@@ -98,14 +96,16 @@ async function sendOtpEmail(email: string, otp: string) {
   `;
 
   if (!process.env.RESEND_API_KEY) {
-    console.log(`[auth] OTP for ${email}: ${otp} (niet gemaild — RESEND_API_KEY ontbreekt in .env)`);
-    if (process.env.NODE_ENV === "production" && process.env.AUTH_DEV_OTP_LOG !== "1") {
+    if (allowDevOtpLog()) {
+      console.log(`[auth] OTP for ${email}: ${otp} (niet gemaild — RESEND_API_KEY ontbreekt in .env)`);
+    }
+    if (process.env.NODE_ENV === "production") {
       throw new Error("RESEND_API_KEY ontbreekt");
     }
     return;
   }
 
-  if (process.env.AUTH_DEV_OTP_LOG === "1") {
+  if (allowDevOtpLog()) {
     console.log(`[auth] OTP for ${email}: ${otp} (ook via Resend verstuurd)`);
   }
 

@@ -25,8 +25,8 @@ const colorStyles: Record<AdminAddColor, { header: string; fab: string }> = {
 };
 
 export function AdminAddButton({ href, label, mode, color = "teal" }: AdminAddButtonProps) {
-  const { user } = useAuth();
-  if (!canEditCms(user?.role)) return null;
+  const { user, offlineSession } = useAuth();
+  if (offlineSession || !canEditCms(user?.role)) return null;
 
   const styles = colorStyles[color];
 
