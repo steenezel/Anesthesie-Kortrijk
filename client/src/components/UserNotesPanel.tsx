@@ -3,7 +3,6 @@ import { ChevronDown, StickyNote } from "lucide-react";
 import { useUserNotes } from "@/hooks/use-user-notes";
 import type { NoteTargetType } from "@/lib/user-content";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function UserNotesPanel({
@@ -14,10 +13,7 @@ export function UserNotesPanel({
   targetId: string;
 }) {
   const [open, setOpen] = useState(false);
-  const { content, setContent, saveNow, saveState, isLoading } = useUserNotes(
-    targetType,
-    targetId,
-  );
+  const { content, setContent, saveState, isLoading } = useUserNotes(targetType, targetId);
 
   if (!targetId && targetType !== "general") return null;
 
@@ -28,7 +24,9 @@ export function UserNotesPanel({
         ? "Opgeslagen"
         : saveState === "offline"
           ? "Offline bewaard"
-          : "";
+          : saveState === "error"
+            ? "Opslaan mislukt"
+            : "";
 
   return (
     <div className="mt-10 max-w-3xl mx-auto border border-slate-100 rounded-2xl overflow-hidden bg-slate-50/80">
@@ -42,7 +40,12 @@ export function UserNotesPanel({
           Mijn Notities
         </span>
         {statusLabel && (
-          <span className="text-[10px] font-bold uppercase tracking-wide text-teal-600">
+          <span
+            className={cn(
+              "text-[10px] font-bold uppercase tracking-wide",
+              saveState === "error" ? "text-red-600" : "text-teal-600",
+            )}
+          >
             {statusLabel}
           </span>
         )}
@@ -56,7 +59,7 @@ export function UserNotesPanel({
       {open && (
         <div className="px-4 pb-4 space-y-3 border-t border-slate-100 bg-white">
           <p className="pt-3 text-[10px] text-slate-400 font-medium">
-            Alleen zichtbaar voor jou — bv. chirurgenvoorkeuren of tips.
+            Alleen zichtbaar voor jou — bv. chirurgenvoorkeuren of tips. Wordt automatisch opgeslagen.
           </p>
           <Textarea
             value={content}
@@ -65,17 +68,6 @@ export function UserNotesPanel({
             placeholder="Typ hier je persoonlijke notities…"
             className="min-h-[120px] rounded-xl border-slate-200 text-sm"
           />
-          <div className="flex justify-end">
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              className="rounded-xl text-[10px] font-black uppercase tracking-widest"
-              onClick={() => saveNow()}
-            >
-              Opslaan
-            </Button>
-          </div>
         </div>
       )}
     </div>

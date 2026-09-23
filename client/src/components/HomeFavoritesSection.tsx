@@ -45,6 +45,22 @@ function hrefFor(itemType: BookmarkItemType, itemId: string) {
   return CALCULATOR_META[itemId]?.href ?? `/calculator/${itemId}`;
 }
 
+/** Normalize ALL-CAPS CMS titles to readable title case for the favorites list. */
+function toDisplayTitle(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return trimmed;
+
+  const letters = trimmed.replace(/[^A-Za-zÀ-ÿ]/g, "");
+  if (!letters.length) return trimmed;
+
+  const upperCount = [...letters].filter((c) => c === c.toUpperCase() && c !== c.toLowerCase()).length;
+  if (upperCount / letters.length < 0.7) return trimmed;
+
+  return trimmed
+    .toLowerCase()
+    .replace(/(^|[\s\-_/([{"'])(\S)/g, (_m, sep: string, ch: string) => sep + ch.toUpperCase());
+}
+
 export function HomeFavoritesSection() {
   const [open, setOpen] = useState(true);
   const { bookmarks } = useBookmarks();
@@ -119,11 +135,12 @@ export function HomeFavoritesSection() {
                 </p>
                 <div className="space-y-1">
                   {items.map((item) => {
-                    const title =
-                      titleMap.get(`${item.itemType}:${item.itemId}`) || item.itemId;
+                    const title = toDisplayTitle(
+                      titleMap.get(`${item.itemType}:${item.itemId}`) || item.itemId,
+                    );
                     return (
                       <Link key={`${item.itemType}:${item.itemId}`} href={hrefFor(item.itemType, item.itemId)}>
-                        <div className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-800 active:scale-[0.99] border border-slate-100">
+                        <div className="rounded-xl bg-white px-3 py-2 text-sm font-semibold text-slate-800 normal-case active:scale-[0.99] border border-slate-100">
                           {title}
                         </div>
                       </Link>

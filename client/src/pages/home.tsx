@@ -225,10 +225,6 @@ export default function Home() {
         </div>
       </motion.div>
 
-      <div className="max-w-xl mx-auto px-1 mt-4">
-        <HomeFavoritesSection />
-      </div>
-
       {site.modules.games && (
         <Dialog open={showEgg} onOpenChange={setShowEgg}>
           <DialogContent className="sm:max-w-2xl bg-orange-50 border-orange-200 p-8 overflow-y-auto max-h-[90vh]">
@@ -341,6 +337,10 @@ export default function Home() {
             )}
           </motion.div>
         ))}
+      </div>
+
+      <div className="max-w-xl mx-auto mt-4">
+        <HomeFavoritesSection />
       </div>
 
       <div className="pt-8 text-center border-t border-slate-100 space-y-2">
