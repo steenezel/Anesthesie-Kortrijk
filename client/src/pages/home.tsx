@@ -27,7 +27,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { quotes } from "@/data/quotes";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
-import { HomeFavoritesSection } from "@/components/HomeFavoritesSection";
 import { useSite } from "@/hooks/use-site";
 
 // @ts-expect-error: __BUILD_DATE__ is defined globally by Vite during the build process
@@ -71,7 +70,7 @@ export default function Home() {
       },
       {
         id: "logbook" as const,
-        title: "ASO Logboek",
+        title: "Logboek technieken",
         description: "Registratie LRA & invasieve lijnen",
         icon: ClipboardList,
         href: "/logbook",
@@ -83,7 +82,7 @@ export default function Home() {
       {
         id: "pocus" as const,
         title: "POCUS",
-        description: "Focus!",
+        description: "Point-of-care echo",
         icon: Waves,
         href: "/pocus",
         color: "bg-fuchsia-700",
@@ -105,7 +104,7 @@ export default function Home() {
       {
         id: "calculators" as const,
         title: "Calculators",
-        description: "LAST | Pediatrie | pijnpomp | ... ",
+        description: "LAST | Pediatrie | Pijnpomp | ... ",
         icon: Calculator,
         href: "/calculator",
         color: "bg-primary",
@@ -337,10 +336,6 @@ export default function Home() {
             )}
           </motion.div>
         ))}
-      </div>
-
-      <div className="max-w-xl mx-auto mt-4">
-        <HomeFavoritesSection />
       </div>
 
       <div className="pt-8 text-center border-t border-slate-100 space-y-2">

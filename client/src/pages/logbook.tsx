@@ -3,17 +3,17 @@ import { Link } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   ChevronLeft,
+  ClipboardList,
   Download,
   Loader2,
   LogOut,
   ShieldCheck,
   Syringe,
+  UserRound,
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
-import { canReviewAsoLogbooks } from "@shared/permissions";
 import {
   LOGBOOK_TREE,
   SUPERVISION_LEVELS,
@@ -44,7 +44,7 @@ import {
 } from "@/components/ui/drawer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-type UserRole = "aso" | "staff" | "supervisor" | "kiosk" | "admin";
+type UserRole = "aso" | "supervisor";
 type EntryStatus = "pass" | "fail";
 
 type LogbookUser = {
@@ -52,7 +52,6 @@ type LogbookUser = {
   username: string;
   name: string;
   role: UserRole;
-  email?: string | null;
   hidden?: boolean;
 };
 
@@ -72,6 +71,8 @@ type LogbookEntry = {
   createdAt?: string | Date | null;
 };
 
+const SESSION_KEY = "ane_logbook_session";
+
 function todayIsoDate() {
   const now = new Date();
   const month = String(now.getMonth() + 1).padStart(2, "0");
@@ -79,8 +80,19 @@ function todayIsoDate() {
   return `${now.getFullYear()}-${month}-${day}`;
 }
 
-function isSupervisorRole(role: UserRole) {
-  return canReviewAsoLogbooks(role);
+function readSession(): LogbookUser | null {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as LogbookUser;
+  } catch {
+    return null;
+  }
+}
+
+function writeSession(user: LogbookUser | null) {
+  if (!user) localStorage.removeItem(SESSION_KEY);
+  else localStorage.setItem(SESSION_KEY, JSON.stringify(user));
 }
 
 function formatNlDate(isoDate: string) {
@@ -94,35 +106,21 @@ function formatNlDate(isoDate: string) {
 }
 
 export default function LogbookPage() {
-  const { user, signOut, isKiosk, canWrite } = useAuth();
-  const { toast } = useToast();
-  const [staffView, setStaffView] = useState<"registreren" | "aso">("registreren");
+  const [session, setSession] = useState<LogbookUser | null>(() => readSession());
 
-  if (!user) return null;
-
-  if (isKiosk || !canWrite) {
-    return (
-      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3 text-center px-6">
-        <ShieldCheck className="h-10 w-10 text-amber-500" />
-        <p className="font-black uppercase text-sm tracking-widest text-slate-700">
-          Logboek niet beschikbaar in kiosk-modus
-        </p>
-        <Link href="/">
-          <Button variant="outline">Terug naar home</Button>
-        </Link>
-      </div>
-    );
-  }
-
-  const session: LogbookUser = {
-    id: user.id,
-    username: user.username,
-    name: user.name,
-    role: user.role,
-    email: user.email,
+  const handleLogin = (user: LogbookUser) => {
+    writeSession(user);
+    setSession(user);
   };
 
-  const canReview = isSupervisorRole(session.role);
+  const handleLogout = () => {
+    writeSession(null);
+    setSession(null);
+  };
+
+  if (!session) {
+    return <LogbookLogin onLogin={handleLogin} />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 pb-24 -mx-4">
@@ -134,7 +132,7 @@ export default function LogbookPage() {
         </Link>
         <div className="flex-1 min-w-0 text-center">
           <p className="text-[10px] font-black uppercase tracking-[0.25em] text-teal-600">
-            Logboek
+            Logboek technieken
           </p>
           <p className="text-xs font-black uppercase tracking-tight text-slate-900 truncate">
             {session.name}
@@ -144,51 +142,270 @@ export default function LogbookPage() {
           variant="ghost"
           size="sm"
           className="px-2 text-slate-400"
-          onClick={() => {
-            void signOut();
-            toast({ title: "Uitgelogd" });
-          }}
+          onClick={handleLogout}
         >
           <LogOut className="h-4 w-4" />
         </Button>
       </header>
 
-      {canReview && (
-        <div className="px-4 pt-4 max-w-md mx-auto">
-          <div className="flex h-12 rounded-2xl bg-slate-200/70 p-1 gap-1">
-            <button
-              type="button"
-              onClick={() => setStaffView("registreren")}
-              className={cn(
-                "flex-1 rounded-xl font-black text-[10px] uppercase tracking-widest transition-colors",
-                staffView === "registreren"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-500",
-              )}
-            >
-              Registreren
-            </button>
-            <button
-              type="button"
-              onClick={() => setStaffView("aso")}
-              className={cn(
-                "flex-1 rounded-xl font-black text-[10px] uppercase tracking-widest transition-colors",
-                staffView === "aso"
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-500",
-              )}
-            >
-              ASO-overzicht
-            </button>
-          </div>
-        </div>
-      )}
-
-      {canReview && staffView === "aso" ? (
+      {session.role === "supervisor" ? (
         <SupervisorOverview />
       ) : (
         <AsoWorkspace user={session} />
       )}
+    </div>
+  );
+}
+
+function LogbookLogin({ onLogin }: { onLogin: (user: LogbookUser) => void }) {
+  const { toast } = useToast();
+  const [mode, setMode] = useState<UserRole | null>(null);
+  const [selectedUser, setSelectedUser] = useState<LogbookUser | null>(null);
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState(false);
+
+  const {
+    data: users = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<LogbookUser[]>({
+    queryKey: [mode ? `/api/logbook/users?role=${mode}` : "/api/logbook/users"],
+    enabled: mode !== null,
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: async (payload: { userId: string; pin: string }) => {
+      const res = await apiRequest("POST", "/api/logbook/auth/login", payload);
+      return (await res.json()) as LogbookUser;
+    },
+    onSuccess: (user) => onLogin(user),
+    onError: () => {
+      setError(true);
+      setPin("");
+      if (navigator.vibrate) navigator.vibrate(200);
+      toast({
+        title: "Toegang geweigerd",
+        description: "Controleer de PIN en probeer opnieuw.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const submitPin = (value: string) => {
+    if (!selectedUser || value.length < 4) return;
+    loginMutation.mutate({ userId: selectedUser.id, pin: value });
+  };
+
+  const appendDigit = (digit: string) => {
+    setError(false);
+    const next = (pin + digit).slice(0, 4);
+    setPin(next);
+    if (next.length === 4) submitPin(next);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 pb-24 -mx-4">
+      <header className="sticky top-0 z-20 bg-white border-b border-slate-100 px-4 py-3 flex items-center">
+        <Link href="/">
+          <Button variant="ghost" size="sm" className="px-2 text-slate-500">
+            <ChevronLeft className="h-4 w-4 mr-1" /> Home
+          </Button>
+        </Link>
+        <h1 className="flex-1 text-center font-black uppercase text-xs tracking-widest text-slate-900 flex items-center justify-center gap-1">
+          <ClipboardList className="h-3.5 w-3.5 text-teal-600" /> ASO Logboek
+        </h1>
+        <div className="w-16" />
+      </header>
+
+      <div className="p-4 max-w-md mx-auto space-y-4">
+        {!mode && (
+          <div className="space-y-4 pt-4">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">
+              Kies modus
+            </p>
+            <button
+              type="button"
+              onClick={() => setMode("aso")}
+              className="w-full rounded-[24px] border-2 border-teal-100 bg-teal-50 p-6 flex items-center gap-4 active:scale-95 transition-all"
+            >
+              <div className="bg-white p-3 rounded-xl shadow-sm">
+                <Syringe className="h-6 w-6 text-teal-600" />
+              </div>
+              <div className="text-left">
+                <p className="font-black uppercase text-slate-900 tracking-tight">ASO modus</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  3-tap registratie
+                </p>
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("supervisor")}
+              className="w-full rounded-[24px] border-2 border-slate-200 bg-slate-100 p-6 flex items-center gap-4 active:scale-95 transition-all"
+            >
+              <div className="bg-white p-3 rounded-xl shadow-sm">
+                <ShieldCheck className="h-6 w-6 text-slate-700" />
+              </div>
+              <div className="text-left">
+                <p className="font-black uppercase text-slate-900 tracking-tight">Supervisor</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                  Overzicht & export
+                </p>
+              </div>
+            </button>
+          </div>
+        )}
+
+        {mode && !selectedUser && (
+          <div className="space-y-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-slate-400 uppercase text-[10px] font-black tracking-widest"
+              onClick={() => setMode(null)}
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" /> Modus
+            </Button>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">
+              Selecteer {mode === "aso" ? "ASO" : "supervisor"}
+            </p>
+            {isLoading ? (
+              <div className="flex justify-center py-10">
+                <Loader2 className="h-6 w-6 animate-spin text-teal-600" />
+              </div>
+            ) : isError ? (
+              <div className="rounded-2xl border-2 border-rose-100 bg-rose-50 p-4 space-y-3 text-center">
+                <p className="text-[10px] font-black uppercase tracking-widest text-rose-700">
+                  Gebruikerslijst niet bereikbaar
+                </p>
+                <p className="text-xs text-rose-600">
+                  Start de app met <span className="font-mono">npm run dev</span> (niet dev:client), zodat de API meedraait.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-9 rounded-xl text-[10px] font-black uppercase tracking-widest"
+                  onClick={() => refetch()}
+                >
+                  Opnieuw proberen
+                </Button>
+              </div>
+            ) : users.length === 0 ? (
+              <p className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400 py-8">
+                Geen profielen gevonden
+              </p>
+            ) : (
+              users.map((user) => (
+                <button
+                  key={user.id}
+                  type="button"
+                  onClick={() => setSelectedUser(user)}
+                  className={cn(
+                    "w-full rounded-2xl border-2 p-4 flex items-center gap-3 active:scale-[0.98] transition-all",
+                    user.hidden
+                      ? "border-transparent bg-transparent opacity-40 hover:opacity-70"
+                      : "border-slate-100 bg-white",
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "h-10 w-10 rounded-xl flex items-center justify-center",
+                      user.hidden ? "bg-slate-100" : "bg-teal-50",
+                    )}
+                  >
+                    <UserRound
+                      className={cn(
+                        "h-5 w-5",
+                        user.hidden ? "text-slate-300" : "text-teal-600",
+                      )}
+                    />
+                  </div>
+                  <span
+                    className={cn(
+                      "uppercase tracking-tight",
+                      user.hidden
+                        ? "text-xs font-medium text-slate-400 normal-case"
+                        : "text-sm font-black text-slate-900",
+                    )}
+                  >
+                    {user.name}
+                  </span>
+                </button>
+              ))
+            )}
+          </div>
+        )}
+
+        {selectedUser && (
+          <div className="space-y-5">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-slate-400 uppercase text-[10px] font-black tracking-widest"
+              onClick={() => {
+                setSelectedUser(null);
+                setPin("");
+                setError(false);
+              }}
+            >
+              <ChevronLeft className="h-4 w-4 mr-1" /> Profiel
+            </Button>
+            <div className="text-center space-y-1">
+              <p className="text-lg font-black uppercase tracking-tight text-slate-900">
+                {selectedUser.name}
+              </p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                Voer PIN in
+              </p>
+            </div>
+            <div className="flex justify-center gap-3">
+              {[0, 1, 2, 3].map((index) => (
+                <div
+                  key={index}
+                  className={cn(
+                    "h-4 w-4 rounded-full border-2",
+                    pin.length > index
+                      ? "bg-teal-600 border-teal-600"
+                      : error
+                        ? "border-rose-500"
+                        : "border-slate-300",
+                  )}
+                />
+              ))}
+            </div>
+            <div className="grid grid-cols-3 gap-3 max-w-xs mx-auto">
+              {["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫"].map((key) =>
+                key === "" ? (
+                  <div key="empty" />
+                ) : (
+                  <button
+                    key={key}
+                    type="button"
+                    disabled={loginMutation.isPending}
+                    onClick={() => {
+                      if (key === "⌫") {
+                        setError(false);
+                        setPin((prev) => prev.slice(0, -1));
+                        return;
+                      }
+                      appendDigit(key);
+                    }}
+                    className="h-16 rounded-2xl bg-white border-2 border-slate-100 font-black text-xl text-slate-900 active:scale-95 active:bg-teal-50 transition-all disabled:opacity-50"
+                  >
+                    {key}
+                  </button>
+                ),
+              )}
+            </div>
+            {loginMutation.isPending && (
+              <div className="flex justify-center">
+                <Loader2 className="h-5 w-5 animate-spin text-teal-600" />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -641,7 +858,7 @@ function SupervisorOverview() {
     <div className="px-4 pt-4 max-w-md mx-auto space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-          ASO-logboeken
+          Supervisor overzicht
         </p>
         <Button
           size="sm"

@@ -1,7 +1,6 @@
 import { Link } from "wouter";
-import { ChevronLeft, RotateCcw, Settings2, Check, LogOut } from "lucide-react";
+import { ChevronLeft, RotateCcw, Settings2, Check } from "lucide-react";
 import { useSite } from "@/hooks/use-site";
-import { useAuth } from "@/hooks/use-auth";
 import { THEME_PRESETS, type ThemeId } from "@/config/themes";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -16,7 +15,7 @@ const MODULE_LABELS: {
 }[] = [
   { key: "protocols", label: "Protocollen" },
   { key: "blocks", label: "KARA / Regional Anesthesia" },
-  { key: "logbook", label: "ASO-logboek" },
+  { key: "logbook", label: "Logboek" },
   { key: "pocus", label: "POCUS" },
   { key: "journal", label: "Journal Club" },
   { key: "calculators", label: "Calculators" },
@@ -28,8 +27,7 @@ const MODULE_LABELS: {
 ];
 
 export default function SettingsPage() {
-  const { site, updateUserPrefs, resetUserPrefs, prefsSynced } = useSite();
-  const { user, signOut } = useAuth();
+  const { site, updateUserPrefs, resetUserPrefs } = useSite();
   const { toast } = useToast();
 
   return (
@@ -50,44 +48,10 @@ export default function SettingsPage() {
           Instell<span className="text-primary">ingen</span>
         </h1>
         <p className="text-sm text-slate-500">
-          Kleurenthema en zichtbare modules
-          {prefsSynced ? " — gesynchroniseerd met je account" : " — lokaal + sync wanneer online"}.
-          {user?.email ? (
-            <>
-              {" "}
-              Ingelogd als <span className="font-medium text-slate-700">{user.email}</span>.
-            </>
-          ) : null}
+          Kleurenthema en zichtbare modules — alleen op dit toestel. Appnaam en branding wijzigen via
+          de beheerder.
         </p>
       </header>
-
-      <Card className="border-slate-100 shadow-sm rounded-3xl">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-700">
-            Account
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full h-12 rounded-2xl font-black uppercase text-[10px] tracking-widest gap-2"
-            onClick={async () => {
-              await signOut();
-              toast({ title: "Uitgelogd", description: "Op dit toestel is opnieuw een code via mail nodig." });
-            }}
-          >
-            <LogOut className="h-4 w-4" /> Uitloggen
-          </Button>
-          {user?.role === "admin" && (
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Allowlist (wie mag inloggen): beheer in{" "}
-              <span className="font-medium text-slate-700">Supabase → Table Editor → invited_users</span>
-              . Zie docs/INVITES_SUPABASE.md.
-            </p>
-          )}
-        </CardContent>
-      </Card>
 
       <Card className="border-slate-100 shadow-sm rounded-3xl">
         <CardHeader className="pb-2">
