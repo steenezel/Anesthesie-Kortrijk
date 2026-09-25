@@ -9,7 +9,8 @@ import {
   Atom, 
   Syringe, 
   BadgeCheck,
-  Calculator
+  Calculator,
+  Activity,
 } from "lucide-react";
 import { useSite } from "@/hooks/use-site";
 import { BookmarkButton } from "@/components/BookmarkButton";
@@ -77,6 +78,15 @@ const calculators = [
     icon: <Atom className="h-5 w-5 text-slate-600" />,
     color: "bg-slate-50/50",
     iconBg: "bg-slate-100"
+  },
+  {
+    id: "acid-base",
+    title: "Zuur-Base & ABG",
+    description: "Interpretatie, Anion Gap & compensatie",
+    path: "/calculator/acid-base",
+    icon: <Activity className="h-5 w-5 text-teal-600" />,
+    color: "bg-teal-50/50",
+    iconBg: "bg-teal-100"
   },
 ];
 

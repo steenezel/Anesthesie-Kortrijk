@@ -42,6 +42,7 @@ import PocusDetail from "@/pages/pocus-detail";
 import Marketplace from "@/pages/marketplace";
 import PainPumpPage from "@/pages/painpump";
 import CapriniCalculator from "@/pages/caprini";
+import AcidBaseCalculator from "@/pages/acid-base";
 import AdminEditor from "@/pages/admin-editor";
 import LogbookPage from "@/pages/logbook";
 import SpinalLogbookPage from "@/pages/SpinalLogbookPage";
@@ -157,6 +158,7 @@ function Router() {
           <Route path="/marketplace" component={Marketplace} />
           <Route path="/logbook" component={LogbookPage} />
           <Route path="/calculator/caprini" component={CapriniCalculator} />
+          <Route path="/calculator/acid-base" component={AcidBaseCalculator} />
           <Route path="/admin" component={AdminEditor} />
           <Route component={NotFound} />
         </Switch>
