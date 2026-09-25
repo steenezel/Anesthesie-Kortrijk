@@ -3,7 +3,6 @@ import { Link } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   ChevronLeft,
-  ClipboardList,
   Download,
   Loader2,
   LogOut,
