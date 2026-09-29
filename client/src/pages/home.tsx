@@ -27,6 +27,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { quotes } from "@/data/quotes";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
+import { HomeFavoritesSection } from "@/components/HomeFavoritesSection";
 import { useSite } from "@/hooks/use-site";
 
 // @ts-expect-error: __BUILD_DATE__ is defined globally by Vite during the build process
@@ -336,6 +337,10 @@ export default function Home() {
             )}
           </motion.div>
         ))}
+      </div>
+
+      <div className="max-w-xl mx-auto">
+        <HomeFavoritesSection />
       </div>
 
       <div className="pt-8 text-center border-t border-slate-100 space-y-2">

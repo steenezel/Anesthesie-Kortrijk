@@ -16,6 +16,7 @@ const CALCULATOR_META: Record<string, { title: string; href: string }> = {
   peds: { title: "Pediatrische doses", href: "/calculator/peds" },
   dantroleencalc: { title: "Dantroleen", href: "/calculator/dantroleen" },
   "sedation-peds": { title: "Peds Sedatie MRI", href: "/calculator/sedation-peds" },
+  "acid-base": { title: "Zuur-Base & ABG", href: "/calculator/acid-base" },
 };
 
 const TYPE_LABEL: Record<BookmarkItemType, string> = {
