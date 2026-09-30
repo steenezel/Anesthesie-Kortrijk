@@ -21,6 +21,8 @@ export interface SiteConfig {
     name: string;
     acronym: string;
     bannerSrc: string;
+    /** Legacy banner — easter egg in KaraShell. */
+    bannerClassicSrc: string;
   };
   spinalLogbook: {
     title: string;
@@ -65,7 +67,8 @@ export const siteDefaults: SiteConfig = {
   academy: {
     name: "Kortrijk Academy for Regional Anesthesia",
     acronym: "KARA",
-    bannerSrc: "/images/blocks/kara-banner.png",
+    bannerSrc: "/images/blocks/kara-banner.jpg?v=2",
+    bannerClassicSrc: "/images/blocks/kara-banner-classic.png",
   },
   spinalLogbook: {
     title: "SMASH",

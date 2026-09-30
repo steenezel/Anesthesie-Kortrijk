@@ -1,9 +1,10 @@
-import type { ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { ChevronLeft, Loader2, Map, List, GraduationCap, Brain } from "lucide-react";
 import { AdminAddButton } from "@/components/AdminAddButton";
 import { cn } from "@/lib/utils";
 import { useSite } from "@/hooks/use-site";
+import { useToast } from "@/hooks/use-toast";
 
 export type KaraTab = "atlas" | "list" | "referentie" | "quiz";
 
@@ -16,6 +17,9 @@ interface KaraShellProps {
   showAdminButton?: boolean;
 }
 
+const CLASSIC_FLASH_MS = 4500;
+const TAP_WINDOW_MS = 900;
+
 export function KaraShell({
   activeTab,
   children,
@@ -24,9 +28,54 @@ export function KaraShell({
   showAdminButton = true,
 }: KaraShellProps) {
   const { site } = useSite();
+  const { toast } = useToast();
   const [location] = useLocation();
+  const [showClassic, setShowClassic] = useState(false);
+  const tapCountRef = useRef(0);
+  const tapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const classicTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const hideAdmin = location.startsWith("/blocks/referentie") || location.startsWith("/blocks/quiz");
+
+  useEffect(() => {
+    return () => {
+      if (tapTimerRef.current) clearTimeout(tapTimerRef.current);
+      if (classicTimerRef.current) clearTimeout(classicTimerRef.current);
+    };
+  }, []);
+
+  const revealClassic = useCallback(() => {
+    setShowClassic(true);
+    if (classicTimerRef.current) clearTimeout(classicTimerRef.current);
+    classicTimerRef.current = setTimeout(() => setShowClassic(false), CLASSIC_FLASH_MS);
+    toast({
+      title: <span className="block text-center text-5xl leading-none sm:text-6xl">🍻</span>,
+      className: "w-auto min-w-0 justify-center px-6 py-4",
+    });
+  }, [toast]);
+
+  const handleBannerTap = () => {
+    if (showClassic) {
+      setShowClassic(false);
+      if (classicTimerRef.current) clearTimeout(classicTimerRef.current);
+      return;
+    }
+
+    tapCountRef.current += 1;
+    if (tapTimerRef.current) clearTimeout(tapTimerRef.current);
+
+    if (tapCountRef.current >= 3) {
+      tapCountRef.current = 0;
+      revealClassic();
+      return;
+    }
+
+    tapTimerRef.current = setTimeout(() => {
+      tapCountRef.current = 0;
+    }, TAP_WINDOW_MS);
+  };
+
+  const bannerSrc = showClassic ? site.academy.bannerClassicSrc : site.academy.bannerSrc;
 
   const tabClass = (tab: KaraTab) =>
     cn(
@@ -69,13 +118,37 @@ export function KaraShell({
           )}
         </div>
 
-        <div className="mb-6 aspect-[5/1] w-full overflow-hidden rounded-2xl shadow-sm sm:aspect-[6/1]">
+        <button
+          type="button"
+          onClick={handleBannerTap}
+          aria-label={
+            showClassic
+              ? "Klassieke KARA-banner — tik om terug te gaan"
+              : "KARA-banner — tip: tik driemaal voor de klassieker"
+          }
+          className={cn(
+            "group relative mb-6 w-full overflow-hidden rounded-2xl border border-slate-100 shadow-sm transition-all",
+            "active:scale-[0.995] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+            showClassic ? "aspect-[5/1] bg-stone-100 sm:aspect-[6/1]" : "flex items-center justify-center bg-white px-4 py-3 sm:py-4",
+          )}
+        >
           <img
-            src={site.academy.bannerSrc}
+            key={bannerSrc}
+            src={bannerSrc}
             alt={`${site.academy.acronym} — ${site.academy.name}`}
-            className="h-full w-full object-cover object-center"
+            className={cn(
+              "transition-opacity duration-300",
+              showClassic
+                ? "h-full w-full object-cover object-center animate-in fade-in zoom-in-95 duration-300"
+                : "mx-auto h-auto w-1/2 max-w-md",
+            )}
           />
-        </div>
+          {showClassic && (
+            <span className="absolute left-3 top-3 rounded-full bg-rose-700/90 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-white shadow-sm">
+              Klassieker
+            </span>
+          )}
+        </button>
 
         <div className="mb-4 flex w-full rounded-2xl bg-slate-100 p-1 gap-0.5 sm:p-1.5 sm:gap-1">
           <Link href="/blocks" className={tabLinkClass}>
