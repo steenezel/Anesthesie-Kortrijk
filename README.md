@@ -1,263 +1,184 @@
-# Anesthesie App Kortrijk 🏥
+# Anesthesie Kortrijk
 
-A professional, high-performance **Clinical Decision Support (CDS) Progressive Web App** designed for anesthesiologists and OR staff at **AZ Groeninge, Kortrijk**. Optimized for quick access in the Operating Theater (OT), providing essential protocols, regional anesthesia techniques, clinical calculators, and emergency contact information.
+Clinical Decision Support **Progressive Web App** voor anesthesisten, ASO’s en OR-personeel van **AZ Groeninge, Kortrijk**.
 
-**Live Demo**: [anesthesie-kortrijk.vercel.app](https://anesthesie-kortrijk.vercel.app)
+Gebouwd voor snelle, betrouwbare toegang in de operatiezaal: protocollen, KARA (regionale anesthesie), POCUS, klinische calculators, logboeken en meer — met e-mail-OTP-login en offline PWA-ondersteuning.
 
----
+**Live:** [anesthesie-kortrijk.be](https://anesthesie-kortrijk.be)  
+Domein via Vimexx · hosting & deploys op [Vercel](https://vercel.com) · broncode op GitHub
 
-## ✨ Key Features
-
-### 📊 **Clinical Calculators**
-- **Pediatric Dosing Calculator**: Accurate drug dosing and equipment sizing based on Eck and Cole formulas
-- **Weight-based Calculations**: LAST toxicity scoring for local anesthetics
-- **Safety Locks**: Built-in safeguards for neonates and infants (< 1 year)
-
-### 📚 **Protocol Library**
-- Comprehensive markdown-based clinical protocols organized by discipline
-- **Image Zoom**: Click to enlarge medical diagrams and reference images
-- **Video Support**: Embedded instructional videos for techniques
-- **Fast Search**: Quick access to critical information
-
-### 🗺️ **Regional Anesthesia Blocks (LRA Techniques)**
-- Step-by-step guidance for peripheral nerve blocks and neuraxial techniques
-- Anatomical illustrations and ultrasound-guided approaches
-- Video demonstrations and safety considerations
-
-### ☎️ **Smart Phone Directory**
-- One-tap dialing for internal hospital extensions
-- Automatic Belgian number prefixing (`+325663xxxx`)
-- Optimized for rapid contact in emergencies
-
-### 📱 **Offline Capability**
-- Works completely offline as a PWA (Progressive Web App)
-- Install as native app on iOS/Android
-- Full access to all protocols and calculators without internet
+| Document | Inhoud |
+|----------|--------|
+| **[STATUS.md](./STATUS.md)** | Actuele technische status (modules, API, auth, PWA) |
+| **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)** | Ecosysteem: GitHub → Vercel → Supabase |
+| **[docs/AUTH_ENV.md](./docs/AUTH_ENV.md)** | Omgevingsvariabelen voor login |
+| **[DEVELOPMENT.md](./DEVELOPMENT.md)** | Kort howto: markdown, PWA, veelvoorkomende taken |
 
 ---
 
-## 🛠️ Technical Stack
+## Wat zit erin?
 
-| Component | Technology |
-|-----------|-----------|
-| **Framework** | [React 19](https://react.dev/) + [Vite 7](https://vitejs.dev/) |
-| **Language** | TypeScript (Strict Mode) |
-| **Styling** | [Tailwind CSS 4](https://tailwindcss.com/) |
-| **UI Components** | [Radix UI](https://www.radix-ui.com/) & [shadcn/ui](https://ui.shadcn.com/) |
-| **Icons** | [Lucide React](https://lucide.dev/) |
-| **Routing** | [wouter](https://github.com/molecula-js/wouter) (lightweight SPA routing) |
-| **Content** | [React Markdown](https://github.com/remarkjs/react-markdown) |
-| **Animations** | [Framer Motion](https://www.framer.com/motion/) |
-| **Image Zoom** | [react-medium-image-zoom](https://www.npmjs.com/package/react-medium-image-zoom) |
-| **PWA/Caching** | [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) (Workbox) |
-| **Deployment** | [Vercel](https://vercel.com/) |
+### Klinische content
+- **Protocollen** per discipline (markdown + Supabase CMS, met lokale fallback)
+- **KARA** — Kortrijk Academy of Regional Anesthesia: LRA-atlas (body map), block-guides, referentie (dermatomen, osteotomen, innervatie, plexus), EDRA-quiz
+- **POCUS** — point-of-care echo (indicaties / techniek / interpretatie)
+- **Journal Club** — literatuur per discipline
+- **Onboarding** staf & ASO
+- **Telefoonlijst** — one-tap bellen (intern AZG)
+- **Globale zoek** over protocollen, blocks, POCUS en journal
+
+### Calculators
+| Calculator | Doel |
+|------------|------|
+| LAST | Toxiciteit lokale anesthetica + Intralipid |
+| Pediatrische doses | Tubes (Eck & Cole), LMA, noodmedicatie; safety lock &lt; 1 jaar |
+| Apfel | PONV-risico |
+| Caprini | DVT-risico bij chirurgie |
+| Dantroleen | Maligne hyperthermie (mg/kg → flacons) |
+| Painpump | Looptijd / bijvulling KLAC |
+| Peds sedatie MRI | Dexdor & Atropine (IBW / AjBW) |
+| Acid-base | Zuur-base analyse |
+
+### Logboeken & account
+- **ASO-logboek** — registratie LRA & invasieve lijnen (pass/fail, supervisieniveau)
+- **SMASH** — spinale trial-log (*Scandicaine versus Marcaine: Anesthesia Spinal Hip*)
+- **Better Auth** — e-mail OTP via Resend; allowlist (`invited_users`); rollen `aso` · `staff` · `supervisor` · `kiosk` · `admin`
+- **Kiosk-modus** — read-only CDS (geen schrijven naar logboek/CMS)
+- Favorieten, notities, voorkeuren (gesynchroniseerd per gebruiker)
+- Instellingen + marktplaats (verlof)
+
+### PWA
+- Installeerbaar op iOS/Android
+- Workbox-cache + auto-update toast
+- Manifest: één bron via `vite-plugin-pwa` → `/manifest.webmanifest`
 
 ---
 
-## 📂 Project Structure
+## Tech stack
+
+| Laag | Technologie |
+|------|-------------|
+| UI | React 19, Vite 7, TypeScript, Tailwind 4, Radix / shadcn |
+| Routing | Wouter |
+| Data fetching | TanStack Query |
+| Auth | Better Auth (e-mail OTP) + Resend |
+| API | Express 5 op Vercel (`/api/*`) |
+| Server-DB | **Drizzle ORM** → Postgres (`DATABASE_URL`, zelfde Supabase-project) |
+| CMS | Supabase JS (anon-key) → `protocols`, `blocks`, `pocus`, `journal_club` |
+| PWA | vite-plugin-pwa (Workbox) |
+| Deploy | Vercel Production → `anesthesie-kortrijk.be` |
+
+### Twee wegen naar één database
+1. **Server (Drizzle + Better Auth)** — login, sessies, allowlist, logboek, SMASH, favorieten, notities, gamescores  
+2. **Client (Supabase anon)** — CDS-content lezen/schrijven via `/admin`
+
+Details: [STATUS.md §4](./STATUS.md) · [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+
+---
+
+## Repository-structuur
 
 ```
-steenezel/Anesthesie-Kortrijk/
-├── client/
-│   └── src/
-│       ├── pages/              # Main app pages (Calculators, Protocols, Blocks, Contacts)
-│       ├── content/
-│       │   ├── protocols/       # Clinical protocols by discipline
-│       │   └── blocks/          # Regional anesthesia technique guides
-│       ├── components/          # Reusable React components
-│       └── styles/              # Tailwind & global styles
-├── public/
-│   ├── images/                  # Medical reference diagrams & ultrasound guides
-│   └── videos/                  # Instructional video files (MP4)
-├── server/                      # Backend API (optional)
-├── shared/                      # Shared types & utilities
-├── script/                      # Utility scripts
-├── vite.config.ts              # Vite & PWA configuration
-├── tailwind.config.ts          # Tailwind configuration
-├── tsconfig.json               # TypeScript configuration
+Anesthesie-Kortrijk/
+├── client/src/           # React PWA (pages, components, content/*.md)
+├── server/               # Express, Better Auth, Drizzle-routes
+├── shared/               # schema.ts + permissions (client + server)
+├── api/                  # Vercel serverless entry → Express
+├── docs/                 # Architectuur, auth cutover, invites
+├── public/               # Icons, images, videos
+├── vite.config.ts        # Vite + PWA-manifest
+├── STATUS.md             # Actuele technische status
 └── package.json
 ```
 
 ---
 
-## 🚀 Getting Started
+## Lokaal starten
 
-### Prerequisites
-- **Node.js** 18+ and **npm** 9+
-- Modern browser (Chrome, Safari, Firefox, Edge)
+**Vereisten:** Node.js 18+, npm 9+
 
-### Installation
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/steenezel/Anesthesie-Kortrijk.git
-   cd Anesthesie-Kortrijk
-   ```
-
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
-   The app will open at `http://localhost:5173`
-
-4. **Build for production**:
-   ```bash
-   npm run build
-   ```
-
-5. **Preview production build**:
-   ```bash
-   npm run preview
-   ```
-
----
-
-## 💻 Development Environments
-
-This project is optimized for cloud development platforms:
-
-- **[GitHub.dev](https://github.dev/steenezel/Anesthesie-Kortrijk)**: Press `.` on the repository page
-- **[StackBlitz](https://stackblitz.com)**: Online VS Code alternative
-- **Local Development**: VS Code with recommended extensions (ESLint, Tailwind CSS IntelliSense)
-
----
-
-## 📝 Content Management
-
-### Adding Clinical Protocols
-
-1. Create a markdown file in `client/src/content/protocols/{discipline}/{procedure}.md`
-2. Use standard markdown with support for:
-   - **Images**: `![Alt text](/images/protocols/filename.png)` (auto-zoomable)
-   - **Videos**: `video:/videos/blocks/demo.mp4` (inline player)
-   - **Headings**: Use `##`, `###` for hierarchy
-   - **Tables**: Standard markdown tables supported
-
-### Adding Regional Anesthesia Blocks
-
-1. Create a markdown file in `client/src/content/blocks/{block-name}.md`
-2. Include anatomy, landmarks, technique steps, and safety notes
-3. Add supporting images and videos as needed
-
-### Media Guidelines
-
-- **Images**: Place in `public/images/protocols/` (PNG/JPG, optimized)
-- **Videos**: Place in `public/videos/blocks/` (MP4, < 50MB per file)
-- **Formats**: Use descriptive filenames in lowercase with hyphens
-
----
-
-## 🏗️ Architecture Highlights
-
-### Dynamic Content Loading
-The app uses `import.meta.glob` to automatically scan content directories, making it infinitely scalable for new protocols and blocks.
-
-### PWA Configuration
-- **Offline First**: All assets are cached using Workbox
-- **Cache Limits**: 15-50MB JavaScript bundling for comprehensive protocol coverage
-- **Video Exclusion**: Videos excluded from PWA cache to optimize performance
-- **Install Prompt**: Users can install as a native app
-
-### Design Philosophy
-- **Clinical Aesthetic**: Clean, professional UI for high-stress environments
-- **Mobile-First**: Optimized for 5-6" phones in the OR
-- **Accessibility**: WCAG 2.1 AA compliance (dark mode supported)
-- **Performance**: Sub-500ms load times for critical paths
-
----
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file in the project root:
-
-```env
-VITE_API_URL=http://localhost:3000/api
-VITE_APP_NAME=Anesthesie Kortrijk
+```bash
+git clone https://github.com/steenezel/Anesthesie-Kortrijk.git
+cd Anesthesie-Kortrijk
+npm install
 ```
 
-### Tailwind Customization
+Maak een `.env` in de projectroot (volledig overzicht: [docs/AUTH_ENV.md](./docs/AUTH_ENV.md)):
 
-Edit `tailwind.config.ts` to adjust:
-- Color scheme
-- Typography scales
-- Spacing values
-- Breakpoints
+```env
+DATABASE_URL=
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=http://localhost:5000
+RESEND_API_KEY=
+AUTH_FROM_EMAIL=Anesthesie Kortrijk <onboarding@resend.dev>
+AUTH_SEED_ADMIN_EMAIL=you@example.com
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+```
 
----
+```bash
+npm run dev          # http://localhost:5000  (Express + Vite)
+npm run build        # productiebuild
+npm run db:push      # Drizzle-schema → Postgres (indien DATABASE_URL)
+npm run auth:seed    # optioneel: invites seed’en
+npm run check        # TypeScript
+```
 
-## 📖 For Developers
+**Allowlist:** alleen e-mails in `invited_users` mogen een OTP aanvragen. Beheer: [docs/INVITES_SUPABASE.md](./docs/INVITES_SUPABASE.md).
 
-**→ See [DEVELOPMENT.md](./DEVELOPMENT.md)** for detailed technical documentation including:
-- Advanced PWA configuration
-- Markdown-driven content system
-- Component architecture
-- Build optimization strategies
-- Deployment process
-
----
-
-## 🤝 Contributing
-
-1. Create a feature branch: `git checkout -b feature/your-feature`
-2. Commit changes: `git commit -m "Add your feature"`
-3. Push to branch: `git push origin feature/your-feature`
-4. Open a Pull Request
-
-### Code Standards
-- TypeScript strict mode required
-- ESLint configuration enforced
-- Tailwind CSS for all styling
-- Mobile-responsive design mandatory
+> Legacy `VITE_APP_PIN` en logboek-PIN-login zijn uitgefaseerd — gebruik e-mail OTP.
 
 ---
 
-## 📜 License
+## Content beheren
 
-This project is proprietary software for AZ Groeninge, Kortrijk. All rights reserved.
+### Productie (aanbevolen)
+Ingelogde editors met CMS-rechten: **`/admin`** → schrijft naar Supabase (`protocols`, `blocks`, `pocus`, `journal_club`). Split-pane markdown, image-compressie, PDF-upload.
 
----
+### Lokale markdown (fallback / migratie)
+| Pad | Gebruik |
+|-----|---------|
+| `client/src/content/protocols/{discipline}/*.md` | Protocollen (merge met cloud) |
+| `client/src/content/onboarding.md` | Onboarding staf |
+| `client/src/content/onboarding-aso.md` | Onboarding ASO |
+| `client/src/content/blocks/` | Leeg na migratie naar KARA/Supabase |
 
-## 👨‍⚕️ Intended Users
-
-- **Anesthesiologists**: Real-time protocol access, dosing calculations
-- **OR Nurses**: Regional technique guidance, equipment sizing
-- **Residents**: Educational protocols with detailed diagrams
-- **ICU Staff**: Emergency protocols and LAST management
-
----
-
-## 🐛 Troubleshooting
-
-### PWA Not Installing?
-- Clear browser cache: Settings > Storage > Clear
-- Try incognito/private mode
-- Ensure served over HTTPS (production only)
-
-### Offline Issues?
-- Check browser storage quota
-- Verify videos are in exclusion list (`globIgnores`)
-- Test in network tab for failed requests
-
-### Performance Issues?
-- Run `npm run build` to check bundle size
-- Disable browser extensions
-- Test with DevTools throttling (Slow 4G)
+Media: `public/images/`, `public/videos/`. Markdown ondersteunt zoom-afbeeldingen en `video:`-embeds. Nieuwe lokale protocollen worden automatisch gevonden via `import.meta.glob`.
 
 ---
 
-## 📞 Support
+## Deploy & branches
 
-For issues, feature requests, or questions:
-- **Email**: steenezel@example.com
-- **Internal Wiki**: [AZ Groeninge Wiki](https://example.com)
+| Branch | Effect |
+|--------|--------|
+| Featurebranch push | Vercel **Preview** (`*.vercel.app`) — veilig OTP/testen |
+| Merge naar `main` | Vercel **Production** → [anesthesie-kortrijk.be](https://anesthesie-kortrijk.be) |
+
+Auth cutover / zero-downtime: [docs/AUTH_CUTOVER.md](./docs/AUTH_CUTOVER.md) · [docs/AUTH_PREVIEW.md](./docs/AUTH_PREVIEW.md).
 
 ---
 
-**Last Updated**: March 2026 | **Version**: 1.0.0
+## Contributing
+
+1. Branch vanaf `main`: `git checkout -b feature/…`
+2. Commit & push → Preview-deploy controleren
+3. Pull request → review → merge naar `main`
+
+**Conventies:** TypeScript strict, ESLint, mobile-first UI voor 5–6″ schermen in de OK.
+
+---
+
+## Intended users
+
+- Anesthesisten & staf — protocollen, calculators, KARA, SMASH  
+- ASO’s — logboek, onboarding, quiz  
+- OR / IZ — snelle naslag, telefoonlijst, LAST/MH  
+- Kiosk — gedeeld toestel, alleen lezen  
+
+---
+
+## License
+
+Proprietary software voor AZ Groeninge, Kortrijk. Alle rechten voorbehouden.
+
+**Laatst bijgewerkt:** oktober 2026
