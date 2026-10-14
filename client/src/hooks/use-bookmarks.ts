@@ -18,12 +18,28 @@ export type BookmarkRow = {
   createdAt?: string | Date | null;
 };
 
+function normalizeBookmark(raw: unknown): BookmarkRow | null {
+  if (!raw || typeof raw !== "object") return null;
+  const row = raw as Record<string, unknown>;
+  const itemType = String(row.itemType ?? row.item_type ?? "") as BookmarkItemType;
+  const itemId = String(row.itemId ?? row.item_id ?? "").trim();
+  if (!itemType || !itemId) return null;
+  return {
+    id: row.id != null ? String(row.id) : undefined,
+    userId: row.userId != null ? String(row.userId) : row.user_id != null ? String(row.user_id) : undefined,
+    itemType,
+    itemId,
+    createdAt: (row.createdAt ?? row.created_at) as string | Date | null | undefined,
+  };
+}
+
 function readLocal(userId: string): BookmarkRow[] {
   try {
     const raw = localStorage.getItem(bookmarksStorageKey(userId));
     if (!raw) return [];
-    const parsed = JSON.parse(raw) as BookmarkRow[];
-    return Array.isArray(parsed) ? parsed : [];
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map(normalizeBookmark).filter((row): row is BookmarkRow => row != null);
   } catch {
     return [];
   }
@@ -50,15 +66,20 @@ export function useBookmarks() {
       try {
         const res = await fetch("/api/bookmarks", { credentials: "include" });
         if (!res.ok) throw new Error(String(res.status));
-        const rows = (await res.json()) as BookmarkRow[];
+        const payload = (await res.json()) as unknown;
+        const rows = (Array.isArray(payload) ? payload : [])
+          .map(normalizeBookmark)
+          .filter((row): row is BookmarkRow => row != null);
         writeLocal(userId, rows);
         return rows;
       } catch {
         return readLocal(userId);
       }
     },
-    initialData: userId ? () => readLocal(userId) : undefined,
-    staleTime: 60_000,
+    // Local cache as placeholder only — always refetch so home favorites stay in sync.
+    placeholderData: () => (userId ? readLocal(userId) : []),
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   useEffect(() => {

@@ -101,12 +101,17 @@ export function HomeFavoritesSection() {
       calculator: [],
     };
     for (const bm of bookmarks) {
-      groups[bm.itemType]?.push(bm);
+      if (bm.itemType in groups) groups[bm.itemType].push(bm);
     }
     return groups;
   }, [bookmarks]);
 
-  if (bookmarks.length === 0) return null;
+  const visibleCount = useMemo(
+    () => (Object.keys(TYPE_LABEL) as BookmarkItemType[]).reduce((n, t) => n + grouped[t].length, 0),
+    [grouped],
+  );
+
+  if (visibleCount === 0) return null;
 
   return (
     <div className="mb-4 rounded-2xl border border-amber-100 bg-amber-50/40 overflow-hidden">
@@ -119,7 +124,7 @@ export function HomeFavoritesSection() {
         <span className="flex-1 text-left text-[11px] font-black uppercase tracking-widest text-slate-700">
           Persoonlijke Favorieten
         </span>
-        <span className="text-[10px] font-bold text-slate-400">{bookmarks.length}</span>
+        <span className="text-[10px] font-bold text-slate-400">{visibleCount}</span>
         <ChevronDown
           className={cn("h-4 w-4 text-slate-400 transition-transform", open && "rotate-180")}
         />
