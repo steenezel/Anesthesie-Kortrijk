@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Anesthesie Kortrijk — README (printable)</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --content-width: 760px;
+      --body-font: "Inter", "Helvetica Neue", Arial, sans-serif;
+      --mono-font: SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace;
+      --accent: #0f172a;
+    }
+    html,body{height:100%;}
+    body{
+      font-family: var(--body-font);
+      color: #0b1220;
+      margin: 2rem;
+      display: flex;
+      justify-content: center;
+      background: white;
+    }
+    main {
+      max-width: var(--content-width);
+      width: 100%;
+      line-height: 1.6;
+      font-size: 11pt;
+    }
+    .toolbar { display:flex; gap:.5rem; justify-content:flex-end; margin-bottom:8px; }
+    .btn { background:#0f172a; color:white; padding:6px 10px; border-radius:6px; text-decoration:none; font-size:12px; }
+    .btn.secondary { background:#eef2ff; color:#0f172a; border:1px solid #dbeafe; }
+    h1,h2,h3{ color:var(--accent); page-break-after:avoid; }
+    h1 { font-size:20pt; margin-bottom:0.4rem; }
+    h2 { font-size:14pt; margin-top:1.1rem; margin-bottom:0.3rem; }
+    h3 { font-size:12pt; }
+    p { margin:0.45rem 0; }
+    pre, code { font-family:var(--mono-font); background:#f6f8fa; border-radius:4px; }
+    pre { padding:0.7rem; overflow:auto; font-size:9pt; }
+    table { border-collapse:collapse; width:100%; margin:0.6rem 0; font-size:10pt; }
+    table th, table td { border:1px solid #ddd; padding:6px 8px; }
+    thead th { background:#f2f4f7; font-weight:600; }
+    img { max-width:100%; height:auto; display:block; margin:0.4rem 0; }
+    /* Print helpers */
+    @media print {
+      body { margin:0; }
+      .toolbar { display:none; }
+      main { page-break-inside:avoid; }
+      h1,h2,h3 { page-break-after:avoid; }
+      table, img { page-break-inside:avoid; }
+      .page-break { display:block; page-break-after:always; }
+    }
+    /* Simple GitHub-like markdown styles for lists/code */
+    .markdown ul { margin:0.2rem 0 0.6rem 1.2rem; }
+    .markdown code { padding:2px 4px; border-radius:4px; font-size:0.95em; }
+    .markdown blockquote{ color:#374151; border-left:4px solid #e6eef8; padding:0.3rem 0.8rem; background:#fbfcff; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="toolbar">
+      <a class="btn" href="#" onclick="window.print();return false;">Print / Save as PDF</a>
+      <a class="btn secondary" href="README.md">Open source README.md</a>
+    </div>
+
+    <article id="content" class="markdown" aria-labelledby="title">
+      <!-- Rendered markdown will be injected here -->
+    </article>
+
+    <!-- Source markdown (kept verbatim so the page renders client-side). -->
+    <script id="source-md" type="text/plain">
+# Anesthesie Kortrijk
+
+Clinical Decision Support **Progressive Web App** voor anesthesisten, ASO’s en OR-personeel van **AZ Groeninge, Kortrijk**.
+
+Gebouwd voor snelle, betrouwbare toegang in de operatiezaal: protocollen, KARA (regionale anesthesie), POCUS, klinische calculators, logboeken en meer — met e-mail-OTP-login en offline PWA-ondersteu[...] 
+
+**Live:** [anesthesie-kortrijk.be](https://anesthesie-kortrijk.be)  
+Domein via Vimexx · hosting & deploys op [Vercel](https://vercel.com) · broncode op GitHub
+
+| Document | Inhoud |
+|----------|--------|
+| **[STATUS.md](./STATUS.md)** | Actuele technische status (modules, API, auth, PWA) |
+| **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)** | Ecosysteem: GitHub → Vercel → Supabase |
+| **[docs/AUTH_ENV.md](./docs/AUTH_ENV.md)** | Omgevingsvariabelen voor login |
+| **[DEVELOPMENT.md](./DEVELOPMENT.md)** | Kort howto: markdown, PWA, veelvoorkomende taken |
+
+---
+
+## Wat zit erin?
+
+### Klinische content
+- **Protocollen** per discipline (markdown + Supabase CMS, met lokale fallback)
+- **KARA** — Kortrijk Academy of Regional Anesthesia: LRA-atlas (body map), block-guides, referentie (dermatomen, osteotomen, innervatie, plexus), EDRA-quiz
+- **POCUS** — point-of-care echo (indicaties / techniek / interpretatie)
+- **Journal Club** — literatuur per discipline
+- **Onboarding** staf & ASO
+- **Telefoonlijst** — one-tap bellen (intern AZG)
+- **Globale zoek** over protocollen, blocks, POCUS en journal
+
+### Calculators
+| Calculator | Doel |
+|------------|------|
+| LAST | Toxiciteit lokale anesthetica + Intralipid |
+| Pediatrische doses | Tubes (Eck & Cole), LMA, noodmedicatie; safety lock &lt; 1 jaar |
+| Apfel | PONV-risico |
+| Caprini | DVT-risico bij chirurgie |
+| Dantroleen | Maligne hyperthermie (mg/kg → flacons) |
+| Painpump | Looptijd / bijvulling KLAC |
+| Peds sedatie MRI | Dexdor & Atropine (IBW / AjBW) |
+| Acid-base | Zuur-base analyse |
+
+### Logboeken & account
+- **ASO-logboek** — registratie LRA & invasieve lijnen (pass/fail, supervisieniveau)
+- **SMASH** — spinale trial-log (*Scandicaine versus Marcaine: Anesthesia Spinal Hip*)
+- **Better Auth** — e-mail OTP via Resend; allowlist (`invited_users`); rollen `aso` · `staff` · `supervisor` · `kiosk` · `admin`
+- **Kiosk-modus** — read-only CDS (geen schrijven naar logboek/CMS)
+- Favorieten, notities, voorkeuren (gesynchroniseerd per gebruiker)
+- Instellingen + marktplaats (verlof)
+
+### PWA
+- Installeerbaar op iOS/Android
+- Workbox-cache + auto-update toast
+- Manifest: één bron via `vite-plugin-pwa` → `/manifest.webmanifest`
+
+---
+
+## Tech stack
+
+| Laag | Technologie |
+|------|-------------|
+| UI | React 19, Vite 7, TypeScript, Tailwind 4, Radix / shadcn |
+| Routing | Wouter |
+| Data fetching | TanStack Query |
+| Auth | Better Auth (e-mail OTP) + Resend |
+| API | Express 5 op Vercel (`/api/*`) |
+| Server-DB | **Drizzle ORM** → Postgres (`DATABASE_URL`, zelfde Supabase-project) |
+| CMS | Supabase JS (anon-key) → `protocols`, `blocks`, `pocus`, `journal_club` |
+| PWA | vite-plugin-pwa (Workbox) |
+| Deploy | Vercel Production → `anesthesie-kortrijk.be` |
+
+### Twee wegen naar één database
+1. **Server (Drizzle + Better Auth)** — login, sessies, allowlist, logboek, SMASH, favorieten, notities, gamescores  
+2. **Client (Supabase anon)** — CDS-content lezen/schrijven via `/admin`
+
+Details: [STATUS.md §4](./STATUS.md) · [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+
+---
+
+## Repository-structuur
+
+```
+Anesthesie-Kortrijk/
+├── client/src/           # React PWA (pages, components, content/*.md)
+├── server/               # Express, Better Auth, Drizzle-routes
+├── shared/               # schema.ts + permissions (client + server)
+├── api/                  # Vercel serverless entry → Express
+├── docs/                 # Architectuur, auth cutover, invites
+├── public/               # Icons, images, videos
+├── vite.config.ts        # Vite + PWA-manifest
+├── STATUS.md             # Actuele technische status
+└── package.json
+```
+
+---
+
+## Lokaal starten
+
+**Vereisten:** Node.js 18+, npm 9+
+
+```bash
+git clone https://github.com/steenezel/Anesthesie-Kortrijk.git
+cd Anesthesie-Kortrijk
+npm install
+```
+
+Maak een `.env` in de projectroot (volledig overzicht: [docs/AUTH_ENV.md](./docs/AUTH_ENV.md)):
+
+```env
+DATABASE_URL=
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=http://localhost:5000
+RESEND_API_KEY=
+AUTH_FROM_EMAIL=Anesthesie Kortrijk <onboarding@resend.dev>
+AUTH_SEED_ADMIN_EMAIL=you@example.com
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+```
+
+```bash
+npm run dev          # http://localhost:5000  (Express + Vite)
+npm run build        # productiebuild
+npm run db:push      # Drizzle-schema → Postgres (indien DATABASE_URL)
+npm run auth:seed    # optioneel: invites seed’en
+npm run check        # TypeScript
+```
+
+**Allowlist:** alleen e-mails in `invited_users` mogen een OTP aanvragen. Beheer: [docs/INVITES_SUPABASE.md](./docs/INVITES_SUPABASE.md).
+
+> Legacy `VITE_APP_PIN` en logboek-PIN-login zijn uitgefaseerd — gebruik e-mail OTP.
+
+---
+
+## Content beheren
+
+### Productie (aanbevolen)
+Ingelogde editors met CMS-rechten: **`/admin`** → schrijft naar Supabase (`protocols`, `blocks`, `pocus`, `journal_club`). Split-pane markdown, image-compressie, PDF-upload.
+
+### Lokale markdown (fallback / migratie)
+| Pad | Gebruik |
+|-----|---------|
+| `client/src/content/protocols/{discipline}/*.md` | Protocollen (merge met cloud) |
+| `client/src/content/onboarding.md` | Onboarding staf |
+| `client/src/content/onboarding-aso.md` | Onboarding ASO |
+| `client/src/content/blocks/` | Leeg na migratie naar KARA/Supabase |
+
+Media: `public/images/`, `public/videos/`. Markdown ondersteunt zoom-afbeeldingen en `video:`-embeds. Nieuwe lokale protocollen worden automatisch gevonden via `import.meta.glob`.
+
+---
+
+## Deploy & branches
+
+| Branch | Effect |
+|--------|--------|
+| Featurebranch push | Vercel **Preview** (`*.vercel.app`) — veilig OTP/testen |
+| Merge naar `main` | Vercel **Production** → [anesthesie-kortrijk.be](https://anesthesie-kortrijk.be) |
+
+Auth cutover / zero-downtime: [docs/AUTH_CUTOVER.md](./docs/AUTH_CUTOVER.md) · [docs/AUTH_PREVIEW.md](./docs/AUTH_PREVIEW.md).
+
+---
+
+## Contributing
+
+1. Branch vanaf `main`: `git checkout -b feature/…`
+2. Commit & push → Preview-deploy controleren
+3. Pull request → review → merge naar `main`
+
+**Conventies:** TypeScript strict, ESLint, mobile-first UI voor 5–6″ schermen in de OK.
+
+---
+
+## Intended users
+
+- Anesthesisten & staf — protocollen, calculators, KARA, SMASH  
+- ASO’s — logboek, onboarding, quiz  
+- OR / IZ — snelle naslag, telefoonlijst, LAST/MH  
+- Kiosk — gedeeld toestel, alleen lezen
+
+---
+
+## License
+
+Proprietary software voor AZ Groeninge, Kortrijk. Alle rechten voorbehouden.
+
+**Laatst bijgewerkt:** oktober 2026
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+      (function(){
+        const src = document.getElementById('source-md').textContent.trim();
+        const out = document.getElementById('content');
+        // basic sanitizer: convert via marked and inject
+        out.innerHTML = marked.parse(src, { gfm: true });
+        // tweak tables for print
+        const tables = out.querySelectorAll('table');
+        tables.forEach(t=> t.classList.add('table'));
+      })();
+    </script>
+  </main>
+</body>
+</html>
